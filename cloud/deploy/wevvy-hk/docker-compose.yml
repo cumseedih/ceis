@@ -1,0 +1,47 @@
+# wevvy Cloud on wevvy-hk — the relay only. TLS and the public ports
+# belong to the showcase's Caddy on the same box (demo/showcase); this
+# container joins its `showcase_edge` network and is reached there as
+# `wevvy-relay:8787` by sites.d/cloud.wevvy.in.caddy. Nothing is
+# published on the host.
+#
+# Layout on the server (deploy.sh keeps it so):
+#   /opt/wevvy/relay/docker-compose.yml   this file
+#   /opt/wevvy/relay/.env                 secrets (600, never leaves the box)
+#   /opt/wevvy/relay/src/                 the cloud/ directory of the repository
+#   /opt/wevvy/relay/data/cloud.db        SQLite (backed up by backup.timer)
+services:
+  relay:
+    build: ./src
+    image: wevvy-relay:local
+    container_name: wevvy-relay
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # the operator's page, beyond the relay's own tables: the site's daily counts
+      # (demo/showcase/mirror/traffic.py, /var/lib/wevvy-traffic on the host) and
+      # wevvy Web's numbers from the showcase gateway on the edge network
+      TRAFFIC_DB: /srv/wevvy-cloud/traffic/traffic.db
+      WEB_INFO_URL: http://gateway:8000/api/web/info
+      # the showcase's visitors — where from, with what, every demo — for the admin page;
+      # WEB_ADMIN_TOKEN in .env, the same value as the gateway's SHOWCASE_ADMIN_TOKEN
+      WEB_ADMIN_URL: http://gateway:8000/api/demo/admin
+    volumes:
+      - ./data:/srv/wevvy-cloud/data
+      - /var/lib/wevvy-traffic:/srv/wevvy-cloud/traffic:ro
+    networks:
+      - edge
+      - web
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+networks:
+  edge:
+    external: true
+    name: showcase_edge
+  # wevvy Web's kept containers (demo/showcase) reach the relay here as wevvy-relay:8787
+  web:
+    external: true
+    name: wevvy-web

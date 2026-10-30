@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="20"
+    android:viewportHeight="20">
+    <!-- wevvy: the field's clear button, a pale disc with a cross, as in the reference -->
+    <path
+        android:pathData="M10,10m-9,0a9,9 0,1 1,18 0a9,9 0,1 1,-18 0"
+        android:fillColor="#E8EAED" />
+    <path
+        android:pathData="M13,7L7,13M7,7l6,6"
+        android:fillColor="#00000000"
+        android:strokeColor="#6B7280"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round" />
+</vector>

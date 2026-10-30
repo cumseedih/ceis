@@ -1,0 +1,81 @@
+# The dsh-wevvy bundle layer: wevvy on DeepSeek Harness.
+#
+# Applied after @deepseek-ai/dsh-base (and dsh-web-app in the web profile);
+# the profile's own cordis.patch.yml still comes after this, so everything here
+# can be overridden by the person running it. A patch replaces a row's whole
+# `config`, so the rows restated below carry every key they need.
+
+# The agent is wevvy, not "an AI agent powered by …". The row id is the one
+# dsh-base and dsh-web-app use, so this replaces their persona text; the stock
+# identity line is switched off and the persona names the base it runs on.
+- id: system-prompt
+  config:
+    includeHarnessIdentity: false
+    personaPrefix: >-
+      You are wevvy, an open-source personal agent that lives on this person's
+      own devices, built on DeepSeek Harness. You speak plainly and briefly, in
+      the language the person writes in, and you say what you did rather than
+      what you are about to do. You never pretend a step succeeded. When
+      something needs the person's hand — a password, a payment, a code — you
+      say so and wait.
+    personaSuffix: Your working directory is {{cwd}}.
+
+# Web sessions compose from an agent preset, and a preset's own persona wins
+# over the row above. Ours is declared in presets/wevvy.patch.yml; new
+# sessions start from it (the person can still pick Standard or PTC).
+- id: agent-preset-registry
+  config:
+    default: wevvy
+
+# The sidebar's brand seats are ours; the official occupant steps aside (two
+# occupants at the same rank throw). "Built on DeepSeek Harness" stays in the
+# About text — only the product name on screen changes, as the brand guidelines ask.
+- id: ui-brand-official
+  disabled: true
+
+# The left column is ours: an icon rail (Chats, Search, Feed, Ideas, Goals,
+# Library, Devices, the hamburger) beside the harness's own chats browser. The stock
+# sidebar steps aside; our occupant declares the same seven child seats, so the
+# brand mark, panel glyphs, workspace browser, settings shell and footer
+# actions all mount exactly as before.
+- id: ui-sidebar
+  disabled: true
+
+# The settings dialog is ours as well — a grouped nav, the everyday pages
+# first and the harness's other pages under Advanced. Our shell declares the
+# same settings seats, and its General page declares the rows seat, so every
+# plugin's section and row mounts as before.
+- id: ui-settings-general
+  disabled: true
+
+- insert:
+    # The browser half rides on this row (sidebar mark and name, hero mark,
+    # the Cloud settings section); the host side serves the face's stills.
+    - id: wevvy
+      name: dsh-wevvy
+
+    # One account, every device: sign-in, the account's models as the
+    # `wevvy` provider of llm-pi-ai, the key in the credential store.
+    - id: wevvy-cloud
+      name: dsh-wevvy/cloud
+      config:
+        baseURL: !!js process.env.WEVVY_CLOUD_URL || 'https://cloud.wevvy.in'
+        deviceName: ''
+        statePath: ''
+
+    # The rooms of the Muse desktop — Feed, Ideas, Goals, Library — over the
+    # harness's own sessions, Schedule and `present`: one store in
+    # $DSH_HOME/wevvy/rooms.json, served under /wevvy/rooms/*. The tools
+    # the agent uses to write into them are the preset row
+    # `wevvy-rooms-tools` (presets/wevvy.patch.yml).
+    - id: wevvy-rooms
+      name: dsh-wevvy/rooms
+
+    # Connectors: third-party services over their remote MCP servers (OAuth
+    # where the server speaks the MCP authorization flow, a key where it wants
+    # one), connected from Settings → Connectors. Credentials in
+    # $DSH_HOME/wevvy/connectors.json; a loopback proxy of this row carries
+    # them, and the preset row `wevvy-connectors-tools` mounts one MCP
+    # client per connection in every chat.
+    - id: wevvy-connectors
+      name: dsh-wevvy/connectors

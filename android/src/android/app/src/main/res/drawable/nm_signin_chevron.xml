@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
+    <!-- wevvy: row chevron, redrawn stroke path (the Figma export had only the words 'Help chevron' as path data) -->
+    <path
+        android:pathData="M9,5 L15,11 L9,17"
+        android:fillColor="#00000000"
+        android:strokeColor="#A6A8AC"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

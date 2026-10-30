@@ -1,0 +1,8 @@
+[Unit]
+Description=wevvy Cloud: self-check (public door, relay health aggregates, disk, backup age)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/wevvy/relay/selfcheck.sh

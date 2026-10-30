@@ -3,7 +3,7 @@ import Foundation
 struct AppLogger {
     let category: String
 
-    init(subsystem: String = "io.github.nanomuse.app", category: String) {
+    init(subsystem: String = "io.github.ceis.app", category: String) {
         self.category = category
     }
 

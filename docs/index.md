@@ -16,7 +16,7 @@ hero:
       link: /self-hosting
     - theme: alt
       text: GitHub
-      link: https://github.com/nano-muse/nanoMuse
+      link: https://github.com/nano-muse/ceis
     - theme: alt
       text: Paper
       link: https://arxiv.org/abs/2610.08699
@@ -27,16 +27,16 @@ hero:
 | | |
 |---|---|
 | **Browser** | [demo.ceis.dev](https://demo.ceis.dev/): a ceis on a simulated phone, after a sign-in, with lines to try beside it in English and in Chinese. A demo; the apps below are the real thing |
-| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-1.0.5-arm64.apk) · [how to install](/android) |
+| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk) · [how to install](/android) |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc): a beta that passed Apple's beta review; the link installs it · [iOS](/ios) |
-| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg) · [the desktop app](/desktop) |
-| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe) |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg) · [the desktop app](/desktop) |
+| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe) |
+| **Linux** x64 | [AppImage](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local` for your own relay; `docker compose up -d app` for the web app · [run it yourself](/self-hosting) |
 
-Every download is on the [latest release](https://github.com/nano-muse/nanoMuse/releases/latest); the same files are at [wevvy.in/dl](https://wevvy.in/dl/) when GitHub is slow where you are.
+Every download is on the [latest release](https://github.com/nano-muse/ceis/releases/latest); the same files are at [wevvy.in/dl](https://wevvy.in/dl/) when GitHub is slow where you are.
 
-[What changed in 1.0.5 Lookout](https://github.com/nano-muse/nanoMuse/releases/tag/v1.0.5) · [What each client can do](/parity) · [Where to start contributing](/roadmap) · [What the relay keeps](/privacy) · [What stays on a phone, and whose it is](/sync)
+[What changed in 1.0.5 Lookout](https://github.com/nano-muse/ceis/releases/tag/v1.0.5) · [What each client can do](/parity) · [Where to start contributing](/roadmap) · [What the relay keeps](/privacy) · [What stays on a phone, and whose it is](/sync)
 
 ## The film
 
@@ -47,7 +47,7 @@ Every download is on the [latest release](https://github.com/nano-muse/nanoMuse/
 74 seconds: what ceis does on your phone, your computer and the web. Also in [Chinese](https://wevvy.in/media/film/ceis-film-zh-web.mp4).
 
 ::: info ceis keeps evolving
-A personal agent should not live only in someone else's cloud, so ceis is the open-source, low-cost alternative: on your own devices, with a model you choose and a relay you can host yourself. We want to build it with developers and users everywhere, so that each person truly owns a personal agent. Open an [issue](https://github.com/nano-muse/nanoMuse/issues/new/choose) or send a [pull request](../CONTRIBUTING.md); either one helps ceis get better.
+A personal agent should not live only in someone else's cloud, so ceis is the open-source, low-cost alternative: on your own devices, with a model you choose and a relay you can host yourself. We want to build it with developers and users everywhere, so that each person truly owns a personal agent. Open an [issue](https://github.com/nano-muse/ceis/issues/new/choose) or send a [pull request](../CONTRIBUTING.md); either one helps ceis get better.
 :::
 
 ## Citation

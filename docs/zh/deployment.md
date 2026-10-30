@@ -28,7 +28,7 @@ docker compose up -d daemon                       # advance goals on a timer, no
 ```bash
 docker run -d --name muse -p 8787:8787 --env-file .env \
   -v ceis-data:/data -v "$PWD/workspace:/workspace" \
-  ghcr.io/nano-muse/nanoMuse:latest
+  ghcr.io/nano-muse/ceis:latest
 docker logs muse                          # the URL with the access token
 ```
 
@@ -92,7 +92,7 @@ muse.example.com {
 ```bash
 git pull --ff-only && uv pip install -e ".[dev]"      # 源码安装
 docker compose build && docker compose up -d app       # Docker，本机构建
-docker pull ghcr.io/nano-muse/nanoMuse:latest          # Docker，发布的镜像；拉完重新启动
+docker pull ghcr.io/nano-muse/ceis:latest          # Docker，发布的镜像；拉完重新启动
 ```
 
 数据格式（SQLite、JSONL、JSON）在同一个次版本号内保持向后兼容。

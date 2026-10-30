@@ -13,7 +13,7 @@ import { posix } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, type DefaultTheme } from 'vitepress'
 
-const REPO = 'https://github.com/nano-muse/nanoMuse'
+const REPO = 'https://github.com/nano-muse/ceis'
 const base = process.env.DOCS_BASE ?? '/ceis/docs/'
 
 // Directories under docs/ that are not pages of the site: task briefs and traces are

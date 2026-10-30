@@ -40,7 +40,7 @@ const source = resolve(root, 'ceis/llm/providers.json')
 const targets = [
   resolve(root, 'harness/dsh-ceis/assets/providers.json'),
   resolve(root, 'android/src/android/app/src/main/assets/ceis/providers.json'),
-  resolve(root, 'android/src/ios/NanoMuse/Resources/providers.json'),
+  resolve(root, 'android/src/ios/Ceis/Resources/providers.json'),
   // the relay builds the "ways on" guidance from the same facts (cloud/ceis_cloud/providers.py)
   resolve(root, 'cloud/ceis_cloud/providers.json'),
 ]

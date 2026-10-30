@@ -140,7 +140,7 @@ def _settings(config: Path | None, auto: bool = False) -> Settings:
         console.print(
             f"[red]cannot create[/red] {exc.filename or settings.data_dir}: {exc.strerror or exc}\n"
             f"(data directory {settings.data_dir}, workspace {settings.agent.workspace}). Point CEIS_DATA_DIR "
-            "(NANOMUSE_DATA_DIR still works) and CEIS_WORKSPACE (or data_dir / agent.workspace in config.toml) at folders you can write to."
+            "(CEIS_DATA_DIR still works) and CEIS_WORKSPACE (or data_dir / agent.workspace in config.toml) at folders you can write to."
         )
         raise typer.Exit(1) from exc
     return settings
@@ -1476,7 +1476,7 @@ def config_path() -> None:
         return
     # no file: the data directory still follows CEIS_DATA_DIR, as every command does
     data_dir = Path(
-        os.environ.get("CEIS_DATA_DIR") or os.environ.get("NANOMUSE_DATA_DIR") or default_data_dir()
+        os.environ.get("CEIS_DATA_DIR") or os.environ.get("CEIS_DATA_DIR") or default_data_dir()
     ).expanduser()
     console.print(f"[dim]none found (defaults + env). Data dir: {data_dir}[/dim]")
 

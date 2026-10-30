@@ -34,7 +34,7 @@ from ceis.schema import RiskLevel
 
 DEFAULT_DATA_DIR = Path.home() / ".ceis"
 #: where the data directory lived before the rebrand; moved up once, then unused
-LEGACY_DATA_DIR = Path.home() / ".nanomuse"
+LEGACY_DATA_DIR = Path.home() / ".ceis"
 _ENV_PATTERN = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)(?::-([^}]*))?\}")
 
 
@@ -50,7 +50,7 @@ def default_data_dir() -> Path:
     new, old = DEFAULT_DATA_DIR, LEGACY_DATA_DIR
     if (
         new == Path.home() / ".ceis"
-        and old == Path.home() / ".nanomuse"
+        and old == Path.home() / ".ceis"
         and not new.exists()
         and old.is_dir()
     ):
@@ -830,7 +830,7 @@ def _apply_env_overrides(raw: dict[str, Any]) -> None:
             if val := os.environ.get(env):
                 llm["api_key"] = val
                 break
-    if val := os.environ.get("CEIS_DATA_DIR") or os.environ.get("NANOMUSE_DATA_DIR"):
+    if val := os.environ.get("CEIS_DATA_DIR") or os.environ.get("CEIS_DATA_DIR"):
         raw["data_dir"] = val
     if val := os.environ.get("CEIS_WORKSPACE"):
         raw.setdefault("agent", {})["workspace"] = val

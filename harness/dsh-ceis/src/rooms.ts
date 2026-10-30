@@ -329,11 +329,11 @@ const TEXT_KINDS = new Set(['.md', '.markdown', '.txt', '.html', '.htm', '.csv',
 
 declare module '@deepseek-ai/cordis' {
   interface Context {
-    ceisRooms: NanomuseRooms
+    ceisRooms: CeisRooms
   }
 }
 
-export default class NanomuseRooms extends Service {
+export default class CeisRooms extends Service {
   static inject = ['ceisCloud']
 
   private store: Store = structuredClone(EMPTY)
@@ -1880,7 +1880,7 @@ export default class NanomuseRooms extends Service {
         case '/goals/begin':
           return send(res, 200, await this.beginGoal(goalCategory(body.category), typeof body.seed === 'string' ? body.seed : undefined, typeof body.sessionId === 'string' ? body.sessionId : undefined))
         case '/goals/update':
-          return send(res, 200, await this.updateGoal(String(body.id ?? ''), body as Parameters<NanomuseRooms['updateGoal']>[1]))
+          return send(res, 200, await this.updateGoal(String(body.id ?? ''), body as Parameters<CeisRooms['updateGoal']>[1]))
         case '/docs/write': {
           const doc = String(body.doc ?? '')
           if (doc !== 'identity' && doc !== 'soul' && doc !== 'memory') return send(res, 400, { error: { code: 'bad_request', message: 'doc is identity, soul or memory' } })

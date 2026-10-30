@@ -20,10 +20,10 @@ import { DOCS_URL, ISSUES_URL } from './panels.ts'
 import { setPrefs, usePrefs } from './prefs.ts'
 
 const SITE_URL = 'https://wevvy.in/'
-const DISCUSS_URL = 'https://github.com/nano-muse/nanoMuse/discussions'
+const DISCUSS_URL = 'https://github.com/nano-muse/ceis/discussions'
 /** The privacy policy as every client links it (the relay, the web console and the phones agree). */
 const PRIVACY_URL = 'https://wevvy.in/privacy/'
-const LICENSE_URL = 'https://github.com/nano-muse/nanoMuse/blob/main/LICENSE'
+const LICENSE_URL = 'https://github.com/nano-muse/ceis/blob/main/LICENSE'
 
 function Switch({ checked, onChange, label, disabled }: { checked: boolean; onChange(next: boolean): void; label: string; disabled?: boolean }): ReactNode {
   return h('button', { type: 'button', role: 'switch', className: 'nm-switch', 'aria-checked': checked, 'aria-label': label, disabled, onClick: () => onChange(!checked) })

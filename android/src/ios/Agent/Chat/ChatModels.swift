@@ -78,15 +78,15 @@ final class ChatMessage: Identifiable, ObservableObject {
     var lastSourceSortOrder: Int?
     /// Links back to the QueuedPrompt so we can withdraw it.
     var queuedPromptId: UUID?
-    /// nanoMuse: C8 — the device this row was written on when it came down through account sync
+    /// ceis: C8 — the device this row was written on when it came down through account sync
     /// (the bubble's "From {device}" caption); nil for this phone's own rows.
-    var nmFromDevice: String? // nanoMuse:
-    /// nanoMuse: a routine sent this user row (the daily feed, a check-in, a routine of the person's):
-    /// the chat shows it as one quiet line, not a bubble in their voice (NanoMuseRoutineWakes).
-    var nmRoutine: NanoMuseRoutineWakes.Wake? // nanoMuse:
-    /// nanoMuse: C9 — the device at work on this conversation, shown as "{device} is working…"
-    /// under this row while it is the last one and a remote user line (NanoMusePresence).
-    @Published var nmWorkingDevice: String? // nanoMuse:
+    var nmFromDevice: String? // ceis:
+    /// ceis: a routine sent this user row (the daily feed, a check-in, a routine of the person's):
+    /// the chat shows it as one quiet line, not a bubble in their voice (CeisRoutineWakes).
+    var nmRoutine: CeisRoutineWakes.Wake? // ceis:
+    /// ceis: C9 — the device at work on this conversation, shown as "{device} is working…"
+    /// under this row while it is the last one and a remote user line (CeisPresence).
+    @Published var nmWorkingDevice: String? // ceis:
     let timestamp = Date()
 
     init(role: ChatMessageRole, content: String, blocks: [AssistantBlock] = [], isQueued: Bool = false) {

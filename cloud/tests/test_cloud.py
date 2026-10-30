@@ -1601,7 +1601,7 @@ def test_code_mail_is_english_only_and_ceis_branded():
     assert "1 2 3 4 5 6" in parts["text/html"] and "10 minutes" in parts["text/html"]
     assert "<script" not in parts["text/html"]
     assert not re.search(r"[一-鿿]", parts["text/plain"] + parts["text/html"])
-    assert "nanomuse" not in parts["text/plain"].lower() + parts["text/html"].lower()
+    assert "ceis" not in parts["text/plain"].lower() + parts["text/html"].lower()
 
 
 async def test_privileged_domain_starts_with_the_bigger_allowance():

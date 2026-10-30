@@ -318,7 +318,7 @@ struct AIChatView: View {
     }
 
     @State private var floatingBarHeight: CGFloat = 0
-    @StateObject private var nmComposer = NanoMuseComposerWatch() // nanoMuse: rebuilds the composer column when it stops laying out (the "lost keyboard"), and keeps the evidence for the check page
+    @StateObject private var nmComposer = CeisComposerWatch() // ceis: rebuilds the composer column when it stops laying out (the "lost keyboard"), and keeps the evidence for the check page
     @State private var showFileBrowser = false
     // [T-browser-download-ux-v2] Downloads panel + "Show in Files" locate target.
     @State private var showDownloadsPanel = false
@@ -458,9 +458,9 @@ struct AIChatView: View {
     /// Session being edited via the title-pill tap. Drives the SessionEditSheet.
     @State private var titlePillEditSession: ChatSession?
     /// Default chat title for sessions without a generated title. Sourced
-    /// from SOUL.md (`name`), falls back to "nanoMuse". Refreshed on .soulMdChanged.
+    /// from SOUL.md (`name`), falls back to "ceis". Refreshed on .soulMdChanged.
     @State private var soulName: String = SoulStore.cachedMetadata.name.isEmpty
-        ? "nanoMuse" : SoulStore.cachedMetadata.name
+        ? "ceis" : SoulStore.cachedMetadata.name
 
     /// True when any sheet or fullScreenCover is presented (suppress auto-focus to avoid keyboard bugs).
     private var hasOverlayPresented: Bool {
@@ -522,15 +522,15 @@ struct AIChatView: View {
                             }
                     }
                 }
-                // nanoMuse: upstream's `.overlay(alignment: .bottom) { ZStack … }` is one link of the chain,
-                // NanoMuseComposerHost (NanoMuseChatModifiers.swift): the composer column lies over the
+                // ceis: upstream's `.overlay(alignment: .bottom) { ZStack … }` is one link of the chain,
+                // CeisComposerHost (CeisChatModifiers.swift): the composer column lies over the
                 // list's bottom edge, above the shell's bottom bar (`nmBottomOverlay`), and the list's
                 // content scrolls under both with an inset of the column's height (`nmColumnHeight`);
                 // the popup layer stands on the column's top edge. 0.1.40 to 1.0.3 had the column as a
                 // row under a shorter list, which left nothing behind the bar's glass. Build 9 overflowed
                 // the stack in this body's getter, so every link counts. The layout notes below are
                 // upstream's and hold again: the popup's bottom edge is the column's top edge, by layout.
-                .modifier(NanoMuseComposerHost(stack: nmComposerStack, popup: nmComposerPopup, overlay: nmBottomOverlay, columnHeight: $nmColumnHeight, fade: !vm.messages.isEmpty && !vm.isNearBottom)) // nanoMuse: was `.overlay(alignment: .bottom) {`
+                .modifier(CeisComposerHost(stack: nmComposerStack, popup: nmComposerPopup, overlay: nmBottomOverlay, columnHeight: $nmColumnHeight, fade: !vm.messages.isEmpty && !vm.isNearBottom)) // ceis: was `.overlay(alignment: .bottom) {`
                     // Tool preview + input bar stacked at the bottom.
                     // Both overlay on top of the message list for immersive scrolling.
                     //
@@ -580,8 +580,8 @@ struct AIChatView: View {
                     //      top edge. inputBarHeight here is just the input
                     //      bar (NOT including toolbar) so popup covers
                     //      toolbar when both visible.
-                    // nanoMuse: the VStack of that ZStack is `nmComposerColumn`, the popup and its catcher
-                    // `nmComposerPopup`; NanoMuseComposerHost lays the column over the list's bottom edge
+                    // ceis: the VStack of that ZStack is `nmComposerColumn`, the popup and its catcher
+                    // `nmComposerPopup`; CeisComposerHost lays the column over the list's bottom edge
                     // and the popup on the column. The list's bottom inset is the column's measured height.
                 // Collapse the expanded speech player on a tap anywhere in the chat
                 // area. Attached as a SIMULTANEOUS TapGesture directly on the content
@@ -666,10 +666,10 @@ struct AIChatView: View {
             }
         }
         .environment(\.chatSessionId, vm.sessionId)
-        // nanoMuse: the Muse header's ••• menu, the composer's expectation around a turn and the C9
-        // presence line, as one link (NanoMuseChatHooks) — four links here overflowed the stack in 0.1.38
-        .modifier(NanoMuseChatHooks(vm: vm, processing: vm.isProcessing, composer: nmComposer, readOnly: isReadOnly, perform: { nmPerform($0) }, voice: voiceVM, enterVoice: { nmEnterVoice() })) // nanoMuse:
-        .modifier(NavBarStyleModifier(topSafeAreaInset: $topSafeAreaInset, scrolledUp: !vm.messages.isEmpty && !vm.isNearBottom)) // nanoMuse: the side chat's scrim follows the list
+        // ceis: the Muse header's ••• menu, the composer's expectation around a turn and the C9
+        // presence line, as one link (CeisChatHooks) — four links here overflowed the stack in 0.1.38
+        .modifier(CeisChatHooks(vm: vm, processing: vm.isProcessing, composer: nmComposer, readOnly: isReadOnly, perform: { nmPerform($0) }, voice: voiceVM, enterVoice: { nmEnterVoice() })) // ceis:
+        .modifier(NavBarStyleModifier(topSafeAreaInset: $topSafeAreaInset, scrolledUp: !vm.messages.isEmpty && !vm.isNearBottom)) // ceis: the side chat's scrim follows the list
         .navigationBarTitleDisplayMode(.inline)
         // [T-ios-navbar-toolbar-host] The ENTIRE toolbar now lives inside an
         // equatable-gated host child. Root cause of the mid-streaming "..."
@@ -1197,8 +1197,8 @@ struct AIChatView: View {
             inputBarHeightDebounce?.cancel()
             inputBarHeightDebounce = nil
             AppLogger(category: "InputBarLayout").info("inputBarHeight re-arm seed on appear (was \(inputBarHeight))")
-            nmComposer.visible = true // nanoMuse: the composer watch only acts while the chat is on screen
-            if !isReadOnly { nmComposer.expect("the chat appeared") } // nanoMuse: a composer must report a height within a second, or the column is rebuilt
+            nmComposer.visible = true // ceis: the composer watch only acts while the chat is on screen
+            if !isReadOnly { nmComposer.expect("the chat appeared") } // ceis: a composer must report a height within a second, or the column is rebuilt
             vm.sessionId = sessionId
             vm.draftId = draftId
             vm.remoteDeviceId = remoteDeviceId
@@ -1318,7 +1318,7 @@ struct AIChatView: View {
         }
         .onDisappear {
             isChatViewVisible = false
-            nmComposer.visible = false // nanoMuse: a host torn down because the chat left is not a failure
+            nmComposer.visible = false // ceis: a host torn down because the chat left is not a failure
             // [T-voice-inputbar-collapse-selfheal] The health probe must not
             // outlive the view — its report would describe a composer that no
             // longer exists.
@@ -1452,10 +1452,10 @@ struct AIChatView: View {
                         AppLogger(category: "InputBarLayout").info("[InputBarHealth] OK after foreground — composer re-reported geometry (h=\(latestInputBarFrameH) committed=\(inputBarHeight))")
                     } else {
                         AppLogger(category: "InputBarLayout").error("[InputBarHealth] STALLED — no geometry callback 900ms after foreground. committed=\(inputBarHeight) latest=\(latestInputBarFrameH) lastReport=\(String(format: "%.1f", age))s ago voice=\(voiceInputActive) editing=\(voiceVM.isEditingTranscript) seeded=\(didSeedInputBarHeight). The composer host is not laying out; expect a blank bottom area. Leaving and re-entering the session rebuilds it.")
-                        nmComposer.stalled() // nanoMuse: the rebuild upstream only describes — if the host really is gone, NanoMuseComposerWatch re-creates it
+                        nmComposer.stalled() // ceis: the rebuild upstream only describes — if the host really is gone, CeisComposerWatch re-creates it
                     }
                 }
-                nmComposer.sceneActive() // nanoMuse: and a plain check a beat after every foreground
+                nmComposer.sceneActive() // ceis: and a plain check a beat after every foreground
                 // [T-voice-bg-fg-gap] Foreground reseal: if we return to a
                 // voice-mode-not-editing state, no responder should be armed.
                 // Releasing here is a no-op when nothing is focused and clears
@@ -1907,18 +1907,18 @@ struct AIChatView: View {
         )
     }
 
-    // nanoMuse: one of the Muse header's menu entries, the same paths as the "…" menu above.
-    private func nmPerform(_ action: NanoMuseChatAction) { // nanoMuse:
-        switch action { // nanoMuse:
-        case .newChat: requestNewChatFromMenu() // nanoMuse:
-        case .model: showModelPicker = true // nanoMuse:
-        case .clearChat: showClearChatConfirm = true // nanoMuse:
-        case .terminal: showTerminal = true // nanoMuse:
-        case .browser: showBrowserSheet = true // nanoMuse:
-        case .files: showFileBrowser = true // nanoMuse:
-        case .tokenUsage: showTokenUsage = true // nanoMuse:
-        } // nanoMuse:
-    } // nanoMuse:
+    // ceis: one of the Muse header's menu entries, the same paths as the "…" menu above.
+    private func nmPerform(_ action: CeisChatAction) { // ceis:
+        switch action { // ceis:
+        case .newChat: requestNewChatFromMenu() // ceis:
+        case .model: showModelPicker = true // ceis:
+        case .clearChat: showClearChatConfirm = true // ceis:
+        case .terminal: showTerminal = true // ceis:
+        case .browser: showBrowserSheet = true // ceis:
+        case .files: showFileBrowser = true // ceis:
+        case .tokenUsage: showTokenUsage = true // ceis:
+        } // ceis:
+    } // ceis:
 
     // MARK: - New Chat (menu entry)
 
@@ -2017,13 +2017,13 @@ struct AIChatView: View {
         // a fix of it: the top-crop of the snapshot itself is UIKit-level and
         // out of SwiftUI's reach.
         let cap = max(120, UIScreen.main.bounds.width - 140)
-        if NanoMuseShellPrefs.museHeader { // nanoMuse: face · name · status line instead of the title stack
-            NanoMuseHeaderTitle( // nanoMuse:
-                vm: vm, soulName: soulName, // nanoMuse:
-                modelName: SessionModelDisplay(store: configStore, draftGroupId: vm.initialGroupId).displayName(for: vm.sessionId) // nanoMuse:
-            ) { showModelPicker = true } // nanoMuse: the text column keeps the model picker reachable
-            .frame(maxWidth: cap) // nanoMuse:
-        } else if #available(iOS 19, *) { // nanoMuse: upstream title unchanged below
+        if CeisShellPrefs.museHeader { // ceis: face · name · status line instead of the title stack
+            CeisHeaderTitle( // ceis:
+                vm: vm, soulName: soulName, // ceis:
+                modelName: SessionModelDisplay(store: configStore, draftGroupId: vm.initialGroupId).displayName(for: vm.sessionId) // ceis:
+            ) { showModelPicker = true } // ceis: the text column keeps the model picker reachable
+            .frame(maxWidth: cap) // ceis:
+        } else if #available(iOS 19, *) { // ceis: upstream title unchanged below
             titleView
                 .frame(maxWidth: cap)
         } else {
@@ -2123,7 +2123,7 @@ struct AIChatView: View {
         // when one exists (auto-generated or user-renamed). Tap opens the
         // same SessionEditSheet used from the home screen so users can
         // rename / re-categorize without leaving the chat. Falls back to
-        // the SOUL.md `name` (or "nanoMuse") for draft sessions or before a
+        // the SOUL.md `name` (or "ceis") for draft sessions or before a
         // title has been generated.
         let sessionTitle: String? = (titlePillSession?.title?.trimmingCharacters(in: .whitespacesAndNewlines))
             .flatMap { $0.isEmpty ? nil : $0 }
@@ -2160,7 +2160,7 @@ struct AIChatView: View {
         // 2026-05-20 tightening overlapped row 2 into the title's line box by
         // 8pt — more than the 13pt font's entire descender zone (~3.1pt), so
         // any title containing g/p/y/z visually fused with the model pill
-        // (only descender-less titles like "nanoMuse" hid it). -3 keeps a ~2pt
+        // (only descender-less titles like "ceis" hid it). -3 keeps a ~2pt
         // visible gap for descender titles. HEIGHT-NEUTRAL: the 5pt spent
         // here is reclaimed inside row 2 (provider-row bottom clearance
         // 4 → 1 and group vertical padding 3 → 2 on legacy), so the stack's
@@ -2218,7 +2218,7 @@ struct AIChatView: View {
                     .padding(.top, legacyLayout ? 0 : 2)
                     .onReceive(NotificationCenter.default.publisher(for: .soulMdChanged)) { _ in
                         let n = SoulStore.cachedMetadata.name
-                        soulName = n.isEmpty ? "nanoMuse" : n
+                        soulName = n.isEmpty ? "ceis" : n
                     }
             }
             .buttonStyle(.plain)
@@ -2489,7 +2489,7 @@ struct AIChatView: View {
                     || next?.title != titlePillSession?.title
                     || next?.category != titlePillSession?.category {
                     // Direct replace — animating the toolbar title makes the
-                    // old "nanoMuse" string slide before the real title swaps
+                    // old "ceis" string slide before the real title swaps
                     // in, which looks broken. SwiftUI's default crossfade
                     // for non-animated text changes is what we want.
                     titlePillSession = next
@@ -2667,11 +2667,11 @@ struct AIChatView: View {
                     screenshotPreview = ChatScreenshotPreview(image: image)
                 },
                 maxContentWidth: maxContentWidth ?? 0,
-                floatingBarHeight: 0, // nanoMuse: the tool strip is part of the composer column, measured with it (NanoMuseComposerHost)
-                inputBarHeight: nmColumnHeight + nmBottomOverlay, // nanoMuse: the column lies over the list's bottom edge and the shell's bottom bar under it; the rows scroll under both and the last one stops above the column
-                topOverlay: nmTopOverlay // nanoMuse: the shell's Muse header over the list's top edge; the rows scroll under it and start below it
+                floatingBarHeight: 0, // ceis: the tool strip is part of the composer column, measured with it (CeisComposerHost)
+                inputBarHeight: nmColumnHeight + nmBottomOverlay, // ceis: the column lies over the list's bottom edge and the shell's bottom bar under it; the rows scroll under both and the last one stops above the column
+                topOverlay: nmTopOverlay // ceis: the shell's Muse header over the list's top edge; the rows scroll under it and start below it
             )
-            // nanoMuse: with the shell's header over the chat, the list runs up under it (and the
+            // ceis: with the shell's header over the chat, the list runs up under it (and the
             // status bar, which UIKit's own safe area handles) and keeps its rows down by
             // `topOverlay`, so they dissolve under the header's scrim instead of ending at a hard
             // edge under the face. A `safeAreaInset` on a UIKit view shortens the view, unlike a
@@ -2736,14 +2736,14 @@ struct AIChatView: View {
                     Button {
                         vm.forceScrollToBottom.send()
                     } label: {
-                        scrollFloatingButtonLabel("chevron.down", ink: NanoMuseShellPrefs.shell) // nanoMuse: in the shell the scroll-to-latest disc is the chat's ink, as the send disc (Android #331)
+                        scrollFloatingButtonLabel("chevron.down", ink: CeisShellPrefs.shell) // ceis: in the shell the scroll-to-latest disc is the chat's ink, as the send disc (Android #331)
                     }
                     .transition(.opacity.combined(with: .scale(scale: 0.8)))
                 }
                 .padding(.trailing, 4)
                 .frame(maxWidth: maxContentWidth ?? .infinity, alignment: .trailing)
                 .padding(.horizontal, 12)
-                .padding(.bottom, nmColumnHeight + nmBottomOverlay + 12) // nanoMuse: was inputBarHeight + (hasFloatingPreview ? 80 : 12); the column and the shell's bottom bar lie over the list's bottom edge
+                .padding(.bottom, nmColumnHeight + nmBottomOverlay + 12) // ceis: was inputBarHeight + (hasFloatingPreview ? 80 : 12); the column and the shell's bottom bar lie over the list's bottom edge
                 .animation(.easeInOut(duration: 0.2), value: vm.isNearBottom)
                 .animation(.easeInOut(duration: 0.2), value: vm.isAtFirstTurn)
                 .animation(.easeInOut(duration: 0.2), value: hasFloatingPreview)
@@ -2763,7 +2763,7 @@ struct AIChatView: View {
             .padding(.trailing, 4)
             .frame(maxWidth: maxContentWidth ?? .infinity, alignment: .trailing)
             .padding(.horizontal, 12)
-            .padding(.bottom, nmColumnHeight + nmBottomOverlay + 12 + 92) // nanoMuse: was inputBarHeight + (hasFloatingPreview ? 80 : 12) + 92; over the column and the shell's bottom bar, above the scroll buttons
+            .padding(.bottom, nmColumnHeight + nmBottomOverlay + 12 + 92) // ceis: was inputBarHeight + (hasFloatingPreview ? 80 : 12) + 92; over the column and the shell's bottom bar, above the scroll buttons
             .animation(.easeInOut(duration: 0.2), value: hasFloatingPreview)
             .capsuleProtectedFrame("downloadButton")
         }
@@ -2771,16 +2771,16 @@ struct AIChatView: View {
 
     /// Shared label style for the floating scroll buttons (up / down), matching
     /// the original scroll-to-bottom button look.
-    private func scrollFloatingButtonLabel(_ systemName: String, ink: Bool = false) -> some View { // nanoMuse: `ink` draws the disc in NanoMuseTones.ink with the glyph in the canvas colour
+    private func scrollFloatingButtonLabel(_ systemName: String, ink: Bool = false) -> some View { // ceis: `ink` draws the disc in CeisTones.ink with the glyph in the canvas colour
         Image(systemName: systemName)
             .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(ink ? AnyShapeStyle(NanoMuseTones.onInk) : AnyShapeStyle(HierarchicalShapeStyle.secondary)) // nanoMuse:
+            .foregroundStyle(ink ? AnyShapeStyle(CeisTones.onInk) : AnyShapeStyle(HierarchicalShapeStyle.secondary)) // ceis:
             .frame(width: 36, height: 36)
-            .background { if ink { NanoMuseTones.ink.clipShape(Circle()) } else { ScrollToBottomBackground().clipShape(Circle()) } } // nanoMuse:
+            .background { if ink { CeisTones.ink.clipShape(Circle()) } else { ScrollToBottomBackground().clipShape(Circle()) } } // ceis:
             // Border + shadow give the near-opaque disc its edge on a white
             // page — at 0.25/0.12 the button had no readable outline over
             // plain reply text. [T-ios-scrollbtn-invisible-lightmode]
-            .overlay(Circle().stroke(Color.gray.opacity(ink ? 0 : 0.35), lineWidth: 0.5)) // nanoMuse: the ink disc needs no edge
+            .overlay(Circle().stroke(Color.gray.opacity(ink ? 0 : 0.35), lineWidth: 0.5)) // ceis: the ink disc needs no edge
             .shadow(color: .black.opacity(0.18), radius: 5, y: 2)
     }
 
@@ -2812,8 +2812,8 @@ struct AIChatView: View {
             }, onTakeoverDone: {
                 vm.resumeFromBrowserTakeover()
             })
-                .frame(maxWidth: nmPill ? NanoMuseColumn.pillWidth(for: hSizeClass, otherwise: nil) : maxContentWidth) // nanoMuse: in the shell the bar is the composer pill's width
-                .padding(.horizontal, nmPill ? 16 : 12) // nanoMuse: and keeps its 16 pt margins
+                .frame(maxWidth: nmPill ? CeisColumn.pillWidth(for: hSizeClass, otherwise: nil) : maxContentWidth) // ceis: in the shell the bar is the composer pill's width
+                .padding(.horizontal, nmPill ? 16 : 12) // ceis: and keeps its 16 pt margins
                 // [T-ios-geometry-observer-crash] onGeometryChange replaces the
                 // GeometryReader+onAppear+onChange scaffold: writing state from
                 // onChange(of: geo.*) inside the geometry-observer path re-drives
@@ -3381,14 +3381,14 @@ struct AIChatView: View {
         }, isVoiceActive: voiceInputActive)
     }
 
-    // nanoMuse: the voice panel's keyboard button — the same path as the mic/keyboard toggle
+    // ceis: the voice panel's keyboard button — the same path as the mic/keyboard toggle
     // (the transcript stays in the field), then the field takes focus once the panel has
     // released its own responder (InlineVoiceInputView ends editing on the next runloop turn).
-    private func nmBackToTyping() { // nanoMuse:
-        voiceVM.reset(clearTranscript: false) // nanoMuse:
-        withAnimation(.easeInOut(duration: 0.2)) { voiceInputActive = false } // nanoMuse:
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { inputFocused = true } // nanoMuse:
-    } // nanoMuse:
+    private func nmBackToTyping() { // ceis:
+        voiceVM.reset(clearTranscript: false) // ceis:
+        withAnimation(.easeInOut(duration: 0.2)) { voiceInputActive = false } // ceis:
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { inputFocused = true } // ceis:
+    } // ceis:
 
     /// Send / Enqueue / Stop circular button.
     ///
@@ -3403,8 +3403,8 @@ struct AIChatView: View {
             Button { performEnqueue() } label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .font(.system(size: 34))
-                    // nanoMuse: the template's blue send disc
-                    .foregroundStyle(NanoMuseShellPrefs.shell ? NanoMuseTones.send : ChatColors.sendButton)
+                    // ceis: the template's blue send disc
+                    .foregroundStyle(CeisShellPrefs.shell ? CeisTones.send : ChatColors.sendButton)
             }
             .keyboardShortcut(.return, modifiers: .command)
             .accessibilityLabel(Text("Add to queue", comment: "VoiceOver label for the send button while a reply is generating"))
@@ -3421,7 +3421,7 @@ struct AIChatView: View {
             Button { performSend() } label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .font(.system(size: 34))
-                    .foregroundStyle(NanoMuseShellPrefs.shell ? (canSend ? NanoMuseTones.send : NanoMuseTones.send.opacity(0.35)) : (canSend ? ChatColors.sendButton : ChatColors.sendButtonDisabled)) // nanoMuse:
+                    .foregroundStyle(CeisShellPrefs.shell ? (canSend ? CeisTones.send : CeisTones.send.opacity(0.35)) : (canSend ? ChatColors.sendButton : ChatColors.sendButtonDisabled)) // ceis:
             }
             .disabled(!canSend)
             .keyboardShortcut(.return, modifiers: .command)
@@ -3448,7 +3448,7 @@ struct AIChatView: View {
                     onPasteImage: { image in vm.addImageAttachment(image) },
                     onPasteFile: { url in vm.addFileAttachment(from: url) },
                     conversationContext: { voiceCorrectionContext(from: vm.messages) },
-                    onBackToTyping: { nmBackToTyping() } // nanoMuse: the panel's keyboard button
+                    onBackToTyping: { nmBackToTyping() } // ceis: the panel's keyboard button
                 )
             )
         }
@@ -3491,43 +3491,43 @@ struct AIChatView: View {
             .padding(.bottom, 10)
             return AnyView(waveform)
         }
-        let field = composerTextField // nanoMuse: built once, for this bar and for the Muse pill
+        let field = composerTextField // ceis: built once, for this bar and for the Muse pill
         return AnyView(composerBody(field: field, topPadding: topPadding))
     }
 
-    // nanoMuse: whether the composer is Muse's pill (the shell on) or the OpenMinis bar.
-    private var nmPill: Bool { NanoMuseShellPrefs.shell } // nanoMuse:
+    // ceis: whether the composer is Muse's pill (the shell on) or the OpenMinis bar.
+    private var nmPill: Bool { CeisShellPrefs.shell } // ceis:
 
-    // nanoMuse: the shell's floating bottom bar under this chat (0 without the shell, or while the
+    // ceis: the shell's floating bottom bar under this chat (0 without the shell, or while the
     // keyboard has it away): the composer column stands this much above the bottom edge.
-    @Environment(\.nmBottomOverlay) private var nmBottomOverlay // nanoMuse:
-    // nanoMuse: the shell's Muse header over this chat's top edge (0 without the shell and in a
+    @Environment(\.nmBottomOverlay) private var nmBottomOverlay // ceis:
+    // ceis: the shell's Muse header over this chat's top edge (0 without the shell and in a
     // pushed side chat): the message list extends under it and keeps its rows this much down.
-    @Environment(\.nmTopOverlay) private var nmTopOverlay // nanoMuse:
-    // nanoMuse: the composer column's height as NanoMuseComposerHost measured it; with the bar it is
+    @Environment(\.nmTopOverlay) private var nmTopOverlay // ceis:
+    // ceis: the composer column's height as CeisComposerHost measured it; with the bar it is
     // the list's bottom inset and the lift of the scroll buttons.
-    @State private var nmColumnHeight: CGFloat = 0 // nanoMuse:
+    @State private var nmColumnHeight: CGFloat = 0 // ceis:
 
-    // nanoMuse: the composer column — the cards, the tool strip, the input bar — the VStack of
+    // ceis: the composer column — the cards, the tool strip, the input bar — the VStack of
     // upstream's ZStack from the message list's `.overlay(alignment: .bottom)`, hosted by
-    // NanoMuseComposerHost as a row under the list since 0.1.40. The comments on its layout stay
+    // CeisComposerHost as a row under the list since 0.1.40. The comments on its layout stay
     // at the host's link in `body`. An AnyView on purpose: this is the heaviest subtree of the
     // chat's body, and boxed it is one pointer in the body's value and one leaf in its type
-    // (NanoMuseChatModifiers.swift says why).
-    private var nmComposerStack: AnyView { // nanoMuse:
-        AnyView(nmComposerColumn) // nanoMuse:
-    } // nanoMuse:
+    // (CeisChatModifiers.swift says why).
+    private var nmComposerStack: AnyView { // ceis:
+        AnyView(nmComposerColumn) // ceis:
+    } // ceis:
 
-    // nanoMuse: the `/` and `@` popup with its tap-outside catcher — the rest of that ZStack —
+    // ceis: the `/` and `@` popup with its tap-outside catcher — the rest of that ZStack —
     // which the host lays over the list's bottom edge, so the popup stands on the column's top.
-    private var nmComposerPopup: AnyView { // nanoMuse:
-        AnyView(nmPopupLayer) // nanoMuse:
-    } // nanoMuse:
+    private var nmComposerPopup: AnyView { // ceis:
+        AnyView(nmPopupLayer) // ceis:
+    } // ceis:
 
-    @ViewBuilder private var nmComposerColumn: some View { // nanoMuse:
+    @ViewBuilder private var nmComposerColumn: some View { // ceis:
         VStack(spacing: 0) {
-            // nanoMuse: virtual cards for this chat (avatar price/takes/share, the name chooser).
-            NanoMuseChatCardsHost(vm: vm)
+            // ceis: virtual cards for this chat (avatar price/takes/share, the name chooser).
+            CeisChatCardsHost(vm: vm)
                 .frame(maxWidth: maxContentWidth)
             floatingToolPreview
                 .shadow(color: Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(white: 0, alpha: 0.25) : UIColor(white: 0, alpha: 0) }), radius: 6, x: 0, y: 4)
@@ -3541,16 +3541,16 @@ struct AIChatView: View {
             inputBar
             #endif
         }
-        // nanoMuse: the probe tells the watch whether this column is really in a window and how
-        // tall it is; a tick on `.id` rebuilds the whole column when it is not (NanoMuseComposerWatch).
-        .background(NanoMuseComposerProbe(watch: nmComposer)) // nanoMuse:
-        .id(nmComposer.rebuildTick) // nanoMuse:
+        // ceis: the probe tells the watch whether this column is really in a window and how
+        // tall it is; a tick on `.id` rebuilds the whole column when it is not (CeisComposerWatch).
+        .background(CeisComposerProbe(watch: nmComposer)) // ceis:
+        .id(nmComposer.rebuildTick) // ceis:
         // Register the composer (tool preview + input bar) as a
         // region the global speech capsule must not cover.
         .capsuleProtectedFrame("inputBar")
-    } // nanoMuse:
+    } // ceis:
 
-    @ViewBuilder private var nmPopupLayer: some View { // nanoMuse:
+    @ViewBuilder private var nmPopupLayer: some View { // ceis:
         ZStack(alignment: .bottom) {
             // Tap-outside catcher placed UNDER the popup (declared
             // first → lower z-order). When the popup is visible,
@@ -3566,81 +3566,81 @@ struct AIChatView: View {
                         else if vm.showMentionMenu { vm.dismissMentionMenu() }
                     }
             }
-            inputPopupOverlay // nanoMuse: no bottom padding — the layer's bottom edge is the column's top edge
+            inputPopupOverlay // ceis: no bottom padding — the layer's bottom edge is the column's top edge
         }
-    } // nanoMuse:
+    } // ceis:
 
-    // nanoMuse: the pill's rows. Text mode: plus · field · mic-or-send on one row (the field grows
+    // ceis: the pill's rows. Text mode: plus · field · mic-or-send on one row (the field grows
     // to several lines on its own). Voice mode and the legacy dictation band keep upstream's panel
     // and its bottom row inside the same pill, so the keyboard button, read-aloud and send stay.
     // Editing a past message: the exit chip above the row, as Android shows it above the field.
     @ViewBuilder
-    private var nmPillRows: some View { // nanoMuse:
-        if voiceInputActive || speechManager.state == .recording { // nanoMuse:
-            inputFieldOrWaveform // nanoMuse:
-            inputBottomRow // nanoMuse:
-                .padding(.horizontal, 12) // nanoMuse:
-                .padding(.bottom, 10) // nanoMuse:
-        } else { // nanoMuse:
-            if vm.editingMessageIndex != nil { // nanoMuse:
-                HStack { editExitButton; Spacer() } // nanoMuse:
-                    .padding(.horizontal, 12) // nanoMuse:
-                    .padding(.top, 8) // nanoMuse:
-            } // nanoMuse:
-            NanoMuseComposerPill( // nanoMuse:
-                hasContent: hasMovableShareContent, // nanoMuse: text or an attachment
-                isProcessing: vm.isProcessing, // nanoMuse:
-                canSend: canSend, // nanoMuse:
-                canEnqueue: canEnqueue, // nanoMuse:
-                onCamera: { showCamera = true }, // nanoMuse:
-                onPhotos: { showPhotoPicker = true }, // nanoMuse:
-                onFile: { showDocumentPicker = true }, // nanoMuse:
-                onPasteImage: { image in vm.addImageAttachment(image) }, // nanoMuse: the pill's field is SwiftUI's and takes no image paste; the plus menu does
-                onCommands: { vm.showSlashMenuOverInput(); inputFocused = true }, // nanoMuse:
-                onMic: { nmEnterVoice() }, // nanoMuse:
-                onSend: { performSend() }, // nanoMuse:
-                onEnqueue: { performEnqueue() }, // nanoMuse:
-                onStop: { vm.cancel() } // nanoMuse:
-            ) { // nanoMuse:
-                nmPillField // nanoMuse:
-            } // nanoMuse:
-        } // nanoMuse:
-    } // nanoMuse:
+    private var nmPillRows: some View { // ceis:
+        if voiceInputActive || speechManager.state == .recording { // ceis:
+            inputFieldOrWaveform // ceis:
+            inputBottomRow // ceis:
+                .padding(.horizontal, 12) // ceis:
+                .padding(.bottom, 10) // ceis:
+        } else { // ceis:
+            if vm.editingMessageIndex != nil { // ceis:
+                HStack { editExitButton; Spacer() } // ceis:
+                    .padding(.horizontal, 12) // ceis:
+                    .padding(.top, 8) // ceis:
+            } // ceis:
+            CeisComposerPill( // ceis:
+                hasContent: hasMovableShareContent, // ceis: text or an attachment
+                isProcessing: vm.isProcessing, // ceis:
+                canSend: canSend, // ceis:
+                canEnqueue: canEnqueue, // ceis:
+                onCamera: { showCamera = true }, // ceis:
+                onPhotos: { showPhotoPicker = true }, // ceis:
+                onFile: { showDocumentPicker = true }, // ceis:
+                onPasteImage: { image in vm.addImageAttachment(image) }, // ceis: the pill's field is SwiftUI's and takes no image paste; the plus menu does
+                onCommands: { vm.showSlashMenuOverInput(); inputFocused = true }, // ceis:
+                onMic: { nmEnterVoice() }, // ceis:
+                onSend: { performSend() }, // ceis:
+                onEnqueue: { performEnqueue() }, // ceis:
+                onStop: { vm.cancel() } // ceis:
+            ) { // ceis:
+                nmPillField // ceis:
+            } // ceis:
+        } // ceis:
+    } // ceis:
 
-    // nanoMuse: the field alone — the pill adds its own insets. SwiftUI's own TextField since 0.1.38
-    // (NanoMuseComposerField): no representable host under the pill that could vanish. The handlers
+    // ceis: the field alone — the pill adds its own insets. SwiftUI's own TextField since 0.1.38
+    // (CeisComposerField): no representable host under the pill that could vanish. The handlers
     // are the ones composerTextField wires; the caret is the end of the text, the scroll flags are
     // an estimate (the field tells no more), the iPad resize height still applies.
-    private var nmPillField: AnyView { // nanoMuse:
-        AnyView( // nanoMuse:
-            NanoMuseComposerField( // nanoMuse:
-                text: inputTextBinding, // nanoMuse:
-                isFocused: $inputFocused, // nanoMuse:
-                placeholder: AppLocalized("Message"), // nanoMuse:
-                fixedHeight: composerTextHeight, // nanoMuse:
-                onReturn: { handleReturnKey() }, // nanoMuse:
-                onCaret: { handleCaretChange($0) }, // nanoMuse:
-                onArrowUp: { handleArrowUp() }, // nanoMuse:
-                onArrowDown: { handleArrowDown() }, // nanoMuse:
-                onTab: { handleTabKey() }, // nanoMuse:
-                onOverflow: { over in inputIsScrollable = over; inputAtScrollBottom = !over } // nanoMuse:
-            ) // nanoMuse:
-            // nanoMuse: never below one line (NanoMuseComposerWatch.fieldFloor is the natural one-line height).
-            .frame(minHeight: NanoMuseComposerWatch.fieldFloor) // nanoMuse:
-        ) // nanoMuse:
-    } // nanoMuse:
+    private var nmPillField: AnyView { // ceis:
+        AnyView( // ceis:
+            CeisComposerField( // ceis:
+                text: inputTextBinding, // ceis:
+                isFocused: $inputFocused, // ceis:
+                placeholder: AppLocalized("Message"), // ceis:
+                fixedHeight: composerTextHeight, // ceis:
+                onReturn: { handleReturnKey() }, // ceis:
+                onCaret: { handleCaretChange($0) }, // ceis:
+                onArrowUp: { handleArrowUp() }, // ceis:
+                onArrowDown: { handleArrowDown() }, // ceis:
+                onTab: { handleTabKey() }, // ceis:
+                onOverflow: { over in inputIsScrollable = over; inputAtScrollBottom = !over } // ceis:
+            ) // ceis:
+            // ceis: never below one line (CeisComposerWatch.fieldFloor is the natural one-line height).
+            .frame(minHeight: CeisComposerWatch.fieldFloor) // ceis:
+        ) // ceis:
+    } // ceis:
 
-    // nanoMuse: the pill's mic — the same switch into voice mode as MicButton's onTap.
-    private func nmEnterVoice() { // nanoMuse:
-        inputFocused = false // nanoMuse:
-        vm.voiceUsedInComposition = true // nanoMuse:
-        VoiceModePreference.shared.enteredFromText = true // nanoMuse:
-        withAnimation(.easeInOut(duration: 0.2)) { voiceInputActive = true } // nanoMuse:
-    } // nanoMuse:
+    // ceis: the pill's mic — the same switch into voice mode as MicButton's onTap.
+    private func nmEnterVoice() { // ceis:
+        inputFocused = false // ceis:
+        vm.voiceUsedInComposition = true // ceis:
+        VoiceModePreference.shared.enteredFromText = true // ceis:
+        withAnimation(.easeInOut(duration: 0.2)) { voiceInputActive = true } // ceis:
+    } // ceis:
 
     /// The multi-line text field itself, with every handler the composer wires. One
-    /// builder for the classic bar and the Muse pill. // nanoMuse: extracted from inputFieldOrWaveform
-    private var composerTextField: PastableTextView { // nanoMuse:
+    /// builder for the classic bar and the Muse pill. // ceis: extracted from inputFieldOrWaveform
+    private var composerTextField: PastableTextView { // ceis:
         PastableTextView(
             text: inputTextBinding,
             isFocused: $inputFocused,
@@ -3651,7 +3651,7 @@ struct AIChatView: View {
             // `%@` form ("Message %@ (@ to mention files)") as the lookup
             // key in Localizable.xcstrings, so translators get one
             // parameterized entry per locale instead of one per soul name.
-            placeholder: NanoMuseShellPrefs.shell ? AppLocalized("Message") : AppLocalized("Message \(soulName) (@ to mention files)"), // nanoMuse: Muse's short placeholder in the shell
+            placeholder: CeisShellPrefs.shell ? AppLocalized("Message") : AppLocalized("Message \(soulName) (@ to mention files)"), // ceis: Muse's short placeholder in the shell
             onPasteImage: { image in vm.addImageAttachment(image) },
             onPasteFile: { url in vm.addFileAttachment(from: url) },
             onReturnKey: handleReturnKey,
@@ -3825,15 +3825,15 @@ struct AIChatView: View {
                     .padding(.top, 8)
                 }
 
-                if nmPill { // nanoMuse: Muse's pill in the shell — one row, bare glyphs (Android: nmPill)
-                    nmPillRows // nanoMuse:
-                } else { // nanoMuse: the OpenMinis composer when the shell is off
+                if nmPill { // ceis: Muse's pill in the shell — one row, bare glyphs (Android: nmPill)
+                    nmPillRows // ceis:
+                } else { // ceis: the OpenMinis composer when the shell is off
                 inputFieldOrWaveform
 
                 inputBottomRow
                     .padding(.horizontal, 12)
                     .padding(.bottom, 10)
-                } // nanoMuse:
+                } // ceis:
             }
             .contentShape(RoundedRectangle(cornerRadius: 20))
             .onTapGesture { inputFocused = true }
@@ -3868,9 +3868,9 @@ struct AIChatView: View {
                     .padding(.trailing, 10)
                 }
             }
-            .modifier(ComposerSurface(pill: nmPill)) // nanoMuse: the flat grey capsule in the shell
-            .frame(maxWidth: nmPill ? NanoMuseColumn.pillWidth(for: hSizeClass, otherwise: nil) : maxContentWidth) // nanoMuse: in the shell the pill is the column less its margins on an iPad, so its edges meet the bubbles' and the bottom bar is its width
-            .padding(.horizontal, nmPill ? 16 : 12) // nanoMuse: Muse's 16 pt margins
+            .modifier(ComposerSurface(pill: nmPill)) // ceis: the flat grey capsule in the shell
+            .frame(maxWidth: nmPill ? CeisColumn.pillWidth(for: hSizeClass, otherwise: nil) : maxContentWidth) // ceis: in the shell the pill is the column less its margins on an iPad, so its edges meet the bubbles' and the bottom bar is its width
+            .padding(.horizontal, nmPill ? 16 : 12) // ceis: Muse's 16 pt margins
             .padding(.vertical, 8)
             // [T-ios-geometry-observer-crash] onGeometryChange replaces the
             // GeometryReader scaffold (async-renderer SIGTRAP — see the
@@ -3881,7 +3881,7 @@ struct AIChatView: View {
                 proxy.frame(in: .global)
             } action: { frame in
                 let newH = frame.size.height
-                nmComposer.geometry(height: newH) // nanoMuse: every sample, the zero ones included — a lasting 0 is the collapsed composer
+                nmComposer.geometry(height: newH) // ceis: every sample, the zero ones included — a lasting 0 is the collapsed composer
                 // [voice-inputbar-padding-zero] Guard against transient 0.
                 guard newH > 0 else { return }
 
@@ -4762,7 +4762,7 @@ struct AIChatView: View {
         speechManager.recognizedText = ""
         lastRecognizedLength = 0
         hasInjectedShareContent = false
-        nmComposer.expect("a message was sent") // nanoMuse: the composer must still be there a second after a send
+        nmComposer.expect("a message was sent") // ceis: the composer must still be there a second after a send
         // Send FIRST while inputText still holds the recognized text. Clearing the
         // voice transcript here (clearAndRearm) mirrors "" into inputText via the
         // onChange binding, so doing it before send() left send() with empty text
@@ -4784,7 +4784,7 @@ struct AIChatView: View {
     /// Max content width — unconstrained in compact (portrait iPhone),
     /// capped in regular (landscape / iPad) for readability.
     private var maxContentWidth: CGFloat? {
-        hSizeClass == .regular ? NanoMuseColumn.width : nil // nanoMuse: 760, the column the composer and the bottom bar share on an iPad (was 900)
+        hSizeClass == .regular ? CeisColumn.width : nil // ceis: 760, the column the composer and the bottom bar share on an iPad (was 900)
     }
 
 }
@@ -4814,25 +4814,25 @@ struct AIChatView: View {
 /// fill and BOTH shadows byte-for-byte, including the dark-mode-only top shadow
 /// that lifts the bar off the message list.
 private struct ComposerSurface: ViewModifier {
-    /// nanoMuse: Muse's pill in the shell: a glass capsule on iOS 26, a flat grey capsule
+    /// ceis: Muse's pill in the shell: a glass capsule on iOS 26, a flat grey capsule
     /// with a soft shadow below it (Android: MuseTones.bubble, 26 dp).
-    var pill = false // nanoMuse:
+    var pill = false // ceis:
 
     private var shape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: pill ? 26 : 20, style: .continuous) // nanoMuse: 26 for the pill
+        RoundedRectangle(cornerRadius: pill ? 26 : 20, style: .continuous) // ceis: 26 for the pill
     }
 
     func body(content: Content) -> some View {
-        if pill { // nanoMuse:
-            if #available(iOS 26.0, *) { // nanoMuse: the composer capsule of the Messages template is glass
+        if pill { // ceis:
+            if #available(iOS 26.0, *) { // ceis: the composer capsule of the Messages template is glass
                 content
                     .glassEffect(.regular, in: shape)
                     .clipShape(shape)
             } else {
-                content // nanoMuse:
-                    .background(shape.fill(NanoMuseTones.bubble)) // nanoMuse:
-                    .clipShape(shape) // nanoMuse:
-                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2) // nanoMuse: soft shadow matching Android
+                content // ceis:
+                    .background(shape.fill(CeisTones.bubble)) // ceis:
+                    .clipShape(shape) // ceis:
+                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2) // ceis: soft shadow matching Android
             }
         } else if #available(iOS 26.0, *) {
             content
@@ -5016,15 +5016,15 @@ private struct NavTitleFrameModifier: ViewModifier {
 
 private struct NavBarStyleModifier: ViewModifier {
     @Binding var topSafeAreaInset: CGFloat
-    /// nanoMuse: the list is scrolled away from the latest message (the scrim's second fade).
+    /// ceis: the list is scrolled away from the latest message (the scrim's second fade).
     var scrolledUp: Bool = false
-    /// nanoMuse: a side chat pushed from the Muse shell (set there); the main chat has no system bar.
+    /// ceis: a side chat pushed from the Muse shell (set there); the main chat has no system bar.
     @Environment(\.nmSystemBarScrim) private var systemBarScrim
 
     func body(content: Content) -> some View {
-        // nanoMuse: in the Muse shell the header is a top safe-area inset the list scrolls under,
+        // ceis: in the Muse shell the header is a top safe-area inset the list scrolls under,
         // so the content must keep the container's top inset; the shell takes the lower branch.
-        if #available(iOS 26, *), !NanoMuseShellPrefs.shell { // nanoMuse:
+        if #available(iOS 26, *), !CeisShellPrefs.shell { // ceis:
             // iOS 26: extend content behind nav bar so liquid-glass has
             // something to show through; the collection view's
             // contentInsetAdjustmentBehavior = .automatic keeps messages
@@ -5035,20 +5035,20 @@ private struct NavBarStyleModifier: ViewModifier {
         } else {
             // iOS 16–18: opaque navbar background
             content
-                // nanoMuse: a side chat pushed from the shell gets the main chat's scrim behind the
-                // system bar (NanoMuseHeaderScrim, docs/design.md): the bar's own background and
+                // ceis: a side chat pushed from the shell gets the main chat's scrim behind the
+                // system bar (CeisHeaderScrim, docs/design.md): the bar's own background and
                 // its hairline go, and a zero-height inset's background fades the canvas colour
                 // down over the rows, as the Muse header's does. Upstream's bar stays opaque.
                 // The content runs up under the bar as in the iOS 26 branch, so the rows have
                 // somewhere to fade; the bar is UIKit's, so the list's `.automatic` adjustment
                 // keeps the first row below it, as there.
-                .ignoresSafeArea(.container, edges: systemBarScrim ? Edge.Set.top : []) // nanoMuse:
-                .toolbarBackground(systemBarScrim ? Visibility.hidden : Visibility.visible, for: .navigationBar) // nanoMuse:
+                .ignoresSafeArea(.container, edges: systemBarScrim ? Edge.Set.top : []) // ceis:
+                .toolbarBackground(systemBarScrim ? Visibility.hidden : Visibility.visible, for: .navigationBar) // ceis:
                 .toolbarBackground(ChatColors.background, for: .navigationBar)
-                .safeAreaInset(edge: .top, spacing: 0) { // nanoMuse:
+                .safeAreaInset(edge: .top, spacing: 0) { // ceis:
                     if systemBarScrim {
                         Color.clear.frame(height: 0)
-                            .background { NanoMuseHeaderScrim(scrolledUp: scrolledUp).ignoresSafeArea(edges: .top) }
+                            .background { CeisHeaderScrim(scrolledUp: scrolledUp).ignoresSafeArea(edges: .top) }
                     }
                 }
                 .overlay(alignment: .top) {
@@ -5744,7 +5744,7 @@ private struct MoveToSessionSheet: View {
             }
         }
         .task {
-            sessions = NanoMuseSync.shared.visible(await ChatStore.shared.listSessions()) // nanoMuse: C12 — another account's chats stay hidden
+            sessions = CeisSync.shared.visible(await ChatStore.shared.listSessions()) // ceis: C12 — another account's chats stay hidden
         }
     }
 

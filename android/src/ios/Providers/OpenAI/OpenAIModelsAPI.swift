@@ -45,7 +45,7 @@ enum OpenAIModelsAPI {
         return enriched
     }
 
-    // nanoMuse: query https://chatgpt.com/backend-api/codex/models when an OAuth token is present (#475)
+    // ceis: query https://chatgpt.com/backend-api/codex/models when an OAuth token is present (#475)
     static func fetchModelsOAuth(accessToken: String?, accountId: String? = nil) async -> [LLMModel] {
         let token = (accessToken ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         guard !token.isEmpty,
@@ -61,7 +61,7 @@ enum OpenAIModelsAPI {
             request.setValue(accountId, forHTTPHeaderField: "Chatgpt-Account-Id")
         }
         do {
-            let (data, response) = try await NanoMuseProxy.session.data(for: request)
+            let (data, response) = try await CeisProxy.session.data(for: request)
             if let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode),
                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                let rows = json["models"] as? [[String: Any]] {
@@ -91,7 +91,7 @@ enum OpenAIModelsAPI {
     }
 
     private static func performFetch(_ request: URLRequest, filterOpenAIOnly: Bool = true) async throws -> [LLMModel] {
-        let (data, response) = try await NanoMuseProxy.session.data(for: request) // nanoMuse: Settings → Network
+        let (data, response) = try await CeisProxy.session.data(for: request) // ceis: Settings → Network
         let http = response as? HTTPURLResponse
         let statusCode = http?.statusCode ?? -1
 
@@ -218,7 +218,7 @@ private enum OpenAIModelsCache {
 
     private static var cacheDir: URL {
         FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("io.github.nanomuse.app.openai-models-cache", isDirectory: true)
+            .appendingPathComponent("io.github.ceis.app.openai-models-cache", isDirectory: true)
     }
 
     private static func cacheKey(for credential: String) -> String {

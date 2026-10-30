@@ -193,11 +193,11 @@ const EMPTY: Store = { connections: [], registrations: {} }
 
 declare module '@deepseek-ai/cordis' {
   interface Context {
-    ceisConnectors: NanomuseConnectors
+    ceisConnectors: CeisConnectors
   }
 }
 
-export default class NanomuseConnectors extends Service {
+export default class CeisConnectors extends Service {
   private store: Store = structuredClone(EMPTY)
   private readonly flows = new Map<string, Flow>()
   private readonly listeners = new Set<() => void>()

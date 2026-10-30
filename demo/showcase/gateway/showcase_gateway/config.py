@@ -240,7 +240,7 @@ class Settings:
             site_dir=_str("SITE_DIR"),
             cdn_dir=_str("CDN_DIR"),
             sessions_network=_str("SESSIONS_NETWORK", "ceis-sessions"),
-            image=_str("CEIS_IMAGE", "ghcr.io/nano-muse/nanoMuse:latest"),
+            image=_str("CEIS_IMAGE", "ghcr.io/nano-muse/ceis:latest"),
             internal_url=_str("INTERNAL_URL"),
             container_port=_int("CONTAINER_PORT", 8787),
             memory=_str("CONTAINER_MEMORY", "512m"),

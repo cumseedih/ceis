@@ -22,7 +22,7 @@ iOS 上没有。
 
 ## 2. 电脑 {#_2-the-computer}
 
-从[最新版本](https://github.com/nano-muse/nanoMuse/releases/latest)安装 ceis 桌面版
+从[最新版本](https://github.com/nano-muse/ceis/releases/latest)安装 ceis 桌面版
 （[desktop.md](desktop.md)：每个平台一个安装包，手的运行时在里面），用同一个账号登录。几秒之内
 电脑出现在手机的设备列表里，手机出现在桌面版侧栏的「设备」页里。在 设置 → 设备 给电脑起个名字
 （「mac」「desk」）。

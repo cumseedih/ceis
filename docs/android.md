@@ -32,7 +32,7 @@ update*) and offers the download.
 ## Install
 
 1. Download `ceis-<version>-arm64.apk` from the
-   [latest release](https://github.com/nano-muse/nanoMuse/releases/latest). Verify with
+   [latest release](https://github.com/nano-muse/ceis/releases/latest). Verify with
    `sha256sum -c ceis-<version>-arm64.apk.sha256` if you like.
 2. Open it. Android asks once to allow installs from your browser or file manager.
 3. **Sign in.** The first screen is the account: a phone number or an e-mail address,

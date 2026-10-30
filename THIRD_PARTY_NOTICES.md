@@ -1,12 +1,12 @@
 # Third-party notices
 
-nanoMuse is licensed under the GNU General Public License, version 3 or later ([LICENSE](LICENSE), [NOTICE](NOTICE)). It stands on other people's work; this file says whose, and on what terms. Three lists: what the phone apps are built from, what our own runtime, relay, desktop and web code include, and projects we learned from without taking code.
+ceis is licensed under the GNU General Public License, version 3 or later ([LICENSE](LICENSE), [NOTICE](NOTICE)). It stands on other people's work; this file says whose, and on what terms. Three lists: what the phone apps are built from, what our own runtime, relay, desktop and web code include, and projects we learned from without taking code.
 
 ## The phone apps (`android/`: Android and iOS)
 
 ### OpenMinis (GPL-3.0)
 
-The app is a modified copy of [OpenMinis](https://github.com/OpenMinis/OpenMinis) 1.13 (tag `1.13`, commit `4ef2900`), Copyright (C) the OpenMinis authors, imported with `git subtree` so that its history is in ours. Modifications since 2026-09-24 are recorded in `git log -- android/`, and every edit inside an upstream file carries a `// nanoMuse:` comment. The OpenMinis name and logo are theirs and are not used for this application. Both phone apps come from that subtree: the Android app in `android/src/android`, the iOS app in `android/src/ios`. What follows is OpenMinis's own third-party list for the parts this tree builds; upstream's full inventory with versions is [android/THIRD_PARTY_LICENSES.md](android/THIRD_PARTY_LICENSES.md).
+The app is a modified copy of [OpenMinis](https://github.com/OpenMinis/OpenMinis) 1.13 (tag `1.13`, commit `4ef2900`), Copyright (C) the OpenMinis authors, imported with `git subtree` so that its history is in ours. Modifications since 2026-09-24 are recorded in `git log -- android/`, and every edit inside an upstream file carries a `// ceis:` comment. The OpenMinis name and logo are theirs and are not used for this application. Both phone apps come from that subtree: the Android app in `android/src/android`, the iOS app in `android/src/ios`. What follows is OpenMinis's own third-party list for the parts this tree builds; upstream's full inventory with versions is [android/THIRD_PARTY_LICENSES.md](android/THIRD_PARTY_LICENSES.md).
 
 ### Native code (`android/deps/`)
 
@@ -58,25 +58,25 @@ Test-only: JUnit 4.13.2 (**EPL-1.0**), MockWebServer 4.12.0 (**Apache-2.0**), ko
 | models.dev registry snapshot | `android/src/ios/Resources/models-dev-api.json` | **MIT** ([models.dev](https://models.dev)) | |
 | Swift packages: SwiftAnthropic (**MIT**), swift-cmark (**BSD-2-Clause**), SwiftMath (**MIT**), RealTimeCutVADLibrary (**MIT**) and the Apache-2.0 Swift Server packages they pull in | `Minis.xcodeproj`, pinned in `Package.resolved` | as listed | Versions in upstream's inventory |
 
-### The nanoMuse mark
+### The ceis mark
 
-The name nanoMuse and the mark in `assets/brand/` are the project's own. Use them to refer to this project; do not use them to suggest that something else is nanoMuse or endorsed by it.
+The name ceis and the mark in `assets/brand/` are the project's own. Use them to refer to this project; do not use them to suggest that something else is ceis or endorsed by it.
 
 ### The default face
 
-The dragon that every app wears until a person picks another is the project's own asset, under the same GPL-3.0-or-later as the rest of the repository. The maintainer made it on 2026-09-25 (commit `58ccf1aa`): the five stills (`idle`, `working`, `waiting`, `happy`, `error`; WebP, 1024 × 1024) were drawn and posed with Alibaba Cloud Model Studio's `qwen-image-3.0-pro`, and the four short clips were animated from them with MiniMax's `MiniMax-H3`. The one set of files is shipped byte for byte in `web/public/avatars/dragon-*` (and the built copy under `nanomuse/server/static/avatars/`), `harness/dsh-nanomuse/assets/dragon-*`, the Android app's `res/drawable-nodpi/nm_avatar_*.webp` and `res/raw/nm_motion_*.mp4`, the iOS app's `NanoMuse/Resources/dragon-*`, and `demo/mobilegym/apps/nanoMuse/res/dragon-idle.webp`. The terms of the two services under which generated output may be redistributed are not recorded in this repository; the maintainer is the one to confirm them.
+The dragon that every app wears until a person picks another is the project's own asset, under the same GPL-3.0-or-later as the rest of the repository. The maintainer made it on 2026-09-25 (commit `58ccf1aa`): the five stills (`idle`, `working`, `waiting`, `happy`, `error`; WebP, 1024 × 1024) were drawn and posed with Alibaba Cloud Model Studio's `qwen-image-3.0-pro`, and the four short clips were animated from them with MiniMax's `MiniMax-H3`. The one set of files is shipped byte for byte in `web/public/avatars/dragon-*` (and the built copy under `ceis/server/static/avatars/`), `harness/dsh-ceis/assets/dragon-*`, the Android app's `res/drawable-nodpi/nm_avatar_*.webp` and `res/raw/nm_motion_*.mp4`, the iOS app's `Ceis/Resources/dragon-*`, and `demo/mobilegym/apps/ceis/res/dragon-idle.webp`. The terms of the two services under which generated output may be redistributed are not recorded in this repository; the maintainer is the one to confirm them.
 
-## The runtime, the relay, the web console, the desktop app and the showcase (`nanomuse/`, `cloud/`, `web/`, `harness/`, `demo/`)
+## The runtime, the relay, the web console, the desktop app and the showcase (`ceis/`, `cloud/`, `web/`, `harness/`, `demo/`)
 
 Our own code, GPL-3.0-or-later like the rest. Third-party code inside it keeps its own licence and notice; the ports named below say where they come from.
 
 ### DeepSeek Harness (MIT)
 
-The desktop app is a plugin for [DeepSeek Harness](https://www.npmjs.com/package/@deepseek-ai/dsh) (`@deepseek-ai/dsh` and the `@deepseek-ai/dsh-*` packages, 0.2.0-rc.2, MIT), carried inside nanoMuse Desktop unmodified with every package's licence file; it is not vendored in this repository (`harness/dsh-nanomuse/package.json`, `harness/desktop/scripts/prepare-dsh.mjs`). "DeepSeek Harness" and "DSH" are DeepSeek's names; *harness* in `harness/` is the word ([harness/README.md](harness/README.md#licence-and-names)). The shell is [Electron](https://github.com/electron/electron) (MIT), installed by npm at build time.
+The desktop app is a plugin for [DeepSeek Harness](https://www.npmjs.com/package/@deepseek-ai/dsh) (`@deepseek-ai/dsh` and the `@deepseek-ai/dsh-*` packages, 0.2.0-rc.2, MIT), carried inside ceis Desktop unmodified with every package's licence file; it is not vendored in this repository (`harness/dsh-ceis/package.json`, `harness/desktop/scripts/prepare-dsh.mjs`). "DeepSeek Harness" and "DSH" are DeepSeek's names; *harness* in `harness/` is the word ([harness/README.md](harness/README.md#licence-and-names)). The shell is [Electron](https://github.com/electron/electron) (MIT), installed by npm at build time.
 
 ### MemGUI-Bench (MIT)
 
-The phone operator (`nanomuse/phone/operator.py`) is a port of the `mobile_use` operator in [MemGUI-Bench](https://github.com/lgy0404/MemGUI-Bench) (`src/mobile_world/agents/implementations/qwen3vl.py` and its prompt): the tool schema, the system prompt's wording, the `Thought` / `Action` / `<tool_call>` reply shape, the 999-grid coordinates and the step history. Rewritten in nanoMuse's own structure, with rules added (passwords, payments, `ask_user`), Sentinel labels and traces.
+The phone operator (`ceis/phone/operator.py`) is a port of the `mobile_use` operator in [MemGUI-Bench](https://github.com/lgy0404/MemGUI-Bench) (`src/mobile_world/agents/implementations/qwen3vl.py` and its prompt): the tool schema, the system prompt's wording, the `Thought` / `Action` / `<tool_call>` reply shape, the 999-grid coordinates and the step history. Rewritten in ceis's own structure, with rules added (passwords, payments, `ask_user`), Sentinel labels and traces.
 
 ```
 MIT License
@@ -104,7 +104,7 @@ SOFTWARE.
 
 ### MobileGym (Apache-2.0 code, CC BY-NC 4.0 data)
 
-[MobileGym](https://github.com/Purewhiter/mobilegym) is the simulated Android phone the showcase runs on. `demo/mobilegym/apps/nanoMuse/` is an app module written for it; `demo/mobilegym/install.sh` copies the module into a MobileGym checkout and the showcase image (`demo/showcase/caddy/Dockerfile`) builds MobileGym with it. MobileGym's code is Apache-2.0; its default app data (`mobilegym-data`: synthetic and sanitised content, icons) is [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/), **non-commercial use only**; the hosted showcase serves it as a free demonstration and nothing else. The finger overlay in `gui.ts` follows MobileGym's own touch-feedback timing.
+[MobileGym](https://github.com/Purewhiter/mobilegym) is the simulated Android phone the showcase runs on. `demo/mobilegym/apps/ceis/` is an app module written for it; `demo/mobilegym/install.sh` copies the module into a MobileGym checkout and the showcase image (`demo/showcase/caddy/Dockerfile`) builds MobileGym with it. MobileGym's code is Apache-2.0; its default app data (`mobilegym-data`: synthetic and sanitised content, icons) is [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/), **non-commercial use only**; the hosted showcase serves it as a free demonstration and nothing else. The finger overlay in `gui.ts` follows MobileGym's own touch-feedback timing.
 
 ### modern-screenshot (MIT)
 
@@ -116,15 +116,15 @@ The showcase's Caddy is built with [caddy-dns/cloudflare](https://github.com/cad
 
 ### Figtree (SIL Open Font License 1.1)
 
-The web app's typeface, [Figtree](https://github.com/erikdkennedy/figtree) by Erik Kennedy, ships in `web/public/fonts/` under the OFL (`web/public/fonts/OFL.txt`). The desktop app and the docs site are set in the system's fonts (`harness/dsh-nanomuse/src/client/styles.ts`, `website/.vitepress/theme/custom.css`; VitePress's default theme still ships its own Inter files, OFL, in the built site); the Android app's monospace face, JetBrains Mono under `res/font/`, is upstream's and covered by the OpenMinis inventory above.
+The web app's typeface, [Figtree](https://github.com/erikdkennedy/figtree) by Erik Kennedy, ships in `web/public/fonts/` under the OFL (`web/public/fonts/OFL.txt`). The desktop app and the docs site are set in the system's fonts (`harness/dsh-ceis/src/client/styles.ts`, `website/.vitepress/theme/custom.css`; VitePress's default theme still ships its own Inter files, OFL, in the built site); the Android app's monospace face, JetBrains Mono under `res/font/`, is upstream's and covered by the OpenMinis inventory above.
 
 ### simple-icons (CC0 1.0)
 
-The brand marks beside the services in the desktop app's connector catalogue are SVG paths from [simple-icons](https://simpleicons.org/) 16.33.0, written into `harness/dsh-nanomuse/src/client/brand-marks.ts` by `harness/dsh-nanomuse/scripts/brand-marks.mjs`. The set is CC0 1.0; the marks and names themselves belong to the services they stand for and only say which service a row is.
+The brand marks beside the services in the desktop app's connector catalogue are SVG paths from [simple-icons](https://simpleicons.org/) 16.33.0, written into `harness/dsh-ceis/src/client/brand-marks.ts` by `harness/dsh-ceis/scripts/brand-marks.mjs`. The set is CC0 1.0; the marks and names themselves belong to the services they stand for and only say which service a row is.
 
 ### nanobot (MIT)
 
-The Feishu channel's WebSocket runner (`nanomuse/channels/feishu.py`, class `_Runner`) follows the shape of `FeishuWsRunner` in [nanobot](https://github.com/HKUDS/nanobot) (Copyright (c) 2025 HKUDS): the SDK's client on a thread with its own event loop, swapping the module-level loop and calling its private `_connect` / `_disconnect` / `_ping_loop`. Rewritten for nanoMuse's channel base; the arrangement is theirs.
+The Feishu channel's WebSocket runner (`ceis/channels/feishu.py`, class `_Runner`) follows the shape of `FeishuWsRunner` in [nanobot](https://github.com/HKUDS/nanobot) (Copyright (c) 2025 HKUDS): the SDK's client on a thread with its own event loop, swapping the module-level loop and calling its private `_connect` / `_disconnect` / `_ping_loop`. Rewritten for ceis's channel base; the arrangement is theirs.
 
 ### UI-TARS-desktop (Apache-2.0)
 
@@ -132,10 +132,10 @@ The desktop app's hands on the computer are ported from [UI-TARS-desktop](https:
 
 - `harness/desktop/src/operator.ts`: the operator (`NutJSOperator` in `packages/ui-tars/operators/nut-js/src/index.ts`, `NutJSElectronOperator` in `apps/ui-tars/src/main/agent/operator.ts`, `getScreenSize` in `apps/ui-tars/src/main/utils/screen.ts`): the screenshot through Electron's `desktopCapturer` at the display's size with the libnut fallback, the action switch (move straight to the point, a 100 ms rest, then the click; drag; scroll; type through the clipboard; the hotkey table with `ctrl` as ⌘ on a Mac), the screen size as logical size × scale factor (1 on macOS), the mouse speed.
 - `harness/desktop/resources/glow.html`: the prediction marker (`apps/ui-tars/src/main/shared/setOfMarks.ts`, `apps/ui-tars/src/main/window/ScreenMarker.ts`): the turning dashed ring with a dot at the point and the action's name beside it; the edge flow was already after their "screen water flow".
-- `nanomuse/computer/coords.py`: `smart_resize` and the picture-size rules (`smartResizeForV15` in `packages/ui-tars/action-parser/src/actionParser.ts`, `parseBoxToScreenCoords` in `packages/ui-tars/sdk/src/utils.ts`: factor 28, the pixel bounds, the 1000-grid conversion).
+- `ceis/computer/coords.py`: `smart_resize` and the picture-size rules (`smartResizeForV15` in `packages/ui-tars/action-parser/src/actionParser.ts`, `parseBoxToScreenCoords` in `packages/ui-tars/sdk/src/utils.ts`: factor 28, the pixel bounds, the 1000-grid conversion).
 - `harness/desktop/src/mac-permissions.ts`: the macOS permission arrangement (`apps/ui-tars/src/main/utils/systemPermissions.ts`): the two native modules below, `getAuthStatus` for Screen Recording and Accessibility, the system's own prompts at launch and the Screen Recording pane opened when it is missing; and the Chromium `disable-features` switch for ScreenCaptureKit thumbnails (electron/electron#44504) in `main.ts`.
 
-Each file carries the attribution line; rewritten in nanoMuse's structure (the operator answers the runtime over loopback HTTP rather than running the model loop itself). The dependency `@computer-use/nut-js` (`harness/desktop/package.json`) is their fork of nut.js, Apache-2.0, with libnut's prebuilt addon per platform. Two more of their packages are optional dependencies of the desktop app, macOS only, both **MIT**: `@computer-use/node-mac-permissions` 2.2.2 (nut-tree's fork of Shelley Vohr's [node-mac-permissions](https://github.com/codebytere/node-mac-permissions); a prebuilt universal `permissions.node` for TCC status and the system prompts) and `@computer-use/mac-screen-capture-permissions` 1.0.2 (a fork of George Karagkiaouris's [mac-screen-capture-permissions](https://github.com/karaggeorge/mac-screen-capture-permissions); `CGPreflightScreenCaptureAccess` through a small N-API addon built at install time on a Mac, with `electron-util`, `execa` and `macos-version`, all MIT, beneath it).
+Each file carries the attribution line; rewritten in ceis's structure (the operator answers the runtime over loopback HTTP rather than running the model loop itself). The dependency `@computer-use/nut-js` (`harness/desktop/package.json`) is their fork of nut.js, Apache-2.0, with libnut's prebuilt addon per platform. Two more of their packages are optional dependencies of the desktop app, macOS only, both **MIT**: `@computer-use/node-mac-permissions` 2.2.2 (nut-tree's fork of Shelley Vohr's [node-mac-permissions](https://github.com/codebytere/node-mac-permissions); a prebuilt universal `permissions.node` for TCC status and the system prompts) and `@computer-use/mac-screen-capture-permissions` 1.0.2 (a fork of George Karagkiaouris's [mac-screen-capture-permissions](https://github.com/karaggeorge/mac-screen-capture-permissions); `CGPreflightScreenCaptureAccess` through a small N-API addon built at install time on a Mac, with `electron-util`, `execa` and `macos-version`, all MIT, beneath it).
 
 ### Python and JavaScript dependencies
 
@@ -143,11 +143,11 @@ Installed from PyPI and npm, not vendored; each carries its own license: openai,
 
 ### Tools called, not bundled
 
-[bubblewrap](https://github.com/containers/bubblewrap) (LGPL-2.0-or-later) sandboxes commands on Linux when installed; [Playwright](https://github.com/microsoft/playwright) (Apache-2.0) drives the browser tool when the `browser` extra is installed. Neither is part of the package. The relay downloads [ip2region](https://github.com/lionsoul2014/ip2region)'s `xdb` database (Apache-2.0) once into its data directory to name the country, province and city of an address on the operator's page (`cloud/nanomuse_cloud/geo.py`); the file is not in this repository.
+[bubblewrap](https://github.com/containers/bubblewrap) (LGPL-2.0-or-later) sandboxes commands on Linux when installed; [Playwright](https://github.com/microsoft/playwright) (Apache-2.0) drives the browser tool when the `browser` extra is installed. Neither is part of the package. The relay downloads [ip2region](https://github.com/lionsoul2014/ip2region)'s `xdb` database (Apache-2.0) once into its data directory to name the country, province and city of an address on the operator's page (`cloud/ceis_cloud/geo.py`); the file is not in this repository.
 
 ## Learned from, no code taken
 
-- **Meta Muse**: the product shape, one agent with a name and a look of its own, a feed, goals, "asks before anything you could not undo". nanoMuse is an independent project, not affiliated with or endorsed by Meta Platforms, Inc.; nothing of the Muse app was decompiled or copied.
+- **Meta Muse**: the product shape, one agent with a name and a look of its own, a feed, goals, "asks before anything you could not undo". ceis is an independent project, not affiliated with or endorsed by Meta Platforms, Inc.; nothing of the Muse app was decompiled or copied.
 - **[PhoneHarness](https://github.com/PhoneHarness/PhoneHarness)**: deterministic-first routing (a tool that does the thing exactly beats the GUI) and a JSONL trace per run rendered to HTML. Ideas only: the repository carries no license.
 - **[CopilotKit/OpenMuse](https://github.com/CopilotKit/OpenMuse)** (MIT): product designs we follow rather than code: durable tasks with a take-control hand-off, watches, ideas with evidence, a follow-up queue, "content is evidence, not permission", background-update preferences.
 - **[Open-AutoGLM](https://github.com/zai-org/Open-AutoGLM)** (Apache-2.0) and **[ClawGUI](https://github.com/ZJU-REAL/ClawGUI)** (Apache-2.0): reference points for operating a phone through its screen (package tables, Shizuku, a built-in IME, a floating bar). When code from either lands, it will be listed above.

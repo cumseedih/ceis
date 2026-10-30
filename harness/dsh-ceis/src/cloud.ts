@@ -62,7 +62,7 @@ import { apiOf, baseUrlFor, CAPABILITIES, capabilitiesForAuth, capabilitiesOf, C
 
 declare module '@deepseek-ai/cordis' {
   interface Context {
-    ceisCloud: NanomuseCloud
+    ceisCloud: CeisCloud
   }
 }
 
@@ -99,7 +99,7 @@ export async function homeWorkspaceDir(
   renameFn: (oldPath: string, newPath: string) => Promise<void> = rename,
 ): Promise<string> {
   const next = join(home, 'ceis')
-  const prev = join(home, 'nanoMuse')
+  const prev = join(home, 'ceis')
   const [nextStat, prevStat] = await Promise.all([
     stat(next).catch(() => null),
     stat(prev).catch(() => null),
@@ -606,7 +606,7 @@ export function declined(step: string, why: string): ToolExecutionResult {
 
 const ARG_KEYS = ['action', 'label', 'text', 'device', 'command', 'task', 'path', 'url'] as const
 
-export default class NanomuseCloud extends Service {
+export default class CeisCloud extends Service {
   static inject = ['credentials', 'settings']
   static Config = Config
 
@@ -1968,7 +1968,7 @@ export default class NanomuseCloud extends Service {
   }
 
   private defaultModelService(): { currentSelection(): { provider: string; model: string }; saveSelection(next: { provider: string; model: string }): Promise<void> } | undefined {
-    return (this.ctx as unknown as { get(name: string): unknown }).get('agentDefaultModel') as ReturnType<NanomuseCloud['defaultModelService']>
+    return (this.ctx as unknown as { get(name: string): unknown }).get('agentDefaultModel') as ReturnType<CeisCloud['defaultModelService']>
   }
 
   /** The account model new chats answer through, when the default is ours; empty when another provider is chosen. */

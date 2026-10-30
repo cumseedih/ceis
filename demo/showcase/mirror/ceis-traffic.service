@@ -1,0 +1,18 @@
+# One pass of the traffic counter (mirror/traffic.py): the site's access log since the last run
+# into /var/lib/ceis-traffic/traffic.db, plus GitHub's stars and release download counts.
+# ceis-traffic.timer runs it every ten minutes; install.sh links the script to
+# /usr/local/bin/ceis-traffic. `ceis-traffic --report` shows the last two weeks.
+[Unit]
+Description=ceis site traffic: count the day's visits and downloads
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# TRAFFIC_* / GITHUB_TOKEN overrides, if any (see traffic.py); absent is fine
+EnvironmentFile=-/etc/default/ceis-site-mirror
+StateDirectory=ceis-traffic
+ExecStart=/usr/local/bin/ceis-traffic
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=10min

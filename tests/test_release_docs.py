@@ -18,10 +18,10 @@ Latest: **1.0.0 Keel**.
 ## 🗞️ News
 
 - `2026-10-07` 📄 Our paper is available on [arXiv](https://arxiv.org/abs/2610.08699).
-- `2026-10-09` 🚀 Version [1.0.0 Keel](https://github.com/nano-muse/nanoMuse/releases/tag/v1.0.0) is out.
+- `2026-10-09` 🚀 Version [1.0.0 Keel](https://github.com/nano-muse/ceis/releases/tag/v1.0.0) is out.
 - `2026-09-25` 🎉 ceis is released.
 
-| **Android** | [ceis-1.0.0-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.0/ceis-1.0.0-arm64.apk) |
+| **Android** | [ceis-1.0.0-arm64.apk](https://github.com/nano-muse/ceis/releases/download/v1.0.0/ceis-1.0.0-arm64.apk) |
 """
 
 ISSUE_FORM = """      description: Settings → About, e.g. 1.0.0 (43)
@@ -48,7 +48,7 @@ def test_news_lines_stay_as_written_and_the_version_moves_elsewhere(
     assert news == [
         "- `2026-10-07` 📄 Our paper is available on [arXiv](https://arxiv.org/abs/2610.08699).",
         "- `2026-10-09` 🚀 Version [1.0.0 Keel]"
-        "(https://github.com/nano-muse/nanoMuse/releases/tag/v1.0.0) is out.",
+        "(https://github.com/nano-muse/ceis/releases/tag/v1.0.0) is out.",
         "- `2026-09-25` 🎉 ceis is released.",
     ]
     assert "Latest: **1.0.1 Still**." in text
@@ -70,7 +70,7 @@ def test_a_milestone_line_keeps_its_words_through_two_releases(release_docs: Mod
     with its own date, version and tag, and nothing was added to the list by the script."""
     page = (
         "- `2026-10-09` 🚀 Version [1.0.0 Keel]"
-        "(https://github.com/nano-muse/nanoMuse/releases/tag/v1.0.0) is out, for the phone, the"
+        "(https://github.com/nano-muse/ceis/releases/tag/v1.0.0) is out, for the phone, the"
         " desktop and the browser; it installs over the version before and keeps your data.\n"
         "- `2026-10-08` 🤗 Our paper is on [Hugging Face Daily Papers]"
         "(https://huggingface.co/papers/2610.08699), ranked third on the list for October 8.\n"

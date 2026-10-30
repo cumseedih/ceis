@@ -21,7 +21,7 @@ from ceis.tools import WebSearch
 from ceis.vault import CredentialVault
 
 DDG_ROWS = [
-    {"title": "ceis", "href": "https://github.com/nano-muse/nanoMuse", "body": "An agent."},
+    {"title": "ceis", "href": "https://github.com/nano-muse/ceis", "body": "An agent."},
     {"title": "Muse", "href": "https://example.com/muse", "body": "Something else."},
 ]
 

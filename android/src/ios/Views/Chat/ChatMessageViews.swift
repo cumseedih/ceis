@@ -148,8 +148,8 @@ private struct UserBubbleSurface: ViewModifier {
                         .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                         .foregroundStyle(ChatColors.secondaryText.opacity(0.5))
                 )
-        } else if NanoMuseShellPrefs.shell { // nanoMuse: the sent bubble carries the Messages blue gradient with white ink (design.md, Chat)
-            content.background(shape.fill(LinearGradient(colors: [NanoMuseTones.sentTop, NanoMuseTones.sentBottom], startPoint: .top, endPoint: .bottom))) // nanoMuse:
+        } else if CeisShellPrefs.shell { // ceis: the sent bubble carries the Messages blue gradient with white ink (design.md, Chat)
+            content.background(shape.fill(LinearGradient(colors: [CeisTones.sentTop, CeisTones.sentBottom], startPoint: .top, endPoint: .bottom))) // ceis:
         } else if #available(iOS 26.0, *) {
             content.glassEffect(.regular, in: shape)
         } else {
@@ -380,14 +380,14 @@ struct ChatMessageRow: View {
                     QueuedAttachmentPreview(attachments: message.inputAttachments)
                 }
 
-                if let wake = message.nmRoutine { // nanoMuse: a routine's prompt is one quiet line, not a bubble in the person's voice
-                    NanoMuseRoutineWakeRow(label: wake.label, at: wake.at)
+                if let wake = message.nmRoutine { // ceis: a routine's prompt is one quiet line, not a bubble in the person's voice
+                    CeisRoutineWakeRow(label: wake.label, at: wake.at)
                 } else if !userDisplayText.isEmpty {
                     HStack(spacing: 6) {
                         Text(userDisplayText)
                             .font(.system(size: FontSettings.shared.scaledMessage(16.5)))
-                            // nanoMuse: the sent bubble's ink is white on the blue gradient; a queued line keeps upstream's grey
-                            .foregroundStyle(message.isQueued ? ChatColors.secondaryText : (NanoMuseShellPrefs.shell ? NanoMuseTones.onSent : ChatColors.primaryText)) // nanoMuse:
+                            // ceis: the sent bubble's ink is white on the blue gradient; a queued line keeps upstream's grey
+                            .foregroundStyle(message.isQueued ? ChatColors.secondaryText : (CeisShellPrefs.shell ? CeisTones.onSent : ChatColors.primaryText)) // ceis:
                             .padding(.horizontal, 12)
                             .padding(.vertical, 9)
                             .modifier(UserBubbleSurface(isQueued: message.isQueued))
@@ -405,7 +405,7 @@ struct ChatMessageRow: View {
                         }
                     }
                 }
-                NanoMuseFromDeviceCaption(message.nmFromDevice, working: message.nmWorkingDevice) // nanoMuse: C8 "From Pixel 8" + C9 "{device} is working…"
+                CeisFromDeviceCaption(message.nmFromDevice, working: message.nmWorkingDevice) // ceis: C8 "From Pixel 8" + C9 "{device} is working…"
             }
             .modifier(MinisOpenURLHandler())
             .contentShape(Rectangle())
@@ -429,14 +429,14 @@ struct ChatMessageRow: View {
                         Label(AppLocalized("Copy Screenshot"), systemImage: "camera.viewfinder")
                     }
                 }
-                if let onEdit, message.nmFromDevice == nil { // nanoMuse: C8 — another device's line is read-only here
+                if let onEdit, message.nmFromDevice == nil { // ceis: C8 — another device's line is read-only here
                     Button {
                         onEdit()
                     } label: {
                         Label("Edit", systemImage: "square.and.pencil")
                     }
                 }
-                if let onRetry, message.nmFromDevice == nil { // nanoMuse: C8
+                if let onRetry, message.nmFromDevice == nil { // ceis: C8
                     Button {
                         onRetry()
                     } label: {
@@ -486,7 +486,7 @@ struct ChatMessageRow: View {
     private var assistantRow: some View {
         VStack(alignment: .leading, spacing: 8) {
             // Assistant label
-            if !NanoMuseShellPrefs.shell { // nanoMuse: in the Muse shell the grey bubble is the agent's; no label over it
+            if !CeisShellPrefs.shell { // ceis: in the Muse shell the grey bubble is the agent's; no label over it
             HStack(spacing: 6) {
                 Image(systemName: "sparkles")
                     .font(.system(size: 18, weight: .semibold))
@@ -503,7 +503,7 @@ struct ChatMessageRow: View {
                     .foregroundStyle(ChatColors.primaryText)
             }
             .padding(.top, 4)
-            } // nanoMuse:
+            } // ceis:
 
             ForEach(message.blocks) { block in
                 AssistantBlockView(
@@ -539,7 +539,7 @@ struct ChatMessageRow: View {
                 )
             }
 
-            NanoMuseFromDeviceCaption(message.nmFromDevice) // nanoMuse: C8 — "From Pixel 8" under a synced reply
+            CeisFromDeviceCaption(message.nmFromDevice) // ceis: C8 — "From Pixel 8" under a synced reply
 
             // Typing indicator — "request out, nothing back yet", evaluated per
             // ROUND. See `ChatMessage.shouldShowTypingIndicator`.
@@ -549,12 +549,12 @@ struct ChatMessageRow: View {
 
             // Inline error + retry
             if let error = message.error {
-                // nanoMuse: a provider that could not be reached (or refused the region, or whose sign-in ran out) is a card, not the transport's text
-                if let reach = NanoMuseProviderReach.classify(error) {
-                    NanoMuseProviderReachCard(reach: reach, onRetry: onRetry)
+                // ceis: a provider that could not be reached (or refused the region, or whose sign-in ran out) is a card, not the transport's text
+                if let reach = CeisProviderReach.classify(error) {
+                    CeisProviderReachCard(reach: reach, onRetry: onRetry)
                 } else {
                     inlineError(error)
-                    NanoMuseCloudOnceRow(onRetry: onRetry) // nanoMuse: "Use nanoMuse Cloud this time" after a key of one's own failed
+                    CeisCloudOnceRow(onRetry: onRetry) // ceis: "Use ceis Cloud this time" after a key of one's own failed
                 }
             }
 

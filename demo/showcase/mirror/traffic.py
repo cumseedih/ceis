@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""nanomuse-traffic: how many people visit nanomuse.cn and download from it, by day.
+"""ceis-traffic: how many people visit ceis.cn and download from it, by day.
 
-Reads the JSON access log Caddy writes for the site (mirror/nanomuse.cn.caddy, kept for seven
+Reads the JSON access log Caddy writes for the site (mirror/ceis.cn.caddy, kept for seven
 days) from where the last run stopped, and adds what it finds to a small SQLite database of
 daily counts: page views, visitors, bots, downloads per file, referring sites, the pages
 themselves. Once a run it also asks GitHub for the repository's stars and the download counts
@@ -15,15 +15,15 @@ for a week is the only place they exist, and it stays on the box.
 
     TRAFFIC_LOG_DIR      where Caddy's log lands (docker-compose.yml mounts logs/caddy there);
                          default: the showcase's logs/caddy
-    TRAFFIC_LOG_NAME     the log's file name (default nanomuse.cn.log; rolled files sit beside it)
-    TRAFFIC_DB           the database (default /var/lib/nanomuse-traffic/traffic.db)
+    TRAFFIC_LOG_NAME     the log's file name (default ceis.cn.log; rolled files sit beside it)
+    TRAFFIC_DB           the database (default /var/lib/ceis-traffic/traffic.db)
     TRAFFIC_REPO         the repository whose stars and release downloads are recorded
     TRAFFIC_HOSTS        the site's own names, left out of the referrers (comma separated)
     TRAFFIC_DAY_OFFSET_H local day for the counts, hours east of UTC (default 8: Beijing days,
                          like the relay's DAY_OFFSET_H)
     GITHUB_TOKEN         optional; more API calls an hour
 
-Idempotent and safe to run by hand: `nanomuse-traffic`, or `nanomuse-traffic --report` for the
+Idempotent and safe to run by hand: `ceis-traffic`, or `ceis-traffic --report` for the
 last two weeks in the terminal. The systemd timer runs it every ten minutes.
 """
 
@@ -44,12 +44,12 @@ from urllib.parse import urlsplit
 
 HERE = Path(__file__).resolve().parent
 LOG_DIR = Path(os.environ.get("TRAFFIC_LOG_DIR") or HERE.parent / "logs" / "caddy")
-LOG_NAME = os.environ.get("TRAFFIC_LOG_NAME") or "nanomuse.cn.log"
-DB_PATH = Path(os.environ.get("TRAFFIC_DB") or "/var/lib/nanomuse-traffic/traffic.db")
-REPO = os.environ.get("TRAFFIC_REPO") or "nano-muse/nanoMuse"
+LOG_NAME = os.environ.get("TRAFFIC_LOG_NAME") or "ceis.cn.log"
+DB_PATH = Path(os.environ.get("TRAFFIC_DB") or "/var/lib/ceis-traffic/traffic.db")
+REPO = os.environ.get("TRAFFIC_REPO") or "nano-muse/ceis"
 OWN_HOSTS = {
     h.strip().lower()
-    for h in (os.environ.get("TRAFFIC_HOSTS") or "nanomuse.cn,www.nanomuse.cn").split(",")
+    for h in (os.environ.get("TRAFFIC_HOSTS") or "ceis.cn,www.ceis.cn").split(",")
     if h.strip()
 }
 DAY_OFFSET_S = int(os.environ.get("TRAFFIC_DAY_OFFSET_H") or "8") * 3600
@@ -359,7 +359,7 @@ def ingest(conn: sqlite3.Connection) -> Tally:
 
 def github(url: str) -> object:
     req = urllib.request.Request(
-        url, headers={"Accept": "application/vnd.github+json", "User-Agent": "nanomuse-traffic"}
+        url, headers={"Accept": "application/vnd.github+json", "User-Agent": "ceis-traffic"}
     )
     if TOKEN:
         req.add_header("Authorization", f"Bearer {TOKEN}")

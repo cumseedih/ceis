@@ -189,7 +189,7 @@ final class CodexOAuthManager: NSObject, ObservableObject {
 
     // MARK: - Legacy singleton Keychain (for migration)
 
-    static let legacyKeychainService = "io.github.nanomuse.app.openai-oauth"
+    static let legacyKeychainService = "io.github.ceis.app.openai-oauth"
     static let legacyKeychainAccount = "token"
 
     static func loadLegacyToken() -> CodexTokenStorage? {
@@ -283,7 +283,7 @@ final class CodexOAuthManager: NSObject, ObservableObject {
 
         logger.info("\(context) POST \(self.tokenURL)")
 
-        let (data, response) = try await NanoMuseProxy.session.data(for: request) // nanoMuse: Settings → Network
+        let (data, response) = try await CeisProxy.session.data(for: request) // ceis: Settings → Network
         let http = response as? HTTPURLResponse
         let statusCode = http?.statusCode ?? -1
         let responseBody = String(data: data, encoding: .utf8) ?? "<binary>"

@@ -1,6 +1,6 @@
 name: Docker image
 
-# Publishes ghcr.io/nano-muse/nanoMuse for linux/amd64 and linux/arm64:
+# Publishes ghcr.io/nano-muse/ceis for linux/amd64 and linux/arm64:
 #   main            -> :edge
 #   tag vX.Y.Z      -> :X.Y.Z, :X.Y, :latest
 #   tag vX.Y.Z-rc1  -> :X.Y.Z-rc1 only (a pre-release moves neither :X.Y nor :latest)

@@ -26,7 +26,7 @@ ceis Cloud is the relay behind wevvy.in: sign-in by e-mail or phone, the account
 ### In one command
 
 ```bash
-git clone https://github.com/nano-muse/nanoMuse.git && cd ceis
+git clone https://github.com/nano-muse/ceis.git && cd ceis
 bash scripts/self-host.sh
 ```
 

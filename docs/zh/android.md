@@ -25,7 +25,7 @@ Play 商店：「设置 → 版本」把已安装的构建和最新版本并排�
 
 ## 安装 {#install}
 
-1. 从[最新版本](https://github.com/nano-muse/nanoMuse/releases/latest)下载
+1. 从[最新版本](https://github.com/nano-muse/ceis/releases/latest)下载
    `ceis-<version>-arm64.apk`。想核对的话，运行
    `sha256sum -c ceis-<version>-arm64.apk.sha256`。
 2. 打开它。Android 会问一次，是否允许从你的浏览器或文件管理器安装。

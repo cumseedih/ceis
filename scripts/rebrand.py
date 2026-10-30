@@ -12,13 +12,13 @@ What it changes, and only this:
   nm_strings.xml and in Kotlin string literals (never in identifiers, paths such as
   /var/minis, or MinisSkills).
 - Links: the update check, source and issue links keep pointing at the upstream
-  nanoMuse repository and its release feed (there is no ceis release feed yet);
+  ceis repository and its release feed (there is no ceis release feed yet);
   the privacy link points at https://wevvy.in/privacy/; nothing invented.
 - Colours: the upstream blues -> the ceis design tokens (primary #005ABF light /
   #0064D4 dark, link #0064D4, input fill #F3F4F6, border #E5E7EB).
 - The URL scheme the system knows us by: `ceis` (in-app minis:// vocabulary untouched).
 - Checks (--check): the applicationId, the scheme, no "Minis" product leftovers, no
-  old-brand colours, and no standalone old product name (nanomuse/nanoMuse/NANOMUSE)
+  old-brand colours, and no standalone old product name (ceis/ceis/CEIS)
   anywhere in our tree.
 
 Anything else is a hand edit marked `// ceis:` in the file. iOS is out of scope for
@@ -53,7 +53,7 @@ PRIVACY_URL = "https://wevvy.in/privacy/"
 WORD = re.compile(r"(?<!X-)\bMinis(?!Skills)(?![A-Za-z0-9_])")
 # the old product name as a standalone word, any case: never inside identifiers
 # (CeisCloud, io.github.ceis) or paths; used by --check only.
-OLD_NAME = re.compile(r"\b(?:nanomuse|nanoMuse|NANOMUSE)s?\b")
+OLD_NAME = re.compile(r"\b(?:ceis|ceis|CEIS)s?\b")
 changed: list[str] = []
 
 
@@ -149,18 +149,18 @@ def soul_defaults() -> None:
         )
 
 
-UPSTREAM_REPO_URL = "https://github.com/nano-muse/nanoMuse"
+UPSTREAM_REPO_URL = "https://github.com/nano-muse/ceis"
 
 
 def links() -> None:
     # The ceis fork has no release feed yet: the update check and the repo links
-    # keep pointing at the upstream nanoMuse repository and its releases; nothing
+    # keep pointing at the upstream ceis repository and its releases; nothing
     # invented. The privacy link is ours.
     edit(
         JAVA / "data" / "UpdateChecker.kt",
         [
             (r'private const val OWNER = "[^"]+"', 'private const val OWNER = "nano-muse"'),
-            (r'private const val REPO = "[^"]+"', 'private const val REPO = "nanoMuse"'),
+            (r'private const val REPO = "[^"]+"', 'private const val REPO = "ceis"'),
             (
                 r'const val RELEASES_URL: String = "[^"]+"',
                 f'const val RELEASES_URL: String = "{UPSTREAM_REPO_URL}/releases"',
@@ -171,7 +171,7 @@ def links() -> None:
         JAVA / "ui" / "settings" / "AboutScreen.kt",
         [
             (r'"https://github\.com/OpenMinis/OpenMinis"\)', f'"{UPSTREAM_REPO_URL}")'),
-            (r'"https://github\.com/nano-muse/nanoMuse"', f'"{UPSTREAM_REPO_URL}"'),
+            (r'"https://github\.com/nano-muse/ceis"', f'"{UPSTREAM_REPO_URL}"'),
         ],
     )
     edit(
@@ -180,7 +180,7 @@ def links() -> None:
             (r'"https://openminis\.github\.io/privacy-policy\.html"', f'"{PRIVACY_URL}"'),
             (r'"https://github\.com/OpenMinis/OpenMinis/issues/new"', f'"{UPSTREAM_REPO_URL}/issues/new"'),
             (
-                r'"https://github\.com/nano-muse/nanoMuse/issues/new"',
+                r'"https://github\.com/nano-muse/ceis/issues/new"',
                 f'"{UPSTREAM_REPO_URL}/issues/new"',
             ),
         ],

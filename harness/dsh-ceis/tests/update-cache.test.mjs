@@ -9,7 +9,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Service } from '@deepseek-ai/cordis'
-import NanomuseCloud, { BUNDLE_VERSION, LLM_ROW, updateForThisVersion } from '../lib/cloud.js'
+import CeisCloud, { BUNDLE_VERSION, LLM_ROW, updateForThisVersion } from '../lib/cloud.js'
 import { UPDATE_EVERY_MS, UPDATE_RETRY_MS, updateCacheFresh } from '../lib/desk.js'
 
 process.env.CEIS_PY = join(tmpdir(), 'ceis-runtime-that-does-not-exist')
@@ -42,7 +42,7 @@ async function cloudWith(update) {
   const home = await mkdtemp(join(tmpdir(), 'nm-update-cache-'))
   const statePath = join(home, 'cloud.json')
   await writeFile(statePath, JSON.stringify({ deviceId: 'pc-dsh-test', update }))
-  const svc = new NanomuseCloud(fakeContext(), { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
+  const svc = new CeisCloud(fakeContext(), { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
   svc.hub.start = () => undefined
   svc.refresh = async () => svc.status()
   await svc[Service.init]()
@@ -55,7 +55,7 @@ const PKG_VERSION = JSON.parse(readFileSync(new URL('../package.json', import.me
 const PREVIOUS = '0.1.0'
 /** One patch release beyond the version under test. */
 const BEYOND = PKG_VERSION.replace(/(\d+)$/, (n) => String(Number(n) + 1))
-const checkedByPrevious = (latest) => ({ current: PREVIOUS, latest, newer: true, page: 'https://github.com/nano-muse/nanoMuse/releases', assets: [], notes: '', source: 'wevvy.in', checkedAt: Date.now() })
+const checkedByPrevious = (latest) => ({ current: PREVIOUS, latest, newer: true, page: 'https://github.com/nano-muse/ceis/releases', assets: [], notes: '', source: 'wevvy.in', checkedAt: Date.now() })
 
 test('the bundle version the tests run under is the package version, a release, not the fallback', () => {
   assert.equal(BUNDLE_VERSION, PKG_VERSION)
@@ -119,7 +119,7 @@ test('a check that read nothing is not kept for the day: the next quiet check as
   globalThis.fetch = async () => {
     asked += 1
     if (down) return { ok: false, status: 503, json: async () => ({}) }
-    return { ok: true, status: 200, json: async () => ({ repo: 'nano-muse/nanoMuse', releases: [{ tag: `v${BUNDLE_VERSION}`, assets: [] }] }) }
+    return { ok: true, status: 200, json: async () => ({ repo: 'nano-muse/ceis', releases: [{ tag: `v${BUNDLE_VERSION}`, assets: [] }] }) }
   }
   try {
     const failed = await out.svc.update(false)
@@ -157,7 +157,7 @@ test('update(false) does not answer from a cache another version made; it checks
   const realFetch = globalThis.fetch
   const asked = []
   // the mirror answers that this very version is the latest; nothing leaves the test
-  globalThis.fetch = async (url) => { asked.push(String(url)); return { ok: true, status: 200, json: async () => ({ repo: 'nano-muse/nanoMuse', releases: [{ tag: `v${BUNDLE_VERSION}`, assets: [] }] }) } }
+  globalThis.fetch = async (url) => { asked.push(String(url)); return { ok: true, status: 200, json: async () => ({ repo: 'nano-muse/ceis', releases: [{ tag: `v${BUNDLE_VERSION}`, assets: [] }] }) } }
   try {
     // the stale cache, put back in memory as if nothing had normalised it
     const stale = checkedByPrevious(BUNDLE_VERSION)

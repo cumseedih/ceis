@@ -40,7 +40,7 @@ object UpdateChecker {
     // mirror — every API call 404'd, which we mistranslated as "no release
     // published". The 0.1-preview release is published as a prerelease on
     // OpenMinis/OpenMinis with a MinisApp-*.apk asset attached.
-    private const val REPO = "nanoMuse"
+    private const val REPO = "ceis"
     private const val DOWNLOAD_FILENAME = "minis-update.apk"
     /**
      * Sub-directory of `filesDir` where we stage downloaded update APKs. We
@@ -258,7 +258,7 @@ object UpdateChecker {
     }
 
     /** Public so UI can deep-link users to manual download when GitHub is blocked. */
-    const val RELEASES_URL: String = "https://github.com/nano-muse/nanoMuse/releases"
+    const val RELEASES_URL: String = "https://github.com/nano-muse/ceis/releases"
 
     /** Returns (downloadUrl, sizeBytes) for the first .apk asset, or (null, 0). */
     private fun findApkAsset(assets: JSONArray?): Pair<String?, Long> {

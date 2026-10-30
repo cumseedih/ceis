@@ -16,7 +16,7 @@ import { DOCS_URL, ISSUES_URL } from './panels.ts'
 import { Sheet } from './ui.tsx'
 import { useWindowsUpdates, updatePresentation, requestWindowsUpdate } from './windows-updates.ts'
 
-export const RELEASES_URL = 'https://github.com/nano-muse/nanoMuse/releases'
+export const RELEASES_URL = 'https://github.com/nano-muse/ceis/releases'
 
 interface AppInfo {
   version: string

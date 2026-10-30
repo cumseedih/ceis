@@ -996,10 +996,10 @@ struct ContentView: View {
     /// when `sessions` changes (see .onChange below).
     @State private var sessionsByIdCache: [String: ChatSession] = [:]
     /// Soul name shown as the sidebar title. Sourced from SOUL.md, falls
-    /// back to "nanoMuse". Refreshed whenever SoulStore posts .soulMdChanged.
+    /// back to "ceis". Refreshed whenever SoulStore posts .soulMdChanged.
     @State private var soulName: String = SoulStore.cachedMetadata.name.isEmpty
-        ? "nanoMuse" : SoulStore.cachedMetadata.name
-    /// Subtitle state shown under the "nanoMuse" sidebar title. nil hides the
+        ? "ceis" : SoulStore.cachedMetadata.name
+    /// Subtitle state shown under the "ceis" sidebar title. nil hides the
     /// row; otherwise it renders as small capsules per type or a single
     /// status string. Refreshed by a 5s timer.
     @State private var migrationSubtitle: SyncSubtitleState?
@@ -1621,7 +1621,7 @@ struct ContentView: View {
             }
         }
         .task {
-            sessions = NanoMuseSync.shared.visible(await ChatStore.shared.listSessions()) // nanoMuse: C10 — another account's conversations stay hidden
+            sessions = CeisSync.shared.visible(await ChatStore.shared.listSessions()) // ceis: C10 — another account's conversations stay hidden
             // Folders must load WITH the first session batch: groupedSessionIDs
             // treats a folder_id whose folder isn't loaded as an orphan and
             // renders the session ungrouped, so a first paint with sessions
@@ -2756,7 +2756,7 @@ struct ContentView: View {
         // and can't drop a .soulMdChanged notification arriving during reconstruction.
         .onReceive(NotificationCenter.default.publisher(for: .soulMdChanged)) { _ in
             let n = SoulStore.cachedMetadata.name
-            soulName = n.isEmpty ? "nanoMuse" : n
+            soulName = n.isEmpty ? "ceis" : n
         }
     }
 
@@ -3151,7 +3151,7 @@ struct ContentView: View {
                 if migrationSubtitle != next { migrationSubtitle = next }
             } else {
                 // No active sync work — hide the subtitle entirely so the
-                // "nanoMuse" title sits at its normal size.
+                // "ceis" title sits at its normal size.
                 if migrationSubtitle != nil { migrationSubtitle = nil }
             }
         }
@@ -3180,7 +3180,7 @@ struct ContentView: View {
             .map { (label: $0.0, count: $0.1) }
     }
 
-    /// Tiny indicator next to the "nanoMuse" title showing the sync state.
+    /// Tiny indicator next to the "ceis" title showing the sync state.
     @ViewBuilder
     private func titleSyncIndicator(for state: SyncSubtitleState?) -> some View {
         switch state {
@@ -3284,7 +3284,7 @@ struct ContentView: View {
                     if #available(iOS 17.0, *) { return SyncV2Bootstrap.isEnabled }
                     return false
                 }()
-                // Title text comes from SOUL.md (falls back to "nanoMuse"). The
+                // Title text comes from SOUL.md (falls back to "ceis"). The
                 // leading sync indicator floats as an overlay so it doesn't
                 // take layout space — title stays perfectly centered in the
                 // navigation bar regardless of whether the indicator is visible.
@@ -3934,7 +3934,7 @@ struct ContentView: View {
                 .padding(.bottom, 4)
 
             VStack(spacing: 8) {
-                Text("Welcome to nanoMuse")
+                Text("Welcome to ceis")
                     .font(.title2.bold())
                 Text("Your first On-Device Agent is almost ready.")
                     .font(.subheadline)
@@ -4139,7 +4139,7 @@ struct ContentView: View {
         }
         sessionRefreshInFlight = true
         Task(priority: .utility) { @MainActor in
-            sessions = NanoMuseSync.shared.visible(await ChatStore.shared.listSessions()) // nanoMuse: C10 — another account's conversations stay hidden
+            sessions = CeisSync.shared.visible(await ChatStore.shared.listSessions()) // ceis: C10 — another account's conversations stay hidden
             folders = await ChatStore.shared.listFolders()
             sessionRefreshInFlight = false
             if sessionRefreshPending {
@@ -5553,7 +5553,7 @@ struct ContentView: View {
                 done += 1
                 if msg.isToolResultOnly { continue }
 
-                let role = msg.role == .user ? "User" : "nanoMuse"
+                let role = msg.role == .user ? "User" : "ceis"
                 let time = timeFmt.string(from: msg.createdAt)
                 var parts: [String] = []
                 for part in msg.parts {
@@ -7188,7 +7188,7 @@ private struct AppearanceSettingsView: View {
                 Text("When on, the keyboard pops up automatically after the model finishes replying so the input is ready for a follow-up. On by default; turn off if you prefer to read the response without an unexpected keyboard.")
             }
 
-            if !NanoMuseShellPrefs.shell { // nanoMuse: the shell's step bar has no thumbnail (NanoMuseToolBar.swift)
+            if !CeisShellPrefs.shell { // ceis: the shell's step bar has no thumbnail (CeisToolBar.swift)
             Section {
                 Toggle(AppLocalized("Tool Preview Window"), isOn: $toolPreviewEnabled)
             } header: {
@@ -7196,14 +7196,14 @@ private struct AppearanceSettingsView: View {
             } footer: {
                 Text("Show a live preview thumbnail alongside the tool status bar during agent execution.")
             }
-            } // nanoMuse:
+            } // ceis:
 
             // [T-thinking-auto-expand-toggle] Whether a NEW streaming thinking
             // block opens expanded (historical behavior, default) or stays
             // collapsed. Only affects the streaming auto-expand; manual taps
             // always work either way.
-            // nanoMuse: the agent's steps (tool capsules) in finished messages, off by default.
-            NanoMuseStepsSection()
+            // ceis: the agent's steps (tool capsules) in finished messages, off by default.
+            CeisStepsSection()
 
             Section {
                 Toggle(AppLocalized("Expand Thinking While Streaming"), isOn: $autoExpandThinking)
@@ -7427,18 +7427,18 @@ private struct SettingsSheet: View {
     var body: some View {
         NavigationStack(path: $navPath) {
             List {
-                // nanoMuse: the Muse settings — the model, the agent, the phone, the app, about — as cards.
+                // ceis: the Muse settings — the model, the agent, the phone, the app, about — as cards.
                 // With the shell on, Settings opens them directly and this list is "All settings" under
                 // them, so the row would only lead back; it stays for the classic layout.
-                if !NanoMuseShellPrefs.shell { // nanoMuse:
+                if !CeisShellPrefs.shell { // ceis:
                 Section {
                     NavigationLink {
-                        NanoMuseSettingsHomeView()
+                        CeisSettingsHomeView()
                     } label: {
-                        Label("nanoMuse", systemImage: "sparkles")
+                        Label("ceis", systemImage: "sparkles")
                     }
                 }
-                } // nanoMuse:
+                } // ceis:
 
                 Section {
                     NavigationLink {
@@ -7525,10 +7525,10 @@ private struct SettingsSheet: View {
                         }
                     }
                     NavigationLink {
-                        NanoMuseConnectorsView() // nanoMuse: the connectors catalogue; "Your own servers" inside leads to MCPIntegrationsView
+                        CeisConnectorsView() // ceis: the connectors catalogue; "Your own servers" inside leads to MCPIntegrationsView
                     } label: {
                         Label {
-                            Text(AppLocalized("Connectors")) // nanoMuse: replaces the "MCP Integrations" entry
+                            Text(AppLocalized("Connectors")) // ceis: replaces the "MCP Integrations" entry
                         } icon: {
                             Image(systemName: "square.stack.3d.up")
                                 .font(.system(size: 9))
@@ -7643,8 +7643,8 @@ private struct SettingsSheet: View {
                                 .background(.red, in: Circle())
                         }
                     }
-                    // nanoMuse: the lock is a classic-layout feature; the Muse shell (Android parity) has no Face ID row.
-                    if BiometricAuth.isAvailable, !NanoMuseShellPrefs.shell { // nanoMuse:
+                    // ceis: the lock is a classic-layout feature; the Muse shell (Android parity) has no Face ID row.
+                    if BiometricAuth.isAvailable, !CeisShellPrefs.shell { // ceis:
                         NavigationLink {
                             FaceIDProtectionSettingsView()
                         } label: {
@@ -7684,7 +7684,7 @@ private struct SettingsSheet: View {
                         AboutView()
                     } label: {
                         Label {
-                            Text("About nanoMuse")
+                            Text("About ceis")
                         } icon: {
                             Image(systemName: "info")
                                 .font(.system(size: 9))
@@ -7693,7 +7693,7 @@ private struct SettingsSheet: View {
                                 .background(.indigo, in: Circle())
                         }
                     }
-                    Link(destination: URL(string: "https://github.com/nano-muse/nanoMuse/blob/main/docs/privacy.md")!) {
+                    Link(destination: URL(string: "https://github.com/nano-muse/ceis/blob/main/docs/privacy.md")!) {
                         Label {
                             Text("Privacy Policy")
                         } icon: {
@@ -7915,7 +7915,7 @@ private struct SettingsSheet: View {
         components.scheme = "mailto"
         components.path = "dev@openminis.app"
         components.queryItems = [
-            URLQueryItem(name: "subject", value: "nanoMuse Feedback"),
+            URLQueryItem(name: "subject", value: "ceis Feedback"),
             URLQueryItem(name: "body", value: body),
         ]
         return components.url
@@ -7943,7 +7943,7 @@ private struct SettingsSheet: View {
         |-------|-------|
         | Platform | iOS |
         | OS Version | iOS \(iosVersion) |
-        | nanoMuse Version | \(appVersion) (build \(build)) |
+        | ceis Version | \(appVersion) (build \(build)) |
         | Device Model | \(device) |
 
         ## 🔁 Steps to Reproduce
@@ -7966,7 +7966,7 @@ private struct SettingsSheet: View {
 
         """
 
-        var components = URLComponents(string: "https://github.com/nano-muse/nanoMuse/issues/new")
+        var components = URLComponents(string: "https://github.com/nano-muse/ceis/issues/new")
         components?.queryItems = [
             URLQueryItem(name: "template", value: "bug_report.md"),
             URLQueryItem(name: "title", value: "[Bug] "),

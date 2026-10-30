@@ -22,7 +22,7 @@ These win over the file. They cover the settings people change most often and wh
 |---|---|
 | `CEIS_LLM_PROVIDER`, `CEIS_LLM_MODEL`, `CEIS_LLM_BASE_URL`, `CEIS_LLM_API_KEY`, `CEIS_LLM_TOOL_MODE`, `CEIS_LLM_VISION`, `CEIS_LLM_IMAGE_MODEL`, `CEIS_LLM_VIDEO_MODEL`, `CEIS_LLM_VIDEO_BASE_URL` | `[llm]` (`video_base_url`: the asynchronous video API on another host than the chat model's; a relaying host such as the showcase gateway names itself here) |
 | `DEEPSEEK_API_KEY`, `OPENAI_API_KEY` | used as `llm.api_key` when it is empty: DeepSeek's for a `*.deepseek.com` `base_url`, OpenAI's for every other host (OpenAI itself, OpenRouter, a gateway, vLLM) |
-| `CEIS_DATA_DIR` (`NANOMUSE_DATA_DIR` still works) | `data_dir` (default `~/.ceis`; the old `~/.nanomuse` is moved up once) |
+| `CEIS_DATA_DIR` (`CEIS_DATA_DIR` still works) | `data_dir` (default `~/.ceis`; the old `~/.ceis` is moved up once) |
 | `CEIS_WORKSPACE` | `agent.workspace` (default: `./workspace` when the current directory has one, else `<data_dir>/workspace`) |
 | `CEIS_SENTINEL_MODE` | `sentinel.mode` |
 | `CEIS_SEARCH_PROVIDER`, `CEIS_SEARCH_API_KEY`, `CEIS_SEARCH_BASE_URL` | `[connectors.search]` |

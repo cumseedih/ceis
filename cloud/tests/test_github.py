@@ -44,7 +44,7 @@ class FakeGitHub:
             if self.rate_limited:
                 return httpx.Response(403, headers={"x-ratelimit-remaining": "0"}, json={"message": "API rate limit exceeded"})
             path = request.url.path
-            if path == "/repos/nano-muse/nanoMuse":
+            if path == "/repos/nano-muse/ceis":
                 return httpx.Response(
                     200,
                     json={
@@ -55,7 +55,7 @@ class FakeGitHub:
                         "open_issues_count": self.issues,
                     },
                 )
-            if path == "/repos/nano-muse/nanoMuse/releases":
+            if path == "/repos/nano-muse/ceis/releases":
                 page = int(request.url.params.get("page", "1"))
                 return httpx.Response(200, json=self.releases if page == 1 else [])
             return httpx.Response(404, json={"message": "Not Found"})
@@ -76,7 +76,7 @@ async def test_snapshots_deltas_and_a_failure_that_keeps_the_last_one():
     gh = FakeGitHub()
     db = Database(":memory:")
     clock = {"t": 1_800_000_000}  # a fixed "now", moved by the test
-    c = GitHubCollector(db, "nano-muse/nanoMuse", token="ghp-test", transport=gh.transport(), clock=lambda: clock["t"])
+    c = GitHubCollector(db, "nano-muse/ceis", token="ghp-test", transport=gh.transport(), clock=lambda: clock["t"])
     assert c.enabled and c.status()["token"] is True and c.last_ok is None
 
     out = await c.collect()
@@ -129,7 +129,7 @@ async def test_snapshots_deltas_and_a_failure_that_keeps_the_last_one():
     out = await c.collect()
     assert out["ok"] is False and "GITHUB_TOKEN" in out["error"]
     # the last run's state survives a new collector over the same database (a restart)
-    again = GitHubCollector(db, "nano-muse/nanoMuse", transport=gh.transport(), clock=lambda: clock["t"])
+    again = GitHubCollector(db, "nano-muse/ceis", transport=gh.transport(), clock=lambda: clock["t"])
     assert again.last_ok == c.last_ok and again.error == c.error
     db.close()
 
@@ -140,7 +140,7 @@ async def test_a_failed_write_does_not_leave_the_collector_marked_running():
     "already running" until a restart. The flag is let go whatever happens."""
     gh = FakeGitHub()
     db = Database(":memory:")
-    c = GitHubCollector(db, "nano-muse/nanoMuse", transport=gh.transport(), clock=lambda: 1_800_000_000)
+    c = GitHubCollector(db, "nano-muse/ceis", transport=gh.transport(), clock=lambda: 1_800_000_000)
     kept = db.daily_set
 
     def refuse(*a, **k):
@@ -171,11 +171,11 @@ async def test_no_repository_means_no_collector():
 
 async def test_series_and_refresh_through_the_admin_api():
     gh = FakeGitHub()
-    app, client, sender, up, cloud, settings = make(github_repo="nano-muse/nanoMuse")
+    app, client, sender, up, cloud, settings = make(github_repo="nano-muse/ceis")
     # the collector the app made reads the fake, not GitHub
     app.state.collector.transport = gh.transport()
     r = await client.get("/v1/admin/github", headers=ADMIN)
-    assert r.status_code == 200 and r.json()["status"]["repo"] == "nano-muse/nanoMuse" and r.json()["latest"]["stars"] is None
+    assert r.status_code == 200 and r.json()["status"]["repo"] == "nano-muse/ceis" and r.json()["latest"]["stars"] is None
     r = await client.post("/v1/admin/github/refresh", headers=ADMIN)
     assert r.status_code == 200, r.text
     assert r.json()["ok"] and r.json()["stars"] == 120 and r.json()["status"]["last_ok"]

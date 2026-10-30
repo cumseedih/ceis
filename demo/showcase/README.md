@@ -155,7 +155,7 @@ phone lives in the visitor's tab (~400 MB of *their* memory). The server runs th
 |---|---|
 | **Caddy** | HTTPS, the static site (the page at `/`, MobileGym + the ceis app at `/phone.html`), `/api/demo/*` to the gateway, and one hostname per session |
 | **gateway** (`gateway/`) | Starts a ceis container per visitor, relays the phone's HTTP and WebSocket to it, proxies the container's model calls to the provider with the demo key, keeps the books |
-| **sessions** | `ghcr.io/nano-muse/nanoMuse` containers on an internal Docker network with no way out; the gateway is the only thing they can reach |
+| **sessions** | `ghcr.io/nano-muse/ceis` containers on an internal Docker network with no way out; the gateway is the only thing they can reach |
 
 ```
 visitor's browser ──HTTPS──▶ Caddy ── demo.ceis.dev ──▶ /srv/site (the page; /phone.html = MobileGym + ceis app)
@@ -342,11 +342,11 @@ that takes images).
 #    Cloudflare → My Profile → API Tokens: Zone → DNS → Edit and Zone → Zone → Read on the zone.
 
 # 2. the code
-git clone https://github.com/nano-muse/nanoMuse.git && cd ceis/demo/showcase
+git clone https://github.com/nano-muse/ceis.git && cd ceis/demo/showcase
 cp .env.example .env && $EDITOR .env          # names, ACME_EMAIL, CLOUDFLARE_API_TOKEN, keys
 
 # 3. what the sessions run
-docker pull ghcr.io/nano-muse/nanoMuse:latest  # or: docker build -t ceis:latest ../.. && set CEIS_IMAGE
+docker pull ghcr.io/nano-muse/ceis:latest  # or: docker build -t ceis:latest ../.. && set CEIS_IMAGE
 
 # 4. (optional, 1.9 GB) MobileGym's companion data: app media and home-screen widgets.
 #    Without it the phone works but media apps render empty and two home widgets show an error.
@@ -364,7 +364,7 @@ Open `https://demo.ceis.dev`: the phone turns itself on with ceis in front, and 
 Muse starts after the sign-in (or by itself once the page has been in view for a while, see
 above). `curl https://demo.ceis.dev/api/demo/info` shows sessions in use and today's spend.
 
-Updating: `git pull && docker pull ghcr.io/nano-muse/nanoMuse:latest && docker compose pull && docker compose up -d`.
+Updating: `git pull && docker pull ghcr.io/nano-muse/ceis:latest && docker compose pull && docker compose up -d`.
 Sessions in flight end when the gateway restarts; visitors get *Your Muse on the showcase server
 has ended* and a button for a new one.
 

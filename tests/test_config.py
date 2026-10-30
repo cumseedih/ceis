@@ -194,7 +194,7 @@ def test_ceis_data_dir_beats_the_legacy_name(tmp_path: Path, monkeypatch: pytest
     cfg = tmp_path / "config.toml"
     cfg.write_text("[llm]\n")
     monkeypatch.setenv("CEIS_DATA_DIR", str(tmp_path / "new"))
-    monkeypatch.setenv("NANOMUSE_DATA_DIR", str(tmp_path / "old"))
+    monkeypatch.setenv("CEIS_DATA_DIR", str(tmp_path / "old"))
     assert load_settings(cfg).data_dir == tmp_path / "new"
     monkeypatch.delenv("CEIS_DATA_DIR")
     assert load_settings(cfg).data_dir == tmp_path / "old"
@@ -206,7 +206,7 @@ def test_legacy_data_dir_is_moved_once(tmp_path: Path, monkeypatch: pytest.Monke
 
     monkeypatch.setattr("os.path.expanduser", lambda p: str(tmp_path) if p == "~" else p)
     home = Path.home()
-    old, new = home / ".nanomuse", home / ".ceis"
+    old, new = home / ".ceis", home / ".ceis"
     old.mkdir(parents=True)
     (old / "keep.txt").write_text("mine", encoding="utf-8")
     monkeypatch.setattr(config_module, "DEFAULT_DATA_DIR", new)
@@ -221,7 +221,7 @@ def test_failed_move_falls_back_to_the_old_dir(tmp_path: Path, monkeypatch: pyte
     import ceis.config as config_module
 
     home = Path("/nonexistent-home-xyz")
-    old, new = home / ".nanomuse", home / ".ceis"
+    old, new = home / ".ceis", home / ".ceis"
     monkeypatch.setattr(config_module, "DEFAULT_DATA_DIR", new)
     monkeypatch.setattr(config_module, "LEGACY_DATA_DIR", old)
     monkeypatch.setattr(Path, "is_dir", lambda self: self == old)
@@ -241,7 +241,7 @@ def test_both_data_dirs_exist_nothing_moves_and_the_new_one_wins(
 
     monkeypatch.setattr("os.path.expanduser", lambda p: str(tmp_path) if p == "~" else p)
     home = Path.home()
-    old, new = home / ".nanomuse", home / ".ceis"
+    old, new = home / ".ceis", home / ".ceis"
     old.mkdir(parents=True)
     new.mkdir(parents=True)
     (old / "old.txt").write_text("old", encoding="utf-8")

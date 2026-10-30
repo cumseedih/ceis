@@ -1,4 +1,4 @@
-// Settings → Models (0.1.41, "Choice"), the host's half, through `NanomuseCloud` itself: the
+// Settings → Models (0.1.41, "Choice"), the host's half, through `CeisCloud` itself: the
 // resolution order of the four slots (the person's choice, then the chat provider's defaults,
 // then ceis Cloud, then the first own row that can), `GET /models` for the page, the
 // "Use it for" card's offer and `POST /providers/adopt`, the hands' environment for the MCP
@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import { Service } from '@deepseek-ai/cordis'
-import NanomuseCloud, { API_PREFIX, LLM_ROW, PROVIDER_ID, TOKEN_REF } from '../lib/cloud.js'
+import CeisCloud, { API_PREFIX, LLM_ROW, PROVIDER_ID, TOKEN_REF } from '../lib/cloud.js'
 import { editImage, generateImage, imageShapeOf } from '../lib/images.js'
 import { clientConfig } from '../lib/hands-tools.js'
 
@@ -82,7 +82,7 @@ async function cloud({ signedIn = false, defaultModel } = {}) {
   } else {
     await writeFile(statePath, JSON.stringify({ update: { checkedAt: Date.now() } }))
   }
-  const svc = new NanomuseCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
+  const svc = new CeisCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
   svc.hub.start = () => undefined
   svc.refresh = async () => svc.status()
   await svc[Service.init]()

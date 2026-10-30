@@ -25,7 +25,7 @@ body:
     attributes:
       label: Steps to reproduce / 复现步骤
       placeholder: |
-        1. nanomuse serve
+        1. ceis serve
         2. In the app, ask "…" / 在应用里问「……」
         3. Approve the shell call / 批准那条 shell 调用
         4. See … / 看到……
@@ -34,8 +34,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: nanoMuse version / nanoMuse 版本
-      description: "`nanomuse --version`, or the commit hash if you run from source. The output of `nanomuse doctor --no-model` in the description helps. / `nanomuse --version` 的输出，从源码运行就写提交哈希。把 `nanomuse doctor --no-model` 的输出贴在描述里会更好。"
+      label: ceis version / ceis 版本
+      description: "`ceis --version`, or the commit hash if you run from source. The output of `ceis doctor --no-model` in the description helps. / `ceis --version` 的输出，从源码运行就写提交哈希。把 `ceis doctor --no-model` 的输出贴在描述里会更好。"
     validations:
       required: true
   - type: dropdown
@@ -43,15 +43,15 @@ body:
     attributes:
       label: Where / 在哪里
       options:
-        - Web console (nanomuse serve) / 网页控制台
+        - Web console (ceis serve) / 网页控制台
         - Desktop app / 桌面版
         - iPhone app / iPhone 应用
-        - nanoMuse Cloud (the relay) / 中继
-        - Terminal (nanomuse chat / run) / 终端
-        - Daemon (nanomuse daemon / goals run) / 后台进程
+        - ceis Cloud (the relay) / 中继
+        - Terminal (ceis chat / run) / 终端
+        - Daemon (ceis daemon / goals run) / 后台进程
         - Docker
         - Library / API
-        - The showcase (demo.nanomuse.dev) / 展示站
+        - The showcase (demo.ceis.dev) / 展示站
     validations:
       required: true
   - type: input

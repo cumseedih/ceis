@@ -62,7 +62,7 @@ xcode-select --install 2>/dev/null || true          # 命令行工具；完整 X
 brew install node@22 pnpm uv cliclick
 export PATH="/opt/homebrew/opt/node@22/bin:$PATH"    # Intel Mac 是 /usr/local/opt/node@22/bin
 node -v                                              # v22.x（CI 用 Node 22）
-git clone https://github.com/nano-muse/nanoMuse.git && cd ceis
+git clone https://github.com/nano-muse/ceis.git && cd ceis
 uv venv && uv pip install -e ".[dev,hands]" && export CEIS_PY="$PWD/.venv/bin/ceis"
 ```
 
@@ -86,7 +86,7 @@ bash mac/computer-use/build.sh                       # → mac/computer-use/buil
   ```
   没有证书时是 ad-hoc 签名，Gatekeeper 会说「无法验证」，到系统设置 → 隐私与安全性里点
   *仍要打开*。已发布的 0.1.38 安装包在
-  `https://github.com/nano-muse/nanoMuse/releases/download/v0.1.38/ceis-Desktop-0.1.38-mac-arm64.dmg`
+  `https://github.com/nano-muse/ceis/releases/download/v0.1.38/ceis-Desktop-0.1.38-mac-arm64.dmg`
   （x64 同名 `-mac-x64.dmg`），**先用它复现维护者看到的现象，再用源码构建修**。
 
 数据目录 `~/.ceis/desktop`（`CEIS_DESKTOP_HOME` 可改）：`desktop.log` 是壳和 Host 的日志
@@ -246,7 +246,7 @@ TestFlight 上 build 8 = 0.1.37，build 9 = 0.1.38（2026-10-05 上传）。先�
 `xcodebuild build -project Minis.xcodeproj -scheme Minis -configuration Debug -destination
 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO` 零 warning（`Ceis/` 下）；`CHANGELOG.md`
 *Unreleased* → `### iOS` 加条目；`.venv/bin/python scripts/rebrand.py` 跑完输出 `clean`。
-CI 的 **iOS · build check** 只能手动触发：`gh workflow run "iOS · build check" --repo nano-muse/nanoMuse --ref mac/ios-crash-0139`。
+CI 的 **iOS · build check** 只能手动触发：`gh workflow run "iOS · build check" --repo nano-muse/ceis --ref mac/ios-crash-0139`。
 TestFlight 的上传由 L 在发布时做，你不用管。
 
 ## 4. 任务 C — iOS：换账号后不再加载别人的本地数据（契约 C10）
@@ -304,4 +304,4 @@ Android、桌面、运行时由 L 做，**iOS 由你做**。规则：
 | iOS 工程 | `android/src/ios/Minis.xcodeproj`，scheme `Minis`，我们的代码在 `Ceis/`，测试在 `MinisTests/`，字符串 `Localizable.xcstrings` |
 | 上游改动标记 | `// ceis:`；品牌替换 `python scripts/rebrand.py`（必须输出 `clean`） |
 | 文档 | `docs/desktop.md`（macOS 两节）、`docs/gui.md`、`docs/ios.md`、`docs/every-device.md`、`docs/hub.md`、`docs/cloud.md` |
-| 已发布的安装包 | `https://github.com/nano-muse/nanoMuse/releases/tag/v0.1.38` |
+| 已发布的安装包 | `https://github.com/nano-muse/ceis/releases/tag/v0.1.38` |

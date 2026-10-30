@@ -3,7 +3,7 @@
 # deployment steps.
 #
 #   cp .env.example .env && $EDITOR .env
-#   docker pull ghcr.io/nano-muse/nanoMuse:latest        # what the visitors' sessions run
+#   docker pull ghcr.io/nano-muse/ceis:latest        # what the visitors' sessions run
 #   docker compose pull && docker compose up -d          # published images (see showcase.yml)
 #   docker compose up -d --build                         # or build both images here
 #

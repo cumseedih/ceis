@@ -26,7 +26,7 @@ ceis Cloud 就是 wevvy.in 背后的那个中继：邮箱或手机号登录、�
 ### 一条命令 {#in-one-command}
 
 ```bash
-git clone https://github.com/nano-muse/nanoMuse.git && cd ceis
+git clone https://github.com/nano-muse/ceis.git && cd ceis
 bash scripts/self-host.sh
 ```
 

@@ -34,7 +34,7 @@ const COMPUTER_SECTION = 'ceis-computer'
 const PERMISSIONS_SECTION = 'ceis-permissions'
 const FILES_SECTION = 'ceis-files'
 const HARNESS_MCP_DOCS = 'https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/subsystems/mcp.md'
-const RUNTIME_DOCS = 'https://github.com/nano-muse/nanoMuse/blob/main/docs/configuration.md#connectors'
+const RUNTIME_DOCS = 'https://github.com/nano-muse/ceis/blob/main/docs/configuration.md#connectors'
 const REGISTRY_SITE = 'https://registry.modelcontextprotocol.io/'
 const API = '/ceis/connectors'
 

@@ -54,8 +54,8 @@ test('the Ideas list is the phones\' list, byte for byte, and reads into section
   for (const lang of ['en', 'zh']) {
     const ours = readFileSync(new URL(`../assets/ideas.${lang}.json`, here), 'utf8')
     const android = readFileSync(new URL(`../../../android/src/android/app/src/main/assets/ceis/ideas.${lang}.json`, here), 'utf8')
-    // the iOS tree is still NanoMuse/ (the iOS rebrand is out of scope); its ideas lists stay byte-identical
-    const ios = readFileSync(new URL(`../../../android/src/ios/NanoMuse/Resources/ideas.${lang}.json`, here), 'utf8')
+    // the iOS tree is still Ceis/ (the iOS rebrand is out of scope); its ideas lists stay byte-identical
+    const ios = readFileSync(new URL(`../../../android/src/ios/Ceis/Resources/ideas.${lang}.json`, here), 'utf8')
     assert.equal(ours, android, `assets/ideas.${lang}.json must be the Android app's file (copy it over)`)
     assert.equal(ours, ios, `assets/ideas.${lang}.json must be the iPhone app's file too (copy it over)`)
     const ideas = parseIdeas(ours)

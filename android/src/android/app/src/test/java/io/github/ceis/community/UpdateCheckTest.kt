@@ -28,7 +28,7 @@ class UpdateCheckTest {
     @Test
     fun `the download index is read newest first`() {
         val index = """
-            {"repo":"nano-muse/nanoMuse","releases":[
+            {"repo":"nano-muse/ceis","releases":[
               {"tag":"v0.1.35","name":"Turns+","published_at":"2026-10-05T00:00:00Z","assets":[{"name":"ceis-0.1.35.apk","size":1}]},
               {"tag":"v0.1.34","name":"Turns","published_at":"2026-09-28T00:00:00Z","assets":[]}
             ]}

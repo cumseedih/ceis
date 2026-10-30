@@ -11,14 +11,14 @@
   <a href="./README_vi.md">Tiếng Việt</a>
 </p>
 <p align="center">
-  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="nano-muse%2FnanoMuse | Trendshift" width="250" height="55"/></a>
+  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="nano-muse%2Fceis | Trendshift" width="250" height="55"/></a>
 </p>
 <p align="center">
-  <a href="https://github.com/nano-muse/nanoMuse/stargazers"><img src="https://img.shields.io/github/stars/nano-muse/nanoMuse?style=flat&label=stars" alt="GitHub 스타"></a>
-  <a href="https://github.com/nano-muse/nanoMuse/releases"><img src="https://img.shields.io/github/downloads/nano-muse/nanoMuse/total?label=downloads" alt="다운로드"></a>
-  <img src="https://hits.sh/github.com/nano-muse/nanoMuse.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
-  <a href="https://github.com/nano-muse/nanoMuse/actions/workflows/ci.yml"><img src="https://github.com/nano-muse/nanoMuse/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
-  <a href="https://github.com/nano-muse/nanoMuse/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nano-muse/nanoMuse?label=license" alt="GPL-3.0-or-later"></a>
+  <a href="https://github.com/nano-muse/ceis/stargazers"><img src="https://img.shields.io/github/stars/nano-muse/ceis?style=flat&label=stars" alt="GitHub 스타"></a>
+  <a href="https://github.com/nano-muse/ceis/releases"><img src="https://img.shields.io/github/downloads/nano-muse/ceis/total?label=downloads" alt="다운로드"></a>
+  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <a href="https://github.com/nano-muse/ceis/actions/workflows/ci.yml"><img src="https://github.com/nano-muse/ceis/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
+  <a href="https://github.com/nano-muse/ceis/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nano-muse/ceis?label=license" alt="GPL-3.0-or-later"></a>
   <a href="https://arxiv.org/abs/2610.08699"><img src="https://img.shields.io/badge/arXiv-2610.08699-b31b1b" alt="arXiv 논문"></a>
   <br>
   <a href="https://wevvy.in/"><img src="https://img.shields.io/badge/%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-wevvy.in-0a66e4" alt="웹사이트"></a>
@@ -31,7 +31,7 @@
 > [!NOTE]
 > **ceis는 계속 진화합니다**
 >
-> 개인 에이전트가 남의 클라우드 안에서만 자라서는 안 됩니다. 그래서 ceis는 오픈소스이고 비용이 낮은 대안이 되려 합니다. 자기 기기에 설치하고, 모델은 직접 고르고, 릴레이도 직접 세울 수 있습니다. 전 세계의 개발자, 사용자와 함께 만들어서 모든 사람이 진짜 자기만의 개인 에이전트를 갖게 하고 싶습니다. [이슈](https://github.com/nano-muse/nanoMuse/issues/new/choose)를 열거나 [풀 리퀘스트](../../CONTRIBUTING.md)를 보내는 것, 어느 쪽이든 ceis를 더 낫게 만드는 데 보탬이 됩니다.
+> 개인 에이전트가 남의 클라우드 안에서만 자라서는 안 됩니다. 그래서 ceis는 오픈소스이고 비용이 낮은 대안이 되려 합니다. 자기 기기에 설치하고, 모델은 직접 고르고, 릴레이도 직접 세울 수 있습니다. 전 세계의 개발자, 사용자와 함께 만들어서 모든 사람이 진짜 자기만의 개인 에이전트를 갖게 하고 싶습니다. [이슈](https://github.com/nano-muse/ceis/issues/new/choose)를 열거나 [풀 리퀘스트](../../CONTRIBUTING.md)를 보내는 것, 어느 쪽이든 ceis를 더 낫게 만드는 데 보탬이 됩니다.
 
 https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
@@ -40,25 +40,25 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 ## 🗞️ 소식
 
 - `2026-10-13` ⭐ GitHub 스타 1000개를 넘었습니다. 첫 공개 후 18일 만이며, 그 사이 GitHub Trending의 Swift 목록에 나흘 동안 올랐습니다([Trendshift](https://trendshift.io/repositories/286894) 기록: 10월 7일 7위, 10월 10일 4위). 써 보신 분, 문제를 알려 주신 분, pull request를 보내 주신 분 모두 고맙습니다. 계속 이어갑니다: 며칠에 한 번씩 새 버전을 내고, 다음에 할 일은 [로드맵](../roadmap.md)에 적어 두었습니다.
-- `2026-10-09` 🚀 버전 [1.0.0 Keel](https://github.com/nano-muse/nanoMuse/releases/tag/v1.0.0)이 나왔습니다. 휴대폰과 데스크톱과 브라우저 모두를 위한 버전입니다; 이전 버전 위에 설치되어 데이터가 그대로 남고, 릴리스 노트에 모든 변경 사항이 적혀 있습니다.
+- `2026-10-09` 🚀 버전 [1.0.0 Keel](https://github.com/nano-muse/ceis/releases/tag/v1.0.0)이 나왔습니다. 휴대폰과 데스크톱과 브라우저 모두를 위한 버전입니다; 이전 버전 위에 설치되어 데이터가 그대로 남고, 릴리스 노트에 모든 변경 사항이 적혀 있습니다.
 - `2026-10-08` 🤗 저희 논문이 [Hugging Face Daily Papers](https://huggingface.co/papers/2610.08699)에 올라 10월 8일 목록에서 3위를 차지했습니다; 질문과 의견은 논문 페이지에 남겨 주세요.
 - `2026-10-07` 📄 저희 논문이 [arXiv](https://arxiv.org/abs/2610.08699)에 공개되었습니다: 『ceis: An Open-Source Personal Agent for Every Device You Own』, 저자 Guangyi Liu, Yong Liu, Jiangning Zhang(저장대학교); 인용 정보는 이 페이지 끝에 있습니다.
 - `2026-09-25` 🎉 ceis를 GPL-3.0-or-later로 GitHub에 공개했습니다: OpenMinis 1.13을 바탕으로 한 Android 앱입니다; 릴레이, 데스크톱 앱, iPhone 앱이 그 뒤 며칠에 걸쳐 차례로 더해졌습니다.
 
-모든 버전: [releases](https://github.com/nano-muse/nanoMuse/releases).
+모든 버전: [releases](https://github.com/nano-muse/ceis/releases).
 
 ## 설치
 
 | | |
 |---|---|
-| **Android** 8.0 이상, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-1.0.5-arm64.apk): 모든 버전이 같은 키로 서명되어 있어 덮어 설치하면 됩니다 |
+| **Android** 8.0 이상, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk): 모든 버전이 같은 키로 서명되어 있어 덮어 설치하면 됩니다 |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc): Apple의 베타 심사를 통과한 베타. 이 링크로 설치합니다 · [iOS](../ios.md) |
-| **macOS** 12 이상 | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). 공증되지 않음: 처음 한 번 우클릭 → 열기 |
-| **Windows** 10 이상 | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe): 실행을 한 번 눌러 주세요 |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12 이상 | [Apple Silicon](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). 공증되지 않음: 처음 한 번 우클릭 → 열기 |
+| **Windows** 10 이상 | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe): 실행을 한 번 눌러 주세요 |
+| **Linux** x64 | [AppImage](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local`로 자신의 릴레이를, `docker compose up -d app`으로 자신의 서버에 웹 앱을. [직접 호스팅](../self-hosting.md) |
 
-모든 다운로드는 [GitHub 최신 릴리스](https://github.com/nano-muse/nanoMuse/releases/latest)에 있습니다. GitHub가 느린 곳이라면 같은 파일이 [wevvy.in/dl](https://wevvy.in/dl/)에 있습니다. 앱을 열고 이메일이나 중국 본토 휴대폰 번호로 로그인하면 에이전트가 쓸 모델이 준비됩니다. 휴대폰, 데스크톱, 웹은 하나의 계정을 공유하고 같은 대화를 보여 줍니다.
+모든 다운로드는 [GitHub 최신 릴리스](https://github.com/nano-muse/ceis/releases/latest)에 있습니다. GitHub가 느린 곳이라면 같은 파일이 [wevvy.in/dl](https://wevvy.in/dl/)에 있습니다. 앱을 열고 이메일이나 중국 본토 휴대폰 번호로 로그인하면 에이전트가 쓸 모델이 준비됩니다. 휴대폰, 데스크톱, 웹은 하나의 계정을 공유하고 같은 대화를 보여 줍니다.
 
 ## 무엇을 하나
 
@@ -86,7 +86,7 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 모든 기기가 자기 에이전트를 돌립니다. 휴대폰은 APK 안에서(proot 위의 Alpine Linux, 셸, 브라우저, MCP), 컴퓨터는 ceis Desktop 안에서(DeepSeek Harness와 손을 위한 Python 런타임). 로그인하면 릴레이에서 만나 서로 부탁할 수 있습니다. 대화 텍스트는 릴레이를 지나지만, 파일과 스크린샷은 만들어진 기기에 남습니다.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nano-muse/nanoMuse/main/assets/brand/devices-loop.png" alt="Android, 데스크톱(Mac, Windows, Linux), iPhone과 iPad, 웹 앱이 하나의 계정을 둘러싼다: 릴레이가 기기를 로그인시키고 기기 사이에서 대화를 전달한다" width="92%">
+  <img src="https://raw.githubusercontent.com/nano-muse/ceis/main/assets/brand/devices-loop.png" alt="Android, 데스크톱(Mac, Windows, Linux), iPhone과 iPad, 웹 앱이 하나의 계정을 둘러싼다: 릴레이가 기기를 로그인시키고 기기 사이에서 대화를 전달한다" width="92%">
 </p>
 
 기기에 대해서는 [docs/every-device.md](../every-device.md), 프레임은 [docs/hub.md](../hub.md), 릴레이는 [docs/cloud.md](../cloud.md), 무엇을 저장하는지는 [docs/privacy.md](../privacy.md).
@@ -111,7 +111,7 @@ VPS 한 대, 한 시간: [docs/self-hosting.md](../self-hosting.md). 세 가지 
 
 ## 기여하기
 
-실제 일에 써 보고, 어디가 고장 났는지 알리고, 그다음 작고 구체적인 것 하나를 고르세요. [CONTRIBUTING.md](../../CONTRIBUTING.md)에 설정과 규약이, [AGENTS.md](../../AGENTS.md)에 이 트리에서 코딩 에이전트가 따르는 규칙이, [로드맵](../roadmap.md)에 어디서 시작할지가 있습니다. [Issues](https://github.com/nano-muse/nanoMuse/issues) · [Discussions](https://github.com/nano-muse/nanoMuse/discussions) · [Discord](https://discord.gg/bkTySmm28X).
+실제 일에 써 보고, 어디가 고장 났는지 알리고, 그다음 작고 구체적인 것 하나를 고르세요. [CONTRIBUTING.md](../../CONTRIBUTING.md)에 설정과 규약이, [AGENTS.md](../../AGENTS.md)에 이 트리에서 코딩 에이전트가 따르는 규칙이, [로드맵](../roadmap.md)에 어디서 시작할지가 있습니다. [Issues](https://github.com/nano-muse/ceis/issues) · [Discussions](https://github.com/nano-muse/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X).
 
 ## 메인테이너
 
@@ -174,5 +174,5 @@ ceis는 독립적인 커뮤니티 프로젝트로, Meta Platforms, Inc.와 관�
 
 <p align="center">
   <em>방문해 주셔서 감사합니다 ✨ ceis.</em><br><br>
-  <img src="https://hits.sh/github.com/nano-muse/nanoMuse.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
 </p>

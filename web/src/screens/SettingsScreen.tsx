@@ -449,11 +449,11 @@ export function SettingsScreen() {
                 {t("Runtime:")} {window.location.origin} · <span className="text-fg/70">{t("the token is in the server_token file in the data folder")}</span>
               </div>
               <div>
-                <a href="https://github.com/nano-muse/nanoMuse/blob/main/docs/cli.md" target="_blank" rel="noreferrer" className="text-link underline-offset-2 hover:underline">
+                <a href="https://github.com/nano-muse/ceis/blob/main/docs/cli.md" target="_blank" rel="noreferrer" className="text-link underline-offset-2 hover:underline">
                   {t("The command line and the API")}
                 </a>
                 {" · "}
-                <a href="https://github.com/nano-muse/nanoMuse/blob/main/docs/harness.md" target="_blank" rel="noreferrer" className="text-link underline-offset-2 hover:underline">
+                <a href="https://github.com/nano-muse/ceis/blob/main/docs/harness.md" target="_blank" rel="noreferrer" className="text-link underline-offset-2 hover:underline">
                   {t("ceis on DeepSeek Harness")}
                 </a>
               </div>
@@ -654,7 +654,7 @@ function SettingsHome({ release, onOpen }: { release: UpdateView | null; onOpen:
           <MuseDivider />
           <MuseRow icon={<Hand size={22} />} label={t("Privacy policy")} onClick={() => window.open(PRIVACY_URL, "_blank", "noopener")} external />
           <MuseDivider />
-          <MuseRow icon={<MessageSquareWarning size={22} />} label={t("Feedback")} onClick={() => window.open("https://github.com/nano-muse/nanoMuse/issues/new/choose", "_blank", "noopener")} external />
+          <MuseRow icon={<MessageSquareWarning size={22} />} label={t("Feedback")} onClick={() => window.open("https://github.com/nano-muse/ceis/issues/new/choose", "_blank", "noopener")} external />
         </MuseCard>
         <MuseCaption>ceis {state.version}</MuseCaption>
       </div>

@@ -11,14 +11,14 @@
   <a href="./README_vi.md">Tiếng Việt</a>
 </p>
 <p align="center">
-  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="nano-muse%2FnanoMuse | Trendshift" width="250" height="55"/></a>
+  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="nano-muse%2Fceis | Trendshift" width="250" height="55"/></a>
 </p>
 <p align="center">
-  <a href="https://github.com/nano-muse/nanoMuse/stargazers"><img src="https://img.shields.io/github/stars/nano-muse/nanoMuse?style=flat&label=stars" alt="Étoiles GitHub"></a>
-  <a href="https://github.com/nano-muse/nanoMuse/releases"><img src="https://img.shields.io/github/downloads/nano-muse/nanoMuse/total?label=downloads" alt="Téléchargements"></a>
-  <img src="https://hits.sh/github.com/nano-muse/nanoMuse.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
-  <a href="https://github.com/nano-muse/nanoMuse/actions/workflows/ci.yml"><img src="https://github.com/nano-muse/nanoMuse/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
-  <a href="https://github.com/nano-muse/nanoMuse/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nano-muse/nanoMuse?label=license" alt="GPL-3.0-or-later"></a>
+  <a href="https://github.com/nano-muse/ceis/stargazers"><img src="https://img.shields.io/github/stars/nano-muse/ceis?style=flat&label=stars" alt="Étoiles GitHub"></a>
+  <a href="https://github.com/nano-muse/ceis/releases"><img src="https://img.shields.io/github/downloads/nano-muse/ceis/total?label=downloads" alt="Téléchargements"></a>
+  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <a href="https://github.com/nano-muse/ceis/actions/workflows/ci.yml"><img src="https://github.com/nano-muse/ceis/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
+  <a href="https://github.com/nano-muse/ceis/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nano-muse/ceis?label=license" alt="GPL-3.0-or-later"></a>
   <a href="https://arxiv.org/abs/2610.08699"><img src="https://img.shields.io/badge/arXiv-2610.08699-b31b1b" alt="Article sur arXiv"></a>
   <br>
   <a href="https://wevvy.in/"><img src="https://img.shields.io/badge/Site_web-wevvy.in-0a66e4" alt="Site web"></a>
@@ -31,7 +31,7 @@
 > [!NOTE]
 > **ceis continue d'évoluer**
 >
-> Un agent personnel ne devrait pas vivre seulement dans le cloud de quelqu'un d'autre, alors ceis est l'alternative open source et à bas coût : sur vos propres appareils, avec le modèle que vous choisissez et un relais que vous pouvez héberger vous-même. Nous voulons le construire avec des développeurs et des utilisateurs du monde entier, pour que chacun possède vraiment un agent personnel à lui. Ouvrez une [issue](https://github.com/nano-muse/nanoMuse/issues/new/choose) ou envoyez une [pull request](../../CONTRIBUTING.md) ; l'une comme l'autre aide ceis à s'améliorer.
+> Un agent personnel ne devrait pas vivre seulement dans le cloud de quelqu'un d'autre, alors ceis est l'alternative open source et à bas coût : sur vos propres appareils, avec le modèle que vous choisissez et un relais que vous pouvez héberger vous-même. Nous voulons le construire avec des développeurs et des utilisateurs du monde entier, pour que chacun possède vraiment un agent personnel à lui. Ouvrez une [issue](https://github.com/nano-muse/ceis/issues/new/choose) ou envoyez une [pull request](../../CONTRIBUTING.md) ; l'une comme l'autre aide ceis à s'améliorer.
 
 https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
@@ -40,25 +40,25 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 ## 🗞️ Actualités
 
 - `2026-10-13` ⭐ 1 000 étoiles sur GitHub, dix-huit jours après la première version, avec quatre jours dans la liste Swift de GitHub Trending en chemin ([Trendshift](https://trendshift.io/repositories/286894) : septième le 7 octobre, quatrième le 10 octobre). Merci pour chaque essai, chaque signalement et chaque pull request. Nous continuons : une version tous les quelques jours, et la [feuille de route](../roadmap.md) dit ce qui vient ensuite.
-- `2026-10-09` 🚀 La version [1.0.0 Keel](https://github.com/nano-muse/nanoMuse/releases/tag/v1.0.0) est sortie, pour le téléphone, l'ordinateur et le navigateur ; elle s'installe par-dessus la précédente en gardant vos données, et ses notes de version listent chaque changement.
+- `2026-10-09` 🚀 La version [1.0.0 Keel](https://github.com/nano-muse/ceis/releases/tag/v1.0.0) est sortie, pour le téléphone, l'ordinateur et le navigateur ; elle s'installe par-dessus la précédente en gardant vos données, et ses notes de version listent chaque changement.
 - `2026-10-08` 🤗 Notre article est sur [Hugging Face Daily Papers](https://huggingface.co/papers/2610.08699), classé troisième de la liste du 8 octobre ; questions et commentaires sont les bienvenus sur la page de l'article.
 - `2026-10-07` 📄 Notre article est disponible sur [arXiv](https://arxiv.org/abs/2610.08699) : *ceis: An Open-Source Personal Agent for Every Device You Own*, par Guangyi Liu, Yong Liu et Jiangning Zhang (université du Zhejiang) ; la citation est en bas de cette page.
 - `2026-09-25` 🎉 ceis est publié sur GitHub sous GPL-3.0-or-later : une application Android construite sur OpenMinis 1.13 ; le relais, l'application de bureau et l'application iPhone sont arrivés dans les jours suivants.
 
-Toutes les versions : [releases](https://github.com/nano-muse/nanoMuse/releases).
+Toutes les versions : [releases](https://github.com/nano-muse/ceis/releases).
 
 ## Installation
 
 | | |
 |---|---|
-| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-1.0.5-arm64.apk) : chaque version est signée avec la même clé et s'installe par-dessus la précédente |
+| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk) : chaque version est signée avec la même clé et s'installe par-dessus la précédente |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc) : une bêta validée par la revue bêta d'Apple ; le lien l'installe · [iOS](../ios.md) |
-| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). Non notarisé : clic droit → *Ouvrir* la première fois |
-| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe) : cliquez une fois sur *Exécuter quand même* |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). Non notarisé : clic droit → *Ouvrir* la première fois |
+| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe) : cliquez une fois sur *Exécuter quand même* |
+| **Linux** x64 | [AppImage](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local` pour votre propre relais ; `docker compose up -d app` pour l'app web sur un serveur à vous ; voir [auto-hébergement](../self-hosting.md) |
 
-Tous les téléchargements viennent de la [dernière version](https://github.com/nano-muse/nanoMuse/releases/latest) ; les mêmes fichiers sont sur [wevvy.in/dl](https://wevvy.in/dl/) si GitHub est lent là où vous êtes. Ouvrez l'app, connectez-vous avec une adresse e-mail ou un numéro de téléphone de Chine continentale, et l'agent a un modèle pour réfléchir. Le téléphone, le bureau et le web partagent un compte et montrent les mêmes conversations.
+Tous les téléchargements viennent de la [dernière version](https://github.com/nano-muse/ceis/releases/latest) ; les mêmes fichiers sont sur [wevvy.in/dl](https://wevvy.in/dl/) si GitHub est lent là où vous êtes. Ouvrez l'app, connectez-vous avec une adresse e-mail ou un numéro de téléphone de Chine continentale, et l'agent a un modèle pour réfléchir. Le téléphone, le bureau et le web partagent un compte et montrent les mêmes conversations.
 
 ## Ce qu'il fait
 
@@ -86,7 +86,7 @@ Tous les téléchargements viennent de la [dernière version](https://github.com
 Chaque appareil fait tourner son propre agent : le téléphone dans l'APK (Alpine Linux sous proot, un shell, un navigateur, MCP), l'ordinateur dans ceis Desktop (DeepSeek Harness avec le runtime Python pour les mains). Connectés, ils se retrouvent sur le relais et peuvent se demander des choses ; le texte des conversations passe par lui, les fichiers et les captures restent là où ils ont été faits.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nano-muse/nanoMuse/main/assets/brand/devices-loop.png" alt="Android, l'ordinateur (Mac, Windows, Linux), iPhone et iPad, et l'application web autour d'un même compte : le relais connecte les appareils et transporte la conversation entre eux" width="92%">
+  <img src="https://raw.githubusercontent.com/nano-muse/ceis/main/assets/brand/devices-loop.png" alt="Android, l'ordinateur (Mac, Windows, Linux), iPhone et iPad, et l'application web autour d'un même compte : le relais connecte les appareils et transporte la conversation entre eux" width="92%">
 </p>
 
 [docs/every-device.md](../every-device.md) explique les appareils, [docs/hub.md](../hub.md) les trames, [docs/cloud.md](../cloud.md) le relais, [docs/privacy.md](../privacy.md) ce qu'il conserve.
@@ -111,7 +111,7 @@ Un VPS, une heure : [docs/self-hosting.md](../self-hosting.md). Trois voies : au
 
 ## Contribuer
 
-Servez-vous-en pour une vraie tâche, signalez ce qui a cassé, puis choisissez quelque chose de précis : [CONTRIBUTING.md](../../CONTRIBUTING.md) décrit l'installation et les conventions, [AGENTS.md](../../AGENTS.md) les règles qu'un agent de programmation suit dans ce dépôt, et la [feuille de route](../roadmap.md) dit par où commencer. [Issues](https://github.com/nano-muse/nanoMuse/issues) · [Discussions](https://github.com/nano-muse/nanoMuse/discussions) · [Discord](https://discord.gg/bkTySmm28X).
+Servez-vous-en pour une vraie tâche, signalez ce qui a cassé, puis choisissez quelque chose de précis : [CONTRIBUTING.md](../../CONTRIBUTING.md) décrit l'installation et les conventions, [AGENTS.md](../../AGENTS.md) les règles qu'un agent de programmation suit dans ce dépôt, et la [feuille de route](../roadmap.md) dit par où commencer. [Issues](https://github.com/nano-muse/ceis/issues) · [Discussions](https://github.com/nano-muse/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X).
 
 ## Mainteneurs
 
@@ -174,5 +174,5 @@ ceis est un projet communautaire indépendant, sans lien avec Meta Platforms, In
 
 <p align="center">
   <em>Merci de votre visite ✨ ceis.</em><br><br>
-  <img src="https://hits.sh/github.com/nano-muse/nanoMuse.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
 </p>

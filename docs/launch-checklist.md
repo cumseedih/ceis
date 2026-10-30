@@ -215,7 +215,7 @@ flowchart LR
 
 - [ ] `rootfs.yml`; `android.yml` builds the local and connect APKs with a size gate
 - [ ] `release.yml`: two APKs, the rootfs, checksums, notes; rsync to `dl.ceis.dev` in the same run
-- [x] PyPI pending publisher verified (`nano-muse/nanoMuse` + `release.yml` + environment Any, matching `environment: pypi` / `id-token: write`; the name `ceis` is free)
+- [x] PyPI pending publisher verified (`nano-muse/ceis` + `release.yml` + environment Any, matching `environment: pypi` / `id-token: write`; the name `ceis` is free)
 - [ ] First PyPI release: push a `v*` tag (must equal the `pyproject.toml` version); optionally tighten the environment to `pypi`
 - [ ] Decide whether to publish an `openmuse` 0.7.x transition release that only depends on `ceis`
 - [ ] Docker; review `showcase.yml`
@@ -287,7 +287,7 @@ OAuth subscription login · Shizuku / wadb backend · several instances and mode
 - An Android 11+ phone with USB debugging, connected to this machine (`adb devices` sees it); ideally a 小米 or 华为 as a second device
 - A 高德 web-service key; one official DeepSeek key; the 腾讯会议 `tmeet` OAuth step clicked in a browser when we get there; a 飞书 "project group" that can be filmed and one or two accounts that can be @-mentioned
 - [x] The PyPI pending publisher (verified)
-- Confirm `ghcr.io/nano-muse/nanoMuse` is public
+- Confirm `ghcr.io/nano-muse/ceis` is public
 - The four Android signing secrets (`ANDROID_KEYSTORE_B64` / `ANDROID_KEYSTORE_PASSWORD` / `ANDROID_KEY_ALIAS` / `ANDROID_KEY_PASSWORD`; the keystore lives in `~/.openmuse-release/`): added by the owner, or with explicit authorisation
 - Two deploy keys, pasted once generated: a deploy key for `nano-muse.github.io` and the server rsync user's private key, both as repository secrets
 - A look at the Hong Kong server's traffic allowance (80 MB × downloads)

@@ -43,7 +43,7 @@ struct AboutView: View {
                                     .stroke(Color(UIColor.separator), lineWidth: 0.5)
                             )
                     }
-                    Text("nanoMuse")
+                    Text("ceis")
                         .font(.title2.bold())
                     Text("Version \(appVersion)")
                         .font(.subheadline)
@@ -64,7 +64,7 @@ struct AboutView: View {
 
             // MARK: - Links
             Section("Links") {
-                Link(destination: URL(string: "https://github.com/nano-muse/nanoMuse")!) {
+                Link(destination: URL(string: "https://github.com/nano-muse/ceis")!) {
                     Label {
                         HStack {
                             Text("GitHub Repository")
@@ -78,7 +78,7 @@ struct AboutView: View {
                         Image(systemName: "link.circle.fill")
                     }
                 }
-                Link(destination: URL(string: "https://github.com/nano-muse/nanoMuse/issues")!) {
+                Link(destination: URL(string: "https://github.com/nano-muse/ceis/issues")!) {
                     Label {
                         HStack {
                             Text("Report an Issue")
@@ -94,7 +94,7 @@ struct AboutView: View {
                 }
             }
 
-            // nanoMuse: where this comes from, and what it is not.
+            // ceis: where this comes from, and what it is not.
             Section(AppLocalized("Credits")) {
                 Link(destination: URL(string: "https://github.com/OpenMinis/OpenMinis")!) {
                     Label {
@@ -112,7 +112,7 @@ struct AboutView: View {
                 Label {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(AppLocalized("Not affiliated with Meta"))
-                        Text(AppLocalized("Muse is a trademark of Meta Platforms, Inc. nanoMuse is an independent free-software project."))
+                        Text(AppLocalized("Muse is a trademark of Meta Platforms, Inc. ceis is an independent free-software project."))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

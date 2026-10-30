@@ -13,7 +13,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import { Service } from '@deepseek-ai/cordis'
-import NanomuseCloud, { API_PREFIX, CHAT_ON_CLOUD_MESSAGE, LLM_ROW, PROVIDER_ID, TOKEN_REF } from '../lib/cloud.js'
+import CeisCloud, { API_PREFIX, CHAT_ON_CLOUD_MESSAGE, LLM_ROW, PROVIDER_ID, TOKEN_REF } from '../lib/cloud.js'
 import { cloudOffFailure, refusalCard, refusalKindOf } from '../lib/refusals.js'
 
 process.env.CEIS_PY = join(tmpdir(), 'ceis-runtime-that-does-not-exist')
@@ -79,7 +79,7 @@ async function cloud({ defaultModel, off = false } = {}) {
   const fake = fakeContext({ defaultModel })
   await fake.ctx.credentials.set(TOKEN_REF, 'account-key')
   await writeFile(statePath, JSON.stringify({ account: { id: 'acct-1', channel: 'email', hint: 'a***@example.org', member: false, region: 'intl' }, models: ACCOUNT_MODELS, update: { checkedAt: Date.now() }, ...(off ? { cloudModelsOff: true } : {}) }))
-  const svc = new NanomuseCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
+  const svc = new CeisCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
   svc.hub.start = () => undefined
   svc.refresh = async () => svc.status()
   await svc[Service.init]()

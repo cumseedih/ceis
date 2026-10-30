@@ -10,7 +10,7 @@ const makeHome = () => mkdtemp(join(tmpdir(), 'ceis-home-'))
 
 test('happy path: the old folder moves and the app uses the new location', async () => {
   const home = await makeHome()
-  const prev = join(home, 'nanoMuse')
+  const prev = join(home, 'ceis')
   const { mkdir } = await import('node:fs/promises')
   await mkdir(prev, { recursive: true })
   await writeFile(join(prev, 'keep.txt'), 'mine')
@@ -22,7 +22,7 @@ test('happy path: the old folder moves and the app uses the new location', async
 
 test('failure path: the move throws, the app falls back to the old location', async () => {
   const home = await makeHome()
-  const prev = join(home, 'nanoMuse')
+  const prev = join(home, 'ceis')
   const { mkdir } = await import('node:fs/promises')
   await mkdir(prev, { recursive: true })
   await writeFile(join(prev, 'keep.txt'), 'mine')
@@ -36,13 +36,13 @@ test('failure path: the move throws, the app falls back to the old location', as
 test('both exist: nothing moves, nothing is deleted, the new location wins', async () => {
   const home = await makeHome()
   const { mkdir } = await import('node:fs/promises')
-  await mkdir(join(home, 'nanoMuse'), { recursive: true })
   await mkdir(join(home, 'ceis'), { recursive: true })
-  await writeFile(join(home, 'nanoMuse', 'old.txt'), 'old')
+  await mkdir(join(home, 'ceis'), { recursive: true })
+  await writeFile(join(home, 'ceis', 'old.txt'), 'old')
   await writeFile(join(home, 'ceis', 'new.txt'), 'new')
   const folder = await homeWorkspaceDir(home)
   assert.equal(folder, join(home, 'ceis'))
-  assert.equal(await readFile(join(home, 'nanoMuse', 'old.txt'), 'utf8'), 'old')
+  assert.equal(await readFile(join(home, 'ceis', 'old.txt'), 'utf8'), 'old')
   assert.equal(await readFile(join(home, 'ceis', 'new.txt'), 'utf8'), 'new')
   await rm(home, { recursive: true, force: true })
 })

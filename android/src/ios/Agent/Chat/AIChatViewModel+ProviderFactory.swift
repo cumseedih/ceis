@@ -160,7 +160,7 @@ extension AIChatViewModel {
             let orProvider = OpenAIProvider(apiKey: key, model: entry.model, customBaseURL: customBase ?? "https://openrouter.ai/api", appendV1Suffix: customBase == nil)
             orProvider.extraHeaders = [
                 "HTTP-Referer": "https://github.com/OpenMinis/OpenMinis",
-                "X-Title": "nanoMuse App",
+                "X-Title": "ceis App",
             ]
             orProvider.useOpenRouterCompat = true
             return LLMProviderFactory.applyCustomUserAgent(orProvider, instance: instance)
@@ -263,7 +263,7 @@ extension AIChatViewModel {
     private static let resolveNilSentinel = "\u{0}nil"
 
     func resolveCurrentEntry() -> ModelEntry? {
-        if let once = NanoMuseCloudOnce.entry() { return once } // nanoMuse: "Use nanoMuse Cloud this time" takes this one turn, the binding stays
+        if let once = CeisCloudOnce.entry() { return once } // ceis: "Use ceis Cloud this time" takes this one turn, the binding stays
         let store = ProviderConfigStore.shared
         let key = ResolveCacheKey(
             sessionId: sessionId ?? "",
@@ -291,8 +291,8 @@ extension AIChatViewModel {
         if let sid = sessionId, let binding = store.binding(for: sid) {
             switch binding.primarySource {
             case .directEntry(let entryId, _):
-                // nanoMuse: a pinned entry whose provider is switched off (nanoMuse Cloud with
-                // *Use nanoMuse Cloud models* off, or any disabled provider) falls through to the
+                // ceis: a pinned entry whose provider is switched off (ceis Cloud with
+                // *Use ceis Cloud models* off, or any disabled provider) falls through to the
                 // default group like a deleted one, so the switch is honoured by old chats too.
                 if let entry = store.entry(for: entryId),
                    store.instance(for: entry.providerInstanceId)?.isEnabled ?? false {
@@ -477,7 +477,7 @@ extension AIChatViewModel {
             // Explicit user pick: honor it as long as the entry still exists
             // (deleted → nil so the caller can fall through, mirroring the
             // historical auto-path behavior).
-            // nanoMuse: and its provider is still switched on (see resolveCurrentEntryUncached).
+            // ceis: and its provider is still switched on (see resolveCurrentEntryUncached).
             guard let entry = store.entry(for: entryId),
                   store.instance(for: entry.providerInstanceId)?.isEnabled ?? false else { return nil }
             return entry

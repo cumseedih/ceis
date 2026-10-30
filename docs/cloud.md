@@ -387,7 +387,7 @@ it is off; the person is told `403 account_disabled` when they sign in with a co
 or with the right password (a wrong one is answered like any wrong password).
 
 ceis asks for one thing in return: a star on
-[GitHub](https://github.com/nano-muse/nanoMuse), which is what helps the
+[GitHub](https://github.com/nano-muse/ceis), which is what helps the
 project be found. The moments are the relay's to set, not the app's (0.1.35):
 `GET /v1/nudges` says when an ask is fair: after the third, tenth and
 thirtieth task it finishes for you, on the seventh and thirtieth day you open

@@ -22,12 +22,12 @@ struct ProviderInstancesView: View {
 
     var body: some View {
         List {
-            // nanoMuse: the relay first — a phone number or an e-mail address, no key needed.
+            // ceis: the relay first — a phone number or an e-mail address, no key needed.
             Section {
                 NavigationLink {
-                    NanoMuseCloudView()
+                    CeisCloudView()
                 } label: {
-                    NanoMuseCloudRow()
+                    CeisCloudRow()
                 }
             }
             // [T-mimo-shadow-voice] EVERY instance appears under its providerType
@@ -57,8 +57,8 @@ struct ProviderInstancesView: View {
                                 // position for Delete. `allowsFullSwipe: false`
                                 // so a long swipe cannot delete a provider (and
                                 // its keys) without the confirmation below.
-                                // nanoMuse: not on the Cloud instance; it is the account (see ProviderInstanceDetailView).
-                                if instance.id != NanoMuseCloud.instance?.id {
+                                // ceis: not on the Cloud instance; it is the account (see ProviderInstanceDetailView).
+                                if instance.id != CeisCloud.instance?.id {
                                     Button(role: .destructive) {
                                         pendingDeleteInstance = instance
                                     } label: {

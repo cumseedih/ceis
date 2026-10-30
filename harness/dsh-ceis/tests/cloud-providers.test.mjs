@@ -1,4 +1,4 @@
-// The host's half of own keys with capabilities (C11), through `NanomuseCloud` itself: the
+// The host's half of own keys with capabilities (C11), through `CeisCloud` itself: the
 // capability rule over the account, the rows and the ChatGPT sign-in; `GET /providers` for the
 // "ways on" (grouped by region the way the browser half's `groupsOf` does); a key saved by name
 // only; a removed row taking the choices that pointed at it. No Electron, no relay, no network:
@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import { Service } from '@deepseek-ai/cordis'
-import NanomuseCloud, { API_PREFIX, LLM_ROW, PROVIDER_ID, STOCK_DEFAULT_MODEL, TOKEN_REF } from '../lib/cloud.js'
+import CeisCloud, { API_PREFIX, LLM_ROW, PROVIDER_ID, STOCK_DEFAULT_MODEL, TOKEN_REF } from '../lib/cloud.js'
 import { CHATGPT_KEY_REF, CHATGPT_PROVIDER, waysOn } from '../lib/providers.js'
 
 // no bundled runtime here: the ChatGPT row says so instead of spawning anything
@@ -85,7 +85,7 @@ async function cloud({ signedIn = false, defaultModel } = {}) {
   } else {
     await writeFile(statePath, JSON.stringify({ update: { checkedAt: Date.now() } }))
   }
-  const svc = new NanomuseCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
+  const svc = new CeisCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
   // the hub and the account refresh would reach the relay: not here
   svc.hub.start = () => undefined
   svc.refresh = async () => svc.status()
@@ -314,7 +314,7 @@ test('the thinking level for an own key: the saved row declares the vendor’s d
     for (const p of Object.values(stale)) for (const m of p.models) { delete m.reasoningEfforts; delete m.compat }
     const fake = fakeContext()
     fake.settings[LLM_ROW].providers = stale
-    const again = new NanomuseCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath: out.statePath })
+    const again = new CeisCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath: out.statePath })
     again.hub.start = () => undefined
     again.refresh = async () => again.status()
     await again[Service.init]()
@@ -518,7 +518,7 @@ test('a row written before the endpoint list (#294) carries no id of its own: it
   const row = { provider: 'custom', label: 'Gateway', protocol: 'openai', baseURL: 'http://127.0.0.1:9/v1', keyRef: 'CEIS_KEY_CUSTOM', capabilities: ['chat', 'vision'], models: [{ id: 'gw-vl', name: 'gw-vl', vision: true, kind: 'chat' }], at: 1 }
   await writeFile(statePath, JSON.stringify({ providers: { custom: row }, handsProvider: 'custom', handsModel: 'gw-vl', update: { checkedAt: Date.now() } }))
   await fake.ctx.credentials.set('CEIS_KEY_CUSTOM', 'sk-old')
-  const svc = new NanomuseCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
+  const svc = new CeisCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath })
   svc.hub.start = () => undefined
   svc.refresh = async () => svc.status()
   try {
@@ -553,7 +553,7 @@ test('OpenCode Go is written as the adapter’s catalog route (no api, no base U
     // (api + baseURL), which sends no session id
     const fake = fakeContext()
     fake.settings[LLM_ROW].providers = JSON.parse(JSON.stringify(out.settings[LLM_ROW].providers))
-    const again = new NanomuseCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath: out.statePath })
+    const again = new CeisCloud(fake.ctx, { baseURL: 'https://relay.invalid', deviceName: 'test-desktop', statePath: out.statePath })
     again.hub.start = () => undefined
     again.refresh = async () => again.status()
     await again[Service.init]()

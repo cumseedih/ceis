@@ -16,7 +16,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const source = resolve(root, 'harness/dsh-ceis/src/connectors-catalogue.ts')
 const targets = [
   resolve(root, 'android/src/android/app/src/main/assets/ceis/connectors.json'),
-  resolve(root, 'android/src/ios/NanoMuse/Resources/connectors.json'),
+  resolve(root, 'android/src/ios/Ceis/Resources/connectors.json'),
 ]
 
 const { CATALOGUE, CATEGORY_ORDER } = await import(pathToFileURL(source).href)

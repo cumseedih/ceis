@@ -275,7 +275,7 @@ def test_update_check_caches_and_survives_failures(monkeypatch):
         calls += 1
         self.checked_at = time.monotonic()
         self.latest = "0.1.21"
-        self.url = "https://github.com/nano-muse/nanoMuse/releases/tag/v0.1.21"
+        self.url = "https://github.com/nano-muse/ceis/releases/tag/v0.1.21"
         self.error = None
 
     monkeypatch.setattr(update.UpdateCheck, "_check", fake_check)

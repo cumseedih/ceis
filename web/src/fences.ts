@@ -1,13 +1,13 @@
 /**
  * Fenced blocks the model writes for the app, not for the person (contract C4).
  *
- * The runtime reads them (`wevvy/fences.py`); the browser only has to hide them. The
- * one tag today is ```` ```wevvy-naming ````: the first conversation's report of the
+ * The runtime reads them (`ceis/fences.py`); the browser only has to hide them. The
+ * one tag today is ```` ```ceis-naming ````: the first conversation's report of the
  * name the person gave and the name the agent chose. The desktop (`fences.ts`) and the
  * phones strip the same way.
  */
 
-export const FENCE_NAMING = "wevvy-naming";
+export const FENCE_NAMING = "ceis-naming";
 
 function escapeTag(tag: string): string {
   return tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -17,7 +17,7 @@ function escapeTag(tag: string): string {
  * The text without the tagged fences. Complete blocks go whole; an opener without its
  * closing fence takes the rest of the text with it, so the person never sees half a block.
  * While a reply is still streaming (`streaming`), a trailing piece of the opener itself
- * (`` ``` `` or `` ```wevvy-na ``) goes too, so nothing flashes before the block is
+ * (`` ``` `` or `` ```ceis-na ``) goes too, so nothing flashes before the block is
  * recognised. Trailing whitespace the fence left goes; text without the tag is unchanged.
  */
 export function stripFences(text: string, tag: string, streaming = false): string {

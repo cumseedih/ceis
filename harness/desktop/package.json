@@ -1,8 +1,8 @@
 {
-  "name": "wevvy-desktop",
+  "name": "ceis-desktop",
   "private": true,
   "version": "1.0.5",
-  "description": "wevvy Desktop: the wevvy desktop built on DeepSeek Harness. The harness's web app in a window of our own, with wevvy's account, face, Hands and Reach as plugins and the runtime for the hands bundled.",
+  "description": "ceis Desktop: the ceis desktop built on DeepSeek Harness. The harness's web app in a window of our own, with ceis's account, face, Hands and Reach as plugins and the runtime for the hands bundled.",
   "homepage": "https://wevvy.in/",
   "license": "GPL-3.0-or-later",
   "engines": {

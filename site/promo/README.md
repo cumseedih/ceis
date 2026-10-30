@@ -7,7 +7,7 @@ frames to ffmpeg, so a render is identical every time and a re-cut is an HTML ed
 
 ```bash
 cd web && npm run site:mascot                 # site/assets: mascot, icons, screenshots
-cd .. && python site/promo/render.py          # site/media/wevvy-promo.mp4 + poster (~4 min)
+cd .. && python site/promo/render.py          # site/media/ceis-promo.mp4 + poster (~4 min)
 ```
 
 Open `storyboard.html` through any static server (`python3 -m http.server` in `site/`) to
@@ -22,12 +22,12 @@ watch it play in real time in a browser; under Playwright the page does not tick
 | 0:24 | One agent, many hands | Eight tiles: web & files, sandboxed shell, MCP · 高德, CLIs · 飞书, skills, browser, the phone screen, all in one task. |
 | 0:32 | The screen | A 12306-style train list, a tap on the fastest train, a tap on pay — and the payment approval card that stops it. |
 | 0:40 | The screens | Feed, Goals, Library and Chat screenshots slide in. |
-| 0:47 | Your machine, any model | A terminal types `uv tool install wevvy` and `wevvy serve`; model chips. |
+| 0:47 | Your machine, any model | A terminal types `uv tool install ceis` and `ceis serve`; model chips. |
 | 0:54 | Where it runs | Phone now, web next, desktop later. |
 | 1:00 | End card | The happy panda, the repository, the site. |
 
 There is no soundtrack; the file plays muted in feeds and the README, and a track can be
-muxed in later with `ffmpeg -i wevvy-promo.mp4 -i track.m4a -c copy -shortest out.mp4`.
+muxed in later with `ffmpeg -i ceis-promo.mp4 -i track.m4a -c copy -shortest out.mp4`.
 
 The 12306 screen and the group name are mock-ups drawn for the film; the app's own showcase
 runs the real apps on the simulated phone (`demo/mobilegym/`).

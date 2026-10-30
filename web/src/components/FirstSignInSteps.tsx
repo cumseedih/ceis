@@ -163,8 +163,8 @@ export function FirstSignInSteps() {
               <li className="flex items-start gap-2.5 rounded-2xl bg-surface-2 px-3 py-2.5">
                 <CloudCog size={16} className="mt-0.5 shrink-0 text-accent" />
                 <span>
-                  <span className="font-medium">{t("Use the wevvy Cloud model")}</span>
-                  <span className="block text-muted">{t("wevvy Cloud answers the chat and drives the hands, with a free allowance per account paid by the developer. Nothing to configure.")}</span>
+                  <span className="font-medium">{t("Use the ceis Cloud model")}</span>
+                  <span className="block text-muted">{t("ceis Cloud answers the chat and drives the hands, with a free allowance per account paid by the developer. Nothing to configure.")}</span>
                 </span>
               </li>
               <li className="flex items-start gap-2.5 rounded-2xl bg-surface-2 px-3 py-2.5">
@@ -191,7 +191,7 @@ export function FirstSignInSteps() {
                 {t("I have my own API key")}
               </button>
               <button type="button" disabled={busy} onClick={() => void done()} className={cx(primaryBtn, "flex-1 py-3")}>
-                {t("Use the wevvy Cloud model")} <ArrowRight size={16} />
+                {t("Use the ceis Cloud model")} <ArrowRight size={16} />
               </button>
             </div>
           </div>

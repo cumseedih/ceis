@@ -14,9 +14,9 @@ from typing import Any
 
 import pytest
 
-from wevvy.channels import feishu
-from wevvy.channels.base import InboundMessage
-from wevvy.channels.feishu import FeishuChannel, _post_text, _strip_mentions
+from ceis.channels import feishu
+from ceis.channels.base import InboundMessage
+from ceis.channels.feishu import FeishuChannel, _post_text, _strip_mentions
 
 
 class Bus:
@@ -298,7 +298,7 @@ def test_rich_text_and_mentions():
 def test_sdk_missing_is_a_hint(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setitem(sys.modules, "lark_oapi", None)
     assert FeishuChannel.sdk_available() is False
-    assert FeishuChannel.install_hint() == "pip install 'wevvy[feishu]'"
+    assert FeishuChannel.install_hint() == "pip install 'ceis[feishu]'"
     assert FeishuChannel.missing({"app_id": "x"}) == ["app_secret"]
 
 

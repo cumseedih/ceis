@@ -1,7 +1,7 @@
 /**
  * The model slots as the web console shows them (the Models contract, 0.1.41): a row's
  * value as `<provider> · <model>`, and what the picker of one capability offers — the
- * wevvy Cloud group when signed in, the chat model's provider when it has the
+ * ceis Cloud group when signed in, the chat model's provider when it has the
  * capability (its key serves), then every catalogue provider that has it (a key to add).
  * Pure functions; `models.test.ts` checks them.
  */
@@ -11,9 +11,9 @@ import { modelSees } from "./region";
 import type { CatalogueProvider, CustomEndpoint, MediaSlotData } from "./types";
 
 /** what the account's model is called when it stands in a provider list (the runtime's id) */
-export const CLOUD_ID = "wevvy_cloud";
+export const CLOUD_ID = "ceis_cloud";
 /** the vault reference the runtime keeps the account key under; a slot set to the relay names it */
-export const CLOUD_KEY_REF = "{{vault:WEVVY_CLOUD_KEY}}";
+export const CLOUD_KEY_REF = "{{vault:CEIS_CLOUD_KEY}}";
 /** the picker's entry for a host the catalogue does not list */
 export const CUSTOM_ID = "custom";
 /** a picker value or provider tile that names a custom endpoint of the runtime's list: `endpoint:<id>` (#294) */
@@ -90,9 +90,9 @@ export function entryFor(provider: string, baseUrl: string, list: CatalogueProvi
   );
 }
 
-/** The name a provider id shows in a row: wevvy Cloud, the catalogue's name, or the host. */
+/** The name a provider id shows in a row: ceis Cloud, the catalogue's name, or the host. */
 export function providerLabel(id: string, locale: string, baseUrl = "", list: CatalogueProvider[] = CATALOGUE): string {
-  if (id === CLOUD_ID) return "wevvy Cloud";
+  if (id === CLOUD_ID) return "ceis Cloud";
   if (id === "chatgpt") return "ChatGPT";
   const entry = list.find((p) => p.id === id);
   if (entry && id !== CUSTOM_ID) return providerName(entry, locale);
@@ -108,7 +108,7 @@ export function slotValue(
 ): string {
   if (!slot.effective_provider) return "";
   // the account's own slots never name the model: the label is the cloud
-  if (slot.effective_source === "cloud") return "wevvy Cloud";
+  if (slot.effective_source === "cloud") return "ceis Cloud";
   const own = endpointNamed(slot.endpoint, endpoints);
   const name = own ? endpointLabel(own) : providerLabel(slot.effective_provider, locale, slot.base_url, list);
   return slot.effective_model ? `${name} · ${slot.effective_model}` : name;
@@ -125,7 +125,7 @@ export interface HandsSlot {
 }
 
 /**
- * The hands row's value, `<provider> · <model>`, from the effective fields: wevvy Cloud
+ * The hands row's value, `<provider> · <model>`, from the effective fields: ceis Cloud
  * when the relay's hands model serves, the hands' own host when one is set, else the chat
  * model's provider. An endpoint of the list reads its name. "" while the runtime does not say.
  */
@@ -139,7 +139,7 @@ export function handsValue(
   const model = gui.effective_model ?? "";
   if (!model) return "";
   // the account's own slots never name the model: the label is the cloud
-  if (gui.effective_source === "cloud") return "wevvy Cloud";
+  if (gui.effective_source === "cloud") return "ceis Cloud";
   // a protocol with an unlisted host is the host, never the OpenAI entry the word also names
   const labelOf = (provider: string, baseUrl: string) =>
     providerLabel(entryFor(provider, baseUrl, list)?.id ?? (PROTOCOLS.includes(provider) ? CUSTOM_ID : provider), locale, baseUrl, list);
@@ -147,7 +147,7 @@ export function handsValue(
   const ownHands = endpointNamed(gui.endpoint, endpoints);
   const ownChat = endpointNamed(llm.endpoint, endpoints);
   // the account's own slots never name the model: the label is the cloud
-  if (llm.cloud) return "wevvy Cloud";
+  if (llm.cloud) return "ceis Cloud";
   if (gui.effective_source === "gui" && ownHands) name = endpointLabel(ownHands);
   else if (gui.effective_source === "gui" && (gui.provider_id || gui.base_url || !PROTOCOLS.includes(gui.provider || "openai")))
     name = gui.provider_id ? providerLabel(gui.provider_id, locale, gui.base_url, list) : labelOf(gui.provider, gui.base_url);
@@ -156,7 +156,7 @@ export function handsValue(
 }
 
 export interface MediaChoice {
-  /** `wevvy_cloud`, a catalogue id, `endpoint:<id>` for an endpoint of the list, or `custom` */
+  /** `ceis_cloud`, a catalogue id, `endpoint:<id>` for an endpoint of the list, or `custom` */
   value: string;
   label: string;
   group: "cloud" | "chat" | "endpoints" | "add";
@@ -166,7 +166,7 @@ export interface MediaChoice {
 }
 
 /**
- * What the picker of one slot offers, in order: wevvy Cloud when signed in; the chat
+ * What the picker of one slot offers, in order: ceis Cloud when signed in; the chat
  * model's provider when it is an own provider with the capability; the endpoints of the
  * list (their own keys serve); then every catalogue provider with the capability for the
  * region (the chat provider not twice), and a host of one's own last. A provider without
@@ -187,7 +187,7 @@ export function mediaChoices(
 ): MediaChoice[] {
   const list = opts.list ?? CATALOGUE;
   const out: MediaChoice[] = [];
-  if (opts.signedIn) out.push({ value: CLOUD_ID, label: "wevvy Cloud", group: "cloud", needsKey: false, entry: null });
+  if (opts.signedIn) out.push({ value: CLOUD_ID, label: "ceis Cloud", group: "cloud", needsKey: false, entry: null });
   const chat = opts.chat.cloud ? null : entryFor(opts.chat.provider, opts.chat.base_url, list);
   if (chat && chat.capabilities.includes(cap)) {
     out.push({ value: chat.id, label: providerName(chat, opts.locale), group: "chat", needsKey: false, entry: chat });

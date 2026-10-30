@@ -60,7 +60,7 @@ object ShortcutPinner {
     }
 
     /**
-     * wevvy: pin a shortcut that opens the app itself (Settings > Add to home screen),
+     * ceis: pin a shortcut that opens the app itself (Settings > Add to home screen),
      * through the same ShortcutManagerCompat path as the web-app pin flow. Returns
      * whether the request was handed to the launcher; the caller reports the outcome
      * in its own copy.
@@ -72,7 +72,7 @@ object ShortcutPinner {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
         val label = context.getString(R.string.app_name)
-        val info = ShortcutInfoCompat.Builder(context, "wevvy_app_home")
+        val info = ShortcutInfoCompat.Builder(context, "ceis_app_home")
             .setShortLabel(label)
             .setLongLabel(label)
             .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher))

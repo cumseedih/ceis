@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node
 import { join } from "node:path";
 
 /**
- * The client of "wevvy Computer Use.app" (mac/computer-use/), the small native app that
+ * The client of "ceis Computer Use.app" (mac/computer-use/), the small native app that
  * holds the hands' two macOS permissions and does the capture and the input.
  *
  * Why a separate app: macOS attributes a TCC request to the *responsible process* — the
@@ -17,7 +17,7 @@ import { join } from "node:path";
  * way, and Node cannot set it — so: `open`, never `spawn` of the binary.) Codex's "Codex
  * Computer Use.app" is the same arrangement.
  *
- * What that buys: the panes list *wevvy Computer Use*, granted and revoked on its own;
+ * What that buys: the panes list *ceis Computer Use*, granted and revoked on its own;
  * Screen Recording — which reaches freshly started processes only — takes effect after the
  * helper restarts, not the whole app; the picture comes from ScreenCaptureKit on macOS 14+
  * (CGDisplayCreateImage before — on macOS 26/27 that call returns nil even with the grant,
@@ -45,10 +45,10 @@ import { join } from "node:path";
  * Nothing here needs Electron: main.ts passes the paths in, and tests run it under Node.
  */
 
-export const HELPER_NAME = "wevvy Computer Use";
-export const HELPER_BUNDLE_ID = "com.wevvy.desktop.computer-use";
+export const HELPER_NAME = "ceis Computer Use";
+export const HELPER_BUNDLE_ID = "com.ceis.desktop.computer-use";
 /** The permission text when the helper is the one that needs the switch (no app restart involved). */
-export const HELPER_SCREEN_PERMISSION_TEXT = "macOS: switch on wevvy Computer Use under System Settings → Privacy & Security → Screen Recording. The helper restarts by itself; the app does not need to.";
+export const HELPER_SCREEN_PERMISSION_TEXT = "macOS: switch on ceis Computer Use under System Settings → Privacy & Security → Screen Recording. The helper restarts by itself; the app does not need to.";
 
 export type HelperScreenState = "granted" | "denied" | "unknown";
 
@@ -137,7 +137,7 @@ export interface QuarantineOutcome {
 }
 
 /** The text of a flag that could not be removed — the one case where the person has to act. */
-export const QUARANTINE_KEPT_TEXT = "the helper bundle carries macOS's quarantine flag and it could not be removed; move wevvy to the Applications folder and open it again";
+export const QUARANTINE_KEPT_TEXT = "the helper bundle carries macOS's quarantine flag and it could not be removed; move ceis to the Applications folder and open it again";
 
 /** A path under Gatekeeper's App Translocation: a read-only copy with a random name, different on every launch. */
 export function translocated(path: string): boolean {
@@ -195,11 +195,11 @@ function openApp(appPath: string, args: string[]): Promise<void> {
 }
 
 /**
- * Where the helper bundle is: `WEVVY_COMPUTER_USE_APP` when set; inside the packaged app at
+ * Where the helper bundle is: `CEIS_COMPUTER_USE_APP` when set; inside the packaged app at
  * Contents/Helpers; in development, what mac/computer-use/build.sh built.
  */
 export function defaultHelperPath(execPath: string, packaged: boolean, projectDir: string, env: NodeJS.ProcessEnv = process.env): string {
-  if (env.WEVVY_COMPUTER_USE_APP) return env.WEVVY_COMPUTER_USE_APP;
+  if (env.CEIS_COMPUTER_USE_APP) return env.CEIS_COMPUTER_USE_APP;
   if (packaged) return join(execPath, "..", "..", "Helpers", `${HELPER_NAME}.app`);
   return join(projectDir, "mac", "computer-use", "build", `${HELPER_NAME}.app`);
 }
@@ -326,7 +326,7 @@ export class MacHelper {
       // the app itself under App Translocation: the helper inside it is read-only and
       // quarantined too, and would start translocated in turn — grants to a path that changes
       // every launch are no grants; better the plain reason than a helper that half works
-      if (translocated(appPath)) throw new Error("wevvy is running from a temporary copy macOS made of it (App Translocation); move it to the Applications folder and open it again");
+      if (translocated(appPath)) throw new Error("ceis is running from a temporary copy macOS made of it (App Translocation); move it to the Applications folder and open it again");
       const quarantine = (this.options.quarantine ?? clearQuarantine)(appPath);
       if (quarantine.result === "removed") this.log("removed the quarantine flag from the bundled helper, so macOS starts it in place and the privacy panes list it");
       else if (quarantine.result === "kept") throw new Error(`${QUARANTINE_KEPT_TEXT}${quarantine.detail ? ` (${quarantine.detail})` : ""}`);

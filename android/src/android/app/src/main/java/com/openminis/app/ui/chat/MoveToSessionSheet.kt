@@ -99,7 +99,7 @@ fun MoveToSessionSheet(
 
     LaunchedEffect(Unit) {
         sessions = withContext(Dispatchers.IO) {
-            val hidden = io.github.wevvy.sync.ConversationSync.hidden.value + io.github.wevvy.feed.FeedFlow.hidden.value // wevvy: another account's chats are not a place to move a message to (contract C10), nor is the feed's working conversation
+            val hidden = io.github.ceis.sync.ConversationSync.hidden.value + io.github.ceis.feed.FeedFlow.hidden.value // ceis: another account's chats are not a place to move a message to (contract C10), nor is the feed's working conversation
             chatRepository.dao.listSessions().filter { it.id != currentSessionId && it.id !in hidden }
         }
     }
@@ -290,10 +290,10 @@ private fun categoryStyle(category: String?): CategoryStyle {
         "research"     -> CategoryStyle(Icons.Outlined.Language, Color(0xFF30B0C7))
         "analysis"     -> CategoryStyle(Icons.Outlined.BarChart, Color(0xFF5856D6))
         "creative"     -> CategoryStyle(Icons.Outlined.Brush, Color(0xFFFF2D55))
-        "chat"         -> CategoryStyle(Icons.Outlined.Forum, io.github.wevvy.ui.theme.WevvyColors.success)
+        "chat"         -> CategoryStyle(Icons.Outlined.Forum, io.github.ceis.ui.theme.CeisColors.success)
         "math"         -> CategoryStyle(Icons.Outlined.Calculate, Color(0xFF9B59B6))
         "translation"  -> CategoryStyle(Icons.Outlined.Translate, Color(0xFF00BCD4))
-        "health"       -> CategoryStyle(Icons.Outlined.Favorite, io.github.wevvy.ui.theme.WevvyColors.error)
+        "health"       -> CategoryStyle(Icons.Outlined.Favorite, io.github.ceis.ui.theme.CeisColors.error)
         "finance"      -> CategoryStyle(Icons.Outlined.Payments, Color(0xFF00C7BE))
         "travel"       -> CategoryStyle(Icons.Outlined.Map, Color(0xFFF09A37))
         "education"    -> CategoryStyle(Icons.Outlined.Book, Color(0xFF3478F6))

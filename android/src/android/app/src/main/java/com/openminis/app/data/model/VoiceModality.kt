@@ -89,11 +89,11 @@ val LLMModel.hasAudioOutput: Boolean
  */
 val LLMModel.hasImageInput: Boolean
     get() = normalizedInputs?.contains("image")
-        // wevvy: nobody declared the modalities (a hand-typed id, a provider
+        // ceis: nobody declared the modalities (a hand-typed id, a provider
         // that lists ids only, a model newer than the catalog). Unknown used to
         // read as "cannot see" and the model was told so in its own prompt;
-        // now the name decides (io.github.wevvy.chat.VisionFamilies).
-        ?: io.github.wevvy.chat.VisionFamilies.looksLikeItSees(id, displayName)
+        // now the name decides (io.github.ceis.chat.VisionFamilies).
+        ?: io.github.ceis.chat.VisionFamilies.looksLikeItSees(id, displayName)
 
 /** The provider or the catalog said so; no guessing from the name. */
 val LLMModel.declaresImageInput: Boolean

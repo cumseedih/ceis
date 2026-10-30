@@ -1,5 +1,5 @@
 """The runtime's words follow the voice rule in AGENTS.md: a sentence a person or the model
-reads carries no em dash. This looks at every string literal under ``wevvy/`` (docstrings
+reads carries no em dash. This looks at every string literal under ``ceis/`` (docstrings
 and comments are for contributors and are not checked), the built-in skills, the provider
 catalogue and the example configuration, so a dash does not come back unnoticed."""
 
@@ -11,13 +11,13 @@ import tokenize
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = ROOT / "wevvy"
+PACKAGE = ROOT / "ceis"
 DASH = "—"  # the Chinese "——" is two of them
 
 # character sets that strip or match a dash the model may have written: not sentences
 ALLOWED = {
-    ("wevvy/computer/screen.py", r'r"\s+[-—–]\s+([^-—–]+)$"'),
-    ("wevvy/prompts.py", '" :,-—\\n"'),
+    ("ceis/computer/screen.py", r'r"\s+[-—–]\s+([^-—–]+)$"'),
+    ("ceis/prompts.py", '" :,-—\\n"'),
 }
 
 

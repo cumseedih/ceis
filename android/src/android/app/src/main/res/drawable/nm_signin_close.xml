@@ -3,7 +3,7 @@
     android:height="22dp"
     android:viewportWidth="22"
     android:viewportHeight="22">
-    <!-- wevvy: close X, redrawn stroke path (the Figma export had only the words 'Close settings' as path data) -->
+    <!-- ceis: close X, redrawn stroke path (the Figma export had only the words 'Close settings' as path data) -->
     <path
         android:pathData="M6,6 L16,16 M16,6 L6,16"
         android:fillColor="#00000000"

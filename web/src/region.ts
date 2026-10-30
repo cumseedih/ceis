@@ -3,13 +3,13 @@
  * Alibaba Cloud Bailian first (its console only signs up accounts from the mainland);
  * everyone else gets OpenRouter first — one account, one key, pay as you go. The facts
  * about each (key page, endpoint, default models, what the key covers) come from the
- * catalogue `wevvy/llm/providers.json`, the one file every client reads.
+ * catalogue `ceis/llm/providers.json`, the one file every client reads.
  *
  * Mainland = the account was signed in with a phone number (codes reach mainland
  * numbers only), or the relay says `region: "cn"`. A relay that does not say yet is
  * fine: the phone sign still works.
  */
-import catalogue from "../../wevvy/llm/providers.json";
+import catalogue from "../../ceis/llm/providers.json";
 import type { Capability, CatalogueProvider, CloudAccount, ProviderPreset } from "./types";
 
 export function isMainland(account?: Pick<CloudAccount, "channel" | "region" | "signed_in"> | null): boolean {

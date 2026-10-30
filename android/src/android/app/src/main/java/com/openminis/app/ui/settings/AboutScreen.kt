@@ -78,8 +78,8 @@ fun AboutScreen(onBack: () -> Unit) {
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )
-            // wevvy: the installed build and the latest release (tap: check again / get it).
-            io.github.wevvy.ui.settings.VersionLines()
+            // ceis: the installed build and the latest release (tap: check again / get it).
+            io.github.ceis.ui.settings.VersionLines()
             Text(
                 stringResource(R.string.about_minis_tagline),
                 style = MaterialTheme.typography.bodyMedium,
@@ -105,7 +105,7 @@ fun AboutScreen(onBack: () -> Unit) {
             )
         }
 
-        // wevvy: licence, upstream and trademark lines (GPL-3.0 attribution
+        // ceis: licence, upstream and trademark lines (GPL-3.0 attribution
         // to OpenMinis; see NOTICE in the repository).
         SettingsSection(header = stringResource(R.string.nm_about_build)) {
             SettingsRow(

@@ -13,8 +13,8 @@ from typing import Any
 
 import pytest
 
-from wevvy.channels.base import InboundMessage
-from wevvy.channels.wecom import WS_HOST, WeComChannel
+from ceis.channels.base import InboundMessage
+from ceis.channels.wecom import WS_HOST, WeComChannel
 
 
 class Bus:

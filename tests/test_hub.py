@@ -22,14 +22,14 @@ import pytest
 from fastapi.testclient import TestClient
 from websockets.asyncio.server import ServerConnection, serve
 
-from wevvy.cloud import CloudClient, hub_url, model_url
-from wevvy.config import Settings
-from wevvy.hub import actions
-from wevvy.hub.client import HubClient, HubError
-from wevvy.llm import MockLLM
-from wevvy.schema import Function, LLMResponse, ToolCall
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
+from ceis.cloud import CloudClient, hub_url, model_url
+from ceis.config import Settings
+from ceis.hub import actions
+from ceis.hub.client import HubClient, HubError
+from ceis.llm import MockLLM
+from ceis.schema import Function, LLMResponse, ToolCall
+from ceis.server import create_app
+from ceis.server.service import MuseService
 
 pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="posix shell in the tests")
 
@@ -129,7 +129,7 @@ def test_cloud_urls() -> None:
                 {
                     "id": "a",
                     "for": ["gui"],
-                    "wevvy": {"recommended": True, "recommended_for": ["gui"]},
+                    "ceis": {"recommended": True, "recommended_for": ["gui"]},
                 },
                 {"id": "qwen3.8-27b", "for": ["gui"]},
             ],
@@ -137,18 +137,18 @@ def test_cloud_urls() -> None:
         )
         == "a"
     )
-    # the relay 0.17 shape: the lanes live under `wevvy`, next to its other flags
+    # the relay 0.17 shape: the lanes live under `ceis`, next to its other flags
     menu = [
         {
             "id": "deepseek-v4.1-flash",
-            "wevvy": {"for": ["chat"], "recommended": True, "recommended_for": ["chat"]},
+            "ceis": {"for": ["chat"], "recommended": True, "recommended_for": ["chat"]},
         },
         {
             "id": "qwen3.8-27b",
-            "wevvy": {"for": ["gui", "chat"], "recommended": True, "recommended_for": ["gui"]},
+            "ceis": {"for": ["gui", "chat"], "recommended": True, "recommended_for": ["gui"]},
         },
-        {"id": "qwen3.8-flash", "wevvy": {"for": ["chat"], "recommended": False}},
-        {"id": "qwen-image-3.0", "wevvy": {"for": [], "kind": "image"}},
+        {"id": "qwen3.8-flash", "ceis": {"for": ["chat"], "recommended": False}},
+        {"id": "qwen-image-3.0", "ceis": {"for": [], "kind": "image"}},
     ]
     assert [m["id"] for m in CloudClient.models_for(menu, "chat")] == [
         "deepseek-v4.1-flash",
@@ -475,7 +475,7 @@ def test_a_paused_hub_is_waited_out_not_hammered(monkeypatch: pytest.MonkeyPatch
             aw.close()
 
         monkeypatch.setattr(client, "_session", paused)
-        monkeypatch.setattr("wevvy.hub.client.asyncio.wait_for", spy)
+        monkeypatch.setattr("ceis.hub.client.asyncio.wait_for", spy)
         client.start()
         for _ in range(100):
             if seen:
@@ -538,7 +538,7 @@ def hub_server(
     ) -> dict[str, Any]:
         relay.invites.append(invite)  # what the web/app sent along (a friend's code, or "")
         if code != "123456":
-            from wevvy.cloud import CloudError
+            from ceis.cloud import CloudError
 
             raise CloudError(400, "bad_code", "wrong code")
         self.api_key = "test-key"
@@ -600,8 +600,8 @@ def test_sign_in_joins_hub_and_lists_devices(hub_server) -> None:
     # the relay as the model provider: the key stays a vault reference
     llm = client.post("/api/cloud/use-as-model", json={}).json()
     assert llm["model"] == "qwen3.8-27b" and llm["base_url"] == model_url(relay.base_url)
-    assert service.settings.llm.api_key == "{{vault:WEVVY_CLOUD_KEY}}"
-    assert service.app.vault.get("WEVVY_CLOUD_KEY") == "test-key"
+    assert service.settings.llm.api_key == "{{vault:CEIS_CLOUD_KEY}}"
+    assert service.app.vault.get("CEIS_CLOUD_KEY") == "test-key"
     assert client.get("/api/cloud").json()["is_model"] is True
     # leaving takes the tools away; signing out clears the account
     client.post("/api/hub/leave")
@@ -614,16 +614,16 @@ def test_sign_in_joins_hub_and_lists_devices(hub_server) -> None:
 def test_hosted_runtime_starts_signed_in_from_the_environment(
     settings: Settings, relay: FakeRelay, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """wevvy Web: the gateway hands the container the account key; the runtime comes up
+    """ceis Web: the gateway hands the container the account key; the runtime comes up
     signed in, on the hub under the given name, with the relay as its model and no first run."""
     settings.server.token = "secret-token"
     settings.cloud.base_url = relay.base_url
     settings.hub.name = "Web"
     settings.llm.api_key = ""
-    monkeypatch.setenv("WEVVY_CLOUD_KEY", "test-key")
-    monkeypatch.setenv("WEVVY_CLOUD_HINT", "a***@example.com")
-    monkeypatch.setenv("WEVVY_CLOUD_CHANNEL", "email")
-    monkeypatch.setenv("WEVVY_ONBOARDED", "1")
+    monkeypatch.setenv("CEIS_CLOUD_KEY", "test-key")
+    monkeypatch.setenv("CEIS_CLOUD_HINT", "a***@example.com")
+    monkeypatch.setenv("CEIS_CLOUD_CHANNEL", "email")
+    monkeypatch.setenv("CEIS_ONBOARDED", "1")
 
     async def fake_models(self: CloudClient) -> list[dict[str, Any]]:
         return [{"id": "qwen3.8-27b"}]
@@ -636,7 +636,7 @@ def test_hosted_runtime_starts_signed_in_from_the_environment(
         account = client.get("/api/cloud").json()
         assert account["signed_in"] is True and account["hint"] == "a***@example.com"
         assert account["is_model"] is True
-        assert service.app.vault.get("WEVVY_CLOUD_KEY") == "test-key"
+        assert service.app.vault.get("CEIS_CLOUD_KEY") == "test-key"
         assert client.get("/api/state").json()["settings"]["onboarded"] is True
         wait_for(lambda: client.get("/api/hub").json()["state"] == "connected")
         assert relay.hello["device"]["name"] == "Web"
@@ -659,20 +659,20 @@ def test_a_signed_in_runtime_with_no_model_key_makes_the_relay_its_model(
 
     monkeypatch.setattr(CloudClient, "models", fake_models)
     service = MuseService(settings, llm=MockLLM([]))
-    service.app.vault.set("WEVVY_CLOUD_KEY", "old-key")
+    service.app.vault.set("CEIS_CLOUD_KEY", "old-key")
     app = create_app(settings, service)
     with TestClient(app) as client:
         client.headers["Authorization"] = "Bearer secret-token"
         account = client.get("/api/cloud").json()
         assert account["signed_in"] is True and account["is_model"] is True
         assert settings.llm.base_url.startswith(relay.base_url)
-        assert settings.llm.api_key == "{{vault:WEVVY_CLOUD_KEY}}"
+        assert settings.llm.api_key == "{{vault:CEIS_CLOUD_KEY}}"
 
     settings2 = settings.model_copy(deep=True)
     settings2.llm.api_key = ""
     settings2.llm.base_url = "http://localhost:11434/v1"
     service2 = MuseService(settings2, llm=MockLLM([]))
-    service2.app.vault.set("WEVVY_CLOUD_KEY", "old-key")
+    service2.app.vault.set("CEIS_CLOUD_KEY", "old-key")
     service2.hub.data.pop("llm", None)
     with TestClient(create_app(settings2, service2)) as client:
         client.headers["Authorization"] = "Bearer secret-token"
@@ -684,7 +684,7 @@ def test_the_model_picker_groups_the_menu_and_the_models_under_the_key(
     settings: Settings, relay: FakeRelay, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Relay 0.10 lists, for a member, the usable models under the operator's key after the
-    menu (`wevvy.catalog`); /api/llm/models for the Cloud preset hands the pickers the
+    menu (`ceis.catalog`); /api/llm/models for the Cloud preset hands the pickers the
     whole list in groups — menu, the rest, the picture / clip models likewise — plus which
     chat models read pictures. Nothing to type: the member picks."""
     settings.server.token = "secret-token"
@@ -701,7 +701,7 @@ def test_the_model_picker_groups_the_menu_and_the_models_under_the_key(
         return {
             "id": mid,
             "architecture": {"input_modalities": inputs, "output_modalities": out},
-            "wevvy": nm,
+            "ceis": nm,
         }
 
     async def fake_models(self: CloudClient) -> list[dict[str, Any]]:
@@ -717,10 +717,10 @@ def test_the_model_picker_groups_the_menu_and_the_models_under_the_key(
 
     monkeypatch.setattr(CloudClient, "models", fake_models)
     service = MuseService(settings, llm=MockLLM([]))
-    service.app.vault.set("WEVVY_CLOUD_KEY", "member-key")
+    service.app.vault.set("CEIS_CLOUD_KEY", "member-key")
     with TestClient(create_app(settings, service)) as client:
         client.headers["Authorization"] = "Bearer secret-token"
-        got = client.post("/api/llm/models", json={"preset": "wevvy_cloud"}).json()
+        got = client.post("/api/llm/models", json={"preset": "ceis_cloud"}).json()
     assert got["source"] == "live"
     assert got["models"] == ["qwen3.8-27b", "qwen3.8-flash", "deepseek-v4.1-flash", "qwen3-vl-plus"]
     assert got["menu"] == ["qwen3.8-27b", "qwen3.8-flash"]
@@ -1060,7 +1060,7 @@ def test_coding_actions_are_served_to_other_devices(
     hub_server, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """The phone asks this computer about its coding agents (docs/coding-agents.md)."""
-    from wevvy.coding import agents as coding_agents
+    from ceis.coding import agents as coding_agents
 
     home = tmp_path / "home"
     ws = tmp_path / "ws"
@@ -1076,7 +1076,7 @@ def test_coding_actions_are_served_to_other_devices(
         )
         + "\n"
     )
-    monkeypatch.setenv("WEVVY_CODING_HOME", str(home))
+    monkeypatch.setenv("CEIS_CODING_HOME", str(home))
     monkeypatch.setattr(coding_agents, "which", lambda agent: None)
     client, service, _llm, relay = hub_server
     sign_in(client)
@@ -1120,7 +1120,7 @@ def test_password_sign_in_and_account_management(
     async def fake_login(
         self: CloudClient, identifier: str, password: str, device: str = ""
     ) -> dict[str, Any]:
-        from wevvy.cloud import CloudError
+        from ceis.cloud import CloudError
 
         calls.append(("login", (identifier, password, device)))
         if password != "correct horse":
@@ -1188,7 +1188,7 @@ def test_password_sign_in_and_account_management(
         and account["account_id"] == "acc_1"
     )
     assert calls[-1][1][2] == "Desk"  # the device name travels with the sign-in
-    assert service.app.vault.get("WEVVY_CLOUD_KEY") == "test-key"
+    assert service.app.vault.get("CEIS_CLOUD_KEY") == "test-key"
     wait_for(lambda: client.get("/api/hub").json()["state"] == "connected")
 
     # change the password (the relay checks the current one)
@@ -1213,7 +1213,7 @@ def test_password_sign_in_and_account_management(
     r = client.post("/api/cloud/sign-out-all", json={"all": True})
     assert r.json()["signed_out"] == 2
     assert client.get("/api/cloud").json()["signed_in"] is False
-    assert service.app.vault.get("WEVVY_CLOUD_KEY") is None
+    assert service.app.vault.get("CEIS_CLOUD_KEY") is None
     assert client.get("/api/cloud/sessions").status_code == 401
 
 
@@ -1253,7 +1253,7 @@ def _fake_profile_relay(
 
     monkeypatch.setattr(CloudClient, "profile", fake_profile)
     monkeypatch.setattr(CloudClient, "put_profile", fake_put)
-    monkeypatch.setattr("wevvy.hub.profile.PUSH_DELAY_S", 0.05)
+    monkeypatch.setattr("ceis.hub.profile.PUSH_DELAY_S", 0.05)
     return puts
 
 
@@ -1389,7 +1389,7 @@ def test_connections_travel_by_name_only(hub_server, monkeypatch: pytest.MonkeyP
     """Contract C3: the remote MCP servers this device connected go to the account as a
     name, an address and a kind — never the key — and the other devices' come back and show
     under Connections as held elsewhere."""
-    from wevvy.config import MCPServerSettings
+    from ceis.config import MCPServerSettings
 
     client, service, _llm, relay = hub_server
     phone_entry = {

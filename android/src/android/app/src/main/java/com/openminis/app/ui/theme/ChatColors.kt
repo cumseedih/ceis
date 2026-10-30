@@ -34,7 +34,7 @@ data class ChatPalette(
     val tertiaryText: Color,
     val disabledText: Color,
     val userBubble: Color,
-    // wevvy: the text ink on the user bubble, and the assistant's own pill
+    // ceis: the text ink on the user bubble, and the assistant's own pill
     // (a touch off the background, both themes).
     val onUserBubble: Color,
     val assistantBubble: Color,
@@ -74,7 +74,7 @@ val LightChatPalette = ChatPalette(
     secondaryText = Color(0x993C3C43),
     tertiaryText = Color(0x4D3C3C43),
     disabledText = Color(0x2E3C3C43),
-    // wevvy: the user's own message is a black pill with white ink (white
+    // ceis: the user's own message is a black pill with white ink (white
     // pill, black ink in the dark theme below). scripts/rebrand.py writes these.
     userBubble = Color(0xFF000000),
     onUserBubble = Color(0xFFFFFFFF),
@@ -124,7 +124,7 @@ val DarkChatPalette = ChatPalette(
     secondaryText = Color(0x99EBEBF5),
     tertiaryText = Color(0x4DEBEBF5),
     disabledText = Color(0x2EEBEBF5),
-    // wevvy: the user's own message is a white pill with black ink; the
+    // ceis: the user's own message is a white pill with black ink; the
     // assistant's pill is a touch off the pure-black wash. (Replaces the earlier
     // opaque slate-blue user bubble.) scripts/rebrand.py writes these.
     userBubble = Color(0xFFFFFFFF),

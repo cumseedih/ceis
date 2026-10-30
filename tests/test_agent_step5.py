@@ -5,16 +5,16 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from wevvy.agent import MuseAgent
-from wevvy.config import LLMSettings, RoutingSettings, Settings, load_settings
-from wevvy.goals import GoalStore
-from wevvy.llm import MockLLM
-from wevvy.llm.routing import route_request
-from wevvy.memory import MemoryStore
-from wevvy.schema import LLMResponse
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.tools import Goals, Remember, Terminate, ToolCollection
-from wevvy.ui import HeadlessUI
+from ceis.agent import MuseAgent
+from ceis.config import LLMSettings, RoutingSettings, Settings, load_settings
+from ceis.goals import GoalStore
+from ceis.llm import MockLLM
+from ceis.llm.routing import route_request
+from ceis.memory import MemoryStore
+from ceis.schema import LLMResponse
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.tools import Goals, Remember, Terminate, ToolCollection
+from ceis.ui import HeadlessUI
 
 
 def make_routed_agent(settings, main_script, fast_script, *, enabled=True, with_fast=True):

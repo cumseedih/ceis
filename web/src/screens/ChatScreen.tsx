@@ -37,7 +37,7 @@ export function ChatScreen() {
   const [activityOpen, setActivityOpen] = useState(false);
   // the browser card being watched (or driven) full-screen
   const [browserView, setBrowserView] = useState<string | null>(null);
-  const name = profile?.name ?? "wevvy";
+  const name = profile?.name ?? "ceis";
   // a chat addressed to another device: is that device still on the hub?
   const deviceOnline = thread?.device ? (state.hub?.devices.find((d) => d.id === thread.device)?.online ?? null) : null;
   // another device of the account is working on this chat (C9): the quiet line under its message
@@ -89,7 +89,7 @@ export function ChatScreen() {
       .then(() => send(activeThread, picked))
       .catch((e: Error) => toast(e.message || t("Could not send")));
   };
-  const focusComposer = () => window.dispatchEvent(new Event("wevvy:quick-chat"));
+  const focusComposer = () => window.dispatchEvent(new Event("ceis:quick-chat"));
 
   // A task this browser saw through (contract C1): busy → idle, the turn started by the person
   // here (a `user` bubble, not a background notice or another device's ask) and ended with a
@@ -191,7 +191,7 @@ export function ChatScreen() {
   // the steps (tool chips) stay out of the chat unless asked for; everything else always shows
   const steps = useShowSteps();
   const shown = useMemo(() => (steps ? events : events.filter((e) => e.type !== "tool")), [events, steps]);
-  // *Use wevvy Cloud this time* under a failed turn of one's own model (see cloud-retry.ts)
+  // *Use ceis Cloud this time* under a failed turn of one's own model (see cloud-retry.ts)
   const cloudRetryCtx = { signedIn: Boolean(state.hub?.account.signed_in), chatOnCloud: Boolean(state.settings?.llm.cloud), deviceChat: Boolean(thread?.device) };
   const cloudRetryFor = (i: number): (() => Promise<void>) | undefined => {
     const target = cloudRetryTarget(shown, i, cloudRetryCtx);
@@ -390,7 +390,7 @@ function EventView({
   onOpenFile: (path: string) => void;
   onOpenBrowser: (id: string) => void;
   files: readonly string[];
-  /** a failed turn's *Use wevvy Cloud this time*, when it applies */
+  /** a failed turn's *Use ceis Cloud this time*, when it applies */
   onCloudRetry?: () => Promise<void>;
 }) {
   // a small centred time, iMessage style, when the conversation pauses for a while
@@ -563,7 +563,7 @@ function AssistantBubble({
   files?: readonly string[];
   /** said aloud on a call rather than written */
   spoken?: boolean;
-  /** *Use wevvy Cloud this time*: the account's model this reply came from */
+  /** *Use ceis Cloud this time*: the account's model this reply came from */
   modelUsed?: string;
   /** the last bubble of the group carries the Messages tail */
   showTail?: boolean;
@@ -617,7 +617,7 @@ function AssistantBubble({
             {showTail && <BubbleTail sent={false} />}
           </div>
         )}
-        {modelUsed && !streaming && <div className="ml-1 text-[11px] text-muted">{t("Answered by wevvy Cloud this time")}</div>}
+        {modelUsed && !streaming && <div className="ml-1 text-[11px] text-muted">{t("Answered by ceis Cloud this time")}</div>}
       </div>
     </div>
   );
@@ -818,8 +818,8 @@ function Composer({
   // the desktop's quick-chat shortcut: the window is up, the cursor goes here
   useEffect(() => {
     const focus = () => ref.current?.focus();
-    window.addEventListener("wevvy:quick-chat", focus);
-    return () => window.removeEventListener("wevvy:quick-chat", focus);
+    window.addEventListener("ceis:quick-chat", focus);
+    return () => window.removeEventListener("ceis:quick-chat", focus);
   }, []);
 
   const addFiles = (list: FileList | File[]) => {

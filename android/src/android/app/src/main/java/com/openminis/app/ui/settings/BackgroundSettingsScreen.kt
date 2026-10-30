@@ -133,7 +133,7 @@ fun BackgroundSettingsScreen(onBack: () -> Unit) {
 
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(stringResource(R.string.bg_section_header)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -229,7 +229,7 @@ fun BackgroundSettingsScreen(onBack: () -> Unit) {
             Spacer(Modifier.size(8.dp))
             BgToggleRow(
                 icon = Icons.Outlined.Bolt,
-                iconColor = io.github.wevvy.ui.theme.WevvyColors.success,
+                iconColor = io.github.ceis.ui.theme.CeisColors.success,
                 title = stringResource(R.string.settings_dynamic_island),
                 checked = dynamicIslandEnabled && dynamicIslandCapable,
                 enabled = dynamicIslandCapable,
@@ -247,7 +247,7 @@ fun BackgroundSettingsScreen(onBack: () -> Unit) {
             BgSectionTitle(stringResource(R.string.battery_opt_section_title))
             BgRow(
                 icon = Icons.Outlined.BatteryFull,
-                iconColor = if (ignoringOptimizations) io.github.wevvy.ui.theme.WevvyColors.success else Color(0xFFFF9500),
+                iconColor = if (ignoringOptimizations) io.github.ceis.ui.theme.CeisColors.success else Color(0xFFFF9500),
                 title = stringResource(R.string.battery_opt_row_title),
                 subtitle = if (ignoringOptimizations) {
                     stringResource(R.string.battery_opt_already_exempt)

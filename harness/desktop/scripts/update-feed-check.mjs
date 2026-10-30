@@ -109,7 +109,7 @@ class CheckApp {
     return "0.0.1";
   }
   get name() {
-    return "wevvy-update-feed-check";
+    return "ceis-update-feed-check";
   }
   get isPackaged() {
     return true;
@@ -198,7 +198,7 @@ function settle(promise, what, ms = TIMEOUT_MS) {
  * verified, and what the updater tried to do to the (stub) app.
  */
 async function scenario(name, twist, meta) {
-  const base = mkdtempSync(join(tmpdir(), "wevvy-update-feed-check-"));
+  const base = mkdtempSync(join(tmpdir(), "ceis-update-feed-check-"));
   const { server, url } = await feedServer(dist, twist);
   const result = { name, candidate: null, available: false, resolvedInstaller: false, downloaded: false, verified: null, downloadError: null, quitCalls: 0, relaunchCalls: 0 };
   try {

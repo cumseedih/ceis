@@ -34,7 +34,7 @@ from socketserver import TCPServer
 class LoopbackServer(TCPServer):
     allow_reuse_address = True
 
-Path(os.environ["WEVVY_DATA_DIR"], "workspace").mkdir(parents=True)
+Path(os.environ["CEIS_DATA_DIR"], "workspace").mkdir(parents=True)
 if sys.argv[1] == "waiting":
     print("waiting forever for startup", flush=True)
     time.sleep(60)

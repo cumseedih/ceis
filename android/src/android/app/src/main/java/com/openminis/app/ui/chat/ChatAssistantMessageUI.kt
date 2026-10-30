@@ -461,7 +461,7 @@ internal fun InlineErrorBanner(error: String, onRetry: (() -> Unit)? = null) {
             .fillMaxWidth()
             .padding(top = 4.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(io.github.wevvy.ui.theme.WevvyColors.error.copy(alpha = 0.12f))
+            .background(io.github.ceis.ui.theme.CeisColors.error.copy(alpha = 0.12f))
             .combinedClickable(
                 onClick = {},
                 onLongClick = {
@@ -474,13 +474,13 @@ internal fun InlineErrorBanner(error: String, onRetry: (() -> Unit)? = null) {
         Icon(
             imageVector = Icons.Default.Error,
             contentDescription = null,
-            tint = io.github.wevvy.ui.theme.WevvyColors.error,
+            tint = io.github.ceis.ui.theme.CeisColors.error,
             modifier = Modifier.size(14.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = error,
-            color = io.github.wevvy.ui.theme.WevvyColors.error,
+            color = io.github.ceis.ui.theme.CeisColors.error,
             fontSize = 12.sp,
             lineHeight = 16.sp,
             maxLines = 3,
@@ -492,7 +492,7 @@ internal fun InlineErrorBanner(error: String, onRetry: (() -> Unit)? = null) {
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50))
-                    .background(io.github.wevvy.ui.theme.WevvyColors.error.copy(alpha = 0.15f))
+                    .background(io.github.ceis.ui.theme.CeisColors.error.copy(alpha = 0.15f))
                     .clickable(onClick = onRetry)
                     .padding(horizontal = 10.dp, vertical = 3.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -500,11 +500,11 @@ internal fun InlineErrorBanner(error: String, onRetry: (() -> Unit)? = null) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = null,
-                    tint = io.github.wevvy.ui.theme.WevvyColors.error,
+                    tint = io.github.ceis.ui.theme.CeisColors.error,
                     modifier = Modifier.size(10.dp),
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(stringResource(R.string.chat_longpress_retry), color = io.github.wevvy.ui.theme.WevvyColors.error, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.chat_longpress_retry), color = io.github.ceis.ui.theme.CeisColors.error, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
             }
         }
     }
@@ -519,7 +519,7 @@ internal fun InlineErrorBanner(error: String, onRetry: (() -> Unit)? = null) {
  * an affordance-discoverability win. Resume banner (T13) makes the global
  * cancel UX recoverable.
  *
- * Visual: 14x14 red rounded square (the design error colour, WevvyColors.error).
+ * Visual: 14x14 red rounded square (the design error colour, CeisColors.error).
  */
 @Composable
 private fun ToolStopButton(
@@ -549,7 +549,7 @@ private fun ToolStopButton(
                 modifier = Modifier
                     .size(10.dp)
                     .clip(RoundedCornerShape(2.dp))
-                    .background(io.github.wevvy.ui.theme.WevvyColors.error),
+                    .background(io.github.ceis.ui.theme.CeisColors.error),
             )
         }
     }
@@ -617,7 +617,7 @@ internal fun ToolCallPill(
     // streaming or when there's no preceding user turn to re-run from).
     onRerunFromHere: (() -> Unit)? = null,
     onCopyDetails: (() -> Unit)? = null,
-    // wevvy: the shell's compact chip (shorter, tighter) in the received flow.
+    // ceis: the shell's compact chip (shorter, tighter) in the received flow.
     nmCompact: Boolean = false,
 ) {
     // T-android-jank-profile: this log was firing on every ToolCallPill
@@ -689,7 +689,7 @@ internal fun ToolCallPill(
     // Pill stretches up to the full row width so long titles can ellipsize
     // without pushing the duration out of view. Title takes the remaining
     // space via weight(1f), duration stays fixed-width (softWrap=false).
-    Row(modifier = Modifier.fillMaxWidth().padding(vertical = if (nmCompact) 2.dp else 3.dp)) { // wevvy: compact chip
+    Row(modifier = Modifier.fillMaxWidth().padding(vertical = if (nmCompact) 2.dp else 3.dp)) { // ceis: compact chip
       Box(modifier = Modifier.weight(1f, fill = false)) {
         Row(
             modifier = Modifier
@@ -726,8 +726,8 @@ internal fun ToolCallPill(
                         { showToolMenu = true }
                     } else null,
                 )
-                .padding(horizontal = if (nmCompact) 10.dp else 12.dp) // wevvy: compact chip
-                .height(if (nmCompact) 30.dp else 36.dp), // wevvy: compact chip
+                .padding(horizontal = if (nmCompact) 10.dp else 12.dp) // ceis: compact chip
+                .height(if (nmCompact) 30.dp else 36.dp), // ceis: compact chip
             verticalAlignment = Alignment.CenterVertically,
         ) {
             // Status icon — always the typed tool icon. Color shifts to
@@ -851,7 +851,7 @@ internal fun ThinkingBlock(
     block: AssistantBlock,
     isStreaming: Boolean,
     isLast: Boolean = true,
-    // wevvy: the shell's quiet line: no blue panel, muted header ink.
+    // ceis: the shell's quiet line: no blue panel, muted header ink.
     nmQuiet: Boolean = false,
 ) {
     // Per-block expand state, keyed by block.id so the user's manual toggle on
@@ -877,7 +877,7 @@ internal fun ThinkingBlock(
         if (!isStreaming && !userTouched) expanded = false
     }
     val thinkingBlue = Color(0xFF005ABF)
-    // wevvy: in the quiet dress the header speaks in the muted caption ink.
+    // ceis: in the quiet dress the header speaks in the muted caption ink.
     val headerColor = if (nmQuiet) ChatColors.secondaryText else thinkingBlue
     val charCount = block.content.length
     val charLabel = when {
@@ -903,7 +903,7 @@ internal fun ThinkingBlock(
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .then(
-                // wevvy: the quiet dress drops the panel; the line sits
+                // ceis: the quiet dress drops the panel; the line sits
                 // directly in the received flow.
                 if (nmQuiet) {
                     Modifier.padding(horizontal = 2.dp)
@@ -938,7 +938,7 @@ internal fun ThinkingBlock(
                 // iOS: ProgressView().controlSize(.mini) while streaming
                 CircularProgressIndicator(
                     modifier = Modifier.size(13.dp),
-                    color = headerColor, // wevvy: quiet dress
+                    color = headerColor, // ceis: quiet dress
                     strokeWidth = 1.5.dp,
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -946,7 +946,7 @@ internal fun ThinkingBlock(
                 Icon(
                     imageVector = Icons.Default.Psychology,
                     contentDescription = null,
-                    tint = headerColor, // wevvy: quiet dress
+                    tint = headerColor, // ceis: quiet dress
                     modifier = Modifier.size(14.dp),
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -955,7 +955,7 @@ internal fun ThinkingBlock(
                 text = "Deep Thinking",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = headerColor, // wevvy: quiet dress
+                color = headerColor, // ceis: quiet dress
             )
             Spacer(modifier = Modifier.weight(1f))
             if (charCount > 0) {
@@ -964,7 +964,7 @@ internal fun ThinkingBlock(
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = FontFamily.Monospace,
-                    color = headerColor.copy(alpha = 0.6f), // wevvy: quiet dress
+                    color = headerColor.copy(alpha = 0.6f), // ceis: quiet dress
                 )
                 Spacer(modifier = Modifier.width(4.dp))
             }
@@ -976,13 +976,13 @@ internal fun ThinkingBlock(
                     text = stringResource(R.string.thinking_view_full),
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
-                    color = headerColor, // wevvy: quiet dress
+                    color = headerColor, // ceis: quiet dress
                 )
             } else {
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = if (expanded) "Collapse" else "Expand",
-                    tint = headerColor.copy(alpha = 0.5f), // wevvy: quiet dress
+                    tint = headerColor.copy(alpha = 0.5f), // ceis: quiet dress
                     modifier = Modifier.size(14.dp),
                 )
             }

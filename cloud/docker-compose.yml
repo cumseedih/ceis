@@ -11,7 +11,7 @@ services:
       - path: .env
         required: false
     volumes:
-      - ./data:/srv/wevvy-cloud/data
+      - ./data:/srv/ceis-cloud/data
     expose:
       - "8787"
 

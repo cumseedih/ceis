@@ -3,8 +3,8 @@ package com.openminis.app.sandbox
 import android.net.LocalServerSocket
 import android.net.LocalSocket
 import android.util.Log
-import com.openminis.app.BuildConfig // wevvy: the socket name carries the application id (#271)
-import io.github.wevvy.sandbox.OffloadSocketName // wevvy: the socket name carries the application id (#271)
+import com.openminis.app.BuildConfig // ceis: the socket name carries the application id (#271)
+import io.github.ceis.sandbox.OffloadSocketName // ceis: the socket name carries the application id (#271)
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
@@ -54,7 +54,7 @@ fun interface NativeOffloadHandler {
 
 object NativeOffloadServer {
     private const val TAG = "NativeOffloadServer"
-    private val SOCKET_NAME = OffloadSocketName.forApp(BuildConfig.APPLICATION_ID) // wevvy: not upstream's bare name; abstract sockets are one namespace for every app, so OpenMinis and wevvy side by side would fight over it (#271)
+    private val SOCKET_NAME = OffloadSocketName.forApp(BuildConfig.APPLICATION_ID) // ceis: not upstream's bare name; abstract sockets are one namespace for every app, so OpenMinis and ceis side by side would fight over it (#271)
     private const val MAGIC_REQ = 0x46464F4E  // 'N' 'O' 'F' 'F' little-endian
     private const val MAGIC_RSP = 0x52464F4E  // 'N' 'O' 'F' 'R'
     private const val VERSION = 1
@@ -74,7 +74,7 @@ object NativeOffloadServer {
     /** Run the opportunistic sweep every N replies, not on every single one. */
     private const val SWEEP_EVERY_N_REPLIES = 50L
 
-    // wevvy: the name proot is told is the one actually bound, which may be the per-process fallback (#271)
+    // ceis: the name proot is told is the one actually bound, which may be the per-process fallback (#271)
     @Volatile private var boundName: String = SOCKET_NAME
     val socketName: String get() = boundName
 
@@ -111,7 +111,7 @@ object NativeOffloadServer {
         // 100-300ms window.
         val s = bindWithRetry()
             ?: throw java.io.IOException(
-                // wevvy: the socket that failed last is the per-process fallback, so name it (#288)
+                // ceis: the socket that failed last is the per-process fallback, so name it (#288)
                 "failed to bind abstract socket " +
                 "'${OffloadSocketName.forProcess(BuildConfig.APPLICATION_ID, android.os.Process.myPid())}' " +
                 "after retries and the per-process fallback; another process may hold the namespace",
@@ -120,7 +120,7 @@ object NativeOffloadServer {
         acceptThread = thread(name = "native-offload-accept", isDaemon = true) {
             runAcceptLoop(s)
         }
-        Log.i(TAG, "listening on abstract socket '$boundName' " + // wevvy: the bound name, see bindWithRetry (#271)
+        Log.i(TAG, "listening on abstract socket '$boundName' " + // ceis: the bound name, see bindWithRetry (#271)
             "handlers=${handlers.keys.sorted()} tmpDir=${rootfsTmpDir?.absolutePath}")
 
         // [T-android-offload-tmp-leak] Sweep reply files orphaned by earlier
@@ -191,7 +191,7 @@ object NativeOffloadServer {
                 Log.w(TAG, "bind attempt ${attempt + 1}/${delays.size} failed: ${e.message}")
             }
         }
-        // wevvy: the app's own name is still held (a previous process of ours the kernel has
+        // ceis: the app's own name is still held (a previous process of ours the kernel has
         // not reaped yet); bind a per-process name and tell proot that one, instead of dying in
         // onCreate (#271)
         val fallback = OffloadSocketName.forProcess(BuildConfig.APPLICATION_ID, android.os.Process.myPid())

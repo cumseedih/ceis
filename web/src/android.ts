@@ -1,6 +1,6 @@
 /**
  * The Android app (android/) shows this web app in a WebView and exposes the phone-side bits
- * as `window.WevvyAndroid`. Web Push does not work there — the app keeps its own connection
+ * as `window.CeisAndroid`. Web Push does not work there — the app keeps its own connection
  * to the server and posts notifications itself — so the settings offer that instead.
  */
 export interface AndroidBridge {
@@ -13,7 +13,7 @@ export interface AndroidBridge {
   hasBrowser?(): boolean;
   /**
    * Show the agent's browser in the app for the user to drive; when done the app dispatches
-   * `wevvy:browser-handed-back` with `{thread}` on window.
+   * `ceis:browser-handed-back` with `{thread}` on window.
    */
   takeOverBrowser?(thread: string): void;
   /**
@@ -59,8 +59,8 @@ export function keepRunningStatus(): KeepRunningStatus | null {
 }
 
 export function androidApp(): AndroidBridge | null {
-  const w = window as unknown as { WevvyAndroid?: AndroidBridge };
-  return w.WevvyAndroid ?? null;
+  const w = window as unknown as { CeisAndroid?: AndroidBridge };
+  return w.CeisAndroid ?? null;
 }
 
 /** True when the app can hand the agent's own browser to the user in place (no screenshots in between). */

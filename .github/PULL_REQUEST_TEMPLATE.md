@@ -12,11 +12,11 @@
 
 <!-- Tick what applies; the commands are in AGENTS.md, one block per part of the tree. -->
 
-- [ ] The checks for the part I changed pass (runtime: `ruff check wevvy tests scripts && ruff format --check wevvy tests scripts && mypy && python -m pytest -q -m "not live"`; relay: `cd cloud && ruff check . && ruff format --check . && pytest`; web: `cd web && npm run check && npm run build`; desktop: `cd harness/dsh-wevvy && pnpm build && pnpm typecheck && pnpm test`)
+- [ ] The checks for the part I changed pass (runtime: `ruff check ceis tests scripts && ruff format --check ceis tests scripts && mypy && python -m pytest -q -m "not live"`; relay: `cd cloud && ruff check . && ruff format --check . && pytest`; web: `cd web && npm run check && npm run build`; desktop: `cd harness/dsh-ceis && pnpm build && pnpm typecheck && pnpm test`)
 - [ ] New behaviour has a test; tests use `MockLLM`, no network
 - [ ] If a person sees or does something differently: a line under `## [Unreleased]` in `CHANGELOG.md` (past tense, concrete, in the right section) and the page under `docs/` with its `docs/zh/` twin
 - [ ] If a user-visible string was added or changed: every locale of that file (English first, then 简体中文, then the rest; same placeholders)
-- [ ] If the web app changed: the build under `wevvy/server/static` is committed
+- [ ] If the web app changed: the build under `ceis/server/static` is committed
 - [ ] If a catalogue changed: `node scripts/connectors-json.mjs --check` and `node scripts/providers-json.mjs --check` pass; the ideas JSON files stay byte-identical
 - [ ] If a tool or the Sentinel changed: risk level, `assess()` summary and `docs/sentinel.md` are up to date; if a wire contract changed: `docs/hub.md`, `docs/cloud.md` or `docs/gui.md` too
 - [ ] Commits follow Conventional Commits and carry a DCO sign-off (`git commit -s`)

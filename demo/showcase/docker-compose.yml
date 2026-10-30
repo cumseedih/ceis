@@ -1,5 +1,5 @@
-# The public wevvy showcase: a phone in the browser (MobileGym with the wevvy app) and a
-# private, short-lived wevvy per visitor. See README.md for the whole picture and the
+# The public ceis showcase: a phone in the browser (MobileGym with the ceis app) and a
+# private, short-lived ceis per visitor. See README.md for the whole picture and the
 # deployment steps.
 #
 #   cp .env.example .env && $EDITOR .env
@@ -7,10 +7,10 @@
 #   docker compose pull && docker compose up -d          # published images (see showcase.yml)
 #   docker compose up -d --build                         # or build both images here
 #
-# Sessions are started by the gateway on the `wevvy-sessions` network, which has no way out:
+# Sessions are started by the gateway on the `ceis-sessions` network, which has no way out:
 # the only thing a visitor's Muse can talk to is the gateway (and through it, the model).
-# With WEB_ENABLED=1 the gateway also runs wevvy Web — a kept Muse per Cloud account, on
-# the `wevvy-web` network next to the relay (gateway/showcase_gateway/accounts.py).
+# With WEB_ENABLED=1 the gateway also runs ceis Web — a kept Muse per Cloud account, on
+# the `ceis-web` network next to the relay (gateway/showcase_gateway/accounts.py).
 # The gateway reaches Docker through `docker-proxy`, which lets through what starting and
 # stopping containers takes and nothing else of the daemon (no exec, images, volumes, build).
 
@@ -77,7 +77,7 @@ services:
     env_file: .env
     environment:
       INTERNAL_URL: http://gateway:8000
-      SESSIONS_NETWORK: wevvy-sessions
+      SESSIONS_NETWORK: ceis-sessions
       TRUST_PROXY: "1"
       # whose X-Forwarded-For is the visitor's address: Caddy's, by its service name (the
       # gateway resolves it through Docker's DNS). The session containers reach the same port
@@ -136,13 +136,13 @@ networks:
   control:
     internal: true
   sessions:
-    name: wevvy-sessions
+    name: ceis-sessions
     internal: true
-  # wevvy Web (gateway/accounts.py): the kept, per-account containers live here, together
-  # with the Cloud relay they sign in to (cloud/deploy/wevvy-hk joins it too). Not internal:
+  # ceis Web (gateway/accounts.py): the kept, per-account containers live here, together
+  # with the Cloud relay they sign in to (cloud/deploy/ceis-hk joins it too). Not internal:
   # an account's Muse may fetch pages and talk to the model like one on a phone would.
   web:
-    name: wevvy-web
+    name: ceis-web
 
 volumes:
   caddy-data: {}

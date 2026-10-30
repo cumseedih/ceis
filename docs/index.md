@@ -1,6 +1,6 @@
 ---
 layout: home
-title: wevvy docs
+title: ceis docs
 hero:
   text: An open-source personal agent for every device you own.
   tagline: One agent on your phone, your computer and the web, one account across them. It does things instead of answering questions, keeps going when the app is closed, remembers you in files you can read, and asks before anything you could not undo. The whole set is one repository under GPL-3.0-or-later, and the same relay runs on a server of yours.
@@ -10,7 +10,7 @@ hero:
       link: /android
     - theme: alt
       text: Try it in the browser
-      link: https://demo.wevvy.dev/
+      link: https://demo.ceis.dev/
     - theme: alt
       text: Run it yourself
       link: /self-hosting
@@ -26,12 +26,12 @@ hero:
 
 | | |
 |---|---|
-| **Browser** | [demo.wevvy.dev](https://demo.wevvy.dev/): a wevvy on a simulated phone, after a sign-in, with lines to try beside it in English and in Chinese. A demo; the apps below are the real thing |
-| **Android** 8.0+, arm64 | [wevvy-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-1.0.5-arm64.apk) · [how to install](/android) |
+| **Browser** | [demo.ceis.dev](https://demo.ceis.dev/): a ceis on a simulated phone, after a sign-in, with lines to try beside it in English and in Chinese. A demo; the apps below are the real thing |
+| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-1.0.5-arm64.apk) · [how to install](/android) |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc): a beta that passed Apple's beta review; the link installs it · [iOS](/ios) |
-| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-mac-x64.dmg) · [the desktop app](/desktop) |
-| **Windows** 10+ | [wevvy-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-win-x64.exe) |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg) · [the desktop app](/desktop) |
+| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe) |
+| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local` for your own relay; `docker compose up -d app` for the web app · [run it yourself](/self-hosting) |
 
 Every download is on the [latest release](https://github.com/nano-muse/nanoMuse/releases/latest); the same files are at [wevvy.in/dl](https://wevvy.in/dl/) when GitHub is slow where you are.
@@ -41,22 +41,22 @@ Every download is on the [latest release](https://github.com/nano-muse/nanoMuse/
 ## The film
 
 <video controls playsinline preload="metadata" poster="https://wevvy.in/media/film/poster-en.png" style="width:100%;max-width:960px;border-radius:12px;display:block;margin:0 auto">
-  <source src="https://wevvy.in/media/film/wevvy-film-en-web.mp4" type="video/mp4">
+  <source src="https://wevvy.in/media/film/ceis-film-en-web.mp4" type="video/mp4">
 </video>
 
-74 seconds: what wevvy does on your phone, your computer and the web. Also in [Chinese](https://wevvy.in/media/film/wevvy-film-zh-web.mp4).
+74 seconds: what ceis does on your phone, your computer and the web. Also in [Chinese](https://wevvy.in/media/film/ceis-film-zh-web.mp4).
 
-::: info wevvy keeps evolving
-A personal agent should not live only in someone else's cloud, so wevvy is the open-source, low-cost alternative: on your own devices, with a model you choose and a relay you can host yourself. We want to build it with developers and users everywhere, so that each person truly owns a personal agent. Open an [issue](https://github.com/nano-muse/nanoMuse/issues/new/choose) or send a [pull request](../CONTRIBUTING.md); either one helps wevvy get better.
+::: info ceis keeps evolving
+A personal agent should not live only in someone else's cloud, so ceis is the open-source, low-cost alternative: on your own devices, with a model you choose and a relay you can host yourself. We want to build it with developers and users everywhere, so that each person truly owns a personal agent. Open an [issue](https://github.com/nano-muse/nanoMuse/issues/new/choose) or send a [pull request](../CONTRIBUTING.md); either one helps ceis get better.
 :::
 
 ## Citation
 
-The report *wevvy: An Open-Source Personal Agent for Every Device You Own* is on arXiv as [2610.08699](https://arxiv.org/abs/2610.08699): what a personal agent is, how Muse is built, and how wevvy answers it in the open. If you find wevvy useful, please cite the paper.
+The report *ceis: An Open-Source Personal Agent for Every Device You Own* is on arXiv as [2610.08699](https://arxiv.org/abs/2610.08699): what a personal agent is, how Muse is built, and how ceis answers it in the open. If you find ceis useful, please cite the paper.
 
 ```bibtex
-@misc{liu2026wevvyopensourcepersonalagent,
-      title={wevvy: An Open-Source Personal Agent for Every Device You Own}, 
+@misc{liu2026ceisopensourcepersonalagent,
+      title={ceis: An Open-Source Personal Agent for Every Device You Own}, 
       author={Guangyi Liu and Yong Liu and Jiangning Zhang},
       year={2026},
       eprint={2610.08699},

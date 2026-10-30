@@ -6,7 +6,7 @@ paths are CC0 1.0; the marks themselves belong to their owners and only say
 which service a row is). On Android they are bundled as vector drawables in
 `android/src/android/app/src/main/res/drawable/nm_conn_<slug>.xml`, resolved
 from the catalogue's `icon` field (the simple-icons slug). The desktop keeps
-the same paths in `harness/dsh-wevvy/src/client/brand-marks.ts`, which is
+the same paths in `harness/dsh-ceis/src/client/brand-marks.ts`, which is
 where the Android drawables were cross-checked.
 
 The tile is a fixed light neutral (`#F3F4F6`) in both themes so dark marks

@@ -1,11 +1,11 @@
-# Run wevvy yourself
+# Run ceis yourself
 
-wevvy is one agent on your own devices, and nothing in it has to go through a server of ours. There are three ways to run it yourself, from the least work to the most. Most people want the first; a family or a small group that wants its own sign-in wants the second; the third is for the web app on a machine of your own.
+ceis is one agent on your own devices, and nothing in it has to go through a server of ours. There are three ways to run it yourself, from the least work to the most. Most people want the first; a family or a small group that wants its own sign-in wants the second; the third is for the web app on a machine of your own.
 
 | | What you run | What it gives you |
 |---|---|---|
 | [1. No server, your own key](#_1-no-server-your-own-key) | nothing | the apps talk to a model provider directly; the community relay is still used for sign-in and for the devices to find each other |
-| [2. Your own relay](#_2-your-own-relay) | wevvy Cloud on a small VPS or a home server | your own accounts, sign-in codes, hub and conversation sync; nothing about your account touches wevvy.in |
+| [2. Your own relay](#_2-your-own-relay) | ceis Cloud on a small VPS or a home server | your own accounts, sign-in codes, hub and conversation sync; nothing about your account touches wevvy.in |
 | [3. A runtime of your own](#_3-a-runtime-of-your-own-for-the-web-app) | the Python runtime in Docker | the web app and the hands on a computer that is always on |
 
 ## 1. No server, your own key
@@ -14,7 +14,7 @@ The free allowance on the community relay runs out. When it does, or before, put
 
 ## 2. Your own relay
 
-wevvy Cloud is the relay behind wevvy.in: sign-in by e-mail or phone, the account's models through one OpenAI-compatible endpoint, the hub the devices meet on, conversation sync, a web console at `/app` and an admin page at `/app/admin/`. It is one Python service and one SQLite file, in this repository under [`cloud/`](../cloud/README.md), and it runs the same on a server of yours.
+ceis Cloud is the relay behind wevvy.in: sign-in by e-mail or phone, the account's models through one OpenAI-compatible endpoint, the hub the devices meet on, conversation sync, a web console at `/app` and an admin page at `/app/admin/`. It is one Python service and one SQLite file, in this repository under [`cloud/`](../cloud/README.md), and it runs the same on a server of yours.
 
 ### What you need
 
@@ -26,7 +26,7 @@ wevvy Cloud is the relay behind wevvy.in: sign-in by e-mail or phone, the accoun
 ### In one command
 
 ```bash
-git clone https://github.com/nano-muse/nanoMuse.git && cd wevvy
+git clone https://github.com/nano-muse/nanoMuse.git && cd ceis
 bash scripts/self-host.sh
 ```
 
@@ -57,19 +57,19 @@ Every app signs in against `https://cloud.wevvy.in` unless you tell it otherwise
 
 - **Android** (0.1.38). *Use a different server* under the sign-in form takes the relay's address; *Check* asks its `/healthz` and shows the version, *Use this server* keeps the address across launches. `https://` is required outside your own network; plain `http://` is accepted for a private address (`10.x`, `172.16-31.x`, `192.168.x`, `localhost`, a `.local` or `.ts.net` name). Settings → Account shows the server with *Change*, which signs the phone out first ([android.md](android.md)).
 - **iPhone / iPad.** The same link on the sign-in sheet, with the same rules.
-- **wevvy Desktop.** The relay is the `baseURL` of the plugin's cloud row. Add this to `cordis.patch.yml` in the desktop's profile, `~/.wevvy/desktop/profiles/wevvy/` (`%USERPROFILE%\.wevvy\desktop\profiles\wevvy\` on Windows; `WEVVY_DESKTOP_HOME` moves it), and restart the app:
+- **ceis Desktop.** The relay is the `baseURL` of the plugin's cloud row. Add this to `cordis.patch.yml` in the desktop's profile, `~/.ceis/desktop/profiles/ceis/` (`%USERPROFILE%\.ceis\desktop\profiles\ceis\` on Windows; `CEIS_DESKTOP_HOME` moves it), and restart the app:
 
   ```yaml
-  - id: wevvy-cloud
-    name: dsh-wevvy/cloud
+  - id: ceis-cloud
+    name: dsh-ceis/cloud
     config:
       baseURL: https://cloud.example.com
       deviceName: ''
       statePath: ''
   ```
 
-  Setting `WEVVY_CLOUD_URL=https://cloud.example.com` in the environment the app starts in does the same without editing the file ([desktop.md](desktop.md)).
-- **The terminal runtime and the hosted web app** (`wevvy …`, the root `docker-compose.yml`): `WEVVY_CLOUD_BASE_URL=https://cloud.example.com` in the environment or `.env`, or `[cloud] base_url` in `config/config.toml` ([configuration.md](configuration.md)).
+  Setting `CEIS_CLOUD_URL=https://cloud.example.com` in the environment the app starts in does the same without editing the file ([desktop.md](desktop.md)).
+- **The terminal runtime and the hosted web app** (`ceis …`, the root `docker-compose.yml`): `CEIS_CLOUD_BASE_URL=https://cloud.example.com` in the environment or `.env`, or `[cloud] base_url` in `config/config.toml` ([configuration.md](configuration.md)).
 - **The web console** is the relay's own `/app` (`https://<your domain>/app/`) and needs no pointing.
 
 Invitations from your relay link to its console (`INVITE_URL`, set by the script), so a friend you invite lands on your relay, not on wevvy.in.
@@ -77,7 +77,7 @@ Invitations from your relay link to its console (`INVITE_URL`, set by the script
 ### Updating
 
 ```bash
-cd wevvy && git pull
+cd ceis && git pull
 bash scripts/self-host.sh        # Enter through the questions; secrets and accounts are kept
 # or: cd cloud && docker compose up -d --build
 ```
@@ -91,7 +91,7 @@ Everything the relay keeps is `cloud/data/cloud.db` (SQLite) plus `CLOUD_SECRET`
 ```bash
 cd cloud && docker compose exec -T relay python - > cloud-$(date -u +%Y%m%d).db <<'EOF'
 import os, shutil, sqlite3, sys
-src = sqlite3.connect("/srv/wevvy-cloud/data/cloud.db")
+src = sqlite3.connect("/srv/ceis-cloud/data/cloud.db")
 dst = sqlite3.connect("/tmp/backup.db")
 src.backup(dst)
 dst.close(); src.close()
@@ -114,9 +114,9 @@ Hashed and encrypted identifiers, per-request counts and prices, the devices on 
 The phone and the desktop carry their own agent. The web app does not; it talks to the Python runtime, which on wevvy.in runs in a container per visitor. You can run that runtime on a machine of your own, in Docker, and open the web app on it from any browser:
 
 ```bash
-cp .env.example .env && $EDITOR .env      # a model key, WEVVY_SERVER_TOKEN; WEVVY_CLOUD_BASE_URL for your own relay
-wevvy config init                      # or copy config/config.example.toml to config/config.toml
+cp .env.example .env && $EDITOR .env      # a model key, CEIS_SERVER_TOKEN; CEIS_CLOUD_BASE_URL for your own relay
+ceis config init                      # or copy config/config.example.toml to config/config.toml
 docker compose up -d app                  # the web app on http://<host>:8787, the URL with its token in the logs
 ```
 
-The container sees only its data volume and `./workspace`; capabilities are dropped. Keeping it running, a published image for arm64, and reaching it from outside your network are in [deployment.md](deployment.md). The runtime signs in to a relay like any other device (yours, from section 2, if you set `WEVVY_CLOUD_BASE_URL`), and then the phone can hand it tasks over the hub like a computer that is always on ([every-device.md](every-device.md)).
+The container sees only its data volume and `./workspace`; capabilities are dropped. Keeping it running, a published image for arm64, and reaching it from outside your network are in [deployment.md](deployment.md). The runtime signs in to a relay like any other device (yours, from section 2, if you set `CEIS_CLOUD_BASE_URL`), and then the phone can hand it tasks over the hub like a computer that is always on ([every-device.md](every-device.md)).

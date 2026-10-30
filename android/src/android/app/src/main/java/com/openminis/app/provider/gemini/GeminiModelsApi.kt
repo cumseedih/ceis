@@ -12,7 +12,7 @@ import okhttp3.Request
 import org.json.JSONObject
 
 object GeminiModelsApi {
-    private val client = OkHttpClient.Builder().proxyAuthenticator(io.github.wevvy.net.OwnProviderProxy.authenticator).build() // wevvy: Settings → Network, a proxy with a password
+    private val client = OkHttpClient.Builder().proxyAuthenticator(io.github.ceis.net.OwnProviderProxy.authenticator).build() // ceis: Settings → Network, a proxy with a password
     private val cache = ProviderModelsCache("gemini")
 
     /**

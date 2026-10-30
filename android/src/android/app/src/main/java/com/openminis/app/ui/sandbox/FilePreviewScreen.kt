@@ -166,7 +166,7 @@ fun FilePreviewScreen(
     // (FileBrowserScreen) renders correctly with zero overrides; do the same.
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = {
                     Text(
                         text = if (showFullPath) item.file.absolutePath else item.name,
@@ -1300,7 +1300,7 @@ private suspend fun saveImageToGallery(context: Context, src: File): Boolean =
                     put(MediaStore.Images.Media.MIME_TYPE, mime)
                     put(
                         MediaStore.Images.Media.RELATIVE_PATH,
-                        Environment.DIRECTORY_PICTURES + "/wevvy",
+                        Environment.DIRECTORY_PICTURES + "/ceis",
                     )
                     put(MediaStore.Images.Media.IS_PENDING, 1)
                 }
@@ -1318,7 +1318,7 @@ private suspend fun saveImageToGallery(context: Context, src: File): Boolean =
                 val dir = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES,
                 )
-                val minisDir = File(dir, "wevvy").also { it.mkdirs() }
+                val minisDir = File(dir, "ceis").also { it.mkdirs() }
                 val dest = File(minisDir, filename)
                 src.inputStream().use { input ->
                     dest.outputStream().use { input.copyTo(it) }

@@ -406,7 +406,7 @@ private fun ProviderInstanceRow(
             modifier = Modifier
                 .size(8.dp)
                 .background(
-                    color = if (isActive) io.github.wevvy.ui.theme.WevvyColors.success else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f),
+                    color = if (isActive) io.github.ceis.ui.theme.CeisColors.success else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f),
                     shape = CircleShape,
                 ),
         )

@@ -443,33 +443,33 @@ internal sealed class FlatChatItem {
         override val contentType = "info"
     }
 
-    // wevvy: the first-conversation name chooser; rendered by
-    // io.github.wevvy.ui.onboarding.NamingCard from the view model's state.
-    data class WevvyNaming(val messageId: String) : FlatChatItem() {
+    // ceis: the first-conversation name chooser; rendered by
+    // io.github.ceis.ui.onboarding.NamingCard from the view model's state.
+    data class CeisNaming(val messageId: String) : FlatChatItem() {
         override val key = "nm_naming:$messageId"
         override val contentType = "nm_naming"
     }
 
-    // wevvy: the "change your avatar" options card (live state in AvatarFlow / AvatarStudio)
+    // ceis: the "change your avatar" options card (live state in AvatarFlow / AvatarStudio)
     // and the share card once the new face is done.
-    data class WevvyAvatarOptions(val messageId: String) : FlatChatItem() {
+    data class CeisAvatarOptions(val messageId: String) : FlatChatItem() {
         override val key = "nm_avatar_options:$messageId"
         override val contentType = "nm_avatar_options"
     }
 
-    data class WevvyAvatarShare(val messageId: String, val description: String) : FlatChatItem() {
+    data class CeisAvatarShare(val messageId: String, val description: String) : FlatChatItem() {
         override val key = "nm_avatar_share:$messageId"
         override val contentType = "nm_avatar_share"
     }
 
-    /** wevvy: the cost of a new face on the Cloud allowance, asked before drawing (the text is the whole sentence). */
-    data class WevvyAvatarConfirm(val messageId: String, val text: String) : FlatChatItem() {
+    /** ceis: the cost of a new face on the Cloud allowance, asked before drawing (the text is the whole sentence). */
+    data class CeisAvatarConfirm(val messageId: String, val text: String) : FlatChatItem() {
         override val key = "nm_avatar_confirm:$messageId"
         override val contentType = "nm_avatar_confirm"
     }
 
-    /** wevvy: the free allowance is spent — the two ways on (own key, invite). */
-    data class WevvyAllowance(val messageId: String) : FlatChatItem() {
+    /** ceis: the free allowance is spent — the two ways on (own key, invite). */
+    data class CeisAllowance(val messageId: String) : FlatChatItem() {
         override val key = "nm_allowance:$messageId"
         override val contentType = "nm_allowance"
     }
@@ -479,7 +479,7 @@ internal sealed class FlatChatItem {
         override val contentType = "typing"
     }
 
-    // wevvy: a centred time divider in the transcript (Messages style),
+    // ceis: a centred time divider in the transcript (Messages style),
     // emitted before the message whose stamp it carries.
     data class TimestampDivider(val messageId: String, val millis: Long) : FlatChatItem() {
         override val key = "timediv:$messageId"
@@ -562,14 +562,14 @@ internal fun buildFlatChatItems(
     // prefix so the defensive key-collision suffixing behaves exactly as a
     // single full build would.
     seedKeys: Set<String> = emptySet(),
-    // wevvy: false leaves the agent's steps out — no tool pills, no
+    // ceis: false leaves the agent's steps out — no tool pills, no
     // reasoning rows — so the chat keeps only what it said (Settings →
     // Appearance → "Show the agent's steps", off by default). The typing
     // indicator then stays up while a tool runs, since nothing else shows.
     showSteps: Boolean = true,
 ): List<FlatChatItem> {
     val out = mutableListOf<FlatChatItem>()
-    // wevvy: stamp of the last time divider emitted, for the divider rule in
+    // ceis: stamp of the last time divider emitted, for the divider rule in
     // the loop. Suffix builds seed it from the newest timed message before
     // fromIndex, so a seam can at worst miss a divider a full build would
     // add, never duplicate one.
@@ -610,13 +610,13 @@ internal fun buildFlatChatItems(
             is FlatChatItem.AssistantThinking -> item.copy(messageId = "${item.messageId}#$n")
             is FlatChatItem.AssistantToolUse -> item.copy(messageId = "${item.messageId}#$n")
             is FlatChatItem.AssistantInfo -> item.copy(messageId = "${item.messageId}#$n")
-            is FlatChatItem.WevvyNaming -> item.copy(messageId = "${item.messageId}#$n") // wevvy
-            is FlatChatItem.WevvyAvatarOptions -> item.copy(messageId = "${item.messageId}#$n") // wevvy
-            is FlatChatItem.WevvyAvatarShare -> item.copy(messageId = "${item.messageId}#$n") // wevvy
-            is FlatChatItem.WevvyAvatarConfirm -> item.copy(messageId = "${item.messageId}#$n") // wevvy
-            is FlatChatItem.WevvyAllowance -> item.copy(messageId = "${item.messageId}#$n") // wevvy
+            is FlatChatItem.CeisNaming -> item.copy(messageId = "${item.messageId}#$n") // ceis
+            is FlatChatItem.CeisAvatarOptions -> item.copy(messageId = "${item.messageId}#$n") // ceis
+            is FlatChatItem.CeisAvatarShare -> item.copy(messageId = "${item.messageId}#$n") // ceis
+            is FlatChatItem.CeisAvatarConfirm -> item.copy(messageId = "${item.messageId}#$n") // ceis
+            is FlatChatItem.CeisAllowance -> item.copy(messageId = "${item.messageId}#$n") // ceis
             is FlatChatItem.AssistantTyping -> item.copy(messageId = "${item.messageId}#$n")
-            is FlatChatItem.TimestampDivider -> item.copy(messageId = "${item.messageId}#$n") // wevvy
+            is FlatChatItem.TimestampDivider -> item.copy(messageId = "${item.messageId}#$n") // ceis
             is FlatChatItem.AssistantError -> item.copy(messageId = "${item.messageId}#$n")
             is FlatChatItem.AssistantLegacyContent -> FlatChatItem.AssistantLegacyContent(
                 messageId = "${item.messageId}#$n",
@@ -639,7 +639,7 @@ internal fun buildFlatChatItems(
                 "msgIdx=$idx of=${messages.size} rowsSoFar=${out.size}",
             )
         }
-        // wevvy: a time divider goes before the first timed message, on a
+        // ceis: a time divider goes before the first timed message, on a
         // calendar-day change, and after a gap of more than 30 minutes.
         // Untimed messages (createdAtMillis 0) never trigger one.
         val msgMillis = message.createdAtMillis
@@ -657,7 +657,7 @@ internal fun buildFlatChatItems(
             continue
         }
         // System messages (slash-command notices, compact divider, etc.) render
-        // as horizontal-divider rows — no "wevvy" attribution, no card. Skip
+        // as horizontal-divider rows — no "ceis" attribution, no card. Skip
         // the assistant header so each info block stands on its own. Mirrors
         // iOS systemDividerRow / compactDividerRow.
         val isSystem = message.role == "system"
@@ -670,12 +670,12 @@ internal fun buildFlatChatItems(
         // T83: when Resume creates a fresh assistant bubble after the user
         // stopped a streaming turn, the previous (cancelled) assistant
         // message is right before this one in the list. Visually they should
-        // read as one continuous turn — suppress the duplicate "wevvy"
+        // read as one continuous turn — suppress the duplicate "ceis"
         // header. Skip system rows when looking back since they render as
         // dividers, not as separate speaker turns. iOS achieves this by
         // reusing the existing ChatMessage in runAgentLoop(resumingAt:);
         // we reach the same end-result at the render layer.
-        // wevvy: with the steps hidden, a finished turn that was all
+        // ceis: with the steps hidden, a finished turn that was all
         // steps — no words, no error — would be a face with nothing under
         // it; leave the whole turn out (its steps are still in the history).
         // The look-back below skips such turns too, so the reply that
@@ -708,7 +708,7 @@ internal fun buildFlatChatItems(
                 "text" -> {
                     if (block.content.isNotEmpty()) {
                         val isLastText = index == lastTextIdx
-                        // wevvy: keep each assistant text block in a single markdown
+                        // ceis: keep each assistant text block in a single markdown
                         // bubble (matching iOS) so lists, headings, paragraphs, and code
                         // blocks from one turn stay together inside one bubble.
                         out.add(dedupe(FlatChatItem.AssistantMarkdownBlock(
@@ -722,7 +722,7 @@ internal fun buildFlatChatItems(
                         )))
                     }
                 }
-                "thinking" -> if (showSteps) out.add(dedupe(FlatChatItem.AssistantThinking( // wevvy: a step
+                "thinking" -> if (showSteps) out.add(dedupe(FlatChatItem.AssistantThinking( // ceis: a step
                     messageId = message.id,
                     block = block,
                     isLast = block.id == lastThinkingId,
@@ -734,12 +734,12 @@ internal fun buildFlatChatItems(
                     messageId = message.id,
                     block = block,
                 )))
-                "nm_naming" -> out.add(dedupe(FlatChatItem.WevvyNaming(message.id))) // wevvy
-                "nm_avatar_options" -> out.add(dedupe(FlatChatItem.WevvyAvatarOptions(message.id))) // wevvy
-                "nm_avatar_share" -> out.add(dedupe(FlatChatItem.WevvyAvatarShare(message.id, block.content))) // wevvy
-                "nm_avatar_confirm" -> out.add(dedupe(FlatChatItem.WevvyAvatarConfirm(message.id, block.content))) // wevvy
-                "nm_allowance" -> out.add(dedupe(FlatChatItem.WevvyAllowance(message.id))) // wevvy
-                else -> if (showSteps) out.add(dedupe(FlatChatItem.AssistantToolUse( // wevvy: a step
+                "nm_naming" -> out.add(dedupe(FlatChatItem.CeisNaming(message.id))) // ceis
+                "nm_avatar_options" -> out.add(dedupe(FlatChatItem.CeisAvatarOptions(message.id))) // ceis
+                "nm_avatar_share" -> out.add(dedupe(FlatChatItem.CeisAvatarShare(message.id, block.content))) // ceis
+                "nm_avatar_confirm" -> out.add(dedupe(FlatChatItem.CeisAvatarConfirm(message.id, block.content))) // ceis
+                "nm_allowance" -> out.add(dedupe(FlatChatItem.CeisAllowance(message.id))) // ceis
+                else -> if (showSteps) out.add(dedupe(FlatChatItem.AssistantToolUse( // ceis: a step
                     messageId = message.id,
                     block = block,
                     allToolBlocks = toolPillBlocks,
@@ -768,9 +768,9 @@ internal fun buildFlatChatItems(
         val hasVisibleContent = message.content.isNotEmpty() || blocks.any {
             when (it.kind) {
                 "info" -> false
-                "thinking" -> showSteps && (message.thinkingLevel?.isEnabled ?: true) // wevvy: hidden steps do not count
+                "thinking" -> showSteps && (message.thinkingLevel?.isEnabled ?: true) // ceis: hidden steps do not count
                 "text" -> it.content.isNotEmpty()
-                "tool_use" -> showSteps // pills render immediately — when the steps are shown (wevvy)
+                "tool_use" -> showSteps // pills render immediately — when the steps are shown (ceis)
                 else -> true // the app's own cards
             }
         }
@@ -796,7 +796,7 @@ internal fun buildFlatChatItems(
     return out
 }
 
-/** wevvy: whether a time divider goes before a message stamped [millis] when the last divider was stamped [lastMillis] (0 = none yet). */
+/** ceis: whether a time divider goes before a message stamped [millis] when the last divider was stamped [lastMillis] (0 = none yet). */
 private fun nmNeedsTimestampDivider(lastMillis: Long, millis: Long): Boolean {
     if (lastMillis <= 0L) return true
     if (millis - lastMillis > 30 * 60 * 1000L) return true
@@ -806,7 +806,7 @@ private fun nmNeedsTimestampDivider(lastMillis: Long, millis: Long): Boolean {
         a.get(java.util.Calendar.DAY_OF_YEAR) != b.get(java.util.Calendar.DAY_OF_YEAR)
 }
 
-/** wevvy: a finished assistant turn made of steps alone — nothing the chat would show with the steps hidden. */
+/** ceis: a finished assistant turn made of steps alone — nothing the chat would show with the steps hidden. */
 private fun stepsOnlyTurn(m: ChatMessage): Boolean =
     m.role == "assistant" && !m.isStreaming && m.error == null && m.content.isEmpty() &&
         m.toolBlocks.isNotEmpty() && m.toolBlocks.all {

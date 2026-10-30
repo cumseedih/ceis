@@ -242,7 +242,7 @@ class PhotosOffloadHandler(private val context: Context) : NativeOffloadHandler 
                     OffloadPermissionManager.SettingsGateRequest(
                         id = "photos_media",
                         title = "Photos permission needed",
-                        message = "wevvy needs media permission to read your photo library. Open Settings to allow it.",
+                        message = "ceis needs media permission to read your photo library. Open Settings to allow it.",
                         settingsAction = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                         requiresPackageUri = true,
                         positiveLabel = "Open Settings",
@@ -305,7 +305,7 @@ class PhotosOffloadHandler(private val context: Context) : NativeOffloadHandler 
                     OffloadPermissionManager.SettingsGateRequest(
                         id = "ACCESS_MEDIA_LOCATION",
                         title = "Photo location needed",
-                        message = "wevvy needs photo-location permission to read GPS EXIF for the `near` query. Open Settings to allow it.",
+                        message = "ceis needs photo-location permission to read GPS EXIF for the `near` query. Open Settings to allow it.",
                         settingsAction = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                         requiresPackageUri = true,
                         positiveLabel = "Open Settings",

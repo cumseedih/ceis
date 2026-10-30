@@ -5,11 +5,11 @@
  *
  * The facts come from the runtime (`GET /api/providers`, which also says which slots are
  * configured today and which capabilities that gives) and, when the runtime is older or
- * unreachable, from the bundled copy of `wevvy/llm/providers.json` — the same file the
+ * unreachable, from the bundled copy of `ceis/llm/providers.json` — the same file the
  * relay, the desktop and the phones read.
  */
 import { useEffect, useState } from "react";
-import catalogue from "../../wevvy/llm/providers.json";
+import catalogue from "../../ceis/llm/providers.json";
 import { api } from "./api";
 import { isMainland } from "./region";
 import type { Capability, CatalogueProvider, CloudAccount, ProvidersView } from "./types";

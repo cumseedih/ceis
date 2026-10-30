@@ -21,16 +21,16 @@ import { WindowsUpdates, RestartNsisUpdater } from "./windows-updates";
 import { windowsNetworkCost } from "./windows-network-cost";
 
 /**
- * wevvy — the wevvy desktop, built on DeepSeek Harness.
+ * ceis — the ceis desktop, built on DeepSeek Harness.
  *
  * The window shows the harness's own web app, served by a dsh Host this shell starts as a
  * child process: the Electron binary in Node mode (`ELECTRON_RUN_AS_NODE`, as the harness's
- * own desktop does), running the `dsh` that ships under `resources/dsh` with the wevvy
- * bundle (`harness/dsh-wevvy`) installed next to it. The profile the Host boots lives
- * under `~/.wevvy/desktop` and names the bundle; nothing is installed at first run and
+ * own desktop does), running the `dsh` that ships under `resources/dsh` with the ceis
+ * bundle (`harness/dsh-ceis`) installed next to it. The profile the Host boots lives
+ * under `~/.ceis/desktop` and names the bundle; nothing is installed at first run and
  * no Node or pnpm is needed on the machine. When the runtime for the hands is bundled
  * (`resources/runtime`, the PyInstaller build the other desktop app carries too), the
- * preset's `wevvy mcp` points at it, so the hands work out of the box.
+ * preset's `ceis mcp` points at it, so the hands work out of the box.
  *
  * What the shell adds is small on purpose: a loading page with the face, the Host's URL
  * loaded once it is ready, external links in the browser, a menu with About and the
@@ -39,11 +39,11 @@ import { windowsNetworkCost } from "./windows-network-cost";
  * (docs/desktop.md, docs/harness.md).
  */
 
-const PROFILE = "wevvy";
+const PROFILE = "ceis";
 // The composition: the harness's base and Web app, its Schedule (the goals' automations and
 // the agent's reminders — an optional bundle of the harness, on by default here), then ours.
-const BUNDLES = ["@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "@deepseek-ai/dsh-experimental-schedule-bundle", "dsh-wevvy"];
-const BUNDLE = "dsh-wevvy";
+const BUNDLES = ["@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "@deepseek-ai/dsh-experimental-schedule-bundle", "dsh-ceis"];
+const BUNDLE = "dsh-ceis";
 const RELEASES_PAGE = "https://github.com/nano-muse/nanoMuse/releases/latest";
 const ISSUES_PAGE = "https://github.com/nano-muse/nanoMuse/issues";
 const DOCS_PAGE = "https://wevvy.in/docs/desktop";
@@ -51,9 +51,9 @@ const HARNESS_PAGE = "https://github.com/deepseek-ai/deepseek-harness";
 
 const T = {
   starting: "Starting…",
-  notReady: "wevvy could not start",
-  stopped: "wevvy's host stopped",
-  stillStarting: "wevvy is still starting",
+  notReady: "ceis could not start",
+  stopped: "ceis's host stopped",
+  stillStarting: "ceis is still starting",
   stillStartingDetail: (waited: string) =>
     `The host has been starting for ${waited} and its process is still running. The first start after an install can take several minutes: the system checks each of the app's files once (on Windows that is the real-time scanner), and a slow disk adds to it; later starts are quicker. Keep waiting, or quit (quitting stops the host that is still starting).`,
   keepWaiting: "Keep waiting",
@@ -63,8 +63,8 @@ const T = {
   copied: "Copied. Paste it into a GitHub issue.",
   openLogFolder: "Open the log folder",
   reportHint: "Copy details puts this and the end of the log on the clipboard for an issue at",
-  about: "About wevvy",
-  website: "wevvy website",
+  about: "About ceis",
+  website: "ceis website",
   docs: "About this desktop",
   issue: "Report an issue",
   builtOn: "Built on DeepSeek Harness (MIT)",
@@ -75,10 +75,10 @@ const T = {
   window: "Window",
   help: "Help",
   edit: "Edit",
-  open: "Open wevvy",
+  open: "Open ceis",
   newChat: "New chat",
   quickChat: "Quick chat",
-  quitApp: "Quit wevvy",
+  quitApp: "Quit ceis",
   // the protected exit: what a real quit (later, a restart-update) would end
   exitBusyTitle: "Work is still in progress",
   exitBusyLead: "Quitting now would end this work:",
@@ -119,18 +119,18 @@ let restarts = 0;
 let hostProxy = "";
 
 /**
- * `~/.wevvy/desktop`, the harness home of this app alone — the CLI's `~/.dsh` is left alone.
- * `WEVVY_DESKTOP_HOME` moves it (`WEVVY_HARNESS_HOME`, the 0.1.28–0.1.29 name, still
- * counts). A home the app kept as wevvy Harness under `~/.wevvy/harness` is taken over
+ * `~/.ceis/desktop`, the harness home of this app alone — the CLI's `~/.dsh` is left alone.
+ * `CEIS_DESKTOP_HOME` moves it (`CEIS_HARNESS_HOME`, the 0.1.28–0.1.29 name, still
+ * counts). A home the app kept as ceis Harness under `~/.ceis/harness` is taken over
  * once, so the account and the chats of those two versions carry on.
  */
 let resolvedHome: string | undefined;
 function harnessHome(): string {
   if (resolvedHome) return resolvedHome;
-  const fromEnv = process.env.WEVVY_DESKTOP_HOME || process.env.WEVVY_HARNESS_HOME;
+  const fromEnv = process.env.CEIS_DESKTOP_HOME || process.env.CEIS_HARNESS_HOME;
   if (fromEnv) return (resolvedHome = fromEnv);
-  const home = join(homedir(), ".wevvy", "desktop");
-  const previous = join(homedir(), ".wevvy", "harness");
+  const home = join(homedir(), ".ceis", "desktop");
+  const previous = join(homedir(), ".ceis", "harness");
   if (!existsSync(home) && existsSync(join(previous, "profiles"))) {
     try {
       renameSync(previous, home);
@@ -155,7 +155,7 @@ function log(line: string): void {
   const stamped = `${new Date().toISOString().slice(11, 19)} ${line}`;
   logs.push(stamped);
   if (logs.length > 200) logs.shift();
-  console.log(`[wevvy-desktop] ${line}`);
+  console.log(`[ceis-desktop] ${line}`);
   try {
     mkdirSync(harnessHome(), { recursive: true });
     appendFileSync(join(harnessHome(), "desktop.log"), `${stamped}\n`);
@@ -175,16 +175,16 @@ function shipped(): Shipped {
   }
 }
 
-/** The bundled runtime's executable (`wevvy mcp` serves the hands), when it was built in. */
+/** The bundled runtime's executable (`ceis mcp` serves the hands), when it was built in. */
 function bundledRuntime(): string | undefined {
-  const exe = join(resourcesDir(), "runtime", process.platform === "win32" ? "wevvy.exe" : "wevvy");
+  const exe = join(resourcesDir(), "runtime", process.platform === "win32" ? "ceis.exe" : "ceis");
   return existsSync(exe) ? exe : undefined;
 }
 
 /**
- * The profile the Host boots: `~/.wevvy/desktop/profiles/wevvy`. Three small files the
+ * The profile the Host boots: `~/.ceis/desktop/profiles/ceis`. Three small files the
  * harness reads (the manifest with the bundle list, the empty root, the person's own patch
- * layer, which dsh writes settings into) and one link: `node_modules/dsh-wevvy` → the copy
+ * layer, which dsh writes settings into) and one link: `node_modules/dsh-ceis` → the copy
  * under resources, which is how the Loader finds a bundle that is not among the harness's own
  * packages. The link is refreshed every start, so moving the app or updating it is enough.
  */
@@ -223,7 +223,7 @@ function ensureProfile(dshDir: string): string {
   if (!existsSync(join(dir, "cordis.patch.yml"))) {
     writeFileSync(
       join(dir, "cordis.patch.yml"),
-      "# Your patch layer for this dsh profile, applied after every bundle layer:\n# a top-level YAML array of loader patch entries. wevvy and dsh\n# write settings here; you may edit it too.\n[]\n",
+      "# Your patch layer for this dsh profile, applied after every bundle layer:\n# a top-level YAML array of loader patch entries. ceis and dsh\n# write settings here; you may edit it too.\n[]\n",
     );
   }
   const link = join(dir, "node_modules", BUNDLE);
@@ -282,7 +282,7 @@ async function hostPort(home: string): Promise<number> {
 
 /**
  * A GUI launch on macOS and Linux inherits the session's environment, not the shell's, so
- * the agent's bash and `wevvy` on PATH would miss Homebrew and the like. Ask the login
+ * the agent's bash and `ceis` on PATH would miss Homebrew and the like. Ask the login
  * shell once for its PATH, as the harness's own desktop does; anything else is left as is.
  */
 function loginShellPath(): string | undefined {
@@ -319,17 +319,17 @@ function startHost(): Promise<string> {
           ...process.env,
           ELECTRON_RUN_AS_NODE: "1",
           DSH_HOME: home,
-          // One secret per launch, shared by the bundle and the runtime's `wevvy mcp`
+          // One secret per launch, shared by the bundle and the runtime's `ceis mcp`
           // server: a hands step the person must agree to is confirmed with a ticket only
           // the bundle can make (after the permission card), never by the model's own word.
-          WEVVY_MCP_CONFIRM: randomBytes(24).toString("hex"),
+          CEIS_MCP_CONFIRM: randomBytes(24).toString("hex"),
         };
         if (operatorServer) {
-          // The hands themselves: the runtime's `wevvy mcp` (a child of the host, which
+          // The hands themselves: the runtime's `ceis mcp` (a child of the host, which
           // inherits this environment) finds the operator here and moves the mouse, types
           // and takes the screenshot through this process (src/operator.ts).
-          env.WEVVY_OPERATOR_URL = operatorServer.url;
-          env.WEVVY_OPERATOR_TOKEN = operatorServer.token;
+          env.CEIS_OPERATOR_URL = operatorServer.url;
+          env.CEIS_OPERATOR_TOKEN = operatorServer.token;
         }
         const shellPath = loginShellPath();
         if (shellPath) env.PATH = shellPath;
@@ -341,17 +341,17 @@ function startHost(): Promise<string> {
         hostProxy = proxied.HTTPS_PROXY ?? "";
         if (hostProxy) log(`proxy: providers through ${maskProxyUrl(hostProxy)}; never for ${proxied.NO_PROXY}`);
         const runtime = bundledRuntime();
-        if (!env.WEVVY_PY && runtime) env.WEVVY_PY = runtime;
+        if (!env.CEIS_PY && runtime) env.CEIS_PY = runtime;
         // Loud when the hands have nothing to run: a packaged build without its runtime, or
-        // WEVVY_PY (from the login shell) pointing at a file that is not there. The
+        // CEIS_PY (from the login shell) pointing at a file that is not there. The
         // Computer-use page shows the same with the fix; this is for the log people send in.
-        if (env.WEVVY_PY && !existsSync(env.WEVVY_PY)) {
-          log(`runtime: WEVVY_PY=${env.WEVVY_PY} does not exist — the hands are off until it is fixed or unset`);
-        } else if (!env.WEVVY_PY && app.isPackaged) {
-          log(`runtime: no bundled runtime at ${join(resourcesDir(), "runtime")} and WEVVY_PY is not set — the hands are off (rebuild with the runtime, or install wevvy and set WEVVY_PY)`);
+        if (env.CEIS_PY && !existsSync(env.CEIS_PY)) {
+          log(`runtime: CEIS_PY=${env.CEIS_PY} does not exist — the hands are off until it is fixed or unset`);
+        } else if (!env.CEIS_PY && app.isPackaged) {
+          log(`runtime: no bundled runtime at ${join(resourcesDir(), "runtime")} and CEIS_PY is not set — the hands are off (rebuild with the runtime, or install ceis and set CEIS_PY)`);
         }
         const args = ["--expose-internals", bin, PROFILE, "--no-open", "--port", String(port)];
-        log(`host: ${process.execPath} ${args.join(" ")} (DSH_HOME=${home}${env.WEVVY_PY ? `, WEVVY_PY=${env.WEVVY_PY}` : ""})`);
+        log(`host: ${process.execPath} ${args.join(" ")} (DSH_HOME=${home}${env.CEIS_PY ? `, CEIS_PY=${env.CEIS_PY}` : ""})`);
         const proc = spawn(process.execPath, args, { cwd: homedir(), env, stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
         child = proc;
         hostStderr = "";
@@ -438,7 +438,7 @@ async function askKeepWaiting(watch: HostStartWatch, state: WaitState): Promise<
     if (quitting || startWatch !== watch) return;
     if (response === 1) {
       clipboard.writeText(details(`${T.stillStarting} (${waited})`));
-      await dialog.showMessageBox({ type: "info", title: "wevvy", message: T.copied, buttons: ["OK"] });
+      await dialog.showMessageBox({ type: "info", title: "ceis", message: T.copied, buttons: ["OK"] });
       continue;
     }
     if (response === 2) {
@@ -598,7 +598,7 @@ function details(message: string): string {
   return [
     message,
     "",
-    `wevvy ${app.getVersion()} · dsh ${s.dsh ?? "?"} · ${BUNDLE} ${s.bundle ?? "?"}`,
+    `ceis ${app.getVersion()} · dsh ${s.dsh ?? "?"} · ${BUNDLE} ${s.bundle ?? "?"}`,
     `Electron ${process.versions.electron} · ${process.platform} ${process.arch}`,
     `home: ${harnessHome()}`,
     "",
@@ -625,7 +625,7 @@ async function reportStartupFailure(exc: unknown): Promise<void> {
     });
     if (response === 0) {
       clipboard.writeText(details(message));
-      await dialog.showMessageBox({ type: "info", title: "wevvy", message: T.copied, buttons: ["OK"] });
+      await dialog.showMessageBox({ type: "info", title: "ceis", message: T.copied, buttons: ["OK"] });
       continue;
     }
     if (response === 1) {
@@ -721,7 +721,7 @@ const PERMISSION_PANES: Record<PermissionKind | "files", string> = {
   files: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles",
 };
 
-// ---- macOS: "wevvy Computer Use", the helper that holds the hands' permissions ----------
+// ---- macOS: "ceis Computer Use", the helper that holds the hands' permissions ----------
 //
 // The grants go to the responsible process, so a separate app bundle started through `open`
 // has its own rows in the Screen Recording and Accessibility panes and can be restarted on
@@ -753,7 +753,7 @@ async function helperReady(): Promise<boolean> {
 
 /** What the permission dialogs name as the switch to flip. */
 function permissionTarget(): string {
-  return macPermissions.helperInUse() ? HELPER_NAME : "wevvy";
+  return macPermissions.helperInUse() ? HELPER_NAME : "ceis";
 }
 
 let awakeBlocker: number | null = null;
@@ -847,7 +847,7 @@ function quickChat(): void {
     return;
   }
   const win = showWindow();
-  win?.webContents.send("wevvy:quick-chat");
+  win?.webContents.send("ceis:quick-chat");
 }
 
 function applyQuickChat(): void {
@@ -880,11 +880,11 @@ function applyMenuBar(): void {
     log(`menu bar: ${String(exc)}`);
     return;
   }
-  tray.setToolTip("wevvy");
+  tray.setToolTip("ceis");
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: T.open, click: () => void showWindow() },
-      { label: T.newChat, accelerator: prefs.quickChat ? quickChatKey() : undefined, click: () => showWindow()?.webContents.send("wevvy:quick-chat") },
+      { label: T.newChat, accelerator: prefs.quickChat ? quickChatKey() : undefined, click: () => showWindow()?.webContents.send("ceis:quick-chat") },
       { type: "separator" },
       { label: T.quit, click: () => protectedQuit() },
     ]),
@@ -896,12 +896,12 @@ function applyOpenAtLogin(): void {
   if (process.platform === "linux") {
     // freedesktop autostart: a .desktop entry pointing at this executable (the AppImage or the installed binary)
     const dir = join(process.env.XDG_CONFIG_HOME || join(homedir(), ".config"), "autostart");
-    const file = join(dir, "wevvy-desktop.desktop");
+    const file = join(dir, "ceis-desktop.desktop");
     try {
       if (prefs.openAtLogin) {
         mkdirSync(dir, { recursive: true });
         const exe = process.env.APPIMAGE || process.execPath;
-        writeFileSync(file, `[Desktop Entry]\nType=Application\nName=wevvy\nExec="${exe}"\nIcon=wevvy-desktop\nX-GNOME-Autostart-enabled=true\nTerminal=false\n`);
+        writeFileSync(file, `[Desktop Entry]\nType=Application\nName=ceis\nExec="${exe}"\nIcon=ceis-desktop\nX-GNOME-Autostart-enabled=true\nTerminal=false\n`);
       } else rmSync(file, { force: true });
     } catch (exc) {
       log(`open at login: ${String(exc)}`);
@@ -931,15 +931,15 @@ function prefsView(): Prefs & { quickChatKey: string; quickChatDefault: string; 
 async function reportBug(): Promise<{ screenshot: string; url: string }> {
   const s = shipped();
   const facts = [
-    `wevvy ${app.getVersion()} · ${process.platform} ${process.arch}`,
-    `DeepSeek Harness ${s.dsh ?? "?"} · dsh-wevvy ${s.bundle ?? "?"} · Electron ${process.versions.electron}`,
+    `ceis ${app.getVersion()} · ${process.platform} ${process.arch}`,
+    `DeepSeek Harness ${s.dsh ?? "?"} · dsh-ceis ${s.bundle ?? "?"} · Electron ${process.versions.electron}`,
   ];
   let screenshot = "";
   if (mainWindow) {
     try {
       const image = await mainWindow.webContents.capturePage();
       const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-      screenshot = join(app.getPath("downloads"), `wevvy-${stamp}.png`);
+      screenshot = join(app.getPath("downloads"), `ceis-${stamp}.png`);
       writeFileSync(screenshot, image.toPNG());
     } catch (exc) {
       log(`report: no screenshot: ${String(exc)}`);
@@ -954,7 +954,7 @@ async function reportBug(): Promise<{ screenshot: string; url: string }> {
     surface: "Desktop app",
     version: app.getVersion(),
     os: facts.join(" · "),
-    what: screenshot ? `\n\n(Drag the screenshot wevvy saved to Downloads, ${screenshot.split(/[\\/]/).pop()}, in here.)` : "",
+    what: screenshot ? `\n\n(Drag the screenshot ceis saved to Downloads, ${screenshot.split(/[\\/]/).pop()}, in here.)` : "",
   });
   const url = `${ISSUES_PAGE}/new?${params.toString()}`;
   void shell.openExternal(url);
@@ -964,8 +964,8 @@ async function reportBug(): Promise<{ screenshot: string; url: string }> {
 /** The requests the preload bridge forwards from the web client (see preload.ts). */
 function registerBridge(): void {
   // appImage: the Linux build runs from an AppImage (the runtime sets APPIMAGE), so About offers the AppImage of a newer version, not the .deb
-  ipcMain.handle("wevvy:info", () => ({ version: app.getVersion(), platform: process.platform, arch: process.arch, appImage: Boolean(process.env.APPIMAGE) }));
-  ipcMain.handle("wevvy:permissions", async () => {
+  ipcMain.handle("ceis:info", () => ({ version: app.getVersion(), platform: process.platform, arch: process.arch, appImage: Boolean(process.env.APPIMAGE) }));
+  ipcMain.handle("ceis:permissions", async () => {
     // the helper's grants, fresh, when it runs — started again when it went away (the
     // "Quit & Reopen" the Screen Recording switch offers ends it); `helper` tells the page
     // which rows to name
@@ -977,7 +977,7 @@ function registerBridge(): void {
       helper: macPermissions.helperInUse(),
     };
   });
-  ipcMain.handle("wevvy:permissions:request", async (_e, kind: PermissionKind) => {
+  ipcMain.handle("ceis:permissions:request", async (_e, kind: PermissionKind) => {
     if (process.platform !== "darwin") return "not-needed" satisfies PermissionState;
     if (!(kind in PERMISSION_PANES)) return "denied" satisfies PermissionState;
     if (kind === "accessibility") requestAccessibility();
@@ -988,37 +988,37 @@ function registerBridge(): void {
   // macOS applies Screen Recording only to freshly started processes: after granting it, the
   // process that takes the screenshots has to start again — the helper when it is in use,
   // the whole app otherwise.
-  ipcMain.handle("wevvy:relaunch", () => {
+  ipcMain.handle("ceis:relaunch", () => {
     relaunchNow();
   });
-  ipcMain.handle("wevvy:updates:snapshot", () => windowsUpdates?.snapshot() ?? null);
-  ipcMain.handle("wevvy:updates:auto-download", async (_e, enabled: boolean) => {
+  ipcMain.handle("ceis:updates:snapshot", () => windowsUpdates?.snapshot() ?? null);
+  ipcMain.handle("ceis:updates:auto-download", async (_e, enabled: boolean) => {
     await windowsUpdates?.setAutoDownload(enabled);
     return windowsUpdates?.snapshot() ?? null;
   });
   for (const action of ["check", "download", "restart"] as const) {
-    ipcMain.handle(`wevvy:updates:${action}`, async () => {
+    ipcMain.handle(`ceis:updates:${action}`, async () => {
       await windowsUpdates?.[action]();
       return windowsUpdates?.snapshot() ?? null;
     });
   }
-  ipcMain.handle("wevvy:permissions:settings", (_e, kind: PermissionKind | "files") => {
+  ipcMain.handle("ceis:permissions:settings", (_e, kind: PermissionKind | "files") => {
     if (process.platform === "darwin" && typeof kind === "string" && kind in PERMISSION_PANES) void shell.openExternal(PERMISSION_PANES[kind]);
   });
-  ipcMain.handle("wevvy:open-external", (_e, url: string) => {
+  ipcMain.handle("ceis:open-external", (_e, url: string) => {
     if (typeof url === "string" && EXTERNAL_URL.test(url)) void shell.openExternal(url);
   });
-  ipcMain.handle("wevvy:keep-awake", (_e, on: boolean) => {
+  ipcMain.handle("ceis:keep-awake", (_e, on: boolean) => {
     if (on === true && awakeBlocker === null) awakeBlocker = powerSaveBlocker.start("prevent-display-sleep");
     else if (on !== true) releaseAwake();
   });
-  ipcMain.handle("wevvy:theme", (_e, theme: string) => {
+  ipcMain.handle("ceis:theme", (_e, theme: string) => {
     mainWindow?.setBackgroundColor(theme === "dark" ? BASE_DARK : BASE_LIGHT);
     // the Windows caption buttons follow the page's colour scheme
     if (process.platform === "win32") mainWindow?.setTitleBarOverlay?.(overlayColors(theme === "dark"));
   });
-  ipcMain.handle("wevvy:prefs", () => prefsView());
-  ipcMain.handle("wevvy:prefs:set", (_e, patch: Partial<Prefs>) => {
+  ipcMain.handle("ceis:prefs", () => prefsView());
+  ipcMain.handle("ceis:prefs:set", (_e, patch: Partial<Prefs>) => {
     if (patch && typeof patch === "object") {
       for (const key of ["openAtLogin", "menuBar", "quickChat"] as const) if (typeof patch[key] === "boolean") prefs = { ...prefs, [key]: patch[key] };
       if (typeof patch.quickChatKey === "string") {
@@ -1043,14 +1043,14 @@ function registerBridge(): void {
     return prefsView();
   });
   // the Network row's *Restart now*: the Host again with the proxy just set, the window staying
-  ipcMain.handle("wevvy:restart-host", () => restartHost());
-  ipcMain.handle("wevvy:report-bug", () => reportBug());
-  ipcMain.handle("wevvy:permissions:guide", () => guidePermissions());
-  ipcMain.handle("wevvy:content-protection", (e, on: boolean) => {
+  ipcMain.handle("ceis:restart-host", () => restartHost());
+  ipcMain.handle("ceis:report-bug", () => reportBug());
+  ipcMain.handle("ceis:permissions:guide", () => guidePermissions());
+  ipcMain.handle("ceis:content-protection", (e, on: boolean) => {
     // The main window too, while the hands work: the agent should not read its own chat off the screen.
     if (e.sender === mainWindow?.webContents) mainWindow?.setContentProtection(on === true);
   });
-  ipcMain.handle("wevvy:reveal", (_e, path: string) => {
+  ipcMain.handle("ceis:reveal", (_e, path: string) => {
     if (typeof path === "string" && path && existsSync(path)) shell.showItemInFolder(path);
   });
 }
@@ -1268,7 +1268,7 @@ function ensureOperator(): Promise<OperatorServer | null> {
   operator ??= new Operator({
     log,
     permissions: () => ({ accessibility: permissionState("accessibility") !== "denied", screen: permissionState("screen") === "granted" || permissionState("screen") === "not-needed" }),
-    // macOS: "wevvy Computer Use" takes the screenshots and moves the mouse when it is there (src/mac-helper.ts)
+    // macOS: "ceis Computer Use" takes the screenshots and moves the mouse when it is there (src/mac-helper.ts)
     helper: helper() ?? undefined,
     onAction: async (marker) => {
       setMarker(marker);
@@ -1328,7 +1328,7 @@ function ensureOperator(): Promise<OperatorServer | null> {
         log(`operator: ${info?.available ? "available" : `not available (${info?.reason ?? "?"})`} · display ${info?.display.width}×${info?.display.height} (scale ${info?.display.scaleFactor})`);
       };
       // macOS: the line is about the helper's grants once it runs — written after it is up
-      // (or has failed), not before, when it would name wevvy's own rows
+      // (or has failed), not before, when it would name ceis's own rows
       if (process.platform === "darwin" && helper()?.present()) void helperReady().then(status, status);
       else status();
       return server;
@@ -1463,7 +1463,7 @@ async function capsuleDodge(marker: Marker): Promise<void> {
 }
 
 function sendOverlay(win: BrowserWindow | null, state: unknown): void {
-  if (win && !win.isDestroyed()) win.webContents.send("wevvy:overlay:state", state);
+  if (win && !win.isDestroyed()) win.webContents.send("ceis:overlay:state", state);
 }
 
 /** The marker still worth showing: the operator's last action, less than MARKER_MS ago. */
@@ -1545,7 +1545,7 @@ function applyOverlay(): void {
 }
 
 function registerOverlays(): void {
-  ipcMain.on("wevvy:overlay", (e, state: OverlayState) => {
+  ipcMain.on("ceis:overlay", (e, state: OverlayState) => {
     if (e.sender !== mainWindow?.webContents || !state || typeof state !== "object") return;
     const hands = state.hands && typeof state.hands === "object" ? state.hands : null;
     overlayState = {
@@ -1576,20 +1576,20 @@ function registerOverlays(): void {
     };
     applyOverlay();
   });
-  ipcMain.on("wevvy:overlay:ready", (e) => {
+  ipcMain.on("ceis:overlay:ready", (e) => {
     if (e.sender === glowWindow?.webContents) sendOverlay(glowWindow, overlayState.hands ? { ...overlayState.hands } : { active: false });
     if (e.sender === capsuleWindow?.webContents) sendOverlay(capsuleWindow, { hands: overlayState.hands && (overlayState.hands.active || overlayState.hands.held) ? overlayState.hands : null, cards: overlayState.cards });
   });
-  ipcMain.on("wevvy:overlay:act", (e, payload: { card?: string; action?: string }) => {
+  ipcMain.on("ceis:overlay:act", (e, payload: { card?: string; action?: string }) => {
     if (e.sender !== capsuleWindow?.webContents || !payload) return;
-    mainWindow?.webContents.send("wevvy:overlay:action", { card: String(payload.card ?? ""), action: String(payload.action ?? "") });
+    mainWindow?.webContents.send("ceis:overlay:action", { card: String(payload.card ?? ""), action: String(payload.action ?? "") });
   });
-  ipcMain.on("wevvy:overlay:leak", (e, leak: unknown) => {
+  ipcMain.on("ceis:overlay:leak", (e, leak: unknown) => {
     // Linux: the glow's page saw the pointer — only possible when its input shape is gone
     if (process.platform !== "linux" || e.sender !== glowWindow?.webContents || !leakIsReal(leak)) return;
     repairGlowShape(leak);
   });
-  ipcMain.on("wevvy:overlay:resize", (e, height: number) => {
+  ipcMain.on("ceis:overlay:resize", (e, height: number) => {
     if (e.sender !== capsuleWindow?.webContents || typeof height !== "number") return;
     const h = Math.max(48, Math.min(480, Math.round(height)));
     const b = capsuleWindow.getBounds();
@@ -1614,10 +1614,10 @@ async function guidePermissions(): Promise<Record<PermissionKind, PermissionStat
   if (permissionState("accessibility") !== "granted") {
     const { response } = await dialog.showMessageBox({
       type: "info",
-      message: "wevvy needs Accessibility",
+      message: "ceis needs Accessibility",
       detail: viaHelper
-        ? `The hands move the mouse and type through it. The system asks next; in System Settings → Privacy & Security → Accessibility, switch on ${target}, the small program wevvy brings along for the screenshots and the input. Only it needs the permission.`
-        : "The hands move the mouse and type through it. The system asks next; in System Settings → Privacy & Security → Accessibility, switch on wevvy. The runtime it bundles runs as part of the app and does not appear separately.",
+        ? `The hands move the mouse and type through it. The system asks next; in System Settings → Privacy & Security → Accessibility, switch on ${target}, the small program ceis brings along for the screenshots and the input. Only it needs the permission.`
+        : "The hands move the mouse and type through it. The system asks next; in System Settings → Privacy & Security → Accessibility, switch on ceis. The runtime it bundles runs as part of the app and does not appear separately.",
       buttons: ["Continue", "Later"],
       defaultId: 0,
       cancelId: 1,
@@ -1627,10 +1627,10 @@ async function guidePermissions(): Promise<Record<PermissionKind, PermissionStat
   if (permissionState("screen") !== "granted") {
     const { response } = await dialog.showMessageBox({
       type: "info",
-      message: "wevvy needs Screen Recording",
+      message: "ceis needs Screen Recording",
       detail: viaHelper
         ? `It sees the screen through screenshots. After Continue the system asks once; switch on ${target} in the Screen Recording pane (that one entry is all). It restarts by itself once the switch is on; the app does not need to.`
-        : "It sees the screen through screenshots. After Continue the system asks once; switch on wevvy in the Screen Recording pane (that one entry is all), then relaunch the app: macOS applies this permission to freshly started apps only.",
+        : "It sees the screen through screenshots. After Continue the system asks once; switch on ceis in the Screen Recording pane (that one entry is all), then relaunch the app: macOS applies this permission to freshly started apps only.",
       buttons: ["Continue", "Later"],
       defaultId: 0,
       cancelId: 1,
@@ -1707,7 +1707,7 @@ let relaunching = false;
  * effect. With the helper in use that is the helper alone — `/quit` and a fresh `open`, the
  * app and the conversation untouched. Otherwise the whole app: through `app.quit()`, not
  * `app.exit()`, so `before-quit` stops the host and the operator server first and the old
- * `wevvy mcp` — started before the permission was granted, and so still without it —
+ * `ceis mcp` — started before the permission was granted, and so still without it —
  * does not outlive the relaunch.
  */
 function relaunchNow(): void {
@@ -1760,7 +1760,7 @@ function watchScreenGrant(): void {
       .showMessageBox({
         type: "info",
         message: "Screen Recording is on; it takes effect after a restart",
-        detail: "macOS applies this permission to freshly started apps only. Restart wevvy now and the hands see the screen; until then screenshots come back black.",
+        detail: "macOS applies this permission to freshly started apps only. Restart ceis now and the hands see the screen; until then screenshots come back black.",
         buttons: ["Restart now", "Later"],
         defaultId: 0,
         cancelId: 1,
@@ -1797,7 +1797,7 @@ function createWindow(): BrowserWindow {
     height: 840,
     minWidth: 960,
     minHeight: 620,
-    title: "wevvy",
+    title: "ceis",
     icon: process.platform === "darwin" ? undefined : nativeImage.createFromPath(iconPath()),
     backgroundColor: nativeTheme.shouldUseDarkColors ? BASE_DARK : BASE_LIGHT,
     show: false,
@@ -1812,8 +1812,8 @@ function createWindow(): BrowserWindow {
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: false, preload: join(__dirname, "preload.js") },
   });
   win.once("ready-to-show", () => win.show());
-  win.on("enter-full-screen", () => win.webContents.send("wevvy:fullscreen", true));
-  win.on("leave-full-screen", () => win.webContents.send("wevvy:fullscreen", false));
+  win.on("enter-full-screen", () => win.webContents.send("ceis:fullscreen", true));
+  win.on("leave-full-screen", () => win.webContents.send("ceis:fullscreen", false));
   // the harness names its document after itself; the window keeps ours
   win.on("page-title-updated", (e) => e.preventDefault());
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -1888,18 +1888,18 @@ function about(): void {
   const s = shipped();
   const lines = [
     // the same version line as the web client's About (About.tsx `versionLine`)
-    `wevvy ${app.getVersion()} · harness ${s.bundle ?? "?"}`,
+    `ceis ${app.getVersion()} · harness ${s.bundle ?? "?"}`,
     "An open-source personal agent for every device you own.",
     "",
     `DeepSeek Harness ${s.dsh ?? "?"} (MIT) · ${BUNDLE} ${s.bundle ?? "?"} (GPL-3.0-or-later)`,
     `Electron ${process.versions.electron} · Chromium ${process.versions.chrome}`,
     "",
-    "wevvy is a community project with no affiliation to Meta; Muse is a trademark of Meta. Built on DeepSeek Harness, a name of DeepSeek's.",
+    "ceis is a community project with no affiliation to Meta; Muse is a trademark of Meta. Built on DeepSeek Harness, a name of DeepSeek's.",
   ];
   void dialog.showMessageBox({
     type: "info",
     title: T.about,
-    message: "wevvy",
+    message: "ceis",
     detail: lines.join("\n"),
     buttons: ["OK"],
     icon: nativeImage.createFromPath(iconPath()),
@@ -1926,7 +1926,7 @@ function buildMenu(): void {
     ...(process.platform === "darwin"
       ? [
           {
-            label: "wevvy",
+            label: "ceis",
             submenu: [
               { label: T.about, click: about },
               { type: "separator" },
@@ -1988,9 +1988,9 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
     showWindow();
   });
   app.setAboutPanelOptions({
-    applicationName: "wevvy",
+    applicationName: "ceis",
     applicationVersion: app.getVersion(),
-    copyright: "GPL-3.0-or-later · the wevvy community · built on DeepSeek Harness (MIT)",
+    copyright: "GPL-3.0-or-later · the ceis community · built on DeepSeek Harness (MIT)",
     website: "https://wevvy.in/",
   });
   app.whenReady().then(async () => {
@@ -2000,7 +2000,7 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
     prefs = readPrefs();
     applyPrefs();
     exitGuard = new ProtectedExit({ work: workSource, dialog: exitDialog, finish: () => app.quit(), log });
-    log(`wevvy ${app.getVersion()} starting (${process.platform} ${process.arch}, packaged=${app.isPackaged})`);
+    log(`ceis ${app.getVersion()} starting (${process.platform} ${process.arch}, packaged=${app.isPackaged})`);
     if (operatorCheckFlag) {
       await operatorCheck(operatorCheckFlag);
       return;
@@ -2029,7 +2029,7 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
           } : undefined),
           cancelHandoff: async () => { await exitGuard?.cancelHandoff(); },
         });
-        windowsUpdates.subscribe((state) => { mainWindow?.webContents.send("wevvy:updates:state", state); });
+        windowsUpdates.subscribe((state) => { mainWindow?.webContents.send("ceis:updates:state", state); });
         windowsUpdates.start();
       }
     } catch (exc) {

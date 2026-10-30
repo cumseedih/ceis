@@ -13,12 +13,12 @@ from starlette.websockets import WebSocketDisconnect
 from test_accounts import auth, make
 from test_cloud import sign_up
 
-from wevvy_cloud.api import create_app
-from wevvy_cloud.config import Settings
-from wevvy_cloud.controls import ControlError, Controls
-from wevvy_cloud.db import Database
-from wevvy_cloud.senders import LogSender
-from wevvy_cloud.service import Cloud
+from ceis_cloud.api import create_app
+from ceis_cloud.config import Settings
+from ceis_cloud.controls import ControlError, Controls
+from ceis_cloud.db import Database
+from ceis_cloud.senders import LogSender
+from ceis_cloud.service import Cloud
 
 ADMIN = {"X-Admin-Token": "admin", "X-Admin-Actor": "tester"}
 HELLO = {

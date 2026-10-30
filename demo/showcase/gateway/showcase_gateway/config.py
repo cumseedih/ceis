@@ -82,7 +82,7 @@ def text_only(model: str) -> bool:
     Only the DeepSeek family is text-only, and not all of it: ``deepseek-v4.1-flash`` and
     later read pictures, as does anything whose id says ``vision`` or ``ocr``, and so do
     ``deepseek-flash`` and ``deepseek-v4-flash*``, which DeepSeek serves with V4.1 Flash (the
-    runtime's rule, ``wevvy/llm/vision.py``); ``deepseek-v4``, ``v4-pro``, ``deepseek-chat``
+    runtime's rule, ``ceis/llm/vision.py``); ``deepseek-v4``, ``v4-pro``, ``deepseek-chat``
     and ``deepseek-reasoner`` do not. On Model Studio's compatible mode a message with a
     picture in it does not fail for those, it comes back as an empty reply, so the rule is
     by name rather than found out at the first screenshot.
@@ -169,7 +169,7 @@ class Settings:
     trial_daily_tokens: int  # what all trials together may spend in a day
     trial_rpm: int  # requests per minute per trial
 
-    # wevvy Web: a kept Muse per Cloud account (accounts.py)
+    # ceis Web: a kept Muse per Cloud account (accounts.py)
     web_enabled: bool
     web_relay_url: str  # the relay as the gateway calls it for sign-in
     web_relay_internal_url: str  # the relay as the containers reach it (same Docker network)
@@ -186,7 +186,7 @@ class Settings:
     web_cpus: str
     web_device_name: str
     web_slug_salt: str
-    # the visitors: a wevvy Cloud sign-in before a demo Muse, so the showcase knows who
+    # the visitors: a ceis Cloud sign-in before a demo Muse, so the showcase knows who
     # is trying it; the sign-in goes to the relay at web_relay_url
     demo_signin_required: bool
     per_account_active: int
@@ -239,8 +239,8 @@ class Settings:
             ),
             site_dir=_str("SITE_DIR"),
             cdn_dir=_str("CDN_DIR"),
-            sessions_network=_str("SESSIONS_NETWORK", "wevvy-sessions"),
-            image=_str("WEVVY_IMAGE", "ghcr.io/nano-muse/nanoMuse:latest"),
+            sessions_network=_str("SESSIONS_NETWORK", "ceis-sessions"),
+            image=_str("CEIS_IMAGE", "ghcr.io/nano-muse/nanoMuse:latest"),
             internal_url=_str("INTERNAL_URL"),
             container_port=_int("CONTAINER_PORT", 8787),
             memory=_str("CONTAINER_MEMORY", "512m"),
@@ -283,9 +283,9 @@ class Settings:
             web_enabled=_bool("WEB_ENABLED", False),
             web_relay_url=_str("WEB_RELAY_URL", "https://cloud.wevvy.in").rstrip("/"),
             web_relay_internal_url=_str(
-                "WEB_RELAY_INTERNAL_URL", "http://wevvy-relay:8787"
+                "WEB_RELAY_INTERNAL_URL", "http://ceis-relay:8787"
             ).rstrip("/"),
-            web_network=_str("WEB_NETWORK", "wevvy-web"),
+            web_network=_str("WEB_NETWORK", "ceis-web"),
             web_db=_str("WEB_DB", "/data/web.db"),
             web_image=_str("WEB_IMAGE"),
             web_max_accounts=_int("WEB_MAX_ACCOUNTS", 60),
@@ -295,7 +295,7 @@ class Settings:
             web_memory=_str("WEB_CONTAINER_MEMORY", "640m"),
             web_cpus=_str("WEB_CONTAINER_CPUS", "1"),
             web_device_name=_str("WEB_DEVICE_NAME", "Web"),
-            web_slug_salt=_str("WEB_SLUG_SALT", "wevvy-web"),
+            web_slug_salt=_str("WEB_SLUG_SALT", "ceis-web"),
             demo_signin_required=_bool("DEMO_SIGNIN_REQUIRED", True),
             per_account_active=_int("PER_ACCOUNT_ACTIVE", 1),
             per_account_daily=_int("PER_ACCOUNT_DAILY", 6),

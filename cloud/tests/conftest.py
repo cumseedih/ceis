@@ -16,6 +16,6 @@ BUSY_HOUR = 1791439200  # 2026-10-08T06:00:00Z = 14:00 Beijing time
 
 @pytest.fixture(autouse=True)
 def _busy_hour_clock(monkeypatch):
-    from wevvy_cloud.service import Cloud
+    from ceis_cloud.service import Cloud
 
     monkeypatch.setattr(Cloud, "clock", staticmethod(lambda: BUSY_HOUR))

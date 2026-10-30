@@ -14,26 +14,26 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy.config import GUISettings, Settings
-from wevvy.llm import MockLLM
-from wevvy.phone import PhoneLink, Screen
-from wevvy.phone.link import STOP_MARKER, DeviceError, DeviceStopped
-from wevvy.phone.operator import (
+from ceis.config import GUISettings, Settings
+from ceis.llm import MockLLM
+from ceis.phone import PhoneLink, Screen
+from ceis.phone.link import STOP_MARKER, DeviceError, DeviceStopped
+from ceis.phone.operator import (
     PhoneOperator,
     Step,
     parse_step,
     parse_tagged_text,
     to_device_action,
 )
-from wevvy.phone.screen import image_size
-from wevvy.phone.trace import list_traces, read_trace, render_html
-from wevvy.schema import LLMResponse, RiskLevel
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.sentinel.audit import channel_of
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
-from wevvy.tools.phone import PhoneAct, PhoneScreen, PhoneTask
-from wevvy.ui import ApprovalDecision, ApprovalRequest
+from ceis.phone.screen import image_size
+from ceis.phone.trace import list_traces, read_trace, render_html
+from ceis.schema import LLMResponse, RiskLevel
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.sentinel.audit import channel_of
+from ceis.server import create_app
+from ceis.server.service import MuseService
+from ceis.tools.phone import PhoneAct, PhoneScreen, PhoneTask
+from ceis.ui import ApprovalDecision, ApprovalRequest
 
 
 def png(width: int, height: int) -> str:
@@ -165,7 +165,7 @@ class CapsulePhone(FakePhone):
     def __init__(self, link: PhoneLink, screens: list[dict[str, Any]], stop_after: int = 0):
         super().__init__(link, screens)
         self.tasks: list[dict[str, Any]] = []
-        self.stop_after = stop_after  # the n-th action comes back "wevvy:stop"
+        self.stop_after = stop_after  # the n-th action comes back "ceis:stop"
         self.hang = False  # a phone that never answers a screen or an action
         self.hung = 0  # how many requests it swallowed that way
         self.hold_next_task = False  # the next task event is recorded but never answered
@@ -542,7 +542,7 @@ async def test_operator_speaks_the_users_language_not_the_goals(settings: Settin
 
 
 def test_detect_language_names_english_outright():
-    from wevvy.prompts import detect_language
+    from ceis.prompts import detect_language
 
     assert detect_language("Open WeChat and tell me what Zhang Wei said") == "English"
     assert detect_language("打开微信") == "Chinese"
@@ -795,7 +795,7 @@ async def test_link_raises_device_stopped_on_the_marker():
     link.attach("c", {"name": "P", "platform": "android", "gui": True}, send)
     task = asyncio.ensure_future(link.screen())
     await asyncio.sleep(0)
-    link.resolve({"id": sent[0]["id"], "ok": False, "error": "stopped (wevvy:stop)"})
+    link.resolve({"id": sent[0]["id"], "ok": False, "error": "stopped (ceis:stop)"})
     with pytest.raises(DeviceStopped) as info:
         await task
     assert isinstance(info.value, DeviceError) and "pressed Stop" in str(info.value)
@@ -891,7 +891,7 @@ async def test_operator_handles_bad_replies_step_limits_and_loops(settings: Sett
 async def test_operator_gives_up_after_steps_that_act_on_nothing(settings: Settings):
     """With no step cap (the default) a model that keeps naming the wrong function, or an
     action the dialect refuses, used to run until Stop; six such steps in a row end it."""
-    from wevvy.phone.operator import MAX_IDLE_STEPS
+    from ceis.phone.operator import MAX_IDLE_STEPS
 
     shots = settings.agent.workspace / "screenshots"
     phone = FakePhone(PhoneLink(shots_dir=shots), [HOME_SCREEN])
@@ -983,8 +983,8 @@ async def test_phone_task_tool_reports_the_outcome(settings: Settings):
 
 
 async def test_prompt_puts_the_screen_on_the_last_rung(settings: Settings):
-    from wevvy.agent.core import MuseAgent
-    from wevvy.tools import Terminate, ToolCollection
+    from ceis.agent.core import MuseAgent
+    from ceis.tools import Terminate, ToolCollection
 
     link = PhoneLink(shots_dir=settings.agent.workspace / "screenshots")
     CapsulePhone(link, [HOME_SCREEN])

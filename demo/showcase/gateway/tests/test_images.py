@@ -33,8 +33,8 @@ async def test_a_new_look_is_drawn_on_model_studio_and_counted(world):
         sess = body(await c.post("/api/demo/session", json={}))
         env = runner.running[f"nm-{sess['id']}"]
         # the container is told the image model's name, so its studio draws through us
-        assert env["WEVVY_LLM_IMAGE_MODEL"] == "qwen-image-3.0"
-        key = env["WEVVY_LLM_API_KEY"]
+        assert env["CEIS_LLM_IMAGE_MODEL"] == "qwen-image-3.0"
+        key = env["CEIS_LLM_API_KEY"]
         auth = {"authorization": f"Bearer {key}"}
         base = f"/llm/{sess['id']}/main"
 
@@ -117,7 +117,7 @@ async def test_the_days_share_and_a_busy_provider(world):
     async with app.router.lifespan_context(app):
         c = await client_for(app)
         sess = body(await c.post("/api/demo/session", json={}))
-        key = runner.running[f"nm-{sess['id']}"]["WEVVY_LLM_API_KEY"]
+        key = runner.running[f"nm-{sess['id']}"]["CEIS_LLM_API_KEY"]
         auth = {"authorization": f"Bearer {key}"}
         base = f"/llm/{sess['id']}/main"
         manager.day_pictures = 3  # today's share is spent already
@@ -159,11 +159,11 @@ async def test_no_pictures_without_a_model_or_on_your_own_key(world):
         own = {"base_url": "https://byok.example/v1", "api_key": "sk-visitor-1", "model": "m"}
         sess = body(await c.post("/api/demo/session", json={"provider": own}))
         env = runner.running[f"nm-{sess['id']}"]
-        assert "WEVVY_LLM_IMAGE_MODEL" not in env
+        assert "CEIS_LLM_IMAGE_MODEL" not in env
         r = await c.post(
             f"/llm/{sess['id']}/main/images/generations",
             json={"model": "m", "prompt": "x"},
-            headers={"authorization": f"Bearer {env['WEVVY_LLM_API_KEY']}"},
+            headers={"authorization": f"Bearer {env['CEIS_LLM_API_KEY']}"},
         )
         assert r.status_code == 404 and body(r)["error"]["type"] == "no_image_model"
 
@@ -181,4 +181,4 @@ async def test_no_pictures_without_a_model_or_on_your_own_key(world):
         r = await c.post("/api/demo/session", json={})
         assert r.status_code == 201, r.text
         sess = body(r)
-        assert "WEVVY_LLM_IMAGE_MODEL" not in runner.running[f"nm-{sess['id']}"]
+        assert "CEIS_LLM_IMAGE_MODEL" not in runner.running[f"nm-{sess['id']}"]

@@ -11,16 +11,16 @@ from typing import Any
 import pytest
 
 from tests.test_server import tc, wait_for, wait_idle
-from wevvy.bridge.cli import BridgeClient, browser_main, device_main, open_main, parse_pairs
-from wevvy.bridge.server import Bridge, BridgeError
-from wevvy.bridge.tokens import BRIDGE_TOKEN_ENV, BRIDGE_URL_ENV, BridgeTokens
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.runtime import Device, device, device_mcp_server
-from wevvy.schema import LLMResponse, RiskLevel, ToolResult
-from wevvy.server import bridge_url, create_app
-from wevvy.server.service import MuseService
-from wevvy.tools.base import BaseTool, CallAssessment
+from ceis.bridge.cli import BridgeClient, browser_main, device_main, open_main, parse_pairs
+from ceis.bridge.server import Bridge, BridgeError
+from ceis.bridge.tokens import BRIDGE_TOKEN_ENV, BRIDGE_URL_ENV, BridgeTokens
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.runtime import Device, device, device_mcp_server
+from ceis.schema import LLMResponse, RiskLevel, ToolResult
+from ceis.server import bridge_url, create_app
+from ceis.server.service import MuseService
+from ceis.tools.base import BaseTool, CallAssessment
 
 
 # ----------------------------------------------------------------------------- tokens
@@ -110,12 +110,12 @@ def test_programs_say_when_the_bridge_is_not_here(monkeypatch, capsys):
     assert device_main(["clipboard", "read"]) == 2
     assert browser_main(["extract"]) == 2
     assert open_main(["https://example.com"]) == 2
-    assert "wevvy serve" in capsys.readouterr().err
+    assert "ceis serve" in capsys.readouterr().err
 
 
 def test_device_program_names_the_tool_from_capability_and_action(monkeypatch, capsys):
     """`clipboard read` → clipboard_read; single-word tools take no action word."""
-    import wevvy.bridge.cli as cli
+    import ceis.bridge.cli as cli
 
     sent: list[dict[str, Any]] = []
 
@@ -149,11 +149,11 @@ def test_device_is_read_from_the_environment():
     assert device({}) is None
     dev = device(
         {
-            "WEVVY_DEVICE": "android",
-            "WEVVY_DEVICE_MODEL": "Pixel 8",
-            "WEVVY_DEVICE_SDK": "34",
-            "WEVVY_HOST_URL": "http://127.0.0.1:41234/",
-            "WEVVY_HOST_TOKEN": "h/t",
+            "CEIS_DEVICE": "android",
+            "CEIS_DEVICE_MODEL": "Pixel 8",
+            "CEIS_DEVICE_SDK": "34",
+            "CEIS_HOST_URL": "http://127.0.0.1:41234/",
+            "CEIS_HOST_TOKEN": "h/t",
         }
     )
     assert dev == Device("android", "Pixel 8", "34", "http://127.0.0.1:41234", "h/t")
@@ -188,14 +188,14 @@ class FakeClipboard(BaseTool):
 
 def _bridge_command(*args: str) -> str:
     """Run the program from this interpreter (the venv's bin may not be on PATH here)."""
-    code = f"from wevvy.bridge.cli import device_main; raise SystemExit(device_main({list(args)!r}))"
+    code = f"from ceis.bridge.cli import device_main; raise SystemExit(device_main({list(args)!r}))"
     return f"{shlex.quote(sys.executable)} -c {shlex.quote(code)}"
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="the shell tool assumes a POSIX shell")
 def test_a_command_reaches_the_phone_through_the_bridge(settings: Settings):
     """The whole way round, on a real loopback port: the model runs a shell command, the
-    command runs `wevvy-device clipboard read`, the request comes back in as a tool call
+    command runs `ceis-device clipboard read`, the request comes back in as a tool call
     in the same chat, and its answer ends up in the command's output."""
     import threading
 
@@ -252,7 +252,7 @@ def test_a_command_reaches_the_phone_through_the_bridge(settings: Settings):
         assert anon.get("/api/bridge/tools").status_code == 401
         # `list` names the device's tools without the prefix
         grant = service.bridge.tokens.mint("x", "shell", 5)
-        auth = {"X-Wevvy-Bridge": grant.token}
+        auth = {"X-Ceis-Bridge": grant.token}
         r = anon.get("/api/bridge/tools", headers=auth)
         assert r.json()["tools"] == [
             {"name": "clipboard_read", "description": "Read the phone's clipboard."}

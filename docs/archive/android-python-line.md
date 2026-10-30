@@ -1,8 +1,8 @@
 # The Android app of the Python line (design record)
 
 > **Historical.** This describes the two-flavour Android shell of the Python line
-> (tag `pre-openminis`): a WebView around `wevvy serve`, with an on-phone runtime
-> in a chroot. The app in `android/` today is a different program — wevvy built on
+> (tag `pre-openminis`): a WebView around `ceis serve`, with an on-phone runtime
+> in a chroot. The app in `android/` today is a different program — ceis built on
 > OpenMinis — and is described in [../android.md](../android.md). Nothing below is a
 > download you can get; it is kept because the design of the capsule, the device
 > bridge and the notification service carried over.
@@ -10,32 +10,32 @@
 
 `android/` is a native shell around the web app, in two flavours:
 
-- **wevvy.apk** (`local`) runs wevvy **on the phone itself**: the Python server, its tools and a small Alpine Linux live inside the app, unpacked on first start and run under a user-mode chroot. Nothing to install on a computer. arm64 phones, Android 8.0 or newer. How it works, what it can and cannot do: [local-runtime.md](../local-runtime.md).
-- **wevvy-connect.apk** (`connect`) is the **remote for a `wevvy serve` on your computer** — the same web app in a WebView, plus what a browser tab cannot do on a home network: notifications while the app is closed. Web Push needs `https://` and a push service in the middle; the app keeps its own connection to your server instead. Any CPU.
+- **ceis.apk** (`local`) runs ceis **on the phone itself**: the Python server, its tools and a small Alpine Linux live inside the app, unpacked on first start and run under a user-mode chroot. Nothing to install on a computer. arm64 phones, Android 8.0 or newer. How it works, what it can and cannot do: [local-runtime.md](../local-runtime.md).
+- **ceis-connect.apk** (`connect`) is the **remote for a `ceis serve` on your computer** — the same web app in a WebView, plus what a browser tab cannot do on a home network: notifications while the app is closed. Web Push needs `https://` and a push service in the middle; the app keeps its own connection to your server instead. Any CPU.
 
 The local build offers both on its first screen (*Run on this phone* / *Connect to my computer*), so it is the one to download unless the phone is 32-bit or storage is tight.
 
 What the shell adds over the browser tab:
 
-- **Connect by QR code.** Scan the code `wevvy serve` prints; no typing addresses or tokens.
+- **Connect by QR code.** Scan the code `ceis serve` prints; no typing addresses or tokens.
 - **Notifications in the background.** A foreground service keeps one WebSocket open to your server. Approvals, questions and the last word of background work arrive as Android notifications and open the right chat. A resolved approval takes its notification down again. Reconnects after a network change or a reboot.
 - **Attachments, downloads, links.** The file picker for the paperclip, downloads to the phone's Downloads folder, links opening in the real browser.
 - **The agent's browser.** While the app is connected, its own WebView is a browser the agent may use — offscreen, on a private virtual display so pages run at full speed with the app in the background — and *Take over* on a browser card slides that very page up for you to sign in or decide, then **Done**. In the local build this is the only browser there is; with a server it is used whenever the app is connected (`[browser] backend`). [browser.md](../browser.md).
 - **Operating the screen.** With the *Phone* switch on (*Connections → Phone*) and the app's accessibility service enabled, the agent can look at the phone's screen and tap, type and swipe in its apps — the last rung after skills, fetches and the browser. Android 11 or newer. A capsule with the current step and a **Stop** button sits over the operated app the whole time; a `FLAG_SECURE` screen stays black to it and it refuses to type into password fields. [gui.md](../gui.md).
 - **Plain HTTP on the LAN.** Works with `http://192.168.x.x:8787` as is.
 
-Everything else is the same web app, served by your `wevvy serve`.
+Everything else is the same web app, served by your `ceis serve`.
 
 ## Install
 
-Download [`wevvy.apk`](https://github.com/nano-muse/nanoMuse/releases/latest/download/wevvy.apk) (always the current release; the same file is also there as `wevvy-<version>.apk`; the connect-only build is [`wevvy-connect.apk`](https://github.com/nano-muse/nanoMuse/releases/latest/download/wevvy-connect.apk)) and open it on the phone. Android asks once to allow installs from your browser or file manager. Android 8.0 (API 26) or newer. Every release is signed with the same key, so a newer APK installs over the old one and keeps its connection and data.
+Download [`ceis.apk`](https://github.com/nano-muse/nanoMuse/releases/latest/download/ceis.apk) (always the current release; the same file is also there as `ceis-<version>.apk`; the connect-only build is [`ceis-connect.apk`](https://github.com/nano-muse/nanoMuse/releases/latest/download/ceis-connect.apk)) and open it on the phone. Android asks once to allow installs from your browser or file manager. Android 8.0 (API 26) or newer. Every release is signed with the same key, so a newer APK installs over the old one and keeps its connection and data.
 
 **Run on this phone**: tap it, wait for the unpack (about a minute; ~330 MB of storage), and the app opens on the onboarding: give the agent a name, paste a model API key. That is all; there is no computer involved. The runtime shows a quiet *Running on this phone* notification while it is up, comes back after a reboot, and can be stopped from that notification.
 
 **Connect to my computer**: on the computer,
 
 ```bash
-wevvy serve --host 0.0.0.0
+ceis serve --host 0.0.0.0
 ```
 
 Tap **Scan QR code** and point the camera at the terminal. Or paste the printed link (`http://…:8787/?token=…`) into the field. The app checks the address and the token against the server before it keeps them.
@@ -80,24 +80,24 @@ The `local` flavour also needs the root file system and PRoot in place first —
 Without a signing key the release build is signed with the debug key, which installs fine but cannot update a build signed with a different key. To sign properly, create a key once and keep it outside the repository:
 
 ```bash
-keytool -genkeypair -keystore ~/.wevvy-release/wevvy.jks -alias wevvy \
+keytool -genkeypair -keystore ~/.ceis-release/ceis.jks -alias ceis \
         -keyalg RSA -keysize 4096 -validity 10950
 ```
 
 and tell Gradle about it in `android/keystore.properties` (ignored by git):
 
 ```properties
-storeFile=/home/you/.wevvy-release/wevvy.jks
+storeFile=/home/you/.ceis-release/ceis.jks
 storePassword=…
-keyAlias=wevvy
+keyAlias=ceis
 keyPassword=…
 ```
 
-The same four values can come from the environment as `WEVVY_STOREFILE`, `WEVVY_STOREPASSWORD`, `WEVVY_KEYALIAS`, `WEVVY_KEYPASSWORD`.
+The same four values can come from the environment as `CEIS_STOREFILE`, `CEIS_STOREPASSWORD`, `CEIS_KEYALIAS`, `CEIS_KEYPASSWORD`.
 
 ## Releases
 
-`.github/workflows/android.yml` builds the connect APK and runs the unit tests on every change under `android/`; on pushes to `main` and on `v*` tags it also calls `rootfs.yml` for the root file system and PRoot, builds both release APKs, checks the local one against its size budget (80 MB), and on a tag attaches `wevvy-<version>.apk`, `wevvy-<version>-connect.apk`, `wevvy.apk` and `wevvy-connect.apk` to the GitHub release — but only when it could sign with the release key, which the repository gets from four secrets: `ANDROID_KEYSTORE_B64` (the `.jks` file, base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Without them the workflow still builds an APK signed with a throwaway debug key and keeps it as a workflow artifact; the maintainer then attaches the APK built locally with the real key. A debug-signed APK never goes on a release, because it could not be updated by a properly signed one.
+`.github/workflows/android.yml` builds the connect APK and runs the unit tests on every change under `android/`; on pushes to `main` and on `v*` tags it also calls `rootfs.yml` for the root file system and PRoot, builds both release APKs, checks the local one against its size budget (80 MB), and on a tag attaches `ceis-<version>.apk`, `ceis-<version>-connect.apk`, `ceis.apk` and `ceis-connect.apk` to the GitHub release — but only when it could sign with the release key, which the repository gets from four secrets: `ANDROID_KEYSTORE_B64` (the `.jks` file, base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Without them the workflow still builds an APK signed with a throwaway debug key and keeps it as a workflow artifact; the maintainer then attaches the APK built locally with the real key. A debug-signed APK never goes on a release, because it could not be updated by a properly signed one.
 
 The `versionName` in `android/app/build.gradle.kts` must match the tag, like the Python package's version does.
 
@@ -110,7 +110,7 @@ The `versionName` in `android/app/build.gradle.kts` must match the tag, like the
 | `NotifyService.kt` | Remote mode: foreground service with an OkHttp WebSocket to `/ws?token=…` |
 | `Notifier.kt` | Events → notifications, shared by both services |
 | `runtime/RuntimeService.kt`, `runtime/LocalRuntime.kt`, `runtime/TarUnpacker.kt` | Local mode: the runtime on the phone ([local-runtime.md](../local-runtime.md)) |
-| `Bridge.kt` | `window.WevvyAndroid` — the web app uses it to show phone settings instead of Web Push, to know the mode, and to read the accessibility service's state and open the settings that turn it on |
+| `Bridge.kt` | `window.CeisAndroid` — the web app uses it to show phone settings instead of Web Push, to know the mode, and to read the accessibility service's state and open the settings that turn it on |
 | `DeviceLink.kt` | The device on the app's WebSocket: announces `gui` / `capsule` / the app list (again whenever the accessibility service comes or goes) and answers `screen`, `act`, `task` and `browser` requests |
 | `gui/MuseAccessibilityService.kt`, `gui/A11yExecutor.kt`, `gui/NodeTree.kt` | The screen executor: screenshot (downscaled to 720 px wide), gestures, global actions, typing with a clipboard fallback, the element tree with stable ids, an event-based wait for the UI to settle |
 | `gui/GuiOverlay.kt` | Two accessibility overlay windows: the finger marks (rings, lines, typed text, caption) and the capsule with the step and **Stop**, which grows into a notice card when the agent needs you; both hidden while a screenshot is taken |
@@ -121,4 +121,4 @@ The `versionName` in `android/app/build.gradle.kts` must match the tag, like the
 | `BootReceiver.kt` | Starts the notification service or the runtime after a reboot when *Start after a reboot* is on |
 | `Prefs.kt` | Mode, server URL, token, the local port and token, the notifications and boot switches, the agent's name |
 
-The events the service reacts to are the same ones the web app draws cards for: `approval` / `question` with `status: pending` (and their resolution), and `assistant` events with `source: background` and `final: true`. `demo/mobilegym/apps/wevvy/bridge.ts` does the same job for the simulator, in TypeScript.
+The events the service reacts to are the same ones the web app draws cards for: `approval` / `question` with `status: pending` (and their resolution), and `assistant` events with `source: background` and `final: true`. `demo/mobilegym/apps/ceis/bridge.ts` does the same job for the simulator, in TypeScript.

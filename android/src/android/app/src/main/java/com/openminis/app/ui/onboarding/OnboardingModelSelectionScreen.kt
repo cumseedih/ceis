@@ -91,7 +91,7 @@ fun OnboardingModelSelectionScreen(
 
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(stringResource(R.string.onboarding_select_models_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {

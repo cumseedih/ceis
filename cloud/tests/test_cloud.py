@@ -13,12 +13,12 @@ import pytest
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from wevvy_cloud.api import create_app
-from wevvy_cloud.config import Settings
-from wevvy_cloud.db import Database
-from wevvy_cloud.identifiers import BadIdentifier, parse
-from wevvy_cloud.senders import LogSender
-from wevvy_cloud.service import Cloud, CloudError
+from ceis_cloud.api import create_app
+from ceis_cloud.config import Settings
+from ceis_cloud.db import Database
+from ceis_cloud.identifiers import BadIdentifier, parse
+from ceis_cloud.senders import LogSender
+from ceis_cloud.service import Cloud, CloudError
 
 PNG_1PX = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==")
 
@@ -273,14 +273,14 @@ async def test_signup_grants_and_lists_models(stack):
     ids = [m["id"] for m in data["models"]]
     assert "qwen3.8-27b" in ids and "qwen-image-3.0" in ids and "wan2.2-i2v-flash" in ids
     video = next(m for m in data["models"] if m["id"] == "wan2.2-i2v-flash")
-    assert video["wevvy"]["kind"] == "video" and video["architecture"]["output_modalities"] == ["video"]
+    assert video["ceis"]["kind"] == "video" and video["architecture"]["output_modalities"] == ["video"]
 
     headers = {"Authorization": f"Bearer {data['api_key']}"}
     r = await client.get("/v1/models", headers=headers)
     assert r.status_code == 200
     plus = next(m for m in r.json()["data"] if m["id"] == "qwen3.8-27b")
     assert plus["architecture"]["input_modalities"] == ["text", "image"]
-    assert plus["wevvy"]["recommended"] is True
+    assert plus["ceis"]["recommended"] is True
 
     # The same number again: same account, a second key, no second grant.
     again = await sign_up(client, sender, device="tablet")
@@ -326,7 +326,7 @@ def test_a_relay_that_sends_codes_refuses_to_start_without_a_secret():
     """`CODE_SENDER=smtp` with no `CLOUD_SECRET` would hash every identifier with the published
     development key, so whoever holds the database alone reads the member list and any live
     code. The command line exits on this; a relay built any other way is refused as well."""
-    sending = Settings(database=":memory:", sender="smtp", smtp_host="smtp.test", smtp_from="wevvy <no-reply@test>")
+    sending = Settings(database=":memory:", sender="smtp", smtp_host="smtp.test", smtp_from="ceis <no-reply@test>")
     assert sending.dev_mode
     with pytest.raises(RuntimeError, match="CLOUD_SECRET"):
         Cloud(sending, Database(":memory:"))
@@ -346,7 +346,7 @@ async def test_chat_is_relayed_and_charged(stack):
     assert r.status_code == 200, r.text
     assert r.json()["choices"][0]["message"]["content"] == "hi"
     assert r.json()["model"] == "qwen3.8-27b"
-    assert r.headers["x-wevvy-charged"] == "150"
+    assert r.headers["x-ceis-charged"] == "150"
     kind, up_headers, up_body = up.state.requests[-1]
     assert up_headers["authorization"] == "Bearer sk-upstream"
     assert up_body["model"] == "qwen3.8-27b" and up_body["user"]
@@ -360,7 +360,7 @@ async def test_chat_is_relayed_and_charged(stack):
     r = await client.post(
         "/v1/chat/completions", headers=headers, json={"model": "qwen3.8-flash", "messages": [{"role": "user", "content": "hi"}]}
     )
-    assert r.headers["x-wevvy-charged"] == "45"
+    assert r.headers["x-ceis-charged"] == "45"
 
     # A model we do not offer is refused before anything is forwarded.
     n = len(up.state.requests)
@@ -486,14 +486,14 @@ async def test_a_rate_limited_picture_is_tried_again_behind_the_gate(stack, monk
     async def no_sleep(seconds: float) -> None:
         naps.append(seconds)
 
-    monkeypatch.setattr("wevvy_cloud.api.asyncio.sleep", no_sleep)
+    monkeypatch.setattr("ceis_cloud.api.asyncio.sleep", no_sleep)
 
     up.state.image_429s = 2
     r = await client.post("/v1/images/generations", headers=headers, json={"model": "qwen-image-3.0", "prompt": "a dragon"})
     assert r.status_code == 200, r.text
     assert naps == [2.0, 4.0]
     assert sum(1 for k, _, _ in up.state.requests if k == "image") == 3
-    assert r.headers["x-wevvy-charged"] == "30000"
+    assert r.headers["x-ceis-charged"] == "30000"
 
     # never clears: a 429 of the relay's own, a stable code, no charge
     naps.clear()
@@ -570,7 +570,7 @@ async def test_images_go_through_dashscope_native(stack):
     assert kind == "image" and up_body["model"] == "qwen-image-3.0"
     assert up_body["parameters"] == {"size": "1024*1024", "watermark": False, "prompt_extend": False}
     assert up_body["input"]["messages"][0]["content"] == [{"text": "a small dragon"}]
-    assert r.headers["x-wevvy-charged"] == "30000"
+    assert r.headers["x-ceis-charged"] == "30000"
 
     r = await client.post(
         "/v1/images/edits",
@@ -711,7 +711,7 @@ async def test_open_signup_members_unlimited_everyone_else_has_one_allowance():
     # the allowance is the first line of the statement
     assert guest["recent"][0]["kind"] == "credit" and guest["recent"][0]["detail"] == {"credit_uy": 2000, "from": "signup"}
     # Prices travel with the model list, so the apps can show them.
-    price = next(m for m in guest["models"] if m["id"] == "qwen3.8-27b")["wevvy"]["price_cny"]
+    price = next(m for m in guest["models"] if m["id"] == "qwen3.8-27b")["ceis"]["price_cny"]
     assert price["per_m_input"] == 3.0 and price["per_m_output"] == 12.0
 
     headers = {"Authorization": f"Bearer {guest['api_key']}"}
@@ -980,8 +980,8 @@ async def test_the_operator_sees_addresses_clients_and_every_line(stack):
     lists the addresses, the statement and the timeline page through to the first line, and
     one address can be looked up across accounts. The training export drops the address."""
     app, client, sender, up, cloud = stack
-    phone = {"X-Forwarded-For": "203.0.113.7, 10.0.0.1", "User-Agent": "wevvy-Android/0.1.27 (Pixel 8)"}
-    desk = {"X-Forwarded-For": "198.51.100.2", "User-Agent": "wevvy/0.1.27 (linux)"}
+    phone = {"X-Forwarded-For": "203.0.113.7, 10.0.0.1", "User-Agent": "ceis-Android/0.1.27 (Pixel 8)"}
+    desk = {"X-Forwarded-For": "198.51.100.2", "User-Agent": "ceis/0.1.27 (linux)"}
     r = await client.post("/v1/auth/code", json={"identifier": "13800138000"}, headers=phone)
     assert r.status_code == 204
     code = sender.sent[-1][1]
@@ -1166,7 +1166,7 @@ async def test_the_showcase_visitors_reach_the_admin_page(monkeypatch):
         )
 
     real = httpx.AsyncClient
-    monkeypatch.setattr("wevvy_cloud.api.httpx.AsyncClient", lambda *a, **kw: real(transport=httpx.MockTransport(gateway)))
+    monkeypatch.setattr("ceis_cloud.api.httpx.AsyncClient", lambda *a, **kw: real(transport=httpx.MockTransport(gateway)))
     admin = {"X-Admin-Token": "admin"}
     view = (await client.get("/v1/admin/demo?days=7", headers=admin)).json()
     assert view["available"] is True and view["visitors_total"] == 1 and view["days"] == 7
@@ -1199,21 +1199,21 @@ async def test_members_see_the_models_under_the_key_and_pick():
     listing = (await client.get("/v1/models", headers=mh)).json()
     ids = [m["id"] for m in listing["data"]]
     assert ids[: len(menu_ids)] == menu_ids  # the menu first, in its order
-    extra = {m["id"]: m for m in listing["data"] if m["wevvy"].get("catalog")}
+    extra = {m["id"]: m for m in listing["data"] if m["ceis"].get("catalog")}
     assert set(extra) == {"deepseek-v4-pro", "qwen3-vl-plus", "vanchin/deepseek-v3", "qwen-image-edit-max", "wan2.7-image"}
-    assert extra["deepseek-v4-pro"]["wevvy"]["kind"] == "chat" and extra["deepseek-v4-pro"]["wevvy"]["listed"] is False
-    assert extra["deepseek-v4-pro"]["wevvy"]["priced_as"] == "qwen3.8-27b"
+    assert extra["deepseek-v4-pro"]["ceis"]["kind"] == "chat" and extra["deepseek-v4-pro"]["ceis"]["listed"] is False
+    assert extra["deepseek-v4-pro"]["ceis"]["priced_as"] == "qwen3.8-27b"
     assert extra["vanchin/deepseek-v3"]["architecture"]["input_modalities"] == ["text"]  # not known to read pictures
-    assert extra["deepseek-v4-pro"]["wevvy"]["vision"] is False  # by name: only V4.1 and later read pictures
-    assert extra["qwen3-vl-plus"]["wevvy"]["vision"] is True and extra["qwen3-vl-plus"]["architecture"]["input_modalities"] == [
+    assert extra["deepseek-v4-pro"]["ceis"]["vision"] is False  # by name: only V4.1 and later read pictures
+    assert extra["qwen3-vl-plus"]["ceis"]["vision"] is True and extra["qwen3-vl-plus"]["architecture"]["input_modalities"] == [
         "text",
         "image",
     ]
-    assert extra["qwen3-vl-plus"]["wevvy"]["verified"] is False  # the name's word, no probe asked
-    assert extra["qwen-image-edit-max"]["wevvy"]["kind"] == "image" and extra["wan2.7-image"]["architecture"]["output_modalities"] == [
+    assert extra["qwen3-vl-plus"]["ceis"]["verified"] is False  # the name's word, no probe asked
+    assert extra["qwen-image-edit-max"]["ceis"]["kind"] == "image" and extra["wan2.7-image"]["architecture"]["output_modalities"] == [
         "image"
     ]
-    assert listing["wevvy"]["catalog"] == {"models": 5, "error": "", "probing": False}
+    assert listing["ceis"]["catalog"] == {"models": 5, "error": "", "probing": False}
     # the provider was asked with the operator's key, once; the second read is from the cache
     asked = [q for q in up.state.requests if q[0] == "models"]
     assert len(asked) == 1 and asked[0][1]["authorization"] == "Bearer sk-upstream"
@@ -1221,7 +1221,7 @@ async def test_members_see_the_models_under_the_key_and_pick():
     assert len([q for q in up.state.requests if q[0] == "models"]) == 1
     # a guest: the menu, nothing more
     glist = (await client.get("/v1/models", headers=gh)).json()
-    assert [m["id"] for m in glist["data"]] == menu_ids and glist["wevvy"] == {"any_model": False}
+    assert [m["id"] for m in glist["data"]] == menu_ids and glist["ceis"] == {"any_model": False}
     # a catalog model chats under its own id, priced as the dearest menu model
     r = await client.post(
         "/v1/chat/completions", json={"model": "vanchin/deepseek-v3", "messages": [{"role": "user", "content": "hi"}]}, headers=mh
@@ -1232,12 +1232,12 @@ async def test_members_see_the_models_under_the_key_and_pick():
     app.state.catalog.fetched_at = 0
     up.state.catalog_ids = None  # the provider answers 503
     listing = (await client.get("/v1/models", headers=mh)).json()
-    assert len([m for m in listing["data"] if m["wevvy"].get("catalog")]) == 5
-    assert listing["wevvy"]["catalog"]["models"] == 5 and listing["wevvy"]["catalog"]["error"]
+    assert len([m for m in listing["data"] if m["ceis"].get("catalog")]) == 5
+    assert listing["ceis"]["catalog"]["models"] == 5 and listing["ceis"]["catalog"]["error"]
 
 
 def test_the_catalog_sorts_ids_by_their_shape():
-    from wevvy_cloud.catalog import classify
+    from ceis_cloud.catalog import classify
 
     assert classify("qwen3.8-27b") == ("chat", True)  # the 3.5+ generations read pictures
     assert classify("deepseek-v4.1-flash") == ("chat", True)  # V4.1 reads them on Model Studio (checked)
@@ -1290,7 +1290,7 @@ async def test_the_catalog_asks_each_model_whether_it_answers_and_sees():
 
     first = (await client.get("/v1/models", headers=mh)).json()
     catalog = app.state.catalog
-    assert first["wevvy"]["catalog"]["probing"] is True or catalog._probing is not None
+    assert first["ceis"]["catalog"]["probing"] is True or catalog._probing is not None
     await catalog._probing  # the background round
     probes = [q for q in up.state.requests if q[0] == "chat"]
     # the retired model was asked once (its refusal is the answer); the rest twice (text, then the picture)
@@ -1301,19 +1301,19 @@ async def test_the_catalog_asks_each_model_whether_it_answers_and_sees():
     assert "qwen-image-edit-max" not in by_model  # picture models are not asked
 
     listing = (await client.get("/v1/models", headers=mh)).json()
-    extra = {m["id"]: m for m in listing["data"] if m["wevvy"].get("catalog")}
+    extra = {m["id"]: m for m in listing["data"] if m["ceis"].get("catalog")}
     assert "qwen-1.8b-chat" not in extra  # the provider's "no" takes it off the list
-    assert extra["qwen-plus"]["wevvy"]["vision"] is False and extra["qwen-plus"]["wevvy"]["verified"] is True
+    assert extra["qwen-plus"]["ceis"]["vision"] is False and extra["qwen-plus"]["ceis"]["verified"] is True
     assert extra["qwen-plus"]["architecture"]["input_modalities"] == ["text"]
-    assert extra["vanchin/deepseek-v3"]["wevvy"]["vision"] is False  # the name guessed right; now verified
+    assert extra["vanchin/deepseek-v3"]["ceis"]["vision"] is False  # the name guessed right; now verified
     # the name said text-only (V4, not 4.1); the probe's word wins
-    assert extra["deepseek-v4-pro"]["wevvy"]["vision"] is True and extra["deepseek-v4-pro"]["wevvy"]["verified"] is True
+    assert extra["deepseek-v4-pro"]["ceis"]["vision"] is True and extra["deepseek-v4-pro"]["ceis"]["verified"] is True
     assert extra["deepseek-v4-pro"]["architecture"]["input_modalities"] == ["text", "image"]
-    assert listing["wevvy"]["catalog"]["models"] == 6 and listing["wevvy"]["catalog"]["probing"] is False
+    assert listing["ceis"]["catalog"]["models"] == 6 and listing["ceis"]["catalog"]["probing"] is False
 
     # kept: a second catalog over the same database asks nothing more
     n_before = len([q for q in up.state.requests if q[0] == "chat"])
-    from wevvy_cloud.catalog import Catalog
+    from ceis_cloud.catalog import Catalog
 
     again = Catalog(ttl_s=3600, probe_ttl_s=7 * 86400, store=cloud.db)
     await again.get(app.state.http, cloud.s.upstream_base, cloud.s.upstream_key)
@@ -1336,7 +1336,7 @@ async def test_the_thinking_default_follows_what_the_request_already_says():
     sets a thinking level sends `reasoning_effort`, and Model Studio refuses that next to
     `enable_thinking: false`. The relay reads what the request says about reasoning, in any
     of the dialects, and sets the default accordingly."""
-    from wevvy_cloud.api import apply_chat_defaults, thinking_requested
+    from ceis_cloud.api import apply_chat_defaults, thinking_requested
 
     d = {"enable_thinking": False}
     for body, wants in (
@@ -1384,7 +1384,7 @@ async def test_the_thinking_default_follows_what_the_request_already_says():
 async def test_an_upstream_refusal_is_written_down_with_the_providers_words():
     """The `upstream.error` event names the model and keeps the provider's message, so the
     admin page says why a request failed — never what was asked."""
-    from wevvy_cloud.api import upstream_detail
+    from ceis_cloud.api import upstream_detail
 
     raw = b'{"error":{"message":"\'reasoning_effort\' must be \'none\' when \'enable_thinking\' is false","code":"InvalidParameter"}}'
     assert upstream_detail("chat", 400, "qwen3.8-27b", raw) == (
@@ -1419,7 +1419,7 @@ def test_a_content_check_refusal_is_said_plainly():
     """Bailian's content check says no in two spellings; both become one plain sentence with
     a stable code (`content_rejected`), not the provider's "green net" words — and an image
     prompt it declines is a 400 about the words, not a 502 about the provider."""
-    from wevvy_cloud.api import content_check_refusal, relay_error_body
+    from ceis_cloud.api import content_check_refusal, relay_error_body
 
     native = b'{"request_id":"x","code":"DataInspectionFailed","message":"Green net check rejected text (input)"}'
     compat = b'{"error":{"code":"data_inspection_failed","message":"Input data may contain inappropriate content.","type":"invalid_request_error"}}'
@@ -1509,7 +1509,7 @@ async def test_addresses_come_with_where_they_are(tmp_path):
     addresses they show, read from ip2region's file in the data directory (nothing is sent
     anywhere); private addresses are "本地网络"; an address the file does not know is left
     out; a missing file means places stay unknown and the page is told."""
-    from wevvy_cloud.geo import Geo, Xdb, collect_ips, group_places, parse_region
+    from ceis_cloud.geo import Geo, Xdb, collect_ips, group_places, parse_region
 
     db = tmp_path / "ip2region_v4.xdb"
     db.write_bytes(
@@ -1587,17 +1587,17 @@ async def test_addresses_come_with_where_they_are(tmp_path):
     assert overview2["places"] == {}
 
 
-def test_code_mail_is_english_only_and_wevvy_branded():
+def test_code_mail_is_english_only_and_ceis_branded():
     import re
 
-    from wevvy_cloud.senders import compose_code_mail
+    from ceis_cloud.senders import compose_code_mail
 
     msg = compose_code_mail("no-reply@wevvy.in", "someone@example.com", "123456", 10)
-    assert msg["From"] == "wevvy <no-reply@wevvy.in>" and msg["To"] == "someone@example.com"
-    assert msg["Subject"] == "Your wevvy code is 123456"
+    assert msg["From"] == "ceis <no-reply@wevvy.in>" and msg["To"] == "someone@example.com"
+    assert msg["Subject"] == "Your ceis code is 123456"
     parts = {p.get_content_type(): p.get_content() for p in msg.iter_parts()}
     assert set(parts) == {"text/plain", "text/html"}
-    assert "Your wevvy code is 123456" in parts["text/plain"]
+    assert "Your ceis code is 123456" in parts["text/plain"]
     assert "1 2 3 4 5 6" in parts["text/html"] and "10 minutes" in parts["text/html"]
     assert "<script" not in parts["text/html"]
     assert not re.search(r"[一-鿿]", parts["text/plain"] + parts["text/html"])
@@ -1610,16 +1610,16 @@ async def test_privileged_domain_starts_with_the_bigger_allowance():
     )
     own = await sign_up(client, sender, identifier="owner@wevvy.in")
     assert own["spend"]["grant"] == 3550
-    assert own["account"]["tag"] == "owner@wevvy"
+    assert own["account"]["tag"] == "owner@ceis"
     other = await sign_up(client, sender, identifier="someone@example.com")
     assert other["spend"]["grant"] == 71
-    assert other["account"]["tag"] == "someone@wevvy"
+    assert other["account"]["tag"] == "someone@ceis"
     sub = await sign_up(client, sender, identifier="owner@sub.wevvy.in")
     assert sub["spend"]["grant"] == 71
 
 
 def test_provider_picture_urls_are_only_fetched_from_the_provider():
-    from wevvy_cloud.api import _provider_url_ok
+    from ceis_cloud.api import _provider_url_ok
 
     own = ("dashscope.aliyuncs.com",)
     assert _provider_url_ok("https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/x/y.png", own)
@@ -1683,7 +1683,7 @@ async def test_data_controls_keep_the_training_view_only_and_are_deletable(stack
     ]
     r = await client.post(
         "/v1/chat/completions",
-        headers={**headers, "User-Agent": "wevvy-Android/0.1.27", "Accept-Language": "zh-CN"},
+        headers={**headers, "User-Agent": "ceis-Android/0.1.27", "Accept-Language": "zh-CN"},
         json={"model": "qwen3.8-27b", "messages": turn},
     )
     assert r.status_code == 200
@@ -1704,7 +1704,7 @@ async def test_data_controls_keep_the_training_view_only_and_are_deletable(stack
     dumped = json.dumps(first)
     assert "AAAA" not in dumped and "Ada" not in dumped and "SECRET" not in dumped
     # 0.10: the address goes with the turn for the operator (the test client has none)
-    assert first["meta"] == {"ua": "wevvy-Android/0.1.27", "lang": "zh-CN", "ip": first["meta"]["ip"]}
+    assert first["meta"] == {"ua": "ceis-Android/0.1.27", "lang": "zh-CN", "ip": first["meta"]["ip"]}
     assert first["platform"] == "android"
     assert first["prompt_tokens"] == 100 and first["completion_tokens"] == 50
     account = (await client.get(f"/v1/admin/accounts/{data['account']['id']}", headers=admin)).json()["account"]
@@ -1808,7 +1808,7 @@ def test_long_samples_are_cut_whole_and_old_cut_rows_still_load():
     """A conversation over the sample limit is shortened message by message (then text by
     text) so that what is stored parses; a row cut at a character count by 0.5.1 gives back
     the messages that are whole instead of failing the list and the export."""
-    from wevvy_cloud.service import _fit_messages, _load_messages
+    from ceis_cloud.service import _fit_messages, _load_messages
 
     msgs = [{"role": "system", "content": "be brief"}] + [
         {"role": "user" if i % 2 == 0 else "assistant", "content": f"turn {i} " + "x" * 500} for i in range(40)
@@ -1835,7 +1835,7 @@ def test_database_from_before_0_4_migrates(tmp_path):
     partial unique index on invite_code must not be attempted before they exist."""
     import sqlite3
 
-    from wevvy_cloud.db import Database
+    from ceis_cloud.db import Database
 
     path = str(tmp_path / "old.db")
     conn = sqlite3.connect(path)
@@ -1941,13 +1941,13 @@ async def test_members_may_name_any_model_of_the_right_kind():
     assert member["account"]["any_model"] is True and guest["account"]["any_model"] is False
 
     # the menu says who may go beyond it (0.10: and lists what the key has, for members — below)
-    assert (await client.get("/v1/models", headers=mh)).json()["wevvy"]["any_model"] is True
-    assert (await client.get("/v1/models", headers=gh)).json()["wevvy"] == {"any_model": False}
+    assert (await client.get("/v1/models", headers=mh)).json()["ceis"]["any_model"] is True
+    assert (await client.get("/v1/models", headers=gh)).json()["ceis"] == {"any_model": False}
 
     # a typed id is checked with the kind it is for
     r = await client.get("/v1/models/deepseek-v4-pro", params={"kind": "chat"}, headers=mh)
     assert r.status_code == 200
-    nm = r.json()["wevvy"]
+    nm = r.json()["ceis"]
     assert nm["listed"] is False and nm["kind"] == "chat" and nm["priced_as"] == "qwen3.8-27b"
     r = await client.get("/v1/models/deepseek-v4-pro", headers=mh)
     assert r.status_code == 404 and "kind=" in r.json()["error"]["message"]
@@ -2011,7 +2011,7 @@ async def test_requests_under_way_are_held_against_the_allowance():
     """Several requests started together cannot each pass the allowance check and
     together overshoot it: each is reserved while it runs (a picture at its price, a chat
     at a typical turn's), and at most MAX_IN_FLIGHT of one account's run at once."""
-    from wevvy_cloud.service import InFlight
+    from ceis_cloud.service import InFlight
 
     app, client, sender, up, cloud = make_stack(
         allowed_identifiers="Me@Example.com", signup_tokens=0, daily_cap_tokens=0, per_minute_requests=0, allowance_cny=0.4, usd_cny=7.0
@@ -2130,12 +2130,12 @@ async def test_admin_health_is_aggregates_only(stack):
 
 
 async def test_session_keys_expire_on_their_own(stack):
-    """wevvy Web starts a person's container with a key that stops working by itself,
+    """ceis Web starts a person's container with a key that stops working by itself,
     so the gateway keeps no standing key of theirs (0.13)."""
     app, client, sender, up, cloud = stack
     data = await sign_up(client, sender)
     headers = {"Authorization": f"Bearer {data['api_key']}"}
-    r = await client.post("/v1/auth/session-key", headers=headers, json={"device": "wevvy Web", "ttl_s": 120})
+    r = await client.post("/v1/auth/session-key", headers=headers, json={"device": "ceis Web", "ttl_s": 120})
     assert r.status_code == 200, r.text
     short = r.json()
     assert short["api_key"].startswith("nm_") and short["api_key"] != data["api_key"]
@@ -2144,7 +2144,7 @@ async def test_session_keys_expire_on_their_own(stack):
     me = (await client.get("/v1/me", headers=short_headers)).json()
     assert me["account"]["id"] == data["account"]["id"]
     sessions = {s["device"]: s for s in (await client.get("/v1/me/sessions", headers=headers)).json()["sessions"]}
-    assert sessions["wevvy Web"]["expires_at"] == short["expires_at"] and sessions["wevvy Web"]["via"] == "session"
+    assert sessions["ceis Web"]["expires_at"] == short["expires_at"] and sessions["ceis Web"]["via"] == "session"
     assert sessions["pixel"]["expires_at"] is None
     # the ceiling, and a bad ttl
     r = await client.post("/v1/auth/session-key", headers=headers, json={"ttl_s": 10**9})
@@ -2162,7 +2162,7 @@ async def test_session_keys_expire_on_their_own(stack):
     r = await client.get("/v1/me", headers=short_headers)
     assert r.status_code == 401 and r.json()["error"]["code"] == "bad_key"
     sessions = (await client.get("/v1/me/sessions", headers=headers)).json()["sessions"]
-    assert "wevvy Web" not in {s["device"] for s in sessions}
+    assert "ceis Web" not in {s["device"] for s in sessions}
 
 
 # -- 0.17: lanes, reasoning, region ----------------------------------------------------------
@@ -2173,11 +2173,11 @@ async def test_the_menu_says_which_lane_each_model_is_for(stack, monkeypatch):
     both — and which lane it is the recommended pick in; the apps' pickers filter on it and
     take the recommended one of each lane as the default. Picture and clip models are for
     neither (their `kind` says what they do)."""
-    from wevvy_cloud.config import DEFAULT_MODELS, ModelSpec, _models_from_env, menu_warnings
+    from ceis_cloud.config import DEFAULT_MODELS, ModelSpec, _models_from_env, menu_warnings
 
     app, client, sender, up, cloud = stack
     data = await sign_up(client, sender)
-    by_id = {m["id"]: m["wevvy"] for m in data["models"]}
+    by_id = {m["id"]: m["ceis"] for m in data["models"]}
     assert by_id["deepseek-v4.1-flash"]["for"] == ["chat"] and by_id["deepseek-v4.1-flash"]["recommended_for"] == ["chat"]
     assert by_id["qwen3.8-27b"]["for"] == ["gui", "chat"] and by_id["qwen3.8-27b"]["recommended_for"] == ["gui"]
     assert by_id["qwen3.8-flash"]["for"] == ["chat"] and by_id["qwen3.8-flash"]["recommended_for"] == []
@@ -2187,8 +2187,8 @@ async def test_the_menu_says_which_lane_each_model_is_for(stack, monkeypatch):
     listing = (await client.get("/v1/models", headers={"Authorization": f"Bearer {data['api_key']}"})).json()
     ds = next(m for m in listing["data"] if m["id"] == "deepseek-v4.1-flash")
     assert ds["name"] == "DeepSeek V4.1 Flash" and ds["architecture"]["input_modalities"] == ["text", "image"]
-    assert ds["wevvy"]["price_cny"]["per_m_input"] == 2.0 and ds["wevvy"]["price_cny"]["per_m_output"] == 8.0
-    assert ds["wevvy"]["in_mult"] == 0.7 and ds["wevvy"]["out_mult"] == 0.7
+    assert ds["ceis"]["price_cny"]["per_m_input"] == 2.0 and ds["ceis"]["price_cny"]["per_m_output"] == 8.0
+    assert ds["ceis"]["in_mult"] == 0.7 and ds["ceis"]["out_mult"] == 0.7
     assert [m.id for m in DEFAULT_MODELS][:2] == ["deepseek-v4.1-flash", "qwen3.8-27b"]
     assert menu_warnings(DEFAULT_MODELS) == []  # exactly one recommended per lane
 
@@ -2206,7 +2206,7 @@ async def test_the_menu_says_which_lane_each_model_is_for(stack, monkeypatch):
     menu = _models_from_env()
     assert [m.lanes for m in menu] == [("gui",), ("chat",), ()]
     assert [m.recommended_lanes for m in menu] == [("gui",), ("chat",), ()]
-    assert menu[0].to_public()["wevvy"]["for"] == ["gui"] and menu[2].to_public()["wevvy"]["for"] == []
+    assert menu[0].to_public()["ceis"]["for"] == ["gui"] and menu[2].to_public()["ceis"]["for"] == []
     assert menu_warnings(menu) == []
     assert menu_warnings(menu[:1]) == ["0 chat models recommended for chat (none); the apps expect one"]
     assert menu_warnings((menu[1], menu[1])) == ["2 chat models recommended for chat (b, b); the apps expect one"] + [
@@ -2237,7 +2237,7 @@ async def test_reasoning_passes_through_and_is_paid_for(stack):
     back in the history go upstream as they are, the reasoning in the reply (whole or as
     stream deltas) comes back untouched, and the reasoning tokens are counted as completion
     tokens whichever way the provider reports them."""
-    from wevvy_cloud.service import Usage, usage_from_json
+    from ceis_cloud.service import Usage, usage_from_json
 
     # the counting rule on its own: OpenAI's shape has them inside, DashScope's apart
     assert usage_from_json(
@@ -2294,7 +2294,7 @@ async def test_a_chat_starts_while_anything_of_the_allowance_is_left():
     started together from overshooting the allowance; it must not refuse a single, normal
     turn on an account with less than that left. The second turn started on top of the
     first is what it refuses."""
-    from wevvy_cloud.service import CHAT_RESERVE_COMPLETION_TOKENS, CHAT_RESERVE_PROMPT_TOKENS
+    from ceis_cloud.service import CHAT_RESERVE_COMPLETION_TOKENS, CHAT_RESERVE_PROMPT_TOKENS
 
     app, client, sender, up, cloud = make_stack(allowance_cny=0.02)
     data = await sign_up(client, sender)
@@ -2323,8 +2323,8 @@ async def test_me_says_where_the_person_is_and_orders_the_ways_on_by_it(tmp_path
     Macao and Taiwan count as elsewhere: Bailian does not sign them up), `unknown` when
     neither is known — and the "ways on" when the allowance is out lead the mainland to
     Bailian first, everyone else to OpenRouter first. The refusal says the same."""
-    from wevvy_cloud.geo import Place
-    from wevvy_cloud.service import REGIONS, region_of_place
+    from ceis_cloud.geo import Place
+    from ceis_cloud.service import REGIONS, region_of_place
 
     assert REGIONS == ("cn", "intl", "unknown")
     assert region_of_place(None) == "unknown" and region_of_place(Place()) == "unknown"

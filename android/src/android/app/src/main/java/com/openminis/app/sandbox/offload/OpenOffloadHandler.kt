@@ -54,9 +54,9 @@ class OpenOffloadHandler(private val context: Context) : NativeOffloadHandler {
                     // intent, so let the system-wide chooser apply.
                     selector = null
                 }
-            } else if (io.github.wevvy.deeplink.OwnScheme.isOwn(Uri.parse(url).scheme)) {
-                // wevvy: `minis://` and `wevvy://` are this app's; to MainActivity by name
-                io.github.wevvy.deeplink.OwnScheme.intent(context, Uri.parse(url))
+            } else if (io.github.ceis.deeplink.OwnScheme.isOwn(Uri.parse(url).scheme)) {
+                // ceis: `minis://` and `ceis://` are this app's; to MainActivity by name
+                io.github.ceis.deeplink.OwnScheme.intent(context, Uri.parse(url))
             } else {
                 Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

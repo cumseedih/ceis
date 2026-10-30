@@ -6,12 +6,12 @@ import httpx
 import pytest
 from test_cloud import fake_upstream, sign_up
 
-from wevvy_cloud.api import create_app
-from wevvy_cloud.config import Settings
-from wevvy_cloud.db import Database
-from wevvy_cloud.identifiers import BadIdentifier, parse
-from wevvy_cloud.senders import LogSender
-from wevvy_cloud.service import Cloud, check_password, hash_password
+from ceis_cloud.api import create_app
+from ceis_cloud.config import Settings
+from ceis_cloud.db import Database
+from ceis_cloud.identifiers import BadIdentifier, parse
+from ceis_cloud.senders import LogSender
+from ceis_cloud.service import Cloud, check_password, hash_password
 
 
 def make(**overrides):
@@ -494,8 +494,8 @@ async def test_admin_series_and_traffic(tmp_path, monkeypatch):
         ("/", "Mozilla/5.0", "text/html; charset=utf-8", 200),
         ("/own-key/", "Mozilla/5.0 (X11)", "text/html", 200),
         ("/", "Googlebot/2.1", "text/html", 200),
-        ("/dl/v0.1.22/wevvy-0.1.22-arm64.apk", "Mozilla/5.0", "application/octet-stream", 200),
-        ("/dl/v0.1.22/wevvy-0.1.22-arm64.apk.sha256", "Mozilla/5.0", "application/octet-stream", 200),
+        ("/dl/v0.1.22/ceis-0.1.22-arm64.apk", "Mozilla/5.0", "application/octet-stream", 200),
+        ("/dl/v0.1.22/ceis-0.1.22-arm64.apk.sha256", "Mozilla/5.0", "application/octet-stream", 200),
     ):
         rec = {
             "ts": ts,
@@ -515,7 +515,7 @@ async def test_admin_series_and_traffic(tmp_path, monkeypatch):
     conn.execute("COMMIT")
     conn.execute(
         "INSERT INTO github(day, ts, stars, forks, watchers, downloads, assets) VALUES (?,?,?,?,?,?,?)",
-        (mod.local_day(ts), int(ts), 24, 5, 3, 188, json.dumps({"v0.1.22": {"wevvy-0.1.22-arm64.apk": 100}})),
+        (mod.local_day(ts), int(ts), 24, 5, 3, 188, json.dumps({"v0.1.22": {"ceis-0.1.22-arm64.apk": 100}})),
     )
     conn.close()
 
@@ -526,7 +526,7 @@ async def test_admin_series_and_traffic(tmp_path, monkeypatch):
     day = tr["days"][-1]
     assert day["pages"] == 3 and day["visitors"] == 2 and day["bots"] == 1 and day["downloads"] == 1 and day["requests"] == 6
     assert tr["pages"][0] == {"name": "/", "hits": 2} and tr["referrers"] == [{"name": "github.com", "hits": 3}]
-    assert tr["downloads"] == [{"name": "wevvy-0.1.22-arm64.apk", "hits": 1, "bytes": 1000}]
+    assert tr["downloads"] == [{"name": "ceis-0.1.22-arm64.apk", "hits": 1, "bytes": 1000}]
     assert tr["github"]["stars"] == 24 and tr["github"]["downloads"] == 188 and tr["github"]["days"][0]["stars"] == 24
     assert "203.0.113.7" not in r.text
 
@@ -620,7 +620,7 @@ async def test_existing_invited_accounts_are_marked_settled_once_by_the_migratio
     afterwards starts pending."""
     import sqlite3
 
-    from wevvy_cloud.db import Database
+    from ceis_cloud.db import Database
 
     path = str(tmp_path / "paid.db")
     conn = sqlite3.connect(path)

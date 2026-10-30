@@ -3,7 +3,7 @@ import { asIdea, catalogue } from "./index";
 
 // The three copies of the catalogue, as text: ours, the Android asset, the harness asset.
 const COPIES = import.meta.glob<string>(
-  ["./ideas.*.json", "../../../android/src/android/app/src/main/assets/wevvy/ideas.*.json", "../../../harness/dsh-wevvy/assets/ideas.*.json"],
+  ["./ideas.*.json", "../../../android/src/android/app/src/main/assets/ceis/ideas.*.json", "../../../harness/dsh-ceis/assets/ideas.*.json"],
   { query: "?raw", import: "default", eager: true },
 );
 const copy = (suffix: string) => Object.entries(COPIES).find(([k]) => k.endsWith(suffix))?.[1];
@@ -11,8 +11,8 @@ const copy = (suffix: string) => Object.entries(COPIES).find(([k]) => k.endsWith
 describe("the Ideas catalogue", () => {
   it.each(["en", "zh"])("ideas.%s.json is identical to the Android and harness copies (contract C5)", (lang) => {
     const ours = copy(`/src/ideas/ideas.${lang}.json`) ?? copy(`./ideas.${lang}.json`);
-    const android = copy(`/assets/wevvy/ideas.${lang}.json`);
-    const harness = copy(`/dsh-wevvy/assets/ideas.${lang}.json`);
+    const android = copy(`/assets/ceis/ideas.${lang}.json`);
+    const harness = copy(`/dsh-ceis/assets/ideas.${lang}.json`);
     expect(ours, "our copy").toBeTruthy();
     expect(android, "the Android asset").toBeTruthy();
     expect(harness, "the harness asset").toBeTruthy();

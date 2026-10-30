@@ -1,6 +1,6 @@
 # Every device
 
-The fourth thing that defines wevvy ([roadmap](roadmap.md)): one agent, and
+The fourth thing that defines ceis ([roadmap](roadmap.md)): one agent, and
 every device you own is a pair of hands and a front door for it. This page is
 the design for that stage: what every device's app looks like, what each one
 can do on its own and for the others, how a task travels, and which existing
@@ -10,7 +10,7 @@ this page is about the product shape and the code around it.
 ## One Muse per device, one shape
 
 Every device runs its own Muse (the phone its OpenMinis-based agent, the
-computer wevvy Desktop with the Python runtime for the hands) and every one of them shows the same app. The
+computer ceis Desktop with the Python runtime for the hands) and every one of them shows the same app. The
 Android app is the reference; the others follow its shape, not its pixels:
 
 | On every device | Android today | Computer (this stage) |
@@ -26,7 +26,7 @@ Android app is the reference; the others follow its shape, not its pixels:
 | First run: what it is, sign in with a phone number or an e-mail (free) or your own key, the Hands permissions, meet | `FirstRunSetup` | the same four pages |
 | A clip of your own as the face: MP4 or MOV, up to 15 seconds and 30 MB, H.264 video on every device and HEVC where the device can play it (tried, not assumed); nothing is transcoded, a refusal states the limits, the clip stays on that device | `OwnClip.kt` (H.264 only today) | `own-clip.ts` and the preview: an HEVC clip the computer cannot decode is refused there |
 
-Each device can also set a separate local clip for idle, working, waiting, happy and error in the avatar studio. These are optional: a mood without a clip uses the existing single clip when present, otherwise its built-in or studio animation. Each chosen clip keeps the same format, duration and size limits. Removing a mood override leaves the others unchanged. Neither the clips nor their preview images sync through wevvy Cloud.
+Each device can also set a separate local clip for idle, working, waiting, happy and error in the avatar studio. These are optional: a mood without a clip uses the existing single clip when present, otherwise its built-in or studio animation. Each chosen clip keeps the same format, duration and size limits. Removing a mood override leaves the others unchanged. Neither the clips nor their preview images sync through ceis Cloud.
 
 ## Two roles
 
@@ -61,7 +61,7 @@ person *at* the device still agrees before another device runs, reads or writes
 something there: a card on that screen, *once* or *always for that device*
 (a standing permission listed under Permissions like any other, revocable there).
 A `task` runs under the device's own Sentinel instead; `notify` never asks. On
-wevvy Desktop the switch is off by default and means "each device asks here";
+ceis Desktop the switch is off by default and means "each device asks here";
 on lets every device of the account through without the question.
 
 ## How a task travels
@@ -146,8 +146,8 @@ devices*, on by default; off tells the relay to delete the account's store, and
 every other device's switch follows. *Delete synced conversations* empties the
 store and keeps the switch. The phone and the web app map each local chat to a
 conversation id and apply the other devices' changes straight into their chat
-lists. **wevvy Desktop (the dsh plugin)** keeps another device's turns in
-its own store (`$DSH_HOME/wevvy/sync-remote.json`, by session; a dsh session
+lists. **ceis Desktop (the dsh plugin)** keeps another device's turns in
+its own store (`$DSH_HOME/ceis/sync-remote.json`, by session; a dsh session
 log is append-only and owned by its agent loop, and a row written into it
 outside a turn is neither shown nor safe), shows them in the browser as the
 other device's bubbles (`client/RemoteBubbles.ts`), placed by time among the
@@ -169,11 +169,11 @@ session log, so the harness cannot take one for an unfinished turn. The host
 reads a session's log once per change (title, lines and prompt positions are
 kept until the session's next event) and turns a burst of `sync` frames into
 one pull a second, so a big account costs the chat nothing while idle.
-Code: the runtime's [`wevvy/sync/`](../wevvy/sync/)
+Code: the runtime's [`ceis/sync/`](../ceis/sync/)
 (`ConversationSync`, `/api/sync/*` in [app.md](app.md#api)), the web app's
 `SyncControls` and the message captions in `web/src/`, the plugin's
 `src/sync.ts`, `client/RemoteBubbles.ts` and `tests/sync.test.mjs`, the relay's
-[`cloud/wevvy_cloud/sync.py`](../cloud/wevvy_cloud/sync.py).
+[`cloud/ceis_cloud/sync.py`](../cloud/ceis_cloud/sync.py).
 
 **Work on another device.** The default is always the device you are typing
 on. To send one message elsewhere, start it with `@` and the device's name as
@@ -181,13 +181,13 @@ the hub lists it (`@Desk compile the project and send me the log`), a prefix
 match, case-insensitive; the composer offers the names as you type, the mention
 is taken off the text, the bubble says *to Desk*, and a one-line note in front
 of the turn tells this device's agent to hand it to that device with `delegate`
-(`wevvy-pc task … --on` on the phone) and report what it did; the Devices
+(`ceis-pc task … --on` on the phone) and report what it did; the Devices
 page's *Ask this device* does the same. On the iPhone, which has no delegate
 tool, the mention goes to the hub directly (`task` to that device, its answer
 shown as a turn in the chat) and only devices that are online are matched.
-Which devices can be a target: **computers** (wevvy Desktop, a runtime)
+Which devices can be a target: **computers** (ceis Desktop, a runtime)
 whenever they are online, since their hub socket stays up; **phones** (Android
-and the iPhone) only while the wevvy app is open, because the socket lives
+and the iPhone) only while the ceis app is open, because the socket lives
 in the app and neither keeps it in the background. A device that is not online
 is offered as a target all the same on the web and the desktop and answers
 `device_offline`; the web console is never one. The session a device runs for
@@ -228,28 +228,28 @@ device* is turned on; deleting the account removes all of it; a key the relay
 refuses keeps it aside for the account's return. The table of every piece of
 state is [sync.md](sync.md). On the desktop and the web console
 the 0.1.39 rule above still holds, and the memory files are per device.
-Code: the runtime's `wevvy/sync/engine.py` and the session list in
-`wevvy/server/api.py`, the desktop's `harness/dsh-wevvy/src/{sync,cloud}.ts`,
-Android's `io.github.wevvy.sync.*`, the iPhone's `Wevvy/WevvySync.swift`.
+Code: the runtime's `ceis/sync/engine.py` and the session list in
+`ceis/server/api.py`, the desktop's `harness/dsh-ceis/src/{sync,cloud}.ts`,
+Android's `io.github.ceis.sync.*`, the iPhone's `Ceis/CeisSync.swift`.
 
-## The computer: wevvy Desktop
+## The computer: ceis Desktop
 
-The desktop is the Python runtime (`wevvy serve`) with three front doors on
-the same local service: the terminal (`wevvy chat`), the browser (the web
+The desktop is the Python runtime (`ceis serve`) with three front doors on
+the same local service: the terminal (`ceis chat`), the browser (the web
 app it serves, also reachable from the phone on the same network) and a
 window. That is the shape OpenCode v2 and Codex take (a local service, a CLI
 and a desktop app over it) and it is what the runtime already was; this stage
 adds the hub, the Cloud account and the hands to it.
 
 ```
-   wevvy serve  ─ FastAPI + WebSocket, 127.0.0.1:8787 ─┬─ web/ (React) in a browser or on the phone
-      │ MuseAgent · Sentinel · tools                        ├─ wevvy mcp → wevvy Desktop (harness/, on DeepSeek Harness)
-      │ wevvy/hub  ── wss://…/v1/hub ── the other devices └─ wevvy chat (terminal)
-      │ wevvy/computer ── mss + pyautogui: the screen as a hand
-      └ wevvy/cloud ── the wevvy Cloud account (e-mail code → key → models + hub)
+   ceis serve  ─ FastAPI + WebSocket, 127.0.0.1:8787 ─┬─ web/ (React) in a browser or on the phone
+      │ MuseAgent · Sentinel · tools                        ├─ ceis mcp → ceis Desktop (harness/, on DeepSeek Harness)
+      │ ceis/hub  ── wss://…/v1/hub ── the other devices └─ ceis chat (terminal)
+      │ ceis/computer ── mss + pyautogui: the screen as a hand
+      └ ceis/cloud ── the ceis Cloud account (e-mail code → key → models + hub)
 ```
 
-- **Runtime** (`wevvy/`): `cloud.py` signs in to wevvy Cloud with an
+- **Runtime** (`ceis/`): `cloud.py` signs in to ceis Cloud with an
   e-mail (or phone) code, keeps the key in the vault and can make the relay the
   model provider, the same *Sign in (free)* first step as on the
   phone. `hub/` is the async port of the desktop binary's hub client: one
@@ -261,20 +261,20 @@ adds the hub, the Cloud account and the hands to it.
 - **Web app** (`web/`): the Devices page, side chats addressed to a device,
   the approval card's tiers and *remember* pills, the Hands card with Stop,
   Settings → Hands, the Cloud sign-in in the first run and under Connections,
-  the dragon as the default face. Built into `wevvy/server/static/`.
-- **Window**: from 0.1.30 the window is [wevvy Desktop](desktop.md) on
+  the dragon as the default face. Built into `ceis/server/static/`.
+- **Window**: from 0.1.30 the window is [ceis Desktop](desktop.md) on
   DeepSeek Harness (`harness/`): the harness's Host and web app in an Electron
-  shell of ours, wevvy's account, face, Hands and Reach as plugins, and this
-  runtime bundled for the hands (`wevvy mcp` over stdio). The Electron shell
+  shell of ours, ceis's account, face, Hands and Reach as plugins, and this
+  runtime bundled for the hands (`ceis mcp` over stdio). The Electron shell
   around this runtime and the web app (`desktop/app`, 0.1.19–0.1.29; the
   tray, the transparent stage window that drew the ring where the hands were
   about to click, the global Stop and quick-chat shortcuts, *Start with the
   computer*) is retired; those come back on the harness's seams
   ([harness.md](harness.md), phase 7). The web app still lays itself out the
-  Muse way on a wide window for anyone who opens `wevvy serve` in a browser.
-- **The standard-library binary** (`desktop/wevvy_desktop`) was the
+  Muse way on a wide window for anyone who opens `ceis serve` in a browser.
+- **The standard-library binary** (`desktop/ceis_desktop`) was the
   zero-install fallback for a machine without Python and the origin of
-  `wevvy/hub`; dropped in 0.1.39, since wevvy Desktop carries the runtime.
+  `ceis/hub`; dropped in 0.1.39, since ceis Desktop carries the runtime.
 
 ### Hands on this computer
 
@@ -289,14 +289,14 @@ report, the same Stop. What differs is the dialect and the device:
   vision model serves both. The reply format (Thought / Action / one
   `<tool_call>`) and the parser are the phone's.
 - **Device.** Screenshots through `mss` (every platform, scaled for the
-  model); actions through `pyautogui` (`pip install "wevvy[hands]"`), with
+  model); actions through `pyautogui` (`pip install "ceis[hands]"`), with
   `xdotool` as the fallback on Linux when it is there and pyautogui is not; the
   active window's title from the platform (`xdotool` / `osascript` /
   `GetForegroundWindow`) so the card and the log say *in Firefox*, not *on the
   screen*.
 - **Permissions.** macOS asks for Screen Recording and Accessibility once;
   Settings → Hands says so and opens the panes. Under the desktop app both
-  belong to its helper *wevvy Computer Use*
+  belong to its helper *ceis Computer Use*
   ([desktop.md](desktop.md#macos-permissions)); a runtime run on its own is
   attributed to whatever started it (the terminal, say). Linux
   needs X11 (Wayland has no portable way to move the pointer yet; the page
@@ -314,10 +314,10 @@ report, the same Stop. What differs is the dialect and the device:
 
 On a Mac the hands can work in **one application's window** instead of the
 whole screen (`[hands] mode`, and *Where* on the Hands card: *Auto* / *One
-window* / *Whole screen*; `wevvy/computer/mac_window.py`):
+window* / *Whole screen*; `ceis/computer/mac_window.py`):
 
 - the picture the model sees is that window only, taken by the desktop app's
-  helper *wevvy Computer Use* with ScreenCaptureKit on macOS 14 and later
+  helper *ceis Computer Use* with ScreenCaptureKit on macOS 14 and later
   (`POST /window` of the operator, [gui.md](gui.md#hands-on-the-computer-the-picture-is-the-unit)),
   or by the runtime's own `CGWindowListCreateImage` when there is no helper,
   and scaled for the model; coordinates are pixels of that picture and are mapped
@@ -343,13 +343,13 @@ the layer itself fails (the helper not there, pyobjc, the window server) *Auto* 
 screen for the rest of that target, says so once, and tries the window again
 when the next application is named; *One window* keeps trying, as asked.
 The Hands card's *Where* line shows the reason either way. Linux and Windows stay
-on the shared screen; `pip install "wevvy[hands]"` brings the pyobjc
+on the shared screen; `pip install "ceis[hands]"` brings the pyobjc
 frameworks on macOS only.
 
 ## The phone
 
 Already both roles since 0.1.12/0.1.13/0.1.17: the sandbox shell and Hands
-locally, `wevvy-pc` and the hub outward, `task` inward through the headless
+locally, `ceis-pc` and the hub outward, `task` inward through the headless
 chat runner. This stage's Android pass, in order: the hub `approve`
 reaching the RiskGate card, a *Devices* entry in the drawer (both done in
 0.1.19, see [The phone, in 0.1.19](#the-phone-in-0-1-19)), and the desk's
@@ -358,12 +358,12 @@ Hands events shown while it works. None of it blocks the desktop work.
 ## The browser: a demo on a simulated phone
 
 [wevvy.in/web](https://wevvy.in/web/) leads to the showcase: a simulated
-phone in the browser (MobileGym, with the wevvy app brought to the front:
-`demo/mobilegym/apps/wevvy`) and, behind it, a private wevvy of the
+phone in the browser (MobileGym, with the ceis app brought to the front:
+`demo/mobilegym/apps/ceis`) and, behind it, a private ceis of the
 visitor's own that the showcase gateway starts for the visit, the
 `ghcr.io/nano-muse/nanoMuse` image on a network with no way out but the
 gateway, talking with the showcase's model, gone when the visit ends. A visitor
-signs in to wevvy Cloud first (a code to a phone or an inbox, or the
+signs in to ceis Cloud first (a code to a phone or an inbox, or the
 account's password; `demo/showcase/gateway/showcase_gateway/visitors.py`), so
 the project knows who is trying it and the same account is there on the day
 the app is installed. The page says so plainly: this is a demo, a long way from
@@ -396,29 +396,29 @@ the hands elsewhere; the hub is already enough for them.
 - **OpenCode v2** (MIT): the desktop as a thin Electron shell that starts a
   local service and renders a web app against it (electron-vite,
   electron-builder, a tray, deep links later). Not its agent: it is a coding
-  agent around a project directory; wevvy is a personal one around a person.
+  agent around a project directory; ceis is a personal one around a person.
 - **Codex** (Apache-2.0): the CLI as a first-class front door to the same
   agent, approvals in the terminal, a sandbox for commands; the runtime's
-  `wevvy chat` and the Sentinel already have that shape.
+  `ceis chat` and the Sentinel already have that shape.
 - **Qwen-Agent / MemGUI-Bench** (MIT): the `mobile_use` and `computer_use`
-  dialects and the reply parser, already in `wevvy/phone/operator.py`.
+  dialects and the reply parser, already in `ceis/phone/operator.py`.
 - **pyautogui**, **mss**, **xdotool**: mouse, keyboard and screenshots. No
   input library of our own.
 
 ## Status
 
-| | Phone | Computer | wevvy Web (`WEB_ENABLED=1`; the demo phone since 0.1.26) | Web console | iOS |
+| | Phone | Computer | ceis Web (`WEB_ENABLED=1`; the demo phone since 0.1.26) | Web console | iOS |
 |---|---|---|---|---|---|
 | Local shell / files / browser | yes | yes (runtime) | yes, inside its container | no hands | no |
 | Screen as a hand | Hands (0.1.12) | `computer_*` (0.1.19) | — | — | — |
-| Drives other devices | `wevvy-pc`, hub | `device_*`, `delegate` (0.1.19) | the same runtime | picks a device, sends a task | — |
+| Drives other devices | `ceis-pc`, hub | `device_*`, `delegate` (0.1.19) | the same runtime | picks a device, sends a task | — |
 | Answers other devices | yes | in a visible side chat (0.1.19) | yes | — | info / open / notify / task |
 | GUI in the Android shape | reference | web app (sidebar on wide screens) + window (0.1.19) | the web app | console | since 0.1.34 |
 | Stage while the hands work | `HandsStage` | Hands card; the stage overlay in the window | — | — | — |
 
-Released with 0.1.19: the APK, the desktop installers (`wevvy-Desktop-…`,
+Released with 0.1.19: the APK, the desktop installers (`ceis-Desktop-…`,
 [`.github/workflows/desktop-app.yml`](../.github/workflows/desktop-app.yml)),
-the terminal binary (dropped in 0.1.39), and wevvy Web at wevvy.in/web (the demo on a
+the terminal binary (dropped in 0.1.39), and ceis Web at wevvy.in/web (the demo on a
 simulated phone since 0.1.26).
 
 ## Debugging it all on one machine
@@ -434,7 +434,7 @@ provider or a phone.
 #    on the command line) if you want the Cloud model to answer.
 mkdir -p /tmp/nm-dev/cloud
 CLOUD_DB=/tmp/nm-dev/cloud/cloud.db CODE_SENDER=log PUBLIC_BASE=http://127.0.0.1:8790 \
-  PYTHONPATH=cloud .venv/bin/python -m wevvy_cloud --host 127.0.0.1 --port 8790 \
+  PYTHONPATH=cloud .venv/bin/python -m ceis_cloud --host 127.0.0.1 --port 8790 \
   > /tmp/nm-dev/cloud/relay.log 2>&1 &
 
 # 2. two runtimes, each with its own data dir, workspace and port
@@ -445,14 +445,14 @@ for d in a b; do
 done
 # ambient provider keys would be picked up as the model — clear them for a clean first run
 env -u OPENAI_API_KEY -u DASHSCOPE_API_KEY -u ANTHROPIC_API_KEY -u OPENAI_BASE_URL \
-  .venv/bin/wevvy serve -c /tmp/nm-dev/a/config.toml --no-auth --no-qr --port 8799 > /tmp/nm-dev/a/serve.log 2>&1 &
+  .venv/bin/ceis serve -c /tmp/nm-dev/a/config.toml --no-auth --no-qr --port 8799 > /tmp/nm-dev/a/serve.log 2>&1 &
 env -u OPENAI_API_KEY -u DASHSCOPE_API_KEY -u ANTHROPIC_API_KEY -u OPENAI_BASE_URL \
-  .venv/bin/wevvy serve -c /tmp/nm-dev/b/config.toml --no-auth --no-qr --port 8798 > /tmp/nm-dev/b/serve.log 2>&1 &
+  .venv/bin/ceis serve -c /tmp/nm-dev/b/config.toml --no-auth --no-qr --port 8798 > /tmp/nm-dev/b/serve.log 2>&1 &
 
 # 3. sign both in with the same e-mail in the first run (the code is in relay.log:
 #    grep -i code /tmp/nm-dev/cloud/relay.log), pick "Use the Cloud model" on each.
 # 4. (0.1.19–0.1.29) the Electron window over Desk A came from desktop/app; now open
-#    http://127.0.0.1:8799/ in a browser, or sign wevvy Desktop in as a third device.
+#    http://127.0.0.1:8799/ in a browser, or sign ceis Desktop in as a third device.
 ```
 
 Then on Desk A: *Devices* shows Laptop B online; *Ask* (or the chip under the

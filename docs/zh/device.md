@@ -5,27 +5,27 @@
 > 「connect 构建」已经不存在了。
 
 
-在手机上，wevvy 够得着手机上有的东西：剪贴板、日历、联系人、手机在哪里、时钟里的闹钟和计时器、通知栏，以及通过系统选择器访问的相册。本页讲这些是怎么工作的、每个工具可以做什么、它会问用户什么，以及它刻意做不到什么。
+在手机上，ceis 够得着手机上有的东西：剪贴板、日历、联系人、手机在哪里、时钟里的闹钟和计时器、通知栏，以及通过系统选择器访问的相册。本页讲这些是怎么工作的、每个工具可以做什么、它会问用户什么，以及它刻意做不到什么。
 
-设计的原则：**模型拿到的是工具，用户看到的是 Android 自己的对话框。** wevvy 从不自己给自己授权。每一项权限都由平台的对话框来问，相册只能通过平台的选择器看到，闹钟交给用户已有的时钟 App。Python 大脑不为了跑在手机上而改动；Kotlin 这一侧只是一个小小的工具宿主。
+设计的原则：**模型拿到的是工具，用户看到的是 Android 自己的对话框。** ceis 从不自己给自己授权。每一项权限都由平台的对话框来问，相册只能通过平台的选择器看到，闹钟交给用户已有的时钟 App。Python 大脑不为了跑在手机上而改动；Kotlin 这一侧只是一个小小的工具宿主。
 
 ```
- wevvy serve (Python, in PRoot)                 the app (Kotlin)
+ ceis serve (Python, in PRoot)                 the app (Kotlin)
  ┌──────────────────────────────┐   HTTP, 127.0.0.1    ┌───────────────────────────────┐
  │ MCP client  ── device__* ────┼──────────────────────►│ McpEndpoint  (Streamable HTTP) │
  │ Sentinel: per-tool defaults  │   Bearer / ?token=    │  DeviceTools: 13 tools         │
- │ wevvy-device (CLI bridge) │◄──────────────────────┤  Ask: Android's dialogs        │
+ │ ceis-device (CLI bridge) │◄──────────────────────┤  Ask: Android's dialogs        │
  └──────────────────────────────┘   SSE + heartbeats    │  DeviceAskActivity (invisible) │
                                                         └───────────────────────────────┘
 ```
 
 ## 工具怎么到模型那里 {#how-the-tools-reach-the-model}
 
-应用在 `127.0.0.1` 上启动一个 MCP 服务器（随机端口、随机 token，两者作为 `WEVVY_HOST_URL` 和 `WEVVY_HOST_TOKEN` 交给运行时）。`wevvy serve` 看到它们，就把这个服务器加为 `device`（不用配置，不用安装），于是这些工具像任何别的 MCP 服务器的工具一样出现，名字是 `device__<tool>`（`device__calendar_list`、`device__clipboard_read`……）。系统提示词里多出一小段「这台手机」，列出这些工具，以及模型必须知道的基本规则：第一次用某项能力时 Android 会问用户，剪贴板只能在应用在屏幕上时读。
+应用在 `127.0.0.1` 上启动一个 MCP 服务器（随机端口、随机 token，两者作为 `CEIS_HOST_URL` 和 `CEIS_HOST_TOKEN` 交给运行时）。`ceis serve` 看到它们，就把这个服务器加为 `device`（不用配置，不用安装），于是这些工具像任何别的 MCP 服务器的工具一样出现，名字是 `device__<tool>`（`device__calendar_list`、`device__clipboard_read`……）。系统提示词里多出一小段「这台手机」，列出这些工具，以及模型必须知道的基本规则：第一次用某项能力时 Android 会问用户，剪贴板只能在应用在屏幕上时读。
 
 端点说的是 [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports)：`POST /mcp` 走 JSON-RPC；`tools/call` 以 SSE 流回答，每 8 s 一行 `: keep-alive`，因为一次调用可能要等用户回答对话框等上几分钟；`GET /mcp` 是 `405`；token 放在 `Bearer` 头或 `?token=` 里；`Mcp-Session-Id` 头在 `initialize` 时发出，客户端的 `protocolVersion` 原样回传。只有 `/mcp` 这一个路径。它只绑定回环接口，没有 token 的请求一律拒绝（用常量时间比较）。
 
-智能体在沙箱里跑的脚本通过 CLI 桥够到同一批工具（[local-runtime.md](local-runtime.md#the-python-side-on-a-phone)）：`wevvy-device clipboard read`、`wevvy-device calendar list from=2026-09-24`、`wevvy-device alarm set hour=7 minute=30 message=Train`、`wevvy-device notify title=Done body=Booked`、`wevvy-device location`、`wevvy-device photo pick`；`wevvy-device list` 列出这台手机有什么。每一条都和模型调用一样经过同一个哨兵（Sentinel）。
+智能体在沙箱里跑的脚本通过 CLI 桥够到同一批工具（[local-runtime.md](local-runtime.md#the-python-side-on-a-phone)）：`ceis-device clipboard read`、`ceis-device calendar list from=2026-09-24`、`ceis-device alarm set hour=7 minute=30 message=Train`、`ceis-device notify title=Done body=Booked`、`ceis-device location`、`ceis-device photo pick`；`ceis-device list` 列出这台手机有什么。每一条都和模型调用一样经过同一个哨兵（Sentinel）。
 
 ## 工具 {#the-tools}
 
@@ -45,7 +45,7 @@
 | `timer_set` | 在时钟 App 里设一个倒计时 | `seconds` 或 `minutes`、`message` | `SET_ALARM` | moderate | 否 |
 | `photo_pick` | 用户在系统选择器里挑照片；副本落在工作区里 | `max`（≤ 10）、`why` | 无：Photo Picker 不需要权限 | safe，隐私 | 否 |
 
-*风险*和*隐私*是 `wevvy/runtime.py` 里 `DEVICE_TOOLS` 给出的哨兵默认值，通过 MCP 服务器条目的 `tools` 映射逐个工具套用（[configuration.md](configuration.md#mcp-servers)）。「会问」对应 [sentinel.md](sentinel.md) 里的 `ask` 模式那一列；`strict` 模式下每个 moderate 工具也会问。*隐私*工具会给这段对话带上隐私标记：`contacts_search` 或 `location` 之后，任何向未知主机发送数据的操作都会问。时间用手机本地时间（`YYYY-MM-DD HH:MM`，全天日程用日期）；全天日程的结束显示为它的最后一天。`location` 里的地址来自平台的地理编码器，手机上有它才有；没有的话工具只返回坐标。
+*风险*和*隐私*是 `ceis/runtime.py` 里 `DEVICE_TOOLS` 给出的哨兵默认值，通过 MCP 服务器条目的 `tools` 映射逐个工具套用（[configuration.md](configuration.md#mcp-servers)）。「会问」对应 [sentinel.md](sentinel.md) 里的 `ask` 模式那一列；`strict` 模式下每个 moderate 工具也会问。*隐私*工具会给这段对话带上隐私标记：`contacts_search` 或 `location` 之后，任何向未知主机发送数据的操作都会问。时间用手机本地时间（`YYYY-MM-DD HH:MM`，全天日程用日期）；全天日程的结束显示为它的最后一天。`location` 里的地址来自平台的地理编码器，手机上有它才有；没有的话工具只返回坐标。
 
 Kotlin 这边的列表（`DeviceTools.kt`）和 Python 这边的表（`DEVICE_TOOLS`）必须一致；`tests/test_bridge.py` 检查名字和默认值。
 
@@ -54,9 +54,9 @@ Kotlin 这边的列表（`DeviceTools.kt`）和 Python 这边的表（`DEVICE_TO
 工具需要用户做的一切都是 Android 对话框，由应用的一个不可见 activity（`DeviceAskActivity`）打开，这样不管智能体在哪里跑它都能出现。Android 10+ 不允许后台应用启动 activity，所以有两条路：
 
 - **应用在屏幕上** → 对话框立刻盖在它上面出现。
-- **应用在后台** → 一条通知（「wevvy 需要一项权限」/「wevvy 想读取剪贴板」/「……想要一张照片」），附一行为什么；点它就弹出对话框。工具调用在这期间等着（权限等 2 分钟，剪贴板等 1.5 分钟，照片等 4 分钟），不管哪种结果都会告诉模型发生了什么。
+- **应用在后台** → 一条通知（「ceis 需要一项权限」/「ceis 想读取剪贴板」/「……想要一张照片」），附一行为什么；点它就弹出对话框。工具调用在这期间等着（权限等 2 分钟，剪贴板等 1.5 分钟，照片等 4 分钟），不管哪种结果都会告诉模型发生了什么。
 
-到模型那里的结果有三种，用它可以转述的话说：已允许（工具运行）；「用户没有允许：现在不要再问，之后可以在 Android 的设置里允许」；「没有人回答：请用户打开 wevvy 再试一次」。
+到模型那里的结果有三种，用它可以转述的话说：已允许（工具运行）；「用户没有允许：现在不要再问，之后可以在 Android 的设置里允许」；「没有人回答：请用户打开 ceis 再试一次」。
 
 一些具体的规则，每一条都来自平台，而不是我们定的：
 
@@ -71,13 +71,13 @@ Kotlin 这边的列表（`DeviceTools.kt`）和 Python 这边的表（`DEVICE_TO
 
 本地构建注册了一个 `DocumentsProvider`：智能体的工作区以智能体的名字作为一个根，出现在系统的「文件」App 里，以及手机上每一个打开 / 保存对话框里（存储访问框架）。智能体做出来的文件是普通文件；放进去的文件就在工作区里。隐藏条目和浏览器配置目录不显示。connect 构建在手机上没有工作区，也不显示这个根。
 
-## 分享到 wevvy {#sharing-into-wevvy}
+## 分享到 ceis {#sharing-into-ceis}
 
-wevvy 在系统分享面板里接收文字、链接和文件。一次分享变成一个**新对话**：文件上传到工作区（`attachments/<date>/…`），线程以主题或第一个文件命名，聊天打开时分享的文字已在输入框里作为草稿，文件作为附件标签，等你说要拿它们做什么；你开口之前，什么都不会发给模型。两种构建都这么做（connect 构建上传到电脑）。
+ceis 在系统分享面板里接收文字、链接和文件。一次分享变成一个**新对话**：文件上传到工作区（`attachments/<date>/…`），线程以主题或第一个文件命名，聊天打开时分享的文字已在输入框里作为草稿，文件作为附件标签，等你说要拿它们做什么；你开口之前，什么都不会发给模型。两种构建都这么做（connect 构建上传到电脑）。
 
 ## connect 模式 {#connect-mode}
 
-connect 构建（把手机当成电脑上 `wevvy serve` 的遥控器）有同一套 Kotlin 工具，但服务器够不到手机上的 `127.0.0.1`；这需要经由手机的 WebSocket 做一次中转。这在计划里（P1，[launch-checklist.md](../launch-checklist.md)）；在那之前，设备工具是跑在手机上才有的功能。
+connect 构建（把手机当成电脑上 `ceis serve` 的遥控器）有同一套 Kotlin 工具，但服务器够不到手机上的 `127.0.0.1`；这需要经由手机的 WebSocket 做一次中转。这在计划里（P1，[launch-checklist.md](../launch-checklist.md)）；在那之前，设备工具是跑在手机上才有的功能。
 
 ## 没有手机怎么测 {#testing-without-a-phone}
 

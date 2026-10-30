@@ -6,27 +6,27 @@
 > mentioned below no longer exists.
 
 
-On a phone, wevvy can reach what is on it: the clipboard, the calendar, the contacts, where the phone is, the clock's alarms and timers, the notification shade, and the photo library through the system picker. This page is about how that works, what each tool may do, what it asks the user, and what it deliberately cannot do.
+On a phone, ceis can reach what is on it: the clipboard, the calendar, the contacts, where the phone is, the clock's alarms and timers, the notification shade, and the photo library through the system picker. This page is about how that works, what each tool may do, what it asks the user, and what it deliberately cannot do.
 
-The rule of the design: **the model gets tools, the user gets Android's own dialogs.** wevvy never grants itself anything. Every permission is asked for by the platform's dialog, the photo library is only ever seen through the platform's picker, and alarms are handed to the clock app the user already has. The Python brain does not change to run on a phone; the Kotlin side is a small tool host.
+The rule of the design: **the model gets tools, the user gets Android's own dialogs.** ceis never grants itself anything. Every permission is asked for by the platform's dialog, the photo library is only ever seen through the platform's picker, and alarms are handed to the clock app the user already has. The Python brain does not change to run on a phone; the Kotlin side is a small tool host.
 
 ```
- wevvy serve (Python, in PRoot)                 the app (Kotlin)
+ ceis serve (Python, in PRoot)                 the app (Kotlin)
  ┌──────────────────────────────┐   HTTP, 127.0.0.1    ┌───────────────────────────────┐
  │ MCP client  ── device__* ────┼──────────────────────►│ McpEndpoint  (Streamable HTTP) │
  │ Sentinel: per-tool defaults  │   Bearer / ?token=    │  DeviceTools: 13 tools         │
- │ wevvy-device (CLI bridge) │◄──────────────────────┤  Ask: Android's dialogs        │
+ │ ceis-device (CLI bridge) │◄──────────────────────┤  Ask: Android's dialogs        │
  └──────────────────────────────┘   SSE + heartbeats    │  DeviceAskActivity (invisible) │
                                                         └───────────────────────────────┘
 ```
 
 ## How the tools reach the model
 
-The app starts an MCP server on `127.0.0.1` (a random port, a random token, both handed to the runtime as `WEVVY_HOST_URL` and `WEVVY_HOST_TOKEN`). `wevvy serve` sees them and adds the server as `device` (no configuration, nothing to install), so the tools appear like any other MCP server's, named `device__<tool>` (`device__calendar_list`, `device__clipboard_read` …). The system prompt gets a short *This phone* section listing them, with the ground rules the model has to know: the first use of a capability makes Android ask the user, and the clipboard can only be read while the app is on screen.
+The app starts an MCP server on `127.0.0.1` (a random port, a random token, both handed to the runtime as `CEIS_HOST_URL` and `CEIS_HOST_TOKEN`). `ceis serve` sees them and adds the server as `device` (no configuration, nothing to install), so the tools appear like any other MCP server's, named `device__<tool>` (`device__calendar_list`, `device__clipboard_read` …). The system prompt gets a short *This phone* section listing them, with the ground rules the model has to know: the first use of a capability makes Android ask the user, and the clipboard can only be read while the app is on screen.
 
 The endpoint speaks [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports): `POST /mcp` with JSON-RPC; `tools/call` answers as an SSE stream with a `: keep-alive` line every 8 s, because a call may wait minutes for the user to answer a dialog; `GET /mcp` is `405`; the token is a `Bearer` header or `?token=`; the `Mcp-Session-Id` header is issued on `initialize` and the client's `protocolVersion` is echoed back. Only `/mcp` exists. It is bound to the loopback interface and refuses anything without the token (compared in constant time).
 
-Scripts the agent runs inside the sandbox reach the same tools through the CLI bridge ([local-runtime.md](local-runtime.md#the-python-side-on-a-phone)): `wevvy-device clipboard read`, `wevvy-device calendar list from=2026-09-24`, `wevvy-device alarm set hour=7 minute=30 message=Train`, `wevvy-device notify title=Done body=Booked`, `wevvy-device location`, `wevvy-device photo pick`; `wevvy-device list` shows what the phone has. Each goes through the same Sentinel as a model call.
+Scripts the agent runs inside the sandbox reach the same tools through the CLI bridge ([local-runtime.md](local-runtime.md#the-python-side-on-a-phone)): `ceis-device clipboard read`, `ceis-device calendar list from=2026-09-24`, `ceis-device alarm set hour=7 minute=30 message=Train`, `ceis-device notify title=Done body=Booked`, `ceis-device location`, `ceis-device photo pick`; `ceis-device list` shows what the phone has. Each goes through the same Sentinel as a model call.
 
 ## The tools
 
@@ -46,7 +46,7 @@ Scripts the agent runs inside the sandbox reach the same tools through the CLI b
 | `timer_set` | a countdown in the clock app | `seconds` or `minutes`, `message` | `SET_ALARM` | moderate | no |
 | `photo_pick` | the user chooses photos in the system picker; copies land in the workspace | `max` (≤ 10), `why` | none: the Photo Picker needs no permission | safe, private | no |
 
-*Risk* and *private* are the Sentinel defaults from `DEVICE_TOOLS` in `wevvy/runtime.py`, applied per tool through the `tools` map of the MCP server entry ([configuration.md](configuration.md#mcp-servers)). "Asks" is the `ask` mode column of [sentinel.md](sentinel.md); in `strict` mode every moderate tool asks too. *Private* tools taint the conversation: after `contacts_search` or `location`, anything that sends data to an unknown host asks. Times are phone-local (`YYYY-MM-DD HH:MM`, or a date for all-day); the end of an all-day event is shown as its last day. The address in `location` comes from the platform geocoder when the phone has one; without it the tool returns coordinates only.
+*Risk* and *private* are the Sentinel defaults from `DEVICE_TOOLS` in `ceis/runtime.py`, applied per tool through the `tools` map of the MCP server entry ([configuration.md](configuration.md#mcp-servers)). "Asks" is the `ask` mode column of [sentinel.md](sentinel.md); in `strict` mode every moderate tool asks too. *Private* tools taint the conversation: after `contacts_search` or `location`, anything that sends data to an unknown host asks. Times are phone-local (`YYYY-MM-DD HH:MM`, or a date for all-day); the end of an all-day event is shown as its last day. The address in `location` comes from the platform geocoder when the phone has one; without it the tool returns coordinates only.
 
 The Kotlin list (`DeviceTools.kt`) and the Python table (`DEVICE_TOOLS`) must agree; `tests/test_bridge.py` checks the names and the defaults.
 
@@ -55,9 +55,9 @@ The Kotlin list (`DeviceTools.kt`) and the Python table (`DEVICE_TOOLS`) must ag
 Everything the tools need from the user is an Android dialog, opened by an invisible activity of the app (`DeviceAskActivity`) so it can appear from wherever the agent is running. Android 10+ does not let a background app start an activity, so there are two routes:
 
 - **The app is on screen** → the dialog appears right away over it.
-- **The app is in the background** → a notification (*wevvy needs a permission* / *wevvy wants to read the clipboard* / *… wants a photo*) with one line on why; tapping it brings up the dialog. The tool call waits in the meantime (2 min for a permission, 1.5 min for the clipboard, 4 min for photos), the model is told what happened either way.
+- **The app is in the background** → a notification (*ceis needs a permission* / *ceis wants to read the clipboard* / *… wants a photo*) with one line on why; tapping it brings up the dialog. The tool call waits in the meantime (2 min for a permission, 1.5 min for the clipboard, 4 min for photos), the model is told what happened either way.
 
-Three outcomes reach the model, in words it can pass on: granted (the tool runs); *the user did not allow it: do not ask again now, it can be allowed later in Android's settings*; *nobody answered: ask the user to open wevvy and try again*.
+Three outcomes reach the model, in words it can pass on: granted (the tool runs); *the user did not allow it: do not ask again now, it can be allowed later in Android's settings*; *nobody answered: ask the user to open ceis and try again*.
 
 Specific rules, each from the platform rather than from us:
 
@@ -72,13 +72,13 @@ Specific rules, each from the platform rather than from us:
 
 The local build registers a `DocumentsProvider`: the agent's workspace appears as a root named after the agent in the system Files app and in every open/save dialog on the phone (Storage Access Framework). Files the agent made are ordinary files; a file dropped there is in the workspace. Hidden entries and the browser profile are not shown. The connect build has no workspace on the phone and shows no root.
 
-## Sharing into wevvy
+## Sharing into ceis
 
-wevvy is in the system share sheet for text, links and files. A share becomes a **new conversation**: files are uploaded to the workspace (`attachments/<date>/…`), the thread is named after the subject or the first file, and the chat opens with the shared text as a draft and the files as attachment chips, waiting for what to do with them; nothing is sent to the model until the user says so. Both builds do this (the connect build uploads to the computer).
+ceis is in the system share sheet for text, links and files. A share becomes a **new conversation**: files are uploaded to the workspace (`attachments/<date>/…`), the thread is named after the subject or the first file, and the chat opens with the shared text as a draft and the files as attachment chips, waiting for what to do with them; nothing is sent to the model until the user says so. Both builds do this (the connect build uploads to the computer).
 
 ## Connect mode
 
-The connect build (the phone as a remote for `wevvy serve` on a computer) has the same Kotlin tools but the server cannot reach `127.0.0.1` on the phone; it would need a relay over the phone's WebSocket. That is planned (P1, [launch-checklist.md](launch-checklist.md)); until then the device tools are a feature of running on the phone.
+The connect build (the phone as a remote for `ceis serve` on a computer) has the same Kotlin tools but the server cannot reach `127.0.0.1` on the phone; it would need a relay over the phone's WebSocket. That is planned (P1, [launch-checklist.md](launch-checklist.md)); until then the device tools are a feature of running on the phone.
 
 ## Testing without a phone
 

@@ -1,6 +1,6 @@
-# wevvy Cloud
+# ceis Cloud
 
-A small relay that lets someone use wevvy without owning an API key. Sign up
+A small relay that lets someone use ceis without owning an API key. Sign up
 with a phone number or an e-mail address, get a starter allowance of tokens, and
 the app talks to this server the way it would talk to any OpenAI-compatible
 provider. Your own key still works exactly as before — this is the "start now"
@@ -16,7 +16,7 @@ its base URL.
   `nm_…` API key. One phone/e-mail is one account with one starter grant; a
   second device signing in with the same number gets a second key, not a second
   grant. `POST /v1/auth/session-key` (0.13) turns a key into one that lapses on
-  its own (`ttl_s`, 90 days at most) — what wevvy Web starts a person's
+  its own (`ttl_s`, 90 days at most) — what ceis Web starts a person's
   container with, so the gateway keeps no standing key of theirs; it shows in
   `/v1/me/sessions` with `expires_at` and `via: "session"`.
 - **OpenAI-shaped proxy.** `GET /v1/models`, `POST /v1/chat/completions`
@@ -105,7 +105,7 @@ Development, no external services — codes are printed to the log:
 ```bash
 cd cloud
 pip install -e ".[dev]"
-UPSTREAM_KEY=sk-… python -m wevvy_cloud --port 8787
+UPSTREAM_KEY=sk-… python -m ceis_cloud --port 8787
 # in another shell
 curl -X POST localhost:8787/v1/auth/code -H 'Content-Type: application/json' -d '{"identifier":"13800138000"}'
 # read the code from the server log, then
@@ -134,7 +134,7 @@ cannot write; so `data/` must belong to that uid on the host before the first
 start, and once more when upgrading from an image that ran as root, whose
 `cloud.db` is root's: `sudo chown -R 10001:10001 data` (or, without sudo,
 `docker compose run --rm --no-deps --user 0 relay chown -R 10001:10001
-/srv/wevvy-cloud/data`). `scripts/self-host.sh` and the production
+/srv/ceis-cloud/data`). `scripts/self-host.sh` and the production
 `deploy.sh` do this themselves; a relay that cannot write its data directory
 stops at start with a sentence saying so instead of a traceback.
 
@@ -150,7 +150,7 @@ listed are believed, and a peer on the Docker network that is not among them
 keeps its own address. A relay reached directly from the internet ignores the
 header, so a request cannot name its own address.
 
-Point the app at it: in wevvy, *Sign in — free* → enter a phone number or an e-mail → code.
+Point the app at it: in ceis, *Sign in — free* → enter a phone number or an e-mail → code.
 The app stores the key in its encrypted preferences and sets up a provider
 with `PUBLIC_BASE` as its base URL. Nothing else in the app changes; you can
 add your own key next to it at any time.
@@ -176,14 +176,14 @@ for the full list. The ones that matter:
 | `SIGNUP_DOMAIN_ALLOW` | empty | comma-separated domains that join the built-in list of unlimited ones, your company's or school's for instance |
 | `SIGNUP_DOMAIN_BLOCK` | empty | comma-separated disposable mail domains blocked from opening new accounts in addition to the built-in blocklist (`DEFAULT_SIGNUP_DOMAIN_BLOCK`); `SIGNUP_DOMAIN_ALLOW` overrides an entry |
 | `REPO_URL` | `https://github.com/nano-muse/nanoMuse` | the repository the apps ask people to star, in `/v1/config` |
-| `IMPROVE_DEFAULT` | `0` | what *Help improve wevvy's AI models* (Data controls) starts as for accounts created from now on: `1` = on until the person turns it off, `0` = off until they turn it on; existing accounts keep their setting. State it in your privacy policy |
+| `IMPROVE_DEFAULT` | `0` | what *Help improve ceis's AI models* (Data controls) starts as for accounts created from now on: `1` = on until the person turns it off, `0` = off until they turn it on; existing accounts keep their setting. State it in your privacy policy |
 | `PRIVACY_URL` | `https://wevvy.in/privacy/` | the policy the apps link from Data controls and the sign-in pages — the one that says what this relay keeps and its default |
 | `INVITE_URL` | `https://wevvy.in/web/?invite=` | the link the apps offer to share; the code is appended |
 | `OWN_KEY_DOCS` | `https://wevvy.in/own-key` | the guide the apps open for bringing one's own key or signing in with a plan (every provider by region, what each covers) |
 | `OPENROUTER_URL` | `https://openrouter.ai/keys` | the page for a key from OpenRouter, the way on for people outside mainland China (0.17) — the apps order the two by the person's `region` |
 | `DAY_OFFSET_H` | 8 | the operator's reports group by local day, midnight UTC+8 (Beijing) |
 | `TRAFFIC_DB` | empty | the site's daily traffic counts (`demo/showcase/mirror/traffic.py`), mounted read-only, for the operator's page; empty = that panel says it is not connected |
-| `WEB_INFO_URL` | empty | wevvy Web's gateway (`http://gateway:8000/api/web/info` on the same docker network) for its account and session counts on the operator's page |
+| `WEB_INFO_URL` | empty | ceis Web's gateway (`http://gateway:8000/api/web/info` on the same docker network) for its account and session counts on the operator's page |
 | `WEB_ADMIN_URL`, `WEB_ADMIN_TOKEN` | empty | the showcase gateway's `/api/demo/admin` and its `SHOWCASE_ADMIN_TOKEN`: who tried the phone in the browser from where and with what, every demo and what it used — a panel on the operator's page and a section in the account drawer (relay 0.10) |
 | `USD_CNY` | 7.1 | for showing dollars next to yuan; display only |
 | `SIGNUP_TOKENS` | 0 (no ceiling) | starter token grant per account, the older allowance |
@@ -210,13 +210,13 @@ for the full list. The ones that matter:
 | `CLOUD_GEOIP_DB`, `CLOUD_GEOIP_URL`, `CLOUD_GEOIP_V6_URL` | next to the database; the project's `ip2region_v4.xdb`; empty | the file, where to fetch it, and the IPv6 file (37 MB) for a relay reached over IPv6 |
 | `HUB_ENABLED` | `true` | the devices hub at `/v1/hub` and the web console at `/app` ([docs/hub.md](../docs/hub.md)) |
 | `HUB_FRAME_LIMIT` | 16 MB | largest hub frame (files and screenshots travel inside frames); one socket may also send at most 60 frames and 8 MB a second sustained (twice that in a burst) — over it frames are dropped with one `rate_limited` error a second, and a socket that keeps flooding is closed with 4008 (0.13) |
-| `MAX_REQUEST_BYTES` | 16 MB (0.20; was 6) | largest REST request body — a chat request with a few screenshots, a sync push of 200 messages; over it the answer is 413 `too_large`, *Request body is N MB; this relay accepts up to M MB*. A declared `Content-Length` over the limit is refused before a byte is read, and a body that grows past it is refused as it arrives, so the relay never buffers more than the limit for one request. Both Caddy sites (`cloud/Caddyfile`, `deploy/wevvy-hk/cloud.wevvy.in.caddy`) cap bodies at `request_body max_size 20MB`: just above 16 MiB plus multipart overhead for `/v1/images/edits`, so a legitimate payload always reaches the relay's own 413 message and nothing larger reaches the relay at all; raise both together if you raise this |
+| `MAX_REQUEST_BYTES` | 16 MB (0.20; was 6) | largest REST request body — a chat request with a few screenshots, a sync push of 200 messages; over it the answer is 413 `too_large`, *Request body is N MB; this relay accepts up to M MB*. A declared `Content-Length` over the limit is refused before a byte is read, and a body that grows past it is refused as it arrives, so the relay never buffers more than the limit for one request. Both Caddy sites (`cloud/Caddyfile`, `deploy/ceis-hk/cloud.wevvy.in.caddy`) cap bodies at `request_body max_size 20MB`: just above 16 MiB plus multipart overhead for `/v1/images/edits`, so a legitimate payload always reaches the relay's own 413 message and nothing larger reaches the relay at all; raise both together if you raise this |
 | `GITHUB_REPO` | read off `REPO_URL` (`nano-muse/nanoMuse`) | the repository whose stars, forks, watchers, open issues and release downloads the relay reads (0.22, *Site* on the operator's page) — `owner/name` |
 | `GITHUB_TOKEN` | empty | optional; without one GitHub allows 60 requests an hour, the collector uses two every six hours. Set it only if the relay shares its address with something else that polls GitHub (a `403` from GitHub shows on the page and says so) |
 | `GITHUB_COLLECT` | `1` | `0` turns the collector off (a relay without a way out, tests) |
 | `GITHUB_API` | `https://api.github.com` | where the collector reads; a mirror for a relay that cannot reach GitHub |
 | `ADMIN_EMAIL` | empty | where a threshold rule's *notify* goes (0.22, *Controls*), through the `SMTP_*` settings; empty = the rule writes its audit line and the log says there was nobody to tell |
-| `WEVVY_CLOUD_BASE` | `PUBLIC_BASE`, else `http://127.0.0.1:8787` | read by the admin CLI only (`wevvy-cloud admin …`, below): the address of the relay it talks to when `--base` is not given; the relay itself does not read it |
+| `CEIS_CLOUD_BASE` | `PUBLIC_BASE`, else `http://127.0.0.1:8787` | read by the admin CLI only (`ceis-cloud admin …`, below): the address of the relay it talks to when `--base` is not given; the relay itself does not read it |
 
 The default menu (0.17): `deepseek-v4.1-flash` (the chat model — text and
 images in, ¥2 / ¥8 per million tokens, charged at 0.7×; it thinks before it
@@ -231,7 +231,7 @@ a new face with its four clips cost about ¥9; it is about ¥3 now.
 
 **Lanes (0.17).** Every chat model says what it is `for` — `chat`, `gui` or
 both — and `recommended_for` names the lane(s) it is the default pick in; both
-ride in each entry's `wevvy` block of `/v1/models`, and the apps' two
+ride in each entry's `ceis` block of `/v1/models`, and the apps' two
 pickers (the chat model, the hands model) filter on them and take the
 recommended one of each lane as the default. Picture and clip models are for
 neither (`"for": []`; their `kind` says what they do). On the shipped menu
@@ -352,7 +352,7 @@ Now it is the relay's: `GET /v1/nudges` (no key, `Cache-Control: public,
 max-age=3600`) returns the policy, and `/v1/me` carries the same object under
 `nudges`. Every client — Android, iPhone, desktop, web — reads it at most once
 a day, keeps the last good copy and falls back to the built-in defaults
-(`wevvy_cloud/nudges.py`, `DEFAULT_NUDGES`) when the relay cannot be
+(`ceis_cloud/nudges.py`, `DEFAULT_NUDGES`) when the relay cannot be
 reached:
 
 ```json
@@ -408,7 +408,7 @@ as long as it is used for what it is — a chat model at `/v1/chat/completions`,
 an image model at `/v1/images/*`, a video model under the video paths; never
 across. Pictures and clips travel through the provider's qwen-image / Wan-shaped
 APIs, so a model of another family gets the provider's answer. `/v1/models`
-says `wevvy.any_model` for the account, `/v1/me` the same under `account`,
+says `ceis.any_model` for the account, `/v1/me` the same under `account`,
 and `GET /v1/models/<id>?kind=chat` checks a typed id (the answer's `listed` is
 false and `priced_as` names the menu model whose prices stand in for it in the
 ledger — the dearest of its kind, so the operator's page errs high). It is how
@@ -420,7 +420,7 @@ models — the spoken, heard, embedding and rerank ones are left out, and a
 video model is not on the compatible list (`catalog.py`) — and lists them in
 the member's `/v1/models` after the menu, each with `catalog: true`, `listed:
 false`, `priced_as` and `vision` (whether the chat model reads pictures); the
-answer's `wevvy.catalog` says how many and the provider's error if the list
+answer's `ceis.catalog` says how many and the provider's error if the list
 could not be refreshed (the last one stands). The apps' pickers then show the
 menu and *More models on your account* as two groups, and a guest sees the
 menu alone. Names are a guess, and a wrong guess costs a person a feature —
@@ -444,7 +444,7 @@ block (`total`, `grant`, `left`, `unlimited`, `warn` at 80 %, `usd_cny`,
 `total_usd`, `grant_usd`, `left_usd`, `today`, the bonus amounts,
 `own_key_docs`, `openrouter_url` and `ways`; the 0.4 names `daily_cap` /
 `left_today` / `resets_at` = 0 for one more version) and each model in
-`/v1/models` carries its `wevvy.price_cny`, so the apps show what was spent
+`/v1/models` carries its `ceis.price_cny`, so the apps show what was spent
 in both currencies. The refusal, `429 allowance_exhausted`, says what is left
 and where the three ways on lead (one's own key, a plan one already pays for, an invited friend) — sign-in and
 the hub are never gated, only the model routes. The admin page shows spend per
@@ -485,8 +485,8 @@ conversation (the catalogue's `session_header`, OpenCode Go) is not in
 `providers` but under `session_providers`, the same row plus that header's
 name: the apps of 1.0.1 and before send no such id and never see it; the ones
 that do append the list to `providers`. The facts come from
-`wevvy_cloud/providers.json`, a copy of the runtime's
-`wevvy/llm/providers.json` written by `node scripts/providers-json.mjs`
+`ceis_cloud/providers.json`, a copy of the runtime's
+`ceis/llm/providers.json` written by `node scripts/providers-json.mjs`
 (CI checks it); the relay only orders it,
 and the apps keep the words. Nothing is renamed: a client from before reads
 `ways` as it always did.
@@ -540,7 +540,7 @@ client: the accounts table has a *Client / IP* column, the drawer an
 *Addresses / IP* section (how often, first, last, platforms) and the address
 on every row, and an address opens the accounts seen from it
 (`/v1/admin/address?ip=`). The text of a chat is on the page only for
-accounts with *Help improve wevvy's AI models* on, and only the training
+accounts with *Help improve ceis's AI models* on, and only the training
 view of it (below); every account that kept turns is in the *By account*
 table of the Data controls panel, and its conversations are read in full in
 the drawer — each turn expands to every message and tool call — with an
@@ -577,7 +577,7 @@ relay's own numbers by day (sign-ins, new and active accounts, sign-ups
 through an invite, data switches turned on, calls, refusals, upstream errors, and the
 provider's content-check refusals, counted apart since they say nothing about the provider),
 the remembered devices by kind and system, the invite funnel and — with
-`WEB_INFO_URL` — how many wevvy Web accounts and sessions the gateway
+`WEB_INFO_URL` — how many ceis Web accounts and sessions the gateway
 holds; and, with `TRAFFIC_DB`, the project site's visits and downloads:
 page views, visitors, crawlers, downloads per file from the mirror next to
 GitHub's own download counts, stars, referring sites, the pages. The traffic
@@ -646,7 +646,7 @@ still carries the masked hint only. Two pages are new: *Controls* (the five
 switches, the threshold rules and the audit log — [above](#controls-022); the
 first line of *Overview* says which switches are off and the next threshold)
 and *Stats*, from `GET /v1/admin/stats?days=` — one registry in
-`wevvy_cloud/stats.py` defines every figure once, with a sentence saying how
+`ceis_cloud/stats.py` defines every figure once, with a sentence saying how
 it is computed (the ⓘ on each panel) in English and Chinese: accounts per UTC
 day (total, new, active by any call and by model call, sign-ins, failures,
 deletions), by sign-in method and by origin (country code or e-mail domain),
@@ -662,7 +662,7 @@ so a restart loses nothing. *Site* opens with the GitHub panel from `GET
 /v1/admin/github?days=`: stars, forks, watchers, open issues and release
 downloads, what each day added, downloads by platform and by asset, and
 *Refresh now* (`POST /v1/admin/github/refresh`); the collector
-(`wevvy_cloud/github_stats.py`) reads `GET /repos/{owner}/{name}` and
+(`ceis_cloud/github_stats.py`) reads `GET /repos/{owner}/{name}` and
 `/releases` every six hours and keeps one row per UTC day — a failed read
 leaves the previous row and shows on the page, the relay runs on without
 GitHub.
@@ -775,7 +775,7 @@ allowance plus any unused 0.4 credit, so nobody starts in debt.
 
 ### Data controls (0.9)
 
-*Help improve wevvy's AI models* is one switch per account, under Settings →
+*Help improve ceis's AI models* is one switch per account, under Settings →
 Data controls on every app and on the console's account sheet
 (`/v1/me.contribute`, `POST /v1/me/contribute {on}`). With it on, each chat turn
 through the relay is kept in `samples` — **the training view only**: what the
@@ -807,7 +807,7 @@ tokens, the newest turns, and the export.
 # hour's requests / upstream errors / content-check refusals / refusals / sign-ins, the
 # database, `problems` (twenty upstream errors in an hour is one; a content check declining
 # words is not; an inviter whose code brought more than ten accounts in a day, or whose
-# invitees never use anything, is one too): what deploy/wevvy-hk/selfcheck.sh reads
+# invitees never use anything, is one too): what deploy/ceis-hk/selfcheck.sh reads
 # every ten minutes
 curl -H "X-Admin-Token: $CLOUD_ADMIN_TOKEN" https://$CLOUD_DOMAIN/v1/admin/health
 # who signed up (with the phone numbers and addresses since 0.22 — the console's answer)
@@ -839,15 +839,15 @@ curl -H "X-Admin-Token: $CLOUD_ADMIN_TOKEN" -H 'Content-Type: application/json' 
 # the whole policy; a key left out goes back to its default, not to what was stored
 curl -H "X-Admin-Token: $CLOUD_ADMIN_TOKEN" https://$CLOUD_DOMAIN/v1/admin/nudges
 curl -X PUT -H "X-Admin-Token: $CLOUD_ADMIN_TOKEN" -H 'Content-Type: application/json' \
-  -d '{"star":{"moments":{"tasks":[5,20]},"cooldown_days":14,"text":"A star on GitHub helps others find wevvy.","text_zh":"在 GitHub 点个 star，让更多人找到 wevvy。"}}' \
+  -d '{"star":{"moments":{"tasks":[5,20]},"cooldown_days":14,"text":"A star on GitHub helps others find ceis.","text_zh":"在 GitHub 点个 star，让更多人找到 ceis。"}}' \
   https://$CLOUD_DOMAIN/v1/admin/nudges
 # the switches (0.22): what is on, flip one with a note for the audit log, read the log —
-# from the relay's own shell (the CLI reads CLOUD_ADMIN_TOKEN and WEVVY_CLOUD_BASE, else
+# from the relay's own shell (the CLI reads CLOUD_ADMIN_TOKEN and CEIS_CLOUD_BASE, else
 # PUBLIC_BASE, from the environment, or --token / --base; --actor names you in the log, else cli:<user>)
-wevvy-cloud admin controls list
-wevvy-cloud admin controls set free_allowance off --note "upstream bill" --actor lgy
-wevvy-cloud admin controls set free_allowance on
-wevvy-cloud admin controls audit --limit 50
+ceis-cloud admin controls list
+ceis-cloud admin controls set free_allowance off --note "upstream bill" --actor lgy
+ceis-cloud admin controls set free_allowance on
+ceis-cloud admin controls audit --limit 50
 # … or the same over HTTP from anywhere
 curl -H "X-Admin-Token: $CLOUD_ADMIN_TOKEN" https://$CLOUD_DOMAIN/v1/admin/controls
 curl -H "X-Admin-Token: $CLOUD_ADMIN_TOKEN" -H "X-Admin-Actor: lgy" -H 'Content-Type: application/json' \
@@ -859,7 +859,7 @@ curl -H "X-Admin-Token: $CLOUD_ADMIN_TOKEN" -H 'Content-Type: application/json' 
 curl -H "X-Admin-Token: $CLOUD_ADMIN_TOKEN" "https://$CLOUD_DOMAIN/v1/admin/stats/accounts_daily.csv?days=90" -o accounts.csv
 ```
 
-In Docker the CLI is `docker compose exec relay wevvy-cloud admin controls
+In Docker the CLI is `docker compose exec relay ceis-cloud admin controls
 list --base http://127.0.0.1:8787` (the container has `CLOUD_ADMIN_TOKEN` in
 its environment; `--base` keeps the call inside the container instead of going
 out through Caddy).
@@ -867,7 +867,7 @@ The tables behind all of this (`daily`, `controls`, `control_rules`,
 `control_audit`) are created on the first start of 0.22 — `CREATE TABLE IF NOT
 EXISTS` — so a deploy is the usual image swap, no migration step.
 
-Every response carries `X-Wevvy-Charged` and `X-Wevvy-Request` so a user
+Every response carries `X-Ceis-Charged` and `X-Ceis-Request` so a user
 report can be matched to a ledger row without any content being logged.
 
 ### Sending codes

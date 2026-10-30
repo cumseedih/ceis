@@ -3,7 +3,7 @@ import { useT } from "../i18n";
 import { cx } from "../util";
 
 /**
- * The first conversation's pieces in the chat (contract C4; `wevvy/server/firstrun.py`
+ * The first conversation's pieces in the chat (contract C4; `ceis/server/firstrun.py`
  * owns the state). The app speaks three lines first, as the agent, at no cost in tokens;
  * the model then asks the person's name and, when it has it, the chooser offers two names
  * for the agent — the model's suggestions or two from the built-in pool — and "Something

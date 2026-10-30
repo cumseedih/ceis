@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# The macOS packages of wevvy Desktop, from the .app electron-builder left in harness/desktop/dist:
+# The macOS packages of ceis Desktop, from the .app electron-builder left in harness/desktop/dist:
 #
 #   scripts/desktop-app/package-mac.sh <arch>          # arm64 | x64
 #
@@ -18,9 +18,9 @@
 #                                                an App Store Connect API key (the .p8's text) for notarytool
 #      APPLE_TEAM_ID                              optional; checked against the certificate when set
 #    The certificate alone signs without notarizing (Gatekeeper then still asks once).
-# 2. wevvy-Desktop-<version>-mac-<arch>.zip — `ditto`, the way Finder makes archives, which
+# 2. ceis-Desktop-<version>-mac-<arch>.zip — `ditto`, the way Finder makes archives, which
 #    keeps symlinks, resource forks and permissions; unzip, drag to Applications.
-# 3. wevvy-Desktop-<version>-mac-<arch>.dmg — an APFS image made with `hdiutil` directly.
+# 3. ceis-Desktop-<version>-mac-<arch>.dmg — an APFS image made with `hdiutil` directly.
 #    electron-builder's HFS+ image copied with Finder error -36 on some Macs (0.1.20, 0.1.21).
 #
 # APP_DIR, APP_NAME and ARTIFACT name another app directory, bundle name and file prefix.
@@ -36,14 +36,14 @@ esac
 here="$(cd "$(dirname "$0")/../.." && pwd)"
 app_dir="${APP_DIR:-$here/harness/desktop}"
 case "$app_dir" in /*) ;; *) app_dir="$here/$app_dir" ;; esac
-app_name="${APP_NAME:-wevvy}"
-artifact="${ARTIFACT:-wevvy-Desktop}"
+app_name="${APP_NAME:-ceis}"
+artifact="${ARTIFACT:-ceis-Desktop}"
 version="$(node -p "require('$app_dir/package.json').version")"
 bundle_dir="$app_dir/dist/$mac_dir"
 app="$bundle_dir/$app_name.app"
 if [ ! -d "$app" ]; then
   # electron-builder names the bundle after `executableName` when the config sets one
-  # (wevvy Desktop builds as wevvy-desktop.app); what people drag into Applications
+  # (ceis Desktop builds as ceis-desktop.app); what people drag into Applications
   # should carry the product's name, so the bundle is renamed before it is signed
   shopt -s nullglob
   candidates=("$bundle_dir"/*.app)
@@ -105,18 +105,18 @@ for inner in runtime dsh app.asar.unpacked; do
   done < <(find "$app/Contents/Resources/$inner" -type f \
     \( -perm -u+x -o -name "*.so" -o -name "*.dylib" -o -name "*.node" \) -print0)
 done
-# "wevvy Computer Use.app" (harness/desktop/mac/computer-use): the helper that holds Screen
+# "ceis Computer Use.app" (harness/desktop/mac/computer-use): the helper that holds Screen
 # Recording and Accessibility. Signed as a bundle of its own, before the outer app, with the
 # same identity and the hardened runtime but none of the app's entitlements (it is a plain
 # Foundation program: no JIT, no foreign libraries). Its identifier is what the privacy panes
 # remember: with a Developer ID the designated requirement is the same from build to build and
 # the grant survives updates; ad-hoc, it is keyed to this binary's hash and each build starts
 # over (docs/desktop.md "macOS permissions").
-helper="$app/Contents/Helpers/wevvy Computer Use.app"
+helper="$app/Contents/Helpers/ceis Computer Use.app"
 if [ -d "$helper" ]; then
   helper_flags=(--timestamp=none)
   [ "$identity" != "-" ] && helper_flags=(--timestamp --options runtime)
-  codesign --force --sign "$identity" "${helper_flags[@]}" --identifier io.github.wevvy.desktop.computer-use "$helper"
+  codesign --force --sign "$identity" "${helper_flags[@]}" --identifier io.github.ceis.desktop.computer-use "$helper"
   codesign --verify --strict "$helper"
   echo "helper signature ok"
 fi

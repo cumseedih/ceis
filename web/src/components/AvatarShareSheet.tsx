@@ -165,12 +165,12 @@ export function AvatarShareSheet({ open, onClose }: { open: boolean; onClose: ()
   const { state, toast } = useStore();
   const t = useT();
   const profile = state.profile;
-  const name = profile?.name ?? "wevvy";
+  const name = profile?.name ?? "ceis";
   const [selected, setSelected] = useState(0);
   const [previews, setPreviews] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const alive = useRef(true);
-  const bubble = t("Hi, I'm {name}, a personal AI agent. This is wevvy.", { name });
+  const bubble = t("Hi, I'm {name}, a personal AI agent. This is ceis.", { name });
   const tagline = t("Your personal AI agent");
 
   useEffect(() => {
@@ -198,7 +198,7 @@ export function AvatarShareSheet({ open, onClose }: { open: boolean; onClose: ()
       const canvas = await render(palette, profile, name, bubble, tagline, 2);
       const blob = await toBlob(canvas);
       if (!blob) throw new Error(t("The card could not be drawn."));
-      const file = new File([blob], `${name}-wevvy.png`, { type: "image/png" });
+      const file = new File([blob], `${name}-ceis.png`, { type: "image/png" });
       const text = bubble;
       const nav = navigator as Navigator & { canShare?: (data: ShareData) => boolean };
       if (typeof nav.share === "function" && (!nav.canShare || nav.canShare({ files: [file] }))) {

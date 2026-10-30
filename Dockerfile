@@ -1,11 +1,11 @@
-# wevvy in a container: the agent sees only /data and /workspace.
+# ceis in a container: the agent sees only /data and /workspace.
 #
-#   docker build -t wevvy .
-#   docker run -d -p 8787:8787 --env-file .env -v wevvy-data:/data -v $PWD/workspace:/workspace wevvy
-#   docker run -it --rm --env-file .env -v wevvy-data:/data -v $PWD/workspace:/workspace wevvy chat
+#   docker build -t ceis .
+#   docker run -d -p 8787:8787 --env-file .env -v ceis-data:/data -v $PWD/workspace:/workspace ceis
+#   docker run -it --rm --env-file .env -v ceis-data:/data -v $PWD/workspace:/workspace ceis chat
 #
 # With a browser (Chromium + Playwright, ~400 MB more; the browser tool is on):
-#   docker build --build-arg WITH_BROWSER=1 -t wevvy:browser .
+#   docker build --build-arg WITH_BROWSER=1 -t ceis:browser .
 #
 FROM python:3.12-slim
 
@@ -19,10 +19,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_INDEX_URL=${PIP_INDEX_URL} \
-    WEVVY_DATA_DIR=/data \
-    WEVVY_WORKSPACE=/workspace \
-    WEVVY_CONFIG=/app/config/config.toml \
-    WEVVY_IN_CONTAINER=1 \
+    CEIS_DATA_DIR=/data \
+    CEIS_WORKSPACE=/workspace \
+    CEIS_CONFIG=/app/config/config.toml \
+    CEIS_IN_CONTAINER=1 \
     PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 RUN useradd --create-home --uid 1000 muse \
@@ -31,7 +31,7 @@ RUN useradd --create-home --uid 1000 muse \
 
 WORKDIR /app
 COPY --chown=muse:muse pyproject.toml README.md LICENSE ./
-COPY --chown=muse:muse wevvy ./wevvy
+COPY --chown=muse:muse ceis ./ceis
 COPY --chown=muse:muse config/config.example.toml ./config/config.example.toml
 
 RUN if [ "$WITH_BROWSER" = "1" ]; then \
@@ -46,7 +46,7 @@ RUN if [ "$WITH_BROWSER" = "1" ]; then \
  && cp config/config.example.toml config/config.toml
 
 # the browser tool is on in the browser image ("1"); anything else leaves config.toml alone
-ENV WEVVY_BROWSER_ENABLED=${WITH_BROWSER}
+ENV CEIS_BROWSER_ENABLED=${WITH_BROWSER}
 
 USER muse
 VOLUME ["/data", "/workspace"]
@@ -56,6 +56,6 @@ EXPOSE 8787
 # shows unhealthy, which `--no-healthcheck` on `docker run` turns off.
 HEALTHCHECK --interval=30s --timeout=5s CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8787/api/health', timeout=3).status == 200 else 1)"
 
-ENTRYPOINT ["wevvy"]
+ENTRYPOINT ["ceis"]
 # The phone app. Override with `chat`, `run "..."`, `daemon`, ...
 CMD ["serve", "--host", "0.0.0.0", "--no-qr"]

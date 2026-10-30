@@ -16,7 +16,7 @@ export function CommunityNotice({ compact = false, className }: { compact?: bool
       </div>
       <p className={cx("mt-1.5 leading-relaxed text-fg/85", compact ? "text-[12.5px]" : "text-[13px]")}>
         {t(
-          "wevvy is free to use. Sign in with a phone number or an e-mail and the model comes with a free allowance; when it is gone, use your own key (Alibaba Cloud Bailian in mainland China, OpenRouter elsewhere). Nothing is sold; what the relay keeps is in the privacy policy, and Settings → Data controls is yours. Delete the account whenever you like.",
+          "ceis is free to use. Sign in with a phone number or an e-mail and the model comes with a free allowance; when it is gone, use your own key (Alibaba Cloud Bailian in mainland China, OpenRouter elsewhere). Nothing is sold; what the relay keeps is in the privacy policy, and Settings → Data controls is yours. Delete the account whenever you like.",
         )}
       </p>
     </section>

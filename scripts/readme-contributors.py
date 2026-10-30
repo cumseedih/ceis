@@ -48,7 +48,7 @@ def fetch(token: str | None = None) -> list[dict[str, Any]]:
             f"{API}?per_page=100&page={page}",
             headers={
                 "Accept": "application/vnd.github+json",
-                "User-Agent": "wevvy-readme-contributors",
+                "User-Agent": "ceis-readme-contributors",
                 **({"Authorization": f"Bearer {token}"} if token else {}),
             },
         )

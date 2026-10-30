@@ -70,7 +70,7 @@ export function FeedScreen() {
   const { data: posts, setData: setPosts } = postsRequest;
   const upcoming = upcomingRequest.data;
   const calendar = calendarRequest.data;
-  const name = state.profile?.name ?? "wevvy";
+  const name = state.profile?.name ?? "ceis";
   const t = useT();
   const locale = useLocale();
 
@@ -254,7 +254,7 @@ export function FeedScreen() {
   );
 }
 
-const INTRO_ACK_KEY = "wevvy.feed.introAck";
+const INTRO_ACK_KEY = "ceis.feed.introAck";
 
 function todayKey(): string {
   const d = new Date();

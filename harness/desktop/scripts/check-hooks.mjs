@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The stylesheet of the wevvy bundle (harness/dsh-wevvy/src/client/styles.ts) dresses
+// The stylesheet of the ceis bundle (harness/dsh-ceis/src/client/styles.ts) dresses
 // the harness's own DOM through its `data-*` hooks (`[data-composer-card]`,
 // `[data-chat-flow-kind="user"]`), its test ids (`[data-testid="task-manager-page"]`) and the
 // stems of its CSS-module class names (`[class*="_toBottom"]`). None of those is a contract:
@@ -120,9 +120,9 @@ if (isMain) {
     return i >= 0 ? args[i + 1] : undefined;
   };
   const dshNodeModules = resolve(opt("--dsh") ?? join(appDir, "dsh", "node_modules"));
-  const styles = resolve(opt("--styles") ?? join(appDir, "..", "dsh-wevvy", "src", "client", "styles.ts"));
+  const styles = resolve(opt("--styles") ?? join(appDir, "..", "dsh-ceis", "src", "client", "styles.ts"));
   const ours = opt("--ours");
-  const oursDirs = ours ? [resolve(ours)] : [join(appDir, "..", "dsh-wevvy", "src"), join(appDir, "src")];
+  const oursDirs = ours ? [resolve(ours)] : [join(appDir, "..", "dsh-ceis", "src"), join(appDir, "src")];
   if (!existsSync(join(dshNodeModules, "@deepseek-ai"))) {
     console.error(`no dsh under ${dshNodeModules}: stage it first (node scripts/prepare-dsh.mjs), or point --dsh at a node_modules that has @deepseek-ai/*`);
     process.exit(2);

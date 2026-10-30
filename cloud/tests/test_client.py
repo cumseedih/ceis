@@ -1,7 +1,7 @@
 """The visitor's address: ``X-Forwarded-For`` counts only when a proxy on this box or
 network sent it; a relay exposed directly keys its per-address limits on the socket."""
 
-from wevvy_cloud.client import from_headers, platform_of, visitor_ip
+from ceis_cloud.client import from_headers, platform_of, visitor_ip
 
 
 def test_forwarded_for_is_honoured_from_a_proxy_peer():
@@ -25,16 +25,16 @@ def test_forwarded_for_is_ignored_from_the_open_internet():
 
 def test_client_info_carries_the_address_and_the_platform():
     info = from_headers(
-        {"x-forwarded-for": "203.0.113.7", "user-agent": "wevvy-Android/0.1.40 (Pixel 8)"},
+        {"x-forwarded-for": "203.0.113.7", "user-agent": "ceis-Android/0.1.40 (Pixel 8)"},
         "10.0.0.2",
     )
     assert info.ip == "203.0.113.7" and info.platform == "android"
-    assert platform_of("wevvy/0.1.40 (darwin)") == "macos"
+    assert platform_of("ceis/0.1.40 (darwin)") == "macos"
     assert platform_of("Mozilla/5.0") == "browser"
 
 
 def test_trusted_proxies_default_to_the_non_global_networks(monkeypatch):
-    from wevvy_cloud.config import NON_GLOBAL_NETWORKS, Settings
+    from ceis_cloud.config import NON_GLOBAL_NETWORKS, Settings
 
     monkeypatch.delenv("TRUSTED_PROXIES", raising=False)
     assert Settings().trusted_proxy_list == list(NON_GLOBAL_NETWORKS)
@@ -48,7 +48,7 @@ async def test_uvicorn_believes_the_header_from_a_proxy_peer_only(monkeypatch):
     open internet keeps its own address whatever header it sends."""
     from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
-    from wevvy_cloud.config import Settings
+    from ceis_cloud.config import Settings
 
     monkeypatch.delenv("TRUSTED_PROXIES", raising=False)
     seen: list[str] = []
@@ -64,7 +64,7 @@ async def test_uvicorn_believes_the_header_from_a_proxy_peer_only(monkeypatch):
 
 
 def test_an_explicit_trusted_proxies_list_is_the_whole_list():
-    from wevvy_cloud.client import parse_trusted_proxies
+    from ceis_cloud.client import parse_trusted_proxies
 
     trusted = parse_trusted_proxies("10.0.0.1, 172.18.0.0/16, fd00::/8")
     h = {"x-forwarded-for": "203.0.113.7"}

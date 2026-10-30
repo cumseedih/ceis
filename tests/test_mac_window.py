@@ -17,14 +17,14 @@ import pytest
 from tests.test_computer import SCREEN_RAW, FakeHands
 from tests.test_computer_operator import TOKEN, FakeOperator
 from tests.test_phone import AutoApproveUI, png
-from wevvy.computer import mac_window as mw
-from wevvy.computer import operator as op
-from wevvy.computer.link import ComputerLink
-from wevvy.config import GUISettings, HandsSettings, Settings
-from wevvy.phone.link import DeviceError
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.tools.computer import ComputerAct, ComputerScreen
-from wevvy.ui import ApprovalDecision, ApprovalRequest
+from ceis.computer import mac_window as mw
+from ceis.computer import operator as op
+from ceis.computer.link import ComputerLink
+from ceis.config import GUISettings, HandsSettings, Settings
+from ceis.phone.link import DeviceError
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.tools.computer import ComputerAct, ComputerScreen
+from ceis.ui import ApprovalDecision, ApprovalRequest
 
 
 @pytest.fixture()
@@ -36,9 +36,9 @@ def fake_screen(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
     def capture(max_width: int = 1600) -> dict[str, Any]:
         return dict(screens[0] if len(screens) == 1 else screens.pop(0))
 
-    monkeypatch.setattr("wevvy.computer.link.capture", capture)
-    monkeypatch.setattr("wevvy.computer.link.active_window", lambda: ("firefox", "Firefox"))
-    monkeypatch.setattr("wevvy.computer.link.screen_size", lambda: (1920, 1080))
+    monkeypatch.setattr("ceis.computer.link.capture", capture)
+    monkeypatch.setattr("ceis.computer.link.active_window", lambda: ("firefox", "Firefox"))
+    monkeypatch.setattr("ceis.computer.link.screen_size", lambda: (1920, 1080))
     return screens
 
 
@@ -396,7 +396,7 @@ HELPER_WINDOWS: list[dict[str, Any]] = [
      "bounds": [0, 0, 1440, 24], "layer": 24, "on_screen": True},
 ]  # fmt: skip
 HELPER_SCREEN_TEXT = (
-    "macOS: switch on wevvy Computer Use under System Settings → Privacy & Security → "
+    "macOS: switch on ceis Computer Use under System Settings → Privacy & Security → "
     "Screen Recording. The helper restarts by itself; the app does not need to."
 )
 
@@ -414,7 +414,7 @@ def mac_operator(monkeypatch: pytest.MonkeyPatch) -> Iterator[FakeOperator]:
     monkeypatch.setenv(op.URL_ENV, fake.url)
     monkeypatch.setenv(op.TOKEN_ENV, TOKEN)
     monkeypatch.setattr(op, "_platform", lambda: "darwin")
-    monkeypatch.setattr("wevvy.computer.link.active_window", lambda: ("", ""))
+    monkeypatch.setattr("ceis.computer.link.active_window", lambda: ("", ""))
     yield fake
     fake.close()
 
@@ -447,7 +447,7 @@ def test_the_operator_window_adapter_lists_and_captures_through_the_helper(
     # the helper's Screen Recording row is off: the operator's 403, in its words, retried
     # on the next look (WindowUnavailable, not a broken layer)
     mac_operator.refuse_window = (403, f"window 41 could not be captured: {HELPER_SCREEN_TEXT}")
-    with pytest.raises(mw.WindowUnavailable, match="wevvy Computer Use") as exc:
+    with pytest.raises(mw.WindowUnavailable, match="ceis Computer Use") as exc:
         hands.look("Safari")
     assert not isinstance(exc.value, mw.WindowLayerBroken)
     mac_operator.refuse_window = None
@@ -459,7 +459,7 @@ def test_the_operator_window_adapter_lists_and_captures_through_the_helper(
     # the helper itself is gone (503): the layer failed — `auto` mode parks on the screen
     mac_operator.refuse_window = (
         503,
-        "window 41 could not be captured: wevvy Computer Use did not start (no port after 10 s)",
+        "window 41 could not be captured: ceis Computer Use did not start (no port after 10 s)",
     )
     with pytest.raises(mw.WindowLayerBroken, match="did not start"):
         hands.look("Safari")
@@ -502,7 +502,7 @@ async def test_the_link_works_in_a_window_through_the_helper_under_the_app(
     # which the operator refuses with the same words — the tool's error names the helper
     mac_operator.refuse_window = (403, f"window 41 could not be captured: {HELPER_SCREEN_TEXT}")
     mac_operator.refuse_shot = (403, f"no screenshot: {HELPER_SCREEN_TEXT}")
-    with pytest.raises(DeviceError, match="wevvy Computer Use"):
+    with pytest.raises(DeviceError, match="ceis Computer Use"):
         await link.screen()
     assert link.in_window_mode()  # not parked: a grant is retried, a broken layer is not
 

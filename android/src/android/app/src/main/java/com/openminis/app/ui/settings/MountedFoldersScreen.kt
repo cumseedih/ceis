@@ -159,7 +159,7 @@ fun MountedFoldersScreen(
 
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(stringResource(R.string.settings_mount_external_folders)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -578,7 +578,7 @@ private fun AccessBadge(entry: MountedFoldersStore.Entry) {
     val (text, color) = when {
         !entry.isWritable -> stringResource(R.string.mount_badge_readonly) to Color(0xFFFF9500)
         !entry.userAllowWrite -> stringResource(R.string.mount_badge_locked) to Color(0xFFAF52DE)
-        else -> stringResource(R.string.mount_badge_rw) to io.github.wevvy.ui.theme.WevvyColors.success
+        else -> stringResource(R.string.mount_badge_rw) to io.github.ceis.ui.theme.CeisColors.success
     }
     Surface(
         shape = RoundedCornerShape(8.dp),

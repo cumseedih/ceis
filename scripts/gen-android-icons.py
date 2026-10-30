@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""Generate wevvy's launcher and status-bar icons for android/ from assets/brand/.
+"""Generate ceis's launcher and status-bar icons for android/ from assets/brand/.
 
 Idempotent and deterministic; re-run after every upstream pull (CONTRIBUTING.md).
 The official logo is used as-is: the blue script mark is never recoloured or
 redrawn, only scaled and composited.
 
 Sources (repo root):
-- assets/brand/wevvy-mark.png        the script mark on transparency
-- assets/brand/wevvy-icon-512.png    the white tile with the mark (512x512)
+- assets/brand/ceis-mark.png        the script mark on transparency
+- assets/brand/ceis-icon-512.png    the white tile with the mark (512x512)
 
 Writes:
-- drawable-{mdpi..xxxhdpi}/ic_launcher_foreground_wevvy.png   the mark, 108dp canvas
-- drawable-{mdpi..xxxhdpi}/ic_launcher_foreground_wevvy_dark.png  white mark, 108dp
+- drawable-{mdpi..xxxhdpi}/ic_launcher_foreground_ceis.png   the mark, 108dp canvas
+- drawable-{mdpi..xxxhdpi}/ic_launcher_foreground_ceis_dark.png  white mark, 108dp
 - drawable-{mdpi..xxxhdpi}/ic_launcher_monochrome.png            white silhouette, 108dp
-- drawable-{mdpi..xxxhdpi}/ic_stat_wevvy.png                      white mark, 24dp
+- drawable-{mdpi..xxxhdpi}/ic_stat_ceis.png                      white mark, 24dp
 - mipmap-{mdpi..xxxhdpi}/ic_launcher.png                          the tile, 48dp
 - mipmap-{mdpi..xxxhdpi,night-*}/ic_launcher_foreground{,_light,_dark}.png
 - mipmap-anydpi-v26/ic_launcher*.xml, mipmap-night-anydpi-v26/ic_launcher*.xml
@@ -33,8 +33,8 @@ ROOT = Path(__file__).resolve().parents[1]
 BRAND = ROOT / "assets" / "brand"
 RES = ROOT / "android" / "src" / "android" / "app" / "src" / "main" / "res"
 
-MARK = BRAND / "wevvy-mark.png"
-TILE = BRAND / "wevvy-icon-512.png"
+MARK = BRAND / "ceis-mark.png"
+TILE = BRAND / "ceis-icon-512.png"
 
 MARK_WIDTH_DP = 56.0  # the mark's width on the 108dp adaptive canvas
 STAT_WIDTH_DP = 18.0  # the mark's width on the 24dp status-bar canvas
@@ -42,28 +42,28 @@ STAT_WIDTH_DP = 18.0  # the mark's width on the 24dp status-bar canvas
 DENSITIES = {"mdpi": 1.0, "hdpi": 1.5, "xhdpi": 2.0, "xxhdpi": 3.0, "xxxhdpi": 4.0}
 
 ADAPTIVE_DAY = """<?xml version="1.0" encoding="utf-8"?>
-<!-- wevvy: generated from assets/brand/wevvy-icon-512.png + wevvy-mark.png (PIL). -->
+<!-- ceis: generated from assets/brand/ceis-icon-512.png + ceis-mark.png (PIL). -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground_wevvy" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground_ceis" />
     <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
 </adaptive-icon>
 """
 
 ADAPTIVE_CLASSIC_LIGHT = """<?xml version="1.0" encoding="utf-8"?>
-<!-- wevvy: generated from assets/brand/wevvy-icon-512.png + wevvy-mark.png (PIL). -->
+<!-- ceis: generated from assets/brand/ceis-icon-512.png + ceis-mark.png (PIL). -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_bg_force_light" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground_wevvy" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground_ceis" />
     <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
 </adaptive-icon>
 """
 
 ADAPTIVE_CLASSIC_DARK = """<?xml version="1.0" encoding="utf-8"?>
-<!-- wevvy: generated from assets/brand/wevvy-icon-512.png + wevvy-mark.png (PIL). -->
+<!-- ceis: generated from assets/brand/ceis-icon-512.png + ceis-mark.png (PIL). -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_bg_force_dark" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground_wevvy_dark" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground_ceis_dark" />
     <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
 </adaptive-icon>
 """
@@ -196,12 +196,12 @@ def main(argv: list[str] | None = None) -> int:
         blue = centred(canvas, scaled_mark(mark_w))
         white = centred(canvas, white_mark(mark_w))
         draw = RES / f"drawable-{density}"
-        write(draw / "ic_launcher_foreground_wevvy.png", png(blue))
-        write(draw / "ic_launcher_foreground_wevvy_dark.png", png(white))
+        write(draw / "ic_launcher_foreground_ceis.png", png(blue))
+        write(draw / "ic_launcher_foreground_ceis_dark.png", png(white))
         write(draw / "ic_launcher_monochrome.png", png(white))
         stat_canvas = round(24 * scale)
         stat_w = round(STAT_WIDTH_DP * scale)
-        write(draw / "ic_stat_wevvy.png", png(centred(stat_canvas, white_mark(stat_w))))
+        write(draw / "ic_stat_ceis.png", png(centred(stat_canvas, white_mark(stat_w))))
 
         tile_px = round(48 * scale)
         for prefix in ("mipmap", "mipmap-night"):

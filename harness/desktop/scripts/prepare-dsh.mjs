@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // Stage the harness the desktop app carries: `dsh/` next to this file's parent, with
-// `@deepseek-ai/dsh` (the version the bundle's peer dependencies name) and the wevvy
+// `@deepseek-ai/dsh` (the version the bundle's peer dependencies name) and the ceis
 // bundle installed side by side by npm — the Loader finds a bundle linked from the profile
 // to that copy, so no pnpm runs on the person's machine.
 //
-//   node scripts/prepare-dsh.mjs                      # packs ../dsh-wevvy (built first: pnpm build)
+//   node scripts/prepare-dsh.mjs                      # packs ../dsh-ceis (built first: pnpm build)
 //   node scripts/prepare-dsh.mjs --bundle path.tgz    # a tarball already packed (the CI's)
 //   node scripts/prepare-dsh.mjs --out dsh            # where to stage (default: ./dsh)
 //
@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const appDir = resolve(here, "..");
-const bundleDir = resolve(appDir, "..", "dsh-wevvy");
+const bundleDir = resolve(appDir, "..", "dsh-ceis");
 const REGISTRY = "https://registry.npmjs.org";
 
 const args = process.argv.slice(2);
@@ -44,7 +44,7 @@ const shell = process.platform === "win32";
 // ---------------------------------------------------------------- the versions
 const bundleManifest = JSON.parse(readFileSync(join(bundleDir, "package.json"), "utf8"));
 const dshVersion = bundleManifest.peerDependencies?.["@deepseek-ai/dsh-agent"];
-if (!dshVersion) throw new Error("dsh-wevvy/package.json names no @deepseek-ai/dsh-agent peer — which dsh is this for?");
+if (!dshVersion) throw new Error("dsh-ceis/package.json names no @deepseek-ai/dsh-agent peer — which dsh is this for?");
 console.log(`dsh ${dshVersion} · ${bundleManifest.name} ${bundleManifest.version}`);
 
 // ---------------------------------------------------------------- the bundle
@@ -52,7 +52,7 @@ if (!bundle) {
   if (!existsSync(join(bundleDir, "lib", "index.js"))) {
     throw new Error(`${bundleDir}/lib is missing — run 'pnpm install && pnpm build' there first`);
   }
-  const packDir = join(tmpdir(), `wevvy-bundle-${process.pid}`);
+  const packDir = join(tmpdir(), `ceis-bundle-${process.pid}`);
   mkdirSync(packDir, { recursive: true });
   run(pnpm, ["pack", "--pack-destination", packDir], { cwd: bundleDir, shell });
   const tgz = readdirSync(packDir).find((f) => f.endsWith(".tgz"));
@@ -67,7 +67,7 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 writeFileSync(
   join(out, "package.json"),
-  `${JSON.stringify({ name: "wevvy-desktop-dsh", private: true, description: "DeepSeek Harness and the wevvy bundle, as wevvy Desktop carries them" }, null, 2)}\n`,
+  `${JSON.stringify({ name: "ceis-desktop-dsh", private: true, description: "DeepSeek Harness and the ceis bundle, as ceis Desktop carries them" }, null, 2)}\n`,
 );
 // No install scripts, whatever the npm version's policy (npm 11 blocks them by default,
 // npm 10 runs them): the harness's dependencies carry prebuilt binaries and their scripts
@@ -152,12 +152,12 @@ rmSync(join(out, "node_modules", ".package-lock.json"), { force: true });
 const runtimeDir = join(appDir, "runtime");
 if (!existsSync(runtimeDir)) {
   mkdirSync(runtimeDir);
-  writeFileSync(join(runtimeDir, "README.txt"), "No runtime for the hands was built into this copy of wevvy Desktop; `wevvy` on PATH or WEVVY_PY serves them.\n");
+  writeFileSync(join(runtimeDir, "README.txt"), "No runtime for the hands was built into this copy of ceis Desktop; `ceis` on PATH or CEIS_PY serves them.\n");
 }
 
 // ---------------------------------------------------------------- the record
 const installed = JSON.parse(readFileSync(join(out, "node_modules", "@deepseek-ai", "dsh", "package.json"), "utf8"));
-const bundled = JSON.parse(readFileSync(join(out, "node_modules", "dsh-wevvy", "package.json"), "utf8"));
+const bundled = JSON.parse(readFileSync(join(out, "node_modules", "dsh-ceis", "package.json"), "utf8"));
 if (installed.version !== dshVersion) throw new Error(`npm installed dsh ${installed.version}, wanted ${dshVersion}`);
 let files = 0;
 let bytes = 0;

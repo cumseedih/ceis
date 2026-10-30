@@ -23,21 +23,21 @@ from tests.test_phone import (
     make_sentinel,
 )
 from tests.test_server import events_of, wait_for
-from wevvy.agent.holds import Holds, took_over_note
-from wevvy.config import GUISettings, Settings
-from wevvy.llm.mock import MockLLM
-from wevvy.phone.link import PhoneLink
-from wevvy.phone.operator import (
+from ceis.agent.holds import Holds, took_over_note
+from ceis.config import GUISettings, Settings
+from ceis.llm.mock import MockLLM
+from ceis.phone.link import PhoneLink
+from ceis.phone.operator import (
     COMPUTER_USE_TOOL,
     MOBILE_USE_TOOL,
     PhoneOperator,
     to_computer_action,
     to_device_action,
 )
-from wevvy.schema import RiskLevel
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
-from wevvy.tools.phone import PhoneAct, PhoneScreen
+from ceis.schema import RiskLevel
+from ceis.server import create_app
+from ceis.server.service import MuseService
+from ceis.tools.phone import PhoneAct, PhoneScreen
 
 
 @pytest.fixture()
@@ -210,8 +210,8 @@ def test_dialects_offer_hand_over_and_the_loop_treats_it_as_a_pause():
         props = tool["function"]["parameters"]["properties"]
         assert "hand_over" in props["action"]["enum"]
         assert "hand_over" in props["action"]["description"]
-    from wevvy.phone.operator import Step
-    from wevvy.phone.screen import Screen
+    from ceis.phone.operator import Step
+    from ceis.phone.screen import Screen
 
     step = Step("t", "a", "mobile_use", {"action": "hand_over", "text": "sign in"})
     screen = Screen(width=100, height=100)

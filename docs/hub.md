@@ -1,21 +1,21 @@
 # The hub: every device is a Muse
 
-Sign in to the same wevvy Cloud account on a phone, a computer and a browser,
+Sign in to the same ceis Cloud account on a phone, a computer and a browser,
 and they see each other. Each device runs its own Muse with its own hands (the
 phone's apps and sandbox, the computer's shell and screen), and any of them can
 ask any other for something, from any network. The web console has no hands of
 its own; it is a front door to the rest.
 
 ```
-phone ──┐                         ┌── computer (wevvy Desktop)
-        ├──▶  wevvy Cloud  ◀───┤
+phone ──┐                         ┌── computer (ceis Desktop)
+        ├──▶  ceis Cloud  ◀───┤
 web  ───┘        /v1/hub          └── another phone / computer
 ```
 
 Every device opens one outbound WebSocket to the relay and keeps it. Nothing
 listens on the device, nothing needs a port forwarded or a shared Wi-Fi; the
 relay only routes frames between devices of one account and never looks inside
-a task. This is the way to add a computer: install wevvy Desktop on it and
+a task. This is the way to add a computer: install ceis Desktop on it and
 sign in with the same account; nothing to download by hand, no code to type.
 It is the only way in: the stand-alone host script that paired over the local
 network (0.1.13–0.1.23) is gone, so a computer that is missing from the phone's
@@ -26,11 +26,11 @@ on the phone shows which account the phone uses.
 
 On the phone, in any chat:
 
-- "在我 Mac 上列一下下载文件夹": `wevvy-pc ls ~/Downloads --on mac`
-- "让电脑把项目编译一遍，把日志发给我": `wevvy-pc task "…" --on desk`
-- "电脑截个图给我看": `wevvy-pc screen --on desk`
+- "在我 Mac 上列一下下载文件夹": `ceis-pc ls ~/Downloads --on mac`
+- "让电脑把项目编译一遍，把日志发给我": `ceis-pc task "…" --on desk`
+- "电脑截个图给我看": `ceis-pc screen --on desk`
 
-On the computer, in wevvy Desktop (or `wevvy chat` in a terminal):
+On the computer, in ceis Desktop (or `ceis chat` in a terminal):
 
 - "on my phone, take a screenshot": `device_screen`
 - "tell the phone's Muse to read me the last notification": `delegate`
@@ -84,13 +84,13 @@ Two kinds of request travel over the hub:
   [coding-agents.md](coding-agents.md).
 
 Each device decides what it lets others do. On the phone, *Let other devices
-operate this phone* (*Settings → wevvy Cloud → Devices*) off makes the phone
+operate this phone* (*Settings → ceis Cloud → Devices*) off makes the phone
 answer `info` and nothing else; it still sees and drives the others.
 With it on, a raw action that does something *to* the device (`shell`, `files`,
 `file.get`, `file.put`, `open`, `screen`, `coding.send`, `coding.stop`) is first
 agreed to by the person at that device: the usual approval card, *once* or
 *always for that device*; the standing answer is a grant
-(`remote_control:<device id>`) under Permissions. wevvy Desktop asks with the
+(`remote_control:<device id>`) under Permissions. ceis Desktop asks with the
 same card by default; its *Remote control without asking* (*Settings → Devices*)
 lets every device of the account run things there without the card. Nobody there, and the caller
 hears `not_allowed` when the card expires. `info` and `notify` never ask; a
@@ -226,8 +226,8 @@ The agent's name and look are the account's, not a device's: `GET` / `PUT
 /v1/me/profile` on the relay keep them (the dragon, an emoji on a colour, or a
 face drawn in the avatar studio with its five small stills), last writer wins,
 and a `profile` frame tells the other devices to fetch the new `rev`. The
-runtime does this in `wevvy/hub/profile.py`, the phone in
-`io.github.wevvy.cloud.ProfileSync`; the device that wrote it skips its own
+runtime does this in `ceis/hub/profile.py`, the phone in
+`io.github.ceis.cloud.ProfileSync`; the device that wrote it skips its own
 echo.
 
 The same profile carries **which device connected what** (0.1.34): a
@@ -265,36 +265,36 @@ How the devices' apps are shaped around these frames (the Devices page, a
 side chat addressed to a device, approvals answered on either end, the
 computer's own hands) is in [every-device.md](every-device.md).
 
-- Relay: [`cloud/wevvy_cloud/hub.py`](../cloud/wevvy_cloud/hub.py):
+- Relay: [`cloud/ceis_cloud/hub.py`](../cloud/ceis_cloud/hub.py):
   per-account registry, routing, `GET /v1/devices`, `DELETE /v1/devices/{id}`;
-  the console under [`cloud/wevvy_cloud/console/`](../cloud/wevvy_cloud/console/).
-- Android: `io.github.wevvy.hub`: `HubClient` (OkHttp, reconnect),
+  the console under [`cloud/ceis_cloud/console/`](../cloud/ceis_cloud/console/).
+- Android: `io.github.ceis.hub`: `HubClient` (OkHttp, reconnect),
   `Hub` (state, prefs, `call`/`find`), `HubActions` (what the phone does for
   others, including `task` through the headless chat runner, its `language`
   honoured), `HubService`
-  (foreground, `remoteMessaging`). `wevvy-pc` (`io.github.wevvy.reach`)
+  (foreground, `remoteMessaging`). `ceis-pc` (`io.github.ceis.reach`)
   reaches the hub devices from the phone's sandbox shell.
-- wevvy Desktop: [`harness/dsh-wevvy/src/hub.ts`](../harness/dsh-wevvy/src/hub.ts)
-  (the socket, reconnect), [`harness/dsh-wevvy/src/actions.ts`](../harness/dsh-wevvy/src/actions.ts)
+- ceis Desktop: [`harness/dsh-ceis/src/hub.ts`](../harness/dsh-ceis/src/hub.ts)
+  (the socket, reconnect), [`harness/dsh-ceis/src/actions.ts`](../harness/dsh-ceis/src/actions.ts)
   (what this computer does for others, the card before a remote action); see [desktop.md](desktop.md).
-- iOS: [`Wevvy/WevvyHub.swift`](../android/src/ios/Wevvy/WevvyHub.swift):
+- iOS: [`Ceis/CeisHub.swift`](../android/src/ios/Ceis/CeisHub.swift):
   `info`, `open`, `notify`, `task` (its `language` is honoured), `stop`; `screen` is
   refused (`no_screen`), the shell and files actions with `not_supported`. A step of a
-  `task` that needs approval is not sent back as an `event`: with wevvy in front the
+  `task` that needs approval is not sent back as an `event`: with ceis in front the
   phone shows its own card, in the background the step is declined and the answer says so.
   The other way round, a `task` the phone sends (`@〈device〉`,
-  [`WevvyDeviceMention.swift`](../android/src/ios/Wevvy/WevvyDeviceMention.swift))
+  [`CeisDeviceMention.swift`](../android/src/ios/Ceis/CeisDeviceMention.swift))
   has its `approval` events answered on the phone's card
-  ([`WevvyRemoteApproval.swift`](../android/src/ios/Wevvy/WevvyRemoteApproval.swift))
+  ([`CeisRemoteApproval.swift`](../android/src/ios/Ceis/CeisRemoteApproval.swift))
   and `approve` sent back; `approval_result` closes the card.
-- Runtime (`wevvy serve`): [`wevvy/cloud.py`](../wevvy/cloud.py)
-  (the account), [`wevvy/hub/client.py`](../wevvy/hub/client.py) (the
-  socket, reconnect), [`wevvy/hub/actions.py`](../wevvy/hub/actions.py)
-  (what this computer does for others), [`wevvy/hub/service.py`](../wevvy/hub/service.py)
+- Runtime (`ceis serve`): [`ceis/cloud.py`](../ceis/cloud.py)
+  (the account), [`ceis/hub/client.py`](../ceis/hub/client.py) (the
+  socket, reconnect), [`ceis/hub/actions.py`](../ceis/hub/actions.py)
+  (what this computer does for others), [`ceis/hub/service.py`](../ceis/hub/service.py)
   (incoming `task`s in a visible side chat, the `tool`/`tool_result`/`approval`/
-  `approval_result` stages both ways, device threads), [`wevvy/tools/devices.py`](../wevvy/tools/devices.py)
+  `approval_result` stages both ways, device threads), [`ceis/tools/devices.py`](../ceis/tools/devices.py)
   (`devices`, `device_*`, `delegate`); `/api/cloud/*` and `/api/hub/*` in
-  [`wevvy/server/api.py`](../wevvy/server/api.py). Tests:
+  [`ceis/server/api.py`](../ceis/server/api.py). Tests:
   `tests/test_hub.py` with a fake relay.
 - Web app: `DevicesScreen`, the device chats and the relayed approval cards in
   [`web/src/`](../web/src/); see [every-device.md](every-device.md).

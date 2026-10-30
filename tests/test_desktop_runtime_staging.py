@@ -22,10 +22,10 @@ def test_staging_preserves_relative_framework_and_library_links(
     target = tmp_path / "runtime"
 
     def freeze(*_args: object, **_kwargs: object) -> None:
-        built = dist / "wevvy"
+        built = dist / "ceis"
         version = built / "_internal/Python.framework/Versions/3.12"
         (version / "Resources").mkdir(parents=True)
-        (built / "wevvy").write_bytes(b"runtime executable")
+        (built / "ceis").write_bytes(b"runtime executable")
         (version / "Python").write_bytes(b"framework library")
         (version / "Resources/Info.plist").write_bytes(b"framework metadata")
         framework = version.parent.parent

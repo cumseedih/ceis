@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
-"""Keep the android/ tree wevvy. The tree is natively wevvy since the 2026-10-18
-rename (Kotlin package io.github.wevvy, sandbox paths, assets); this script is now
+"""Keep the android/ tree ceis. The tree is natively ceis since the 2026-10-18
+rename (Kotlin package io.github.ceis, sandbox paths, assets); this script is now
 the verifier and the applier for the remaining OpenMinis-derived bits. Idempotent.
 
 What it changes, and only this:
 
-- Gradle: applicationId -> com.wevvy.app (the Gradle namespace stays
+- Gradle: applicationId -> com.ceis.app (the Gradle namespace stays
   com.openminis.app; that is a different upstream project, not our brand).
 - The places that hard-code the package id (shortcuts, the accessibility service id).
-- The product name: any leftover "Minis" -> "wevvy" in the 18+ strings.xml,
+- The product name: any leftover "Minis" -> "ceis" in the 18+ strings.xml,
   nm_strings.xml and in Kotlin string literals (never in identifiers, paths such as
   /var/minis, or MinisSkills).
 - Links: the update check, source and issue links keep pointing at the upstream
-  nanoMuse repository and its release feed (there is no wevvy release feed yet);
+  nanoMuse repository and its release feed (there is no ceis release feed yet);
   the privacy link points at https://wevvy.in/privacy/; nothing invented.
-- Colours: the upstream blues -> the wevvy design tokens (primary #005ABF light /
+- Colours: the upstream blues -> the ceis design tokens (primary #005ABF light /
   #0064D4 dark, link #0064D4, input fill #F3F4F6, border #E5E7EB).
-- The URL scheme the system knows us by: `wevvy` (in-app minis:// vocabulary untouched).
+- The URL scheme the system knows us by: `ceis` (in-app minis:// vocabulary untouched).
 - Checks (--check): the applicationId, the scheme, no "Minis" product leftovers, no
   old-brand colours, and no standalone old product name (nanomuse/nanoMuse/NANOMUSE)
   anywhere in our tree.
 
-Anything else is a hand edit marked `// wevvy:` in the file. iOS is out of scope for
+Anything else is a hand edit marked `// ceis:` in the file. iOS is out of scope for
 this fork pass and is not touched.
 
     python scripts/rebrand.py            # apply, then report what is still upstream's
@@ -42,8 +42,8 @@ MAIN = APP / "src" / "main"
 JAVA = MAIN / "java" / "com" / "openminis" / "app"
 RES = MAIN / "res"
 
-APP_ID = "com.wevvy.app"
-NAME = "wevvy"
+APP_ID = "com.ceis.app"
+NAME = "ceis"
 VERSION_NAME = "1.0.5"
 VERSION_CODE = 48
 PRIVACY_URL = "https://wevvy.in/privacy/"
@@ -52,7 +52,7 @@ PRIVACY_URL = "https://wevvy.in/privacy/"
 # lookahead rather than \b so that "Minis\uac00" (Korean particle) is still caught.
 WORD = re.compile(r"(?<!X-)\bMinis(?!Skills)(?![A-Za-z0-9_])")
 # the old product name as a standalone word, any case: never inside identifiers
-# (WevvyCloud, io.github.wevvy) or paths; used by --check only.
+# (CeisCloud, io.github.ceis) or paths; used by --check only.
 OLD_NAME = re.compile(r"\b(?:nanomuse|nanoMuse|NANOMUSE)s?\b")
 changed: list[str] = []
 
@@ -92,7 +92,7 @@ def package_ids() -> None:
             (
                 r'const val SERVICE_ID = "com\.openminis\.app/\.accessibility\.MinisAccessibilityService"',
                 'val SERVICE_ID = "${BuildConfig.APPLICATION_ID}/com.openminis.app.accessibility.'
-                'MinisAccessibilityService" // wevvy: the applicationId is not the package',
+                'MinisAccessibilityService" // ceis: the applicationId is not the package',
             ),
         ],
     )
@@ -126,7 +126,7 @@ def product_name() -> None:
 
 
 def soul_defaults() -> None:
-    # already applied by the wevvy pass (paw emoji); nothing to change for wevvy.
+    # already applied by the ceis pass (paw emoji); nothing to change for ceis.
     edit(
         JAVA / "agent" / "SoulStore.kt",
         [
@@ -142,7 +142,7 @@ def soul_defaults() -> None:
             [
                 (
                     r'^([ \t]*)assertEquals\("Minis", back\.metadata\.name\)$',
-                    r"\1// wevvy: round-trip the rebranded default name.\n"
+                    r"\1// ceis: round-trip the rebranded default name.\n"
                     r"\1assertEquals(SoulMetadata.DEFAULT.name, back.metadata.name)",
                 ),
             ],
@@ -153,7 +153,7 @@ UPSTREAM_REPO_URL = "https://github.com/nano-muse/nanoMuse"
 
 
 def links() -> None:
-    # The wevvy fork has no release feed yet: the update check and the repo links
+    # The ceis fork has no release feed yet: the update check and the repo links
     # keep pointing at the upstream nanoMuse repository and its releases; nothing
     # invented. The privacy link is ours.
     edit(
@@ -187,26 +187,26 @@ def links() -> None:
     )
 
 
-SYSTEM_SCHEME = "wevvy"  # what the system knows the app by; in-app links stay minis://
+SYSTEM_SCHEME = "ceis"  # what the system knows the app by; in-app links stay minis://
 
 
 def schemes() -> None:
     """The scheme registered with the system is ours, so a phone with OpenMinis or the
-    original wevvy installed too never has two apps claiming one scheme."""
+    original ceis installed too never has two apps claiming one scheme."""
     edit(
         MAIN / "AndroidManifest.xml",
         [
             (r'<data android:scheme="minis" />', f'<data android:scheme="{SYSTEM_SCHEME}" />'),
-            (r'<data android:scheme="wevvy" />', f'<data android:scheme="{SYSTEM_SCHEME}" />'),
+            (r'<data android:scheme="ceis" />', f'<data android:scheme="{SYSTEM_SCHEME}" />'),
             (
-                r"the scheme the system knows us by is `wevvy`, not upstream's `minis`,",
-                "the scheme the system knows us by is `wevvy`, not upstream's `minis`, // wevvy",
+                r"the scheme the system knows us by is `ceis`, not upstream's `minis`,",
+                "the scheme the system knows us by is `ceis`, not upstream's `minis`, // ceis",
             ),
         ],
     )
 
 
-# (pattern, replacement); applied to Theme.kt only. The upstream blues become the wevvy
+# (pattern, replacement); applied to Theme.kt only. The upstream blues become the ceis
 # design tokens (primary #005ABF light / #0064D4 dark); the neutrals stay untouched.
 # The second block maps the previous pass's accents (#0071CE / #00ADFA family) onto the
 # same tokens so re-running converges no matter which pass touched the file first.
@@ -249,7 +249,7 @@ CHAT_MAP = [
 
 # The iOS system blues and the previous product's blues, wherever they are
 # hard-coded (any alpha), plus the action blue MuseTones.action carried from the
-# earlier pass (0xFF0A66E4). All become the wevvy design tokens; the previous
+# earlier pass (0xFF0A66E4). All become the ceis design tokens; the previous
 # pass's #0071CE / #00ADFA map to the same tokens so a re-run converges.
 GLOBAL_MAP = [
     (r"0x([0-9A-Fa-f]{2})007AFF", r"0x\g<1>005ABF"),
@@ -279,14 +279,14 @@ def colours() -> None:
     edit(RES / "values" / "colors.xml", [(r'(<color name="seed">)#[0-9A-Fa-f]+', r"\g<1>#005ABF")])
 
 
-def notification_icons_wevvy_tree() -> None:
-    """Our own tree (io.github.wevvy) was written with the old mark drawable already."""
-    ours = MAIN / "java" / "io" / "github" / "wevvy"
+def notification_icons_ceis_tree() -> None:
+    """Our own tree (io.github.ceis) was written with the old mark drawable already."""
+    ours = MAIN / "java" / "io" / "github" / "ceis"
     for path in sorted(ours.rglob("*.kt")):
         edit(
             path,
             [
-                (r"R\.drawable\.ic_stat_wevvy\b", "R.drawable.ic_stat_wevvy"),
+                (r"R\.drawable\.ic_stat_ceis\b", "R.drawable.ic_stat_ceis"),
             ],
         )
 
@@ -298,11 +298,11 @@ def notification_icons() -> None:
             [
                 (
                     r"setSmallIcon\(R\.mipmap\.ic_launcher\)",
-                    "setSmallIcon(R.drawable.ic_stat_wevvy) // wevvy: flat status-bar mark",
+                    "setSmallIcon(R.drawable.ic_stat_ceis) // ceis: flat status-bar mark",
                 ),
                 (
-                    r"setSmallIcon\(R\.drawable\.ic_stat_wevvy\)",
-                    "setSmallIcon(R.drawable.ic_stat_wevvy) // wevvy: flat status-bar mark",
+                    r"setSmallIcon\(R\.drawable\.ic_stat_ceis\)",
+                    "setSmallIcon(R.drawable.ic_stat_ceis) // ceis: flat status-bar mark",
                 ),
             ],
         )
@@ -320,8 +320,8 @@ def notification_faces() -> None:
     def add(m: re.Match[str]) -> str:
         ctx, indent = m.group(2), m.group(3)
         return (
-            f"{m.group(1)}{indent}.setLargeIcon(io.github.wevvy.identity.WevvyIdentity"
-            f".face({ctx})) // wevvy: the agent is the sender\n"
+            f"{m.group(1)}{indent}.setLargeIcon(io.github.ceis.identity.CeisIdentity"
+            f".face({ctx})) // ceis: the agent is the sender\n"
         )
 
     for path in sorted(JAVA.rglob("*.kt")):
@@ -332,10 +332,10 @@ def notification_faces() -> None:
             changed.append(str(path.relative_to(ROOT)))
 
 
-# Reworded in wevvy's voice. Locale dir -> string name -> text.
+# Reworded in ceis's voice. Locale dir -> string name -> text.
 COPY: dict[str, dict[str, str]] = {
     "values": {
-        "bg_service_notification_title": "wevvy is working",
+        "bg_service_notification_title": "ceis is working",
     },
 }
 
@@ -360,8 +360,8 @@ def check() -> int:
         if want not in gradle_text:
             print(f"  ! app/build.gradle.kts lacks {want}")
             problems += 1
-    ours = MAIN / "java" / "io" / "github" / "wevvy"
-    ours_test = APP / "src" / "test" / "java" / "io" / "github" / "wevvy"
+    ours = MAIN / "java" / "io" / "github" / "ceis"
+    ours_test = APP / "src" / "test" / "java" / "io" / "github" / "ceis"
     for path in (
         sorted(RES.glob("values*/strings.xml"))
         + sorted(RES.glob("values*/nm_strings.xml"))
@@ -386,7 +386,7 @@ def check() -> int:
     leftovers = re.compile(
         r"0x[0-9A-Fa-f]{2}(007AFF|0A84FF|0A66E4|015CFB|58A6FF|0071CE|00ADFA|528AD2|6A94CE)"
         r"|#007AFF|#0A84FF|#015CFB|#58A6FF|#0071CE|#00ADFA"
-        r"|wevvySkills"
+        r"|ceisSkills"
     )
     for path in sorted(JAVA.rglob("*.kt")) + sorted(RES.rglob("*.xml")):
         for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -425,7 +425,7 @@ def main(argv: list[str] | None = None) -> int:
     schemes()
     colours()
     notification_icons()
-    notification_icons_wevvy_tree()
+    notification_icons_ceis_tree()
     notification_faces()
     reword()
     for path in sorted(set(changed)):

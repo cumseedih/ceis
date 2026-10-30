@@ -53,8 +53,8 @@ export function BrowserViewer({ thread, eventId, onClose }: { thread: string; ev
       if (detail?.thread && detail.thread !== thread) return;
       void api.browserControl(thread, { action: "handed_back" }).catch((err: Error) => toast(err.message));
     };
-    window.addEventListener("wevvy:browser-handed-back", onBack);
-    return () => window.removeEventListener("wevvy:browser-handed-back", onBack);
+    window.addEventListener("ceis:browser-handed-back", onBack);
+    return () => window.removeEventListener("ceis:browser-handed-back", onBack);
   }, [inApp, thread, toast]);
 
   const act = useCallback(
@@ -133,7 +133,7 @@ export function BrowserViewer({ thread, eventId, onClose }: { thread: string; ev
     /* raw */
   }
   const live = event.status === "live";
-  const name = state.profile?.name ?? "wevvy";
+  const name = state.profile?.name ?? "ceis";
   const agentState = hold
     ? t("{name} is waiting for you", { name })
     : state.status.state !== "idle" && state.status.thread === thread

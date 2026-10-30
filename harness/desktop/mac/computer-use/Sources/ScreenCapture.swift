@@ -26,7 +26,7 @@ import Foundation
 import ScreenCaptureKit
 
 /// One on-screen window as the capture layer lists it — what `/windows` answers, in the
-/// shape the runtime's window mode reads (wevvy/computer/mac_window.py, WindowInfo).
+/// shape the runtime's window mode reads (ceis/computer/mac_window.py, WindowInfo).
 struct WindowEntry {
     let id: UInt32
     let pid: Int32

@@ -1,4 +1,4 @@
-"""Sessions: one private wevvy per visitor, for a while, within a budget."""
+"""Sessions: one private ceis per visitor, for a while, within a budget."""
 
 from __future__ import annotations
 
@@ -73,7 +73,7 @@ class Provider:
 @dataclass
 class Session:
     id: str
-    token: str  # the wevvy access token, what the phone pastes
+    token: str  # the ceis access token, what the phone pastes
     llm_key: str  # what the container presents to the model proxy
     ip: str
     created_at: float
@@ -290,20 +290,20 @@ class SessionManager:
         else:
             main, gui = s.main, s.gui
         env = {
-            "WEVVY_SERVER_TOKEN": sess.token,
-            "WEVVY_LLM_PROVIDER": main.provider,
-            "WEVVY_LLM_MODEL": main.model,
-            "WEVVY_LLM_BASE_URL": f"{base}/main",
-            "WEVVY_LLM_API_KEY": sess.llm_key,
-            "WEVVY_GUI_ENABLED": "1",
-            "WEVVY_GUI_PROVIDER": gui.provider,
-            "WEVVY_GUI_MODEL": gui.model,
-            "WEVVY_GUI_BASE_URL": f"{base}/gui",
-            "WEVVY_GUI_API_KEY": sess.llm_key,
-            "WEVVY_LOG_LEVEL": "warning",
+            "CEIS_SERVER_TOKEN": sess.token,
+            "CEIS_LLM_PROVIDER": main.provider,
+            "CEIS_LLM_MODEL": main.model,
+            "CEIS_LLM_BASE_URL": f"{base}/main",
+            "CEIS_LLM_API_KEY": sess.llm_key,
+            "CEIS_GUI_ENABLED": "1",
+            "CEIS_GUI_PROVIDER": gui.provider,
+            "CEIS_GUI_MODEL": gui.model,
+            "CEIS_GUI_BASE_URL": f"{base}/gui",
+            "CEIS_GUI_API_KEY": sess.llm_key,
+            "CEIS_LOG_LEVEL": "warning",
             # a demo Muse has its model from us and no account to sign in to; without this the
             # web app opens on the Cloud sign-in (cloud.required is the runtime's default)
-            "WEVVY_CLOUD_REQUIRED": "0",
+            "CEIS_CLOUD_REQUIRED": "0",
         }
         if text_only(main.model):
             # The chat model takes no images (DeepSeek before v4.1), and on Model Studio's
@@ -312,16 +312,16 @@ class SessionManager:
             # and the Muse falls silent. So the pictures stay out of its context; the operator
             # lane is the one that looks. A sighted main (deepseek-v4.1-flash, qwen) is left
             # to the runtime's own detection.
-            env["WEVVY_LLM_VISION"] = "off"
+            env["CEIS_LLM_VISION"] = "off"
         # a new look for the Muse: pictures drawn through the gateway (images.py) — on the
         # showcase's key only; a visitor's own provider is not asked to draw
         if s.image_model and s.image_api_key and not sess.byok:
-            env["WEVVY_LLM_IMAGE_MODEL"] = s.image_model
+            env["CEIS_LLM_IMAGE_MODEL"] = s.image_model
             # …and the chosen face animated (clips.py): the studio finds the video API at the
             # session's own model address, where the gateway stands in for the provider
             if s.video_model and s.video_api_key and s.video_base_url:
-                env["WEVVY_LLM_VIDEO_MODEL"] = s.video_model
-                env["WEVVY_LLM_VIDEO_BASE_URL"] = f"{base}/main"
+                env["CEIS_LLM_VIDEO_MODEL"] = s.video_model
+                env["CEIS_LLM_VIDEO_BASE_URL"] = f"{base}/main"
         # the visitor's clock: Python's local time in the container follows TZ (the image
         # has the zone files); a name it does not know leaves the container on UTC
         if sess.time_zone:

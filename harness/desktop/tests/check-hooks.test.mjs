@@ -87,7 +87,7 @@ test("an attribute the bundle stops setting itself is missing too", () => {
 });
 
 test("a selector in the stylesheet is not a setter: a hook only styles.ts mentions is missing", () => {
-  // the real run points `oursDirs` at dsh-wevvy/src, where styles.ts lives and names every
+  // the real run points `oursDirs` at dsh-ceis/src, where styles.ts lives and names every
   // hook it leans on; only a quoted name or a `dataset` form counts as the bundle setting it
   const f = fixture(DSH_ALL, "document.querySelector('[data-nm-muse]'); el.dataset['nmPlatform'] = p");
   try {
@@ -101,7 +101,7 @@ test("a selector in the stylesheet is not a setter: a hook only styles.ts mentio
 
 test("the real stylesheet's hooks are the kind the check reads", async () => {
   const { readFileSync } = await import("node:fs");
-  const real = hooksOf(readFileSync(new URL("../../dsh-wevvy/src/client/styles.ts", import.meta.url), "utf8"));
+  const real = hooksOf(readFileSync(new URL("../../dsh-ceis/src/client/styles.ts", import.meta.url), "utf8"));
   // the rules the header of styles.ts names as leaning on the harness's DOM
   for (const hook of ["data-composer-card", "data-chat-flow-kind", "data-conversation-scroll", "data-window-drag"]) assert.ok(real.attributes.includes(hook), hook);
   assert.ok(real.testIds.includes("task-manager-page"));

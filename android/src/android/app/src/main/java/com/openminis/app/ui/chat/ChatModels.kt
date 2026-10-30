@@ -147,7 +147,7 @@ data class ChatMessage(
     // ChatMessage.sourceSortOrder, which serves the same UI↔raw mapping
     // role (AIChatViewModel.swift:3411, 3421).
     val sourceDbIds: List<String> = emptyList(),
-    // wevvy: when the message was written, epoch millis (the row's
+    // ceis: when the message was written, epoch millis (the row's
     // createdAt). Drives the transcript's centred time dividers; 0 when
     // unknown (rows restored before the field existed).
     val createdAtMillis: Long = 0L,

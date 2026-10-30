@@ -35,7 +35,7 @@ export function Sidebar() {
   const menuRef = useRef<HTMLDivElement>(null);
   const developer = useDeveloperTools();
   const { profile, status } = state;
-  const name = profile?.name ?? "wevvy";
+  const name = profile?.name ?? "ceis";
 
   const pendingApprovals = state.pendingApprovals.length;
   const proposals = state.goals.filter((g) => g.proposal && g.status !== "cancelled").length;
@@ -164,7 +164,7 @@ export function Sidebar() {
                   <span className="flex-1">{t("Developer tools")}</span>
                   <span className="text-[11.5px] font-normal text-muted">{developer ? t("On") : t("Off")}</span>
                 </button>
-                {state.version && <div className="px-2.5 pb-1 pt-1.5 text-[11.5px] text-muted">wevvy {state.version}</div>}
+                {state.version && <div className="px-2.5 pb-1 pt-1.5 text-[11.5px] text-muted">ceis {state.version}</div>}
               </div>
             )}
           </div>

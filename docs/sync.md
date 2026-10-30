@@ -2,7 +2,7 @@
 
 A phone can be signed in as one account today and another tomorrow: a family's
 tablet, a phone handed on, a tester with two accounts. This page is the table of
-every piece of state the wevvy apps keep on the phone, where it lives, whether
+every piece of state the ceis apps keep on the phone, where it lives, whether
 it belongs to the **account**, the **device** or to nobody in particular, and what
 happens to it on each of the four events: *sign out*, *switch* (sign in as
 another account), *delete the account* and *reinstall*. Contract C12, 0.1.40; the
@@ -56,31 +56,31 @@ earlier rule for conversations alone (C10, 0.1.39) is in
 
 ## Android
 
-Paths are under the app's private `files/`; preferences are the `wevvy`
+Paths are under the app's private `files/`; preferences are the `ceis`
 SharedPreferences file unless named. *Out* means removed; *aside* means moved
-under `minis-global/wevvy/accounts/<key>/` and restored when that account
+under `minis-global/ceis/accounts/<key>/` and restored when that account
 returns; *stays* means untouched. The *Key refused* column reads `bad_key` (or
 any other `401`) first, `account_deleted` second.
 
 | State | Where | Whose | Sign out (keep off / on) | Switch | Key refused (`bad_key` / `account_deleted`) | Delete account | Reinstall |
 |---|---|---|---|---|---|---|---|
-| Chats, messages, attachments, hands traces | upstream `minis.db`, `minis-sessions/<id>/` | account (owner row in `wevvy_sync.db` → `session_owners`) | out / stay hidden | as sign out, then the new account's show | stay hidden / out | out | gone (no backup) |
+| Chats, messages, attachments, hands traces | upstream `minis.db`, `minis-sessions/<id>/` | account (owner row in `ceis_sync.db` → `session_owners`) | out / stay hidden | as sign out, then the new account's show | stay hidden / out | out | gone (no backup) |
 | Chats made while signed out | the same | nobody (`""`) | aside while signed in, back when signed out | aside | back / back | stay | gone |
-| Sync mappings (cids, cursor, known mids) | `wevvy_sync.db` | account | out with the chats / stay | stay for the account that left | stay / out | out | gone |
+| Sync mappings (cids, cursor, known mids) | `ceis_sync.db` | account | out with the chats / stay | stay for the account that left | stay / out | out | gone |
 | What the muse remembers (SOUL.md, USER.md, GLOBAL.md, diary) | `minis-global/memory/` | account | out / aside | aside; the new account's back or empty | aside / out | out | gone |
-| Feed posts and preferences | `minis-global/wevvy/feed/`, `feed-preferences.md` | account | out / aside | aside | aside / out | out | gone |
-| Goals | `minis-global/wevvy/goals.json` | account | out / aside | aside | aside / out | out | gone |
+| Feed posts and preferences | `minis-global/ceis/feed/`, `feed-preferences.md` | account | out / aside | aside | aside / out | out | gone |
+| Goals | `minis-global/ceis/goals.json` | account | out / aside | aside | aside / out | out | gone |
 | Routines (the scheduled tasks, the feed's and the goals' included) | `minis_scheduled_tasks_prefs` | account | alarms off, out / aside (`routines.json`) | aside | alarms off, aside / out | out | gone |
-| The face | `minis-global/wevvy/avatar/` | account (the relay's profile has it too) | out / aside | aside | aside / out | out | gone |
+| The face | `minis-global/ceis/avatar/` | account (the relay's profile has it too) | out / aside | aside | aside / out | out | gone |
 | The shared workspace | `minis-global/shared/` | account | out / aside | aside | aside / out | out | gone |
 | Main chat, first conversation, feed switches | prefs `main_chat.*`, `first_conversation.*`, `feed.*` | account | out / aside (`prefs.json`) | aside | aside / out | out | gone |
-| The relay key, account id, allowance, models | the provider store (the key encrypted), prefs `cloud.*` and the account rows of `wevvy` | account | out | replaced | out / out | out | gone |
+| The relay key, account id, allowance, models | the provider store (the key encrypted), prefs `cloud.*` and the account rows of `ceis` | account | out | replaced | out / out | out | gone |
 | Device name and presence at the hub | `minis_device_identity`, prefs `hub.*` | device | stay | stay | stay / stay | stay | new identity |
-| Remembered approvals | `minis-global/wevvy/grants.json` | device | stay (per chat: out with the chat) | stay | stay / stay (per chat: out with the chat) | stay | gone |
+| Remembered approvals | `minis-global/ceis/grants.json` | device | stay (per chat: out with the chat) | stay | stay / stay (per chat: out with the chat) | stay | gone |
 | Your own providers and keys, appearance, hands, language | upstream stores | device | stay | stay | stay / stay | stay | gone |
 | Ideas | app assets | nobody | — | — | — | — | — |
 
-Code: `io.github.wevvy.account.AccountScope` (the rules, unit-tested),
+Code: `io.github.ceis.account.AccountScope` (the rules, unit-tested),
 `AccountData` (applies them: `reconcile`, `leave`, `enter`), the `session_owners`
 table in `SyncEntities.kt`, `ConversationSync.hidden` (what every list leaves
 out), the hooks in `ChatRepository.createSession` and `MinisApp`, the sheet in
@@ -90,24 +90,24 @@ out), the hooks in `ChatRepository.createSession` and `MinisApp`, the sheet in
 
 Paths are in the app's sandbox: Application Support, or the app group's
 `MinisConfig/` and `var/minis/`. *Aside* means moved under
-`MinisConfig/wevvy/accounts/<hash>/`. The *Key refused* column reads as on
+`MinisConfig/ceis/accounts/<hash>/`. The *Key refused* column reads as on
 Android: `bad_key` first, `account_deleted` second.
 
 | State | Where | Whose | Sign out (keep off / on) | Switch | Key refused (`bad_key` / `account_deleted`) | Delete account | Reinstall |
 |---|---|---|---|---|---|---|---|
-| Chats, messages, media | upstream's SQLite store | account (owner row in `wevvy-owners.json`) | out / stay hidden | as sign out, then the new account's show | stay hidden / out | out | gone |
+| Chats, messages, media | upstream's SQLite store | account (owner row in `ceis-owners.json`) | out / stay hidden | as sign out, then the new account's show | stay hidden / out | out | gone |
 | Chats made while signed out | the same | nobody | aside while signed in, back when signed out | aside | back / back | stay | gone |
-| Sync tables (per account, cids, cursor, known mids) | `wevvy-sync-accounts.json` | account | out with the chats / stay | stay for the account that left | stay / out | out | gone |
+| Sync tables (per account, cids, cursor, known mids) | `ceis-sync-accounts.json` | account | out with the chats / stay | stay for the account that left | stay / out | out | gone |
 | What the muse remembers | app group `memory/` | account | out / aside | aside | aside / out | out | gone |
-| Feed posts and preferences | `MinisConfig/wevvy/feed/`, `feed-preferences.md` | account | out / aside | aside | aside / out | out | gone |
-| Goals | `MinisConfig/wevvy/goals.json` | account | out / aside | aside | aside / out | out | gone |
-| Routines | `MinisConfig/wevvy/routines.json` | account | notifications off, out / aside | aside | notifications off, aside / out | out | gone |
-| The face (stills; the clips are redrawn) | Application Support `wevvy/avatar/` | account | out / aside | aside | aside / out | out | gone |
+| Feed posts and preferences | `MinisConfig/ceis/feed/`, `feed-preferences.md` | account | out / aside | aside | aside / out | out | gone |
+| Goals | `MinisConfig/ceis/goals.json` | account | out / aside | aside | aside / out | out | gone |
+| Routines | `MinisConfig/ceis/routines.json` | account | notifications off, out / aside | aside | notifications off, aside / out | out | gone |
+| The face (stills; the clips are redrawn) | Application Support `ceis/avatar/` | account | out / aside | aside | aside / out | out | gone |
 | The shared workspace | app group `shared/` | account | out / aside | aside | aside / out | out | gone |
-| Main chat, first conversation, feed switches | UserDefaults `wevvy.main_chat.*`, `wevvy.first_conversation.*`, `wevvy.feed.*` | account | out / aside (`defaults.plist`) | aside | aside / out | out | gone |
+| Main chat, first conversation, feed switches | UserDefaults `ceis.main_chat.*`, `ceis.first_conversation.*`, `ceis.feed.*` | account | out / aside (`defaults.plist`) | aside | aside / out | out | gone |
 | The relay key | Keychain, this device only (`…ThisDeviceOnly`, not synchronizable) | account | out | replaced | out / out | out | swept on the first launch |
-| Account id, allowance, models, region | UserDefaults `wevvy.cloud.*`, the provider store | account | out | replaced | out / out | out | gone |
-| Device id and name at the hub | UserDefaults `wevvy.hub.*`, Keychain `…app.device` | device | stay | stay | stay / stay | stay | new identity |
+| Account id, allowance, models, region | UserDefaults `ceis.cloud.*`, the provider store | account | out | replaced | out / out | out | gone |
+| Device id and name at the hub | UserDefaults `ceis.hub.*`, Keychain `…app.device` | device | stay | stay | stay / stay | stay | new identity |
 | Your own providers and keys | the provider store; keys in Keychain, synchronizable (upstream's choice) | device | stay | stay | stay / stay | stay | the config is gone; a synchronizable key stays in the person's iCloud Keychain |
 | Appearance, the star, setup flags | UserDefaults | device | stay | stay | stay / stay | stay | gone |
 
@@ -119,9 +119,9 @@ other iPhone without its owner row; on that phone it is claimed by whoever is
 signed in there. The owners file, the sync tables and the folders put aside are
 in the iPhone's device backup like the rest of the app's data.
 
-Code: `Wevvy/WevvyAccountData.swift` (owners, `leave`, `enter`, the
-Keychain), `WevvySync.shows` and `dropTable`, `WevvySignOutSheet.swift`,
-the hooks in `ChatStore.createSession` and `WevvyShell`.
+Code: `Ceis/CeisAccountData.swift` (owners, `leave`, `enter`, the
+Keychain), `CeisSync.shows` and `dropTable`, `CeisSignOutSheet.swift`,
+the hooks in `ChatStore.createSession` and `CeisShell`.
 
 ## The relay
 

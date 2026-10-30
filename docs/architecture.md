@@ -32,26 +32,26 @@ sequenceDiagram
 
 | Area | Files | Notes |
 |---|---|---|
-| Composition root | `wevvy/app.py` | `WevvyApp` wires settings → LLM, tools, vault, Sentinel, memory, goals, agent |
-| Agent loop | `wevvy/agent/core.py` | prompt assembly, context trimming, stuck detection, session persistence, inbox |
-| Prompts | `wevvy/prompts.py` | system prompt, language rule and script detection, goal-advance prompt |
-| Sentinel | `wevvy/sentinel/gate.py`, `policy.py`, `audit.py` | guard, decision order, approvals, taint, vault resolution, redaction, JSONL audit |
-| Vault | `wevvy/vault/vault.py` | Fernet store, `{{vault:NAME}}` placeholders |
-| Tool base | `wevvy/tools/base.py` | `BaseTool`, `CallAssessment`, `ToolCollection`, `safe_execute` |
-| Built-in tools | `wevvy/tools/files.py`, `shell.py`, `gitcheck.py` (the `git` tool for status, diff, log, stash and restore, and the `check` tool for test, lint and build commands with structured results), `web.py`, `email_tool.py`, `browser.py` + `browser_backends.py` (Playwright on the server or the phone's WebView; see [browser.md](browser.md)), `memory_tools.py`, `goal_tools.py`, `terminate.py` | |
-| MCP | `wevvy/tools/mcp_tools.py` | stdio / streamable HTTP / SSE clients, one `MCPTool` per remote tool; per-tool risk overrides from `MCPServerSettings.tools` |
-| On a phone | `wevvy/runtime.py`, `wevvy/bridge/` | `device()` reads `WEVVY_DEVICE*`; `DEVICE_TOOLS` (the Sentinel defaults of the phone's tools) and `device_mcp_server()` (the app's MCP server as the `device` entry, tools `device__*`); the CLI bridge (`/api/bridge/*`, one-command tokens) behind `wevvy-device` / `wevvy-browser` / `wevvy-open`; see [device.md](device.md), [local-runtime.md](local-runtime.md) |
-| The phone | `wevvy/phone/link.py`, `screen.py`, `operator.py`, `trace.py`, `wevvy/tools/phone.py` | connected devices and request/response over the app's WebSocket; the screen as a screenshot plus a caption; the operator loop (MemGUI `mobile_use` dialect, coordinates on a 999 grid) with its own model; JSONL traces and their HTML rendering; `phone_screen` / `phone_act` / `phone_task` and their Sentinel assessment ([gui.md](gui.md)) |
-| LLM | `wevvy/llm/base.py`, `openai_chat.py`, `openai_responses.py`, `prompt_tools.py`, `factory.py`, `mock.py`; `catalogue.py` + `providers.json`, `chatgpt.py`, `codex.py`, `chatgpt_proxy.py` | `BaseLLM`, streaming with `<think>` filter, retries, prompt-based tool calling, `MockLLM` for tests; the provider catalogue (who covers chat, vision, image, video); the ChatGPT sign-in (PKCE, the token store) and the Chat Completions ↔ Codex Responses translation behind `provider = "chatgpt"` and `wevvy chatgpt proxy` |
-| Memory, goals | `wevvy/memory/store.py`, `wevvy/memory/consolidate.py`, `wevvy/goals/store.py` | SQLite; rare-word (IDF) ranking for memory injection, words in any alphabetic script plus CJK bigrams; the tidy-up planner and its checks, which refuse a merge they cannot judge; a change log with undo |
-| App server | `wevvy/server/service.py`, `api.py`, `webui.py`, `events.py` | threads and workers, REST + WebSocket, `UI` implementation that turns callbacks into events, timeline persistence |
+| Composition root | `ceis/app.py` | `CeisApp` wires settings → LLM, tools, vault, Sentinel, memory, goals, agent |
+| Agent loop | `ceis/agent/core.py` | prompt assembly, context trimming, stuck detection, session persistence, inbox |
+| Prompts | `ceis/prompts.py` | system prompt, language rule and script detection, goal-advance prompt |
+| Sentinel | `ceis/sentinel/gate.py`, `policy.py`, `audit.py` | guard, decision order, approvals, taint, vault resolution, redaction, JSONL audit |
+| Vault | `ceis/vault/vault.py` | Fernet store, `{{vault:NAME}}` placeholders |
+| Tool base | `ceis/tools/base.py` | `BaseTool`, `CallAssessment`, `ToolCollection`, `safe_execute` |
+| Built-in tools | `ceis/tools/files.py`, `shell.py`, `gitcheck.py` (the `git` tool for status, diff, log, stash and restore, and the `check` tool for test, lint and build commands with structured results), `web.py`, `email_tool.py`, `browser.py` + `browser_backends.py` (Playwright on the server or the phone's WebView; see [browser.md](browser.md)), `memory_tools.py`, `goal_tools.py`, `terminate.py` | |
+| MCP | `ceis/tools/mcp_tools.py` | stdio / streamable HTTP / SSE clients, one `MCPTool` per remote tool; per-tool risk overrides from `MCPServerSettings.tools` |
+| On a phone | `ceis/runtime.py`, `ceis/bridge/` | `device()` reads `CEIS_DEVICE*`; `DEVICE_TOOLS` (the Sentinel defaults of the phone's tools) and `device_mcp_server()` (the app's MCP server as the `device` entry, tools `device__*`); the CLI bridge (`/api/bridge/*`, one-command tokens) behind `ceis-device` / `ceis-browser` / `ceis-open`; see [device.md](device.md), [local-runtime.md](local-runtime.md) |
+| The phone | `ceis/phone/link.py`, `screen.py`, `operator.py`, `trace.py`, `ceis/tools/phone.py` | connected devices and request/response over the app's WebSocket; the screen as a screenshot plus a caption; the operator loop (MemGUI `mobile_use` dialect, coordinates on a 999 grid) with its own model; JSONL traces and their HTML rendering; `phone_screen` / `phone_act` / `phone_task` and their Sentinel assessment ([gui.md](gui.md)) |
+| LLM | `ceis/llm/base.py`, `openai_chat.py`, `openai_responses.py`, `prompt_tools.py`, `factory.py`, `mock.py`; `catalogue.py` + `providers.json`, `chatgpt.py`, `codex.py`, `chatgpt_proxy.py` | `BaseLLM`, streaming with `<think>` filter, retries, prompt-based tool calling, `MockLLM` for tests; the provider catalogue (who covers chat, vision, image, video); the ChatGPT sign-in (PKCE, the token store) and the Chat Completions ↔ Codex Responses translation behind `provider = "chatgpt"` and `ceis chatgpt proxy` |
+| Memory, goals | `ceis/memory/store.py`, `ceis/memory/consolidate.py`, `ceis/goals/store.py` | SQLite; rare-word (IDF) ranking for memory injection, words in any alphabetic script plus CJK bigrams; the tidy-up planner and its checks, which refuse a merge they cannot judge; a change log with undo |
+| App server | `ceis/server/service.py`, `api.py`, `webui.py`, `events.py` | threads and workers, REST + WebSocket, `UI` implementation that turns callbacks into events, timeline persistence |
 | Front-end | `web/src/` | React + TypeScript + Tailwind; `store.tsx` (state, WebSocket), `screens/` (tabs), `components/` (cards, avatar, markdown) |
-| Terminal | `wevvy/console.py`, `wevvy/cli.py` | Rich console UI with inline approvals; Typer commands |
-| Config, schema | `wevvy/config.py`, `wevvy/schema.py` | Pydantic settings, message and tool-call models |
+| Terminal | `ceis/console.py`, `ceis/cli.py` | Rich console UI with inline approvals; Typer commands |
+| Config, schema | `ceis/config.py`, `ceis/schema.py` | Pydantic settings, message and tool-call models |
 
 ## The `UI` protocol
 
-Anything that can show the agent to a person implements `wevvy/ui.py::UI`: text deltas, assistant messages, tool calls and results, Sentinel notices, `ask_approval()` and `ask_user()`. `ConsoleUI` is the terminal; `WebUI` turns the same callbacks into timeline events and WebSocket messages and parks approvals in futures until the app answers. A Telegram or desktop front-end would be another implementation of the same protocol, or a client of the HTTP API.
+Anything that can show the agent to a person implements `ceis/ui.py::UI`: text deltas, assistant messages, tool calls and results, Sentinel notices, `ask_approval()` and `ask_user()`. `ConsoleUI` is the terminal; `WebUI` turns the same callbacks into timeline events and WebSocket messages and parks approvals in futures until the app answers. A Telegram or desktop front-end would be another implementation of the same protocol, or a client of the HTTP API.
 
 ## Threads in the app
 
@@ -61,7 +61,7 @@ Anything that can show the agent to a person implements `wevvy/ui.py::UI`: text 
 
 | Want to add… | Do this |
 |---|---|
-| A tool | subclass `BaseTool` in `wevvy/tools/`, set `risk`, override `assess()` if a call can be more dangerous than the default, register it in `app.py::_build_tools`, add a test with `MockLLM` |
+| A tool | subclass `BaseTool` in `ceis/tools/`, set `risk`, override `assess()` if a call can be more dangerous than the default, register it in `app.py::_build_tools`, add a test with `MockLLM` |
 | A connector | prefer an MCP server (`[[mcp.servers]]`); write a tool only if the protocol does not fit |
 | A model provider | most endpoints are covered by `openai` / `openai_responses`; otherwise implement `BaseLLM` and register it in `llm/factory.py` |
 | A front-end | implement `UI` or drive the HTTP/WebSocket API in `docs/app.md` |
@@ -71,8 +71,8 @@ Anything that can show the agent to a person implements `wevvy/ui.py::UI`: text 
 
 ```bash
 python -m pytest -q                 # unit tests with MockLLM, no network
-WEVVY_LIVE=1 python -m pytest -q -m live    # smoke test against your configured model
-ruff check wevvy tests && ruff format --check wevvy tests
+CEIS_LIVE=1 python -m pytest -q -m live    # smoke test against your configured model
+ruff check ceis tests && ruff format --check ceis tests
 cd web && npm run build             # type-checks and rebuilds the app
 ```
 

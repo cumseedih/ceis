@@ -273,7 +273,7 @@ import com.openminis.app.data.repository.ProviderRepository
 import com.openminis.app.ui.browser.BrowserSheet
 import com.openminis.app.ui.theme.ChatColors
 import com.openminis.app.ui.components.MinisTextButton
-import io.github.wevvy.ui.theme.WevvyChat // wevvy: iMessage chat tokens
+import io.github.ceis.ui.theme.CeisChat // ceis: iMessage chat tokens
 
 // ─── User Message (right-aligned, iOS: tertiarySystemFill bubble, 20dp radius) ─
 
@@ -287,10 +287,10 @@ internal fun UserMessageBubble(
     // preserves the original 4dp symmetric spacing for the normal
     // user→assistant→user cadence.
     precededByUser: Boolean = false,
-    // wevvy: the iMessage sent dress (blue gradient, white ink, group tail),
+    // ceis: the iMessage sent dress (blue gradient, white ink, group tail),
     // switched on by the home shell; standalone keeps the monochrome pill.
     nmIMessage: Boolean = false,
-    // wevvy: true when this is the last bubble of a sent group (tail shows).
+    // ceis: true when this is the last bubble of a sent group (tail shows).
     showTail: Boolean = false,
     onCopy: () -> Unit = {},
     onRetry: (() -> Unit)? = {},
@@ -309,7 +309,7 @@ internal fun UserMessageBubble(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxWidth()
-            // wevvy: template transcript gaps are a uniform 4dp: the user
+            // ceis: template transcript gaps are a uniform 4dp: the user
             // bubble carries 2dp top + 2dp bottom in the iMessage dress, the
             // assistant bubble 2dp + 2dp, the turn header 0, and the list has
             // no arrangement spacing — so every message-row boundary reads
@@ -319,8 +319,8 @@ internal fun UserMessageBubble(
         // Cap the bubble at 80% of the LazyColumn's available width (mirrors iOS
         // proportional sizing; prevents single-line messages from spanning the
         // full row and losing their "trailing bubble" shape).
-        // wevvy: in the iMessage dress the cap is the template's ~70 percent.
-        val bubbleMaxWidth = this.maxWidth * if (nmIMessage) WevvyChat.maxBubbleFraction else 0.8f
+        // ceis: in the iMessage dress the cap is the template's ~70 percent.
+        val bubbleMaxWidth = this.maxWidth * if (nmIMessage) CeisChat.maxBubbleFraction else 0.8f
     Row(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -380,9 +380,9 @@ internal fun UserMessageBubble(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
-                        // wevvy: ink on the user pill (white pill, black ink in
+                        // ceis: ink on the user pill (white pill, black ink in
                         // the dark theme, inverted in light), not onSurface.
-                        // wevvy: in the iMessage dress the sent bubble is the
+                        // ceis: in the iMessage dress the sent bubble is the
                         // template's blue gradient with white ink, both themes.
                         val nmSent = nmIMessage && !isQueued
                         val textColor = if (isQueued) secondaryTextColor
@@ -390,14 +390,14 @@ internal fun UserMessageBubble(
                             else ChatColors.onUserBubble
                         val bubbleBg = if (isQueued) Color.Transparent else userBubbleColor
                         val shape = if (nmIMessage) {
-                            io.github.wevvy.ui.chat.nmBubbleShape(sent = true, tail = showTail && !isQueued)
+                            io.github.ceis.ui.chat.nmBubbleShape(sent = true, tail = showTail && !isQueued)
                         } else {
                             RoundedCornerShape(20.dp)
                         }
                         val fillModifier = if (nmSent) {
                             Modifier.background(
                                 brush = Brush.verticalGradient(
-                                    listOf(WevvyChat.sentGradientTop, WevvyChat.sentGradientBottom),
+                                    listOf(CeisChat.sentGradientTop, CeisChat.sentGradientBottom),
                                 ),
                                 shape = shape,
                             )
@@ -455,7 +455,7 @@ internal fun UserMessageBubble(
                                     color = textColor,
                                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 17.sp, lineHeight = 22.sp),
                                     modifier = bubbleModifier
-                                        // wevvy: the tail extends below the body
+                                        // ceis: the tail extends below the body
                                         // (template: 6pt drop), so the drop padding
                                         // sits inside the clip: the shape is drawn
                                         // over body + drop, not carved out of it.
@@ -463,7 +463,7 @@ internal fun UserMessageBubble(
                                         .clip(shape)
                                         .then(
                                             if (nmSent && showTail) {
-                                                Modifier.padding(bottom = WevvyChat.tailDrop)
+                                                Modifier.padding(bottom = CeisChat.tailDrop)
                                             } else {
                                                 Modifier
                                             },
@@ -487,7 +487,7 @@ internal fun UserMessageBubble(
                                 Icon(
                                     imageVector = Icons.Filled.Cancel,
                                     contentDescription = "Withdraw queued message",
-                                    tint = io.github.wevvy.ui.theme.WevvyColors.error,
+                                    tint = io.github.ceis.ui.theme.CeisColors.error,
                                     modifier = Modifier.size(24.dp),
                                 )
                             }
@@ -789,7 +789,7 @@ private fun ImageGalleryDialog(
     }
 }
 
-// ─── Assistant Message (left-aligned, no bubble, with "wevvy" header like iOS) ─
+// ─── Assistant Message (left-aligned, no bubble, with "ceis" header like iOS) ─
 
 // ─── Flattened chat items ────────────────────────────────────────────────────
 // Each message is expanded into a sequence of independent LazyColumn items (header,

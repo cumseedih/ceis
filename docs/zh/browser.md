@@ -5,7 +5,7 @@
 > 下面的协议）属于 Python 线路的 Android 应用；在当前的 Android 应用里，浏览器是 OpenMinis 的
 > `browser_use` 工具，需要你的页面通过它的 `hand_over` 动作交到你手上（[android.md](android.md#what-the-phone-does)）。
 
-智能体有一个浏览器工具，和两个可以跑它的浏览器：服务器所在电脑上经 Playwright 驱动的 Chromium，以及 wevvy 手机 App 里手机自己的 WebView。两边的工具是同一个（同样的动作、页面上同样编号的元素、聊天里同样的画面、同样的接管方式），所以针对一边写的技能在另一边也能用，一项任务从书桌挪到手机上，一行都不用改。
+智能体有一个浏览器工具，和两个可以跑它的浏览器：服务器所在电脑上经 Playwright 驱动的 Chromium，以及 ceis 手机 App 里手机自己的 WebView。两边的工具是同一个（同样的动作、页面上同样编号的元素、聊天里同样的画面、同样的接管方式），所以针对一边写的技能在另一边也能用，一项任务从书桌挪到手机上，一行都不用改。
 
 浏览器在整个顺序里的位置：智能体先通过服务的 API、MCP 服务器或命令行工具去够它；然后是**带登录态的 `fetch`**（带着浏览器 cookie 的一次请求，不渲染页面）；再然后才是浏览器页面本身；最后才是手机上某个 App 的屏幕（[gui.md](gui.md)）。浏览器是这条阶梯的第二级和第三级。
 
@@ -13,13 +13,13 @@
 
 | | `playwright` | `device` |
 | --- | --- | --- |
-| 跑在哪 | 服务器上，无头 Chromium | 手机上的 wevvy App 里，一个离屏 WebView |
-| 需要什么 | `pip install "wevvy[browser]" && playwright install chromium`（或者 `-browser` Docker 镜像） | App 已连接，两种版本都行；本地版一直带着它 |
+| 跑在哪 | 服务器上，无头 Chromium | 手机上的 ceis App 里，一个离屏 WebView |
+| 需要什么 | `pip install "ceis[browser]" && playwright install chromium`（或者 `-browser` Docker 镜像） | App 已连接，两种版本都行；本地版一直带着它 |
 | 登录态存在哪 | `<workspace>/browser-profile/`，一个持久的 profile 目录，所以登录能挺过一次重启 | App 的 WebView cookie 存储，在手机上 |
 | 接管 | 在浏览器卡片上：点图片就是点击，打字，按回车 | 同一个 WebView 在 App 里滑上来：不重新加载，同样的 cookie，你的手指直接落在真实页面上 |
 | 网站看到的是 | Linux 上的 Chrome（或者 profile 设定的 user agent） | Android WebView（或者 profile 设定的 user agent） |
 
-`backend = "auto"`（默认值）在有带浏览器的 wevvy App 连着时用手机，否则用 Playwright。手机的本地版里没有 Chromium（PRoot 启动不了），所以 WebView 永远就是那个浏览器。
+`backend = "auto"`（默认值）在有带浏览器的 ceis App 连着时用手机，否则用 Playwright。手机的本地版里没有 Chromium（PRoot 启动不了），所以 WebView 永远就是那个浏览器。
 
 ```toml
 [browser]
@@ -30,7 +30,7 @@ headless   = true       # Playwright only
 timeout_ms = 30000
 ```
 
-`WEVVY_BROWSER_ENABLED=1` 打开这个工具；`WEVVY_BROWSER_BACKEND` 选后端。在手机上（`WEVVY_DEVICE=android`）这个工具默认是开着的。
+`CEIS_BROWSER_ENABLED=1` 打开这个工具；`CEIS_BROWSER_BACKEND` 选后端。在手机上（`CEIS_DEVICE=android`）这个工具默认是开着的。
 
 ## 智能体能做什么 {#what-the-agent-can-do}
 
@@ -53,7 +53,7 @@ timeout_ms = 30000
 
 每个改变页面的动作都往聊天里发一帧：页面的 JPEG、标题和 URL，再加一句刚发生了什么的说明（「点击了“登录”」）。帧的尺寸就是 profile 视口的 CSS 像素尺寸，所以图上的一个点就是页面上的同一个点；接管靠的就是这一点。它们在服务器内存里保留到会话结束；每段聊天留最近十来帧。
 
-在手机沙箱里的脚本中，同一个工具叫 `wevvy-browser <action> …`（[local-runtime.md](local-runtime.md#the-python-side-on-a-phone)）：`wevvy-browser fetch https://example.com/api/orders` 就是从 shell 里走第二级，受同一个哨兵（Sentinel）管着。
+在手机沙箱里的脚本中，同一个工具叫 `ceis-browser <action> …`（[local-runtime.md](local-runtime.md#the-python-side-on-a-phone)）：`ceis-browser fetch https://example.com/api/orders` 就是从 shell 里走第二级，受同一个哨兵（Sentinel）管着。
 
 ## 登录 {#logging-in}
 
@@ -66,11 +66,11 @@ timeout_ms = 30000
 
 密码直接进网站，从不经过模型：模型看到的是你完成之后的那一帧。智能体只会用文字（`ask_user`）问它需要知道的事（哪个账号、哪个日期），从不问密码或验证码。
 
-cookie 会保留。服务器上的 Playwright profile 是一个真正的 Chromium 配置目录；手机上的 WebView cookie 存储在每次导航和 `fetch` 之后都刷到磁盘。会话 cookie（那种没有过期时间、浏览器一关就丢掉的）在两边都挺不过服务器重启，所以只用这种 cookie 的网站在 `wevvy serve` 重启之后会再问一次；大多数网站在你勾上「记住我」之后会设一个更长效的 cookie。
+cookie 会保留。服务器上的 Playwright profile 是一个真正的 Chromium 配置目录；手机上的 WebView cookie 存储在每次导航和 `fetch` 之后都刷到磁盘。会话 cookie（那种没有过期时间、浏览器一关就丢掉的）在两边都挺不过服务器重启，所以只用这种 cookie 的网站在 `ceis serve` 重启之后会再问一次；大多数网站在你勾上「记住我」之后会设一个更长效的 cookie。
 
 ### 哪些不行，为什么 {#what-does-not-work-and-why}
 
-- **Google 账号没法在 WebView 里登录。** Google 拒绝嵌入式登录（`disallowed_useragent`），理由也站得住。接管面板上有一个箭头，可以把同一个 URL 在系统浏览器里打开，但在那里完成的登录留在 Chrome 里，不在 wevvy 的 WebView 里。Google 的服务请走 API 这条路（日历的私密 `.ics` 链接、邮箱的应用专用密码），别用浏览器；在服务器的 Chromium 上，Google 登录能成，但可能被判为「不安全」而受到盘问。
+- **Google 账号没法在 WebView 里登录。** Google 拒绝嵌入式登录（`disallowed_useragent`），理由也站得住。接管面板上有一个箭头，可以把同一个 URL 在系统浏览器里打开，但在那里完成的登录留在 Chrome 里，不在 ceis 的 WebView 里。Google 的服务请走 API 这条路（日历的私密 `.ics` 链接、邮箱的应用专用密码），别用浏览器；在服务器的 Chromium 上，Google 登录能成，但可能被判为「不安全」而受到盘问。
 - **二维码没法用同一部手机扫。** 靠「用我们的 App 扫码」登录的网站（微信、支付宝、淘宝……）把二维码显示在本该举着摄像头的地方。在手机的浏览器上这是条死路；在服务器的 Chromium 上，你用手机扫聊天里的那一帧就行；这是服务器浏览器反而更省事的唯一一种情况。
 - **通行密钥（passkey）带不走。** 在手机 Chrome 里创建的通行密钥属于那个浏览器的凭据存储；WebView 看不到它，服务器上的无头 Chromium 更是一个都没有。密码加验证码的登录到哪里都行。
 - **下载**落在工作区里：服务器上（Playwright）是 `<workspace>/downloads/`，手机的本地版上也是（智能体能读到）；在连接版里，智能体在电脑上，下载会进手机的「下载」文件夹。
@@ -84,7 +84,7 @@ WebView 必须以为自己在屏幕上：一个隐藏的 WebView 会把 `request
 
 ### 协议 {#the-protocol}
 
-手机的 socket 一打开就宣告 `{"kind": "device", …, "browser": true}`；之后服务器发 `op: "browser"` 的 `device_request` 消息，回答以同一个 `id` 的 `device_result` 回来。这些 op 来自 `wevvy/tools/browser_backends.py`（`DeviceBackend`），实现在 `android/…/browser/DeviceBrowser.kt`：
+手机的 socket 一打开就宣告 `{"kind": "device", …, "browser": true}`；之后服务器发 `op: "browser"` 的 `device_request` 消息，回答以同一个 `id` 的 `device_result` 回来。这些 op 来自 `ceis/tools/browser_backends.py`（`DeviceBackend`），实现在 `android/…/browser/DeviceBrowser.kt`：
 
 ```
 open      {user_agent, width, height, mobile}  → {url, title, width, height, …}
@@ -103,7 +103,7 @@ profile   {user_agent, width, height, mobile}  → {}
 close     {}                                   → {}
 ```
 
-未知的 op 或者一次失败，以 `{"ok": false, "error": "…"}` 返回，一条模型读得懂的消息。另一个想把自己的浏览器借给 wevvy 服务器的 App，实现这十四个 op 和那条 hello 就行。
+未知的 op 或者一次失败，以 `{"ok": false, "error": "…"}` 返回，一条模型读得懂的消息。另一个想把自己的浏览器借给 ceis 服务器的 App，实现这十四个 op 和那条 hello 就行。
 
 ## 怎么测 {#testing-it}
 

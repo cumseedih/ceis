@@ -13,15 +13,15 @@ from typing import Any
 
 from pydantic import PrivateAttr
 
-from wevvy.agent import MuseAgent
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.schema import Function, LLMResponse, ToolCall, ToolResult
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.tools import Terminate, ToolCollection
-from wevvy.tools.base import BaseTool
-from wevvy.tools.files import Files
-from wevvy.ui import HeadlessUI
+from ceis.agent import MuseAgent
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.schema import Function, LLMResponse, ToolCall, ToolResult
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.tools import Terminate, ToolCollection
+from ceis.tools.base import BaseTool
+from ceis.tools.files import Files
+from ceis.ui import HeadlessUI
 
 
 def tc(name: str, **args: Any) -> ToolCall:
@@ -101,7 +101,7 @@ async def _wait_for(predicate: object, timeout: float = 2.0) -> None:
 def _tool_contents(agent: MuseAgent) -> list[str]:
     """Tool results in history order, excluding the terminate call's own
     result (the loop appends one for every call, terminate included)."""
-    from wevvy.schema import Role
+    from ceis.schema import Role
 
     return [
         m.content or "" for m in agent.messages if m.role == Role.TOOL and m.name != "terminate"

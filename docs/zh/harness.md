@@ -1,10 +1,10 @@
-# 跑在 DeepSeek Harness 上的 wevvy
+# 跑在 DeepSeek Harness 上的 ceis
 
 > **状态：已发布。** 代码在 `main` 分支的 [`harness/`](../../harness/) 里。从 0.1.30 起，它就是
-> **wevvy 桌面版**，唯一的那个桌面 App：Windows、macOS 和 Linux 的安装包，里面装着 harness、
+> **ceis 桌面版**，唯一的那个桌面 App：Windows、macOS 和 Linux 的安装包，里面装着 harness、
 > 这个 bundle 和负责「手」的运行时（[desktop.md](desktop.md)）；bundle 也单独打包发布为
-> `dsh-wevvy-<v>.tgz`，给已经在跑 DeepSeek Harness Desktop 的人用（[harness/README.md](../../harness/README.md)）。
-> 它分两步到位：bundle 从 0.1.27 起就有，外壳在 0.1.28–0.1.29 以 *wevvy Harness* 之名和旧的
+> `dsh-ceis-<v>.tgz`，给已经在跑 DeepSeek Harness Desktop 的人用（[harness/README.md](../../harness/README.md)）。
+> 它分两步到位：bundle 从 0.1.27 起就有，外壳在 0.1.28–0.1.29 以 *ceis Harness* 之名和旧的
 > Electron App 并列（[阶段](#phases)）。这一页是设计和计划；[desktop-muse.md](desktop-muse.md) 讲的是
 > 窗口该长什么样。
 
@@ -18,42 +18,42 @@
 计划模式、压缩、委派、审批策略、电脑操作，以及一个从配置里接任何 OpenAI 兼容端点的模型层。它现在是
 0.2.0-rc，一个插件 API 还会变的开发者预览版，但它有的社区，我们自己的项目多年之内都不会有。
 
-所以下一代桌面版是 **dsh 加 wevvy 插件**：让 wevvy 之所以是 wevvy 的那些东西，即账号、形象、
+所以下一代桌面版是 **dsh 加 ceis 插件**：让 ceis 之所以是 ceis 的那些东西，即账号、形象、
 口吻、手（Hands）、Reach、哨兵（Sentinel），以插件的形式进去；循环、工具和界面是 dsh 的。我们不再为
 桌面维护第二个 harness。手机继续用 Python 运行时（dsh 是 Node 的，跑不了 Android），浏览器演示暂时也
 继续用，账号是它们之间的桥梁，和今天一样。
 
 ## 跑的是什么 {#what-runs}
 
-第一块是一个 dsh **bundle**，`dsh-wevvy`（[`harness/dsh-wevvy/`](../../harness/dsh-wevvy/)），
+第一块是一个 dsh **bundle**，`dsh-ceis`（[`harness/dsh-ceis/`](../../harness/dsh-ceis/)），
 链接进一个用 dsh 自己的 web 模板建出来的 profile：
 
-- **账号。** 宿主侧的服务 `wevvyCloud` 用手机和桌面版同样的两个调用（`/v1/auth/code`、
-  `/v1/auth/verify`）向中继登录，把 key 以 `WEVVY_CLOUD_TOKEN` 存进 dsh 的凭据存储，再把账号的
-  聊天模型写进 dsh 的模型适配器（`dsh-llm-pi-ai`），作为一个叫 *wevvy Cloud* 的服务商，base URL
+- **账号。** 宿主侧的服务 `ceisCloud` 用手机和桌面版同样的两个调用（`/v1/auth/code`、
+  `/v1/auth/verify`）向中继登录，把 key 以 `CEIS_CLOUD_TOKEN` 存进 dsh 的凭据存储，再把账号的
+  聊天模型写进 dsh 的模型适配器（`dsh-llm-pi-ai`），作为一个叫 *ceis Cloud* 的服务商，base URL
   是中继的 `/v1`。我们没有自己的模型适配器：中继说的是 OpenAI Chat Completions，dsh 原样回应。退出
-  登录把两样都删掉。一个回环 API（`/wevvy/cloud/{status,code,verify,refresh,sign-out}`，仅限同源）
+  登录把两样都删掉。一个回环 API（`/ceis/cloud/{status,code,verify,refresh,sign-out}`，仅限同源）
   给设置里的那一节供数据。
-- **形象和名字。** 浏览器这一半填上 dsh 的插槽：侧边栏品牌位和主视觉里的小龙、*wevvy* 字标，以及
-  设置里的 *wevvy Cloud* 一节（手机号或邮箱 → 验证码 → 已登录，显示打了码的标识、额度和模型）。
+- **形象和名字。** 浏览器这一半填上 dsh 的插槽：侧边栏品牌位和主视觉里的小龙、*ceis* 字标，以及
+  设置里的 *ceis Cloud* 一节（手机号或邮箱 → 验证码 → 已登录，显示打了码的标识、额度和模型）。
   原装的品牌插件被 patch 关掉；静态图由宿主这一半提供。
 - **口吻。** dsh 的网页会话由一个*智能体预设*组合而成，预设里的人设优先于全局的，所以 bundle 声明了
-  一个预设 `wevvy`（插件列表和 dsh 的 *Standard* 一样，人设换成 wevvy 的），并把它设为默认。
+  一个预设 `ceis`（插件列表和 dsh 的 *Standard* 一样，人设换成 ceis 的），并把它设为默认。
   人仍然可以选 *Standard*、*PTC* 或 *Minimal*。
-- **手（Hands），我们第一个以插件形式进去的能力。** 预设把 dsh 的 MCP 客户端挂在 `wevvy mcp` 上
+- **手（Hands），我们第一个以插件形式进去的能力。** 预设把 dsh 的 MCP 客户端挂在 `ceis mcp` 上
   （[cli.md](cli.md#audit-and-config)）：运行时的 `computer_screen` 和 `computer_act` 经 stdio 提供，
-  带着它们自己的描述和 schema，到 dsh 里变成 `mcp__wevvy__computer_screen` 和
+  带着它们自己的描述和 schema，到 dsh 里变成 `mcp__ceis__computer_screen` 和
   `…computer_act`。截图以 MCP 图片传输，所以视觉模型看得见屏幕。哨兵在运行时里做的事，桥在模型这一层
   做：运行时会停下来问人的那一步（回车或提交、重的快捷键、点到敏感词表里的词）会被拒绝并给出原因，
   直到调用带上 `confirmed: true`，而模型只有在人于对话中同意之后才可以设置它；dsh 自己的审批策略可以
   在工具前面再加一道真正的门。运行时 `config.toml` 里打开的连接器也搭同一个服务器的便车
   （`read_emails` / `send_email`、`calendar`、`contacts`），所以给运行时配好的邮箱或日历，也是桌面版的
-  连接器（它们一出现，「设置 → 连接器」就把它们列为已连接）。`WEVVY_PY` 指定运行时的可执行文件，
+  连接器（它们一出现，「设置 → 连接器」就把它们列为已连接）。`CEIS_PY` 指定运行时的可执行文件，
   用于它不在 `PATH` 上的情况；没有运行时，预设就只是没有手。
 
 在一个干净的安装上对着本地中继做了端到端验证：登录，两个聊天模型不用重启就出现在选择器的
-*wevvy Cloud* 下，新会话以 *wevvy* 的身份开始，「你是谁？」经中继以 wevvy 的口吻作答，
-「我屏幕上有什么？」在一次 `mcp__wevvy__computer_screen` 调用后作答，对桌面的描述准确。
+*ceis Cloud* 下，新会话以 *ceis* 的身份开始，「你是谁？」经中继以 ceis 的口吻作答，
+「我屏幕上有什么？」在一次 `mcp__ceis__computer_screen` 调用后作答，对桌面的描述准确。
 [`harness/README.md`](../../harness/README.md) 有具体做法。
 
 第二块加上 Android App 在聊天之外的那些东西，参照 [every-device.md](every-device.md) 为手机列出的
@@ -65,23 +65,23 @@
   *用我自己的 API Key*（打开「模型」）或*以后再说*。只要已经有模型能回答（账号、一个 DeepSeek key、
   人自己加的服务商），这一步就自行完成，除非有人特意重新打开它。
 - **来自账号的名字、形象和状态。** hub 说有变化时，宿主拉取中继的资料（`/v1/me/profile`），存在
-  `$DSH_HOME/wevvy/` 下；画出来的形象的五张静态图按形象 id 缓存一次，在
-  `/wevvy/assets/face/<id>/<mood>.webp` 提供。侧边栏品牌标和主视觉戴着它（小龙的静态图、它颜色上
+  `$DSH_HOME/ceis/` 下；画出来的形象的五张静态图按形象 id 缓存一次，在
+  `/ceis/assets/face/<id>/<mood>.webp` 提供。侧边栏品牌标和主视觉戴着它（小龙的静态图、它颜色上
   的一个 emoji，或者画出来的形象），会话运行时是*干活中*，会话在问问题时是*等你回复*；品牌名就是人在
   任何一台设备上给它起的名字。一条系统提示上下文把这个名字告诉模型，所以「你叫什么名字？」会用它来
   回答。在手机上改名，桌面上在 hub 一个来回之内就能看到，不用重启。
 - **Reach。** 一个 hub 客户端（`hub.ts`，纯 WebSocket，key 放在 `hello` 帧里）把这台电脑以
   `pc-dsh-<id>` 列进账号的设备表，并应答 `info` 和 `notify`（弹一条提示条）。第二个插件
-  `dsh-wevvy/reach` 注册手机和运行时都有的那些工具：`devices`、`device_screen`（模型接受图片时，
+  `dsh-ceis/reach` 注册手机和运行时都有的那些工具：`devices`、`device_screen`（模型接受图片时，
   静态图作为图片送入）、`device_shell` 和 `device_open`（先出 dsh 的审批卡片，命令或 URL 写在里面）、
   `device_files`、`device_notify`，以及 `delegate`：由另一台设备自己的 Muse 来跑任务，当*它*要求
-  审批时，问题以审批卡片的形式回到这里，答复再经 hub 传回去。「设置 → *wevvy Cloud*」列出各设备，
+  审批时，问题以审批卡片的形式回到这里，答复再经 hub 传回去。「设置 → *ceis Cloud*」列出各设备，
   带在线圆点，可以给这台电脑改名、忘掉离线的设备。
 - **胶囊。** 手或 Reach 工作时，窗口顶部的一个小条显示形象、跳动的竖条、*双手 · 第 N 步* 或
   *多端 · 第 N 步*、它在做什么（「on Laptop B: uname -a」「asking Laptop B's Muse」），以及*停止*，
   它像输入框的停止键一样取消这一轮；进行中的调用以 *aborted: the call was stopped* 结束。宿主通过
   dsh 的 `tools/execute` 钩子得知这些调用，并把它们连同资料、hub 状态和通知一起，经一条 SSE 连接
-  （`/wevvy/cloud/events`）流式推给客户端。
+  （`/ceis/cloud/events`）流式推给客户端。
 
 在同一个干净安装上，以账号下的第二个运行时作为 *Laptop B* 做了验证：第一次打开一路走到*开始*；
 对 Laptop B 的 `devices` 和 `device_files`；`device_shell` 带审批卡片和结果；`delegate` 时 Laptop B
@@ -92,10 +92,10 @@ Laptop B 上设置的名字和 emoji 几秒内就出现在桌面版的品牌标�
 
 - **这台电脑的手，给别的设备用。** `actions.ts` 是运行时 [hub 动作](hub.md)的移植：`shell`（登录
   shell，有上限的超时，超时返回 124，输出有上限）、`files`、`file.get` / `file.put`（8 MiB 限制、
-  `force`、`.wevvy-part` 改名）、`open` 和 `screen`（依次尝试 `screencapture`、PowerShell、
+  `force`、`.ceis-part` 改名）、`open` 和 `screen`（依次尝试 `screencapture`、PowerShell、
   `gnome-screenshot` / `spectacle` / `grim` / `scrot` / `import`）。同样的名字、同样的形状、同样的
   错误码，所以手机分不出对面是运行时还是 dsh 桌面版。
-- **远程控制开关。** 「设置 → *wevvy Cloud* → *这台电脑*」下面，和运行时一样的开关：打开，设备在
+- **远程控制开关。** 「设置 → *ceis Cloud* → *这台电脑*」下面，和运行时一样的开关：打开，设备在
   `hello` 里声明六个动作；关闭，只声明 `info` 和 `notify`，其余一律以 `not_allowed` 拒绝（手机看到的
   提示和运行时给的一样）。拨动它会重新向 hub 打招呼，账号的设备表立刻更新。约定不变：发出请求的设备
   在发送前先判断命令（手机和运行时上是哨兵，这里是审批卡片）；目标设备不再问第二遍。
@@ -113,7 +113,7 @@ Laptop B 自己的聊天里让它的 Muse「在 Desk A 上」运行一条命令�
 第四块是手机的 `delegate` 落到这里；桌面版应答 `task`：
 
 - **任务跑在一个 dsh 会话里。** `task.ts` 通过 dsh 的会话控制器，为每个发起设备和对话各开一个会话
-  （用 `wevvy` 预设 `create`，改名为「From <device>」），把任务作为一条用户消息喂进去，消息里写明
+  （用 `ceis` 预设 `create`，改名为「From <device>」），把任务作为一条用户消息喂进去，消息里写明
   它从哪来、这是哪台电脑，然后在 `session/event` 流上跟踪运行：`tool/call` → `tool`，
   `tool/result` → `tool_result`，`assistant/message` → 中间的 `text`，`turn/end` → 结果
   `{text, conversation, thread, device}`。和运行时流出的是同一套词汇，所以手机上的 `delegate` 卡片
@@ -163,9 +163,9 @@ Laptop B 自己的聊天里让它的 Muse「在 Desk A 上」运行一条命令�
   关掉的插件的设置里）原样放行。
 - **第一次打开。** 全窗口的几张页：带形象和一个*登录*药丸的欢迎页 → *登录或创建账户*
   （手机号或邮箱）→ 六格验证码（或密码：`/v1/auth/login`）→ 转圈 → 权限轮播（‹ ›）：macOS 上的
-  *允许 wevvy 使用你的电脑？*（辅助功能、录屏，各有一个*允许*，经外壳的桥申请，授予后打绿勾）、
+  *允许 ceis 使用你的电脑？*（辅助功能、录屏，各有一个*允许*，经外壳的桥申请，授予后打绿勾）、
   *……访问你的文件？*（工作文件夹，*更改*走系统原生选择器）、*你的其他设备* → *就绪*。
-- **桌面外壳的桥。** `harness/desktop/src/preload.ts` 把 `window.wevvyHarness` 暴露给页面
+- **桌面外壳的桥。** `harness/desktop/src/preload.ts` 把 `window.ceisHarness` 暴露给页面
   （沙箱化，经 IPC 到主进程）：`permissions()`、`requestPermission(kind)`（`systemPreferences`）、
   系统设置的各个面板、`openExternal`、`keepAwake`（会话运行时的防休眠阻止器）、`setTheme`（窗口的
   底色跟随页面）；它在文档上标出平台，于是 bundle 加上 macOS 的留白和拖动把手，因为外壳的窗口在那里
@@ -180,12 +180,12 @@ Laptop B 自己的聊天里让它的 Muse「在 Desk A 上」运行一条命令�
 标签；资料面板在聊天旁边；设置有九个页面。Electron 外壳在 Linux 上用它的桥启动同一个 bundle
 （截图检查）。
 
-## wevvy 的每一部分去了哪 {#where-each-part-of-wevvy-goes}
+## ceis 的每一部分去了哪 {#where-each-part-of-ceis-goes}
 
-| 今天的 wevvy（Python 运行时）                        | 在 dsh 上                                                                                                                                    | 状态       |
+| 今天的 ceis（Python 运行时）                        | 在 dsh 上                                                                                                                                    | 状态       |
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Cloud 账号、服务商配置（[cloud.md](cloud.md)） | `dsh-wevvy/cloud` 服务 + `llm-pi-ai` 服务商 + 凭据存储                                                                                     | 已完成     |
-| 人设、智能体名字（[design.md](design.md)）            | 智能体预设 `wevvy`（`@deepseek-ai/dsh-persona`）；账号在资料里选定的名字，放在品牌位和一条系统提示上下文里 | 已完成     |
+| Cloud 账号、服务商配置（[cloud.md](cloud.md)） | `dsh-ceis/cloud` 服务 + `llm-pi-ai` 服务商 + 凭据存储                                                                                     | 已完成     |
+| 人设、智能体名字（[design.md](design.md)）            | 智能体预设 `ceis`（`@deepseek-ai/dsh-persona`）；账号在资料里选定的名字，放在品牌位和一条系统提示上下文里 | 已完成     |
 | 界面里的形象（[avatar.md](avatar.md)）             | 插槽 `sidebar.brand.*`、`conversation.hero.brand.mark`；静态图来自宿主；状态来自会话状态；手工作时的胶囊 | 已完成     |
 | 形象跨设备同步                                | `profile.ts` 在 hub 的 `profile` 帧上拉取中继的资料；画出来的形象的静态图由宿主缓存并提供                            | 已完成     |
 | 会动的形象（[avatar.md](avatar.md)）                | `Avatar.tsx`：小龙的各状态短视频来自 `assets/`，44 px 及以上静音循环播放，静态图作封面；画出来的形象和 emoji 用 CSS 做呼吸 / 摇摆 / 跳一下，减弱动态下什么都不做 | 已完成     |
@@ -193,8 +193,8 @@ Laptop B 自己的聊天里让它的 Muse「在 Desk A 上」运行一条命令�
 | 第一次打开                                               | 我们在 dsh `settings.onboarding` 位上的步骤，全窗口：欢迎、登录、验证码格、权限轮播（macOS 上的电脑、文件、设备）、就绪 | 已完成     |
 | 窗口（[desktop-muse.md](desktop-muse.md)）         | `sidebar`、`sidebar.settings` 和 `shell.overlay` 位加 bundle 的样式表：窄栏 + 主要聊天 / 旁聊、钉住的形象和带停止的状态标签、邀请、资料面板、药丸形输入框、气泡、权限卡片、带「高级」的分组设置、App 的色调 | 已完成     |
 | 哨兵（[sentinel.md](sentinel.md)）                   | dsh 的审批策略和 `tools/pre-execute` 瀑布；我们的类别变成一个审批预设；看得见的门保留                | 阶段 4    |
-| 手：这台电脑的 GUI 控制（[gui.md](gui.md)） | Python 的手经 MCP（`wevvy mcp`，挂在预设里）：已完成；之后在 dsh 的电脑操作接缝（`ctx.computerUse.register`）后面做一个原生 TypeScript 驱动，就不再需要 Python | 已完成（桥） |
-| Reach：手机和其他设备（[hub.md](hub.md)、[every-device.md](every-device.md)） | `hub.ts` + `dsh-wevvy/reach`：`devices`、`device_screen/shell/files/open/notify`、带转达审批的 `delegate`，按*停止*时发 `stop`；手机那边不变 | 已完成     |
+| 手：这台电脑的 GUI 控制（[gui.md](gui.md)） | Python 的手经 MCP（`ceis mcp`，挂在预设里）：已完成；之后在 dsh 的电脑操作接缝（`ctx.computerUse.register`）后面做一个原生 TypeScript 驱动，就不再需要 Python | 已完成（桥） |
+| Reach：手机和其他设备（[hub.md](hub.md)、[every-device.md](every-device.md)） | `hub.ts` + `dsh-ceis/reach`：`devices`、`device_screen/shell/files/open/notify`、带转达审批的 `delegate`，按*停止*时发 `stop`；手机那边不变 | 已完成     |
 | 被手机控制（shell、文件、屏幕）  | `actions.ts` 以运行时的形状应答 `shell`、`files`、`file.get`、`file.put`、`open`、`screen`，在设置里的远程控制开关后面；每次调用一条提示条 | 已完成     |
 | 在这里为手机跑一个任务（`task`）                  | `task.ts`：手机的 `delegate` 落进一个 dsh 会话（「From <device>」，下次接着用），运行以运行时的事件帧流回去，审批转达给请求方，`stop {call}` 照办 | 已完成     |
 | 连接器（[desktop-muse.md](desktop-muse.md#settings)） | `connectors.ts`：约 70 个远程 MCP 服务器的目录、MCP 授权流程（元数据、DCR、PKCE、刷新）、key、MCP Registry 搜索，以及一个持有凭据并过滤工具的回环代理；`connectors-tools.ts` 为每个连接挂一个 `dsh-mcp-client`，并跟着页面走 | 已完成     |
@@ -242,10 +242,10 @@ Laptop B 自己的聊天里让它的 Muse「在 Desk A 上」运行一条命令�
 
 ## 名字和许可 {#names-and-licences}
 
-DeepSeek Harness 是 MIT 许可；它是依赖，不是内嵌的拷贝，它的声明随它一起走。我们的 bundle 和 wevvy
+DeepSeek Harness 是 MIT 许可；它是依赖，不是内嵌的拷贝，它的声明随它一起走。我们的 bundle 和 ceis
 的其余部分一样是 GPL-3.0-or-later，所以「没有闭源组件」的承诺依然成立。「DeepSeek Harness」和「DSH」
 是 DeepSeek 的名字：我们说*基于 DeepSeek Harness 构建*，从不把它们用进我们自己的名字里，出厂的「关于」
-文字和品牌素材保持原样。惯常的声明（Muse 是 Meta 的商标，wevvy 是社区项目，与 Meta 无关）照旧
+文字和品牌素材保持原样。惯常的声明（Muse 是 Meta 的商标，ceis 是社区项目，与 Meta 无关）照旧
 适用。
 
 ## 阶段 {#phases}
@@ -261,9 +261,9 @@ DeepSeek Harness 是 MIT 许可；它是依赖，不是内嵌的拷贝，它的�
 5. **日常可用。** 哨兵变成审批预设、形象工作室搬到这里、不要 Python 的手（dsh 电脑操作接缝后的原生
    驱动）、给其他设备发来的任务选定一个工作区；人可以在里面处理文件和网页上的日常工作。
 6. **发布。** 外壳，分两步。dsh 自己的桌面 App 是同一个网页 App 的 Electron 包装，带一个接受外部
-   插件的 `desktop` profile（`dsh plugin --profile desktop add …`），所以第一个 wevvy 桌面版就是
+   插件的 `desktop` profile（`dsh plugin --profile desktop add …`），所以第一个 ceis 桌面版就是
    那个 App 加上 profile 里的 bundle：**从 0.1.27 起每个版本都带打包好的 bundle**（当时叫
-   `wevvy-Harness-<v>.tgz`，从 0.1.30 起叫 `dsh-wevvy-<v>.tgz`），安装方法在
+   `ceis-Harness-<v>.tgz`，从 0.1.30 起叫 `dsh-ceis-<v>.tgz`），安装方法在
    [harness/README.md](../../harness/README.md)（`.github/workflows/harness.yml` 构建、测试、打包它，
    并把 tar 包装进一个全新的 dsh profile）。**从 0.1.28 起第二步也到位了**：我们自己的外壳，在
    [`harness/desktop/`](../../harness/desktop/)，不是重新构建 dsh 的 `apps/desktop`（它的流水线要
@@ -271,15 +271,15 @@ DeepSeek Harness 是 MIT 许可；它是依赖，不是内嵌的拷贝，它的�
    做那个 App 核心上做的事：用自己的二进制以 Node 模式把 harness 的 Host 作为子进程启动
    （`ELECTRON_RUN_AS_NODE`、`--expose-internals`；harness 的 `require-builtin` 原生扩展带着它构建时
    所针对的 Electron 的指纹，所以外壳钉死一个确切的 Electron 版本），dsh 是构建时 npm 装到 `resources/dsh` 下的，
-   bundle 也一起；用的是 `~/.wevvy/desktop` 下它自己的 profile，里面写明 bundle，并链接到 App 内的
-   那份拷贝。负责手的运行时以 PyInstaller 构建随行，`WEVVY_PY` 把预设指向它。`desktop-app.yml`
+   bundle 也一起；用的是 `~/.ceis/desktop` 下它自己的 profile，里面写明 bundle，并链接到 App 内的
+   那份拷贝。负责手的运行时以 PyInstaller 构建随行，`CEIS_PY` 把预设指向它。`desktop-app.yml`
    在每个发布标签上构建 Windows 安装包、两种架构的 macOS dmg/zip 和 Linux AppImage/deb，把每个打包好
    的 harness 以 Node 模式启动一次作为检查，再列一遍 Windows 安装包里的压缩档，确认形象的四段短片在里面
    （electron-builder 的 NSIS 目标默认把视频文件排除在这个压缩档之外、再逐个加回去，加回去时跳过所有
    `node_modules`，而插件的短片正好放在那里；`electron-builder.yml` 里的
    `nsis.preCompressedFileExtensions: []` 关掉了这个行为，`tests/installer.test.mjs` 守着它），然后附到
-   发布上（设置了同一组 Apple 密钥时，还会给 macOS 构建签名和公证）。它在 0.1.28 和 0.1.29 以 *wevvy Harness* 之名和旧桌面 App 并列发布；**从
-   0.1.30 起它就是 wevvy 桌面版**，唯一的那个桌面 App（`wevvy-Desktop-<v>-…`，沿用已退役的
+   发布上（设置了同一组 Apple 密钥时，还会给 macOS 构建签名和公证）。它在 0.1.28 和 0.1.29 以 *ceis Harness* 之名和旧桌面 App 并列发布；**从
+   0.1.30 起它就是 ceis 桌面版**，唯一的那个桌面 App（`ceis-Desktop-<v>-…`，沿用已退役的
    `desktop/app` 的应用 id，所以可以直接覆盖安装），站点的下载也指向这里。
 7. **新外壳上的日常可用。** 聊天旁边的那些房间（动态、点子、目标、资源库）、手在这块屏幕上
    工作时的实时舞台、两个平台上的签名、我们自己的更新推送、harness 桌面版有的 macOS 关闭到 Dock 和

@@ -13,7 +13,7 @@ the frames.
 ## In the apps
 
 - **Phone**: the drawer's *Coding* row (or *Settings → Coding agents*, or the
-  `wevvy://coding` link). Pick a computer, an agent, a session; read the
+  `ceis://coding` link). Pick a computer, an agent, a session; read the
   transcript; type a message and watch the run (the text as it streams, the
   tools as they are called) and stop it if it goes wrong.
 - **Web**: the *Coding* screen. This computer's agents at the top, the
@@ -44,7 +44,7 @@ phone never does.
 
 Reading is best effort: a line that does not parse is skipped, a missing
 directory is an agent with no sessions. The `~` is the user's home unless
-`WEVVY_CODING_HOME` names another directory (a container that mounts the
+`CEIS_CODING_HOME` names another directory (a container that mounts the
 host's CLI homes somewhere else, or a test). A session lists its agent, id, title
 (the first user message), workspace, timestamps, message count, the last
 exchange and whether it is `resumable`. Cursor IDE chats can be read but not
@@ -56,8 +56,8 @@ resumable turns out unknown to the CLI.
 
 dsh is [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness): the
 chats of `dsh web` and of DeepSeek's own desktop app, kept under `~/.dsh`. The
-runtime and the wevvy desktop app both read and drive them; the runtime reads
-the store with `zstandard`, one of its dependencies. wevvy's own desktop chats
+runtime and the ceis desktop app both read and drive them; the runtime reads
+the store with `zstandard`, one of its dependencies. ceis's own desktop chats
 are kept in its own home and are not among them.
 
 dsh's store needs two things said: it is **zstd**, and it is **many zstd frames**
@@ -108,13 +108,13 @@ with *Remote control* off, a device that is not yet trusted raises a card on the
 screen, and the answer (once, always, no, or none in time) decides; the
 read-only actions are answered without asking.
 
-The agents' own API keys and sign-ins are theirs; wevvy never sees them. The
+The agents' own API keys and sign-ins are theirs; ceis never sees them. The
 transcripts are read from disk and shown to you; they are not sent anywhere but
 to the device that asked.
 
 ## The API
 
-On the runtime (`wevvy serve`), behind the app token:
+On the runtime (`ceis serve`), behind the app token:
 
 ```
 GET  /api/coding                                  → {agents: [{id, name, installed, cli, version, sessions_root, running}], runs: […]}
@@ -135,7 +135,7 @@ id, …}` events every open app follows live: `started {session_id, model}`, `te
 the streamed text with the final one), `tool {text, phase}`, `done`, `error`.
 
 The desktop app serves the same shapes to its own window under
-`wevvy/cloud/coding` (the page's loopback API): `GET` (agents and runs),
+`ceis/cloud/coding` (the page's loopback API): `GET` (agents and runs),
 `GET /sessions`, `GET /sessions/{agent}/{id}`, `POST /send`, `POST /stop`, and
 `GET /events`, a server-sent stream of the run events above. Its `runs.json`
 lives in the plugin's data directory under `coding/`.
@@ -152,4 +152,4 @@ frame is the finished run.
 The tests are `tests/test_coding.py` (the readers on fixture transcripts, the
 stream normaliser, a fake CLI, the API) and the hub path in `tests/test_hub.py`;
 the desktop's port is tested the same way in
-`harness/dsh-wevvy/tests/coding.test.mjs`.
+`harness/dsh-ceis/tests/coding.test.mjs`.

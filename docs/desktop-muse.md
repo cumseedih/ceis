@@ -1,11 +1,11 @@
 # The desktop window, screen by screen
 
-> What the wevvy desktop on DeepSeek Harness looks like and does, page by page: the
+> What the ceis desktop on DeepSeek Harness looks like and does, page by page: the
 > window, the first run, the profile and the face, computer use, Settings, the rooms and
 > the hamburger menu. Interface only; the plan and the record of the work are in
 > [harness.md](harness.md).
 
-The desktop app here is **DeepSeek Harness plus the `dsh-wevvy` bundle**
+The desktop app here is **DeepSeek Harness plus the `dsh-ceis` bundle**
 ([harness.md](harness.md)). dsh brings the loop, the tools and a complete web app with
 seats a plugin can take; the bundle takes the seats that give the window the shape the
 phone app has, hides the harness's own controls behind *Advanced*, and adds what the
@@ -82,12 +82,12 @@ decorative, every surface a flat tone one step from its neighbour. It comes from
 The phone's pages (`FirstRunSetup` on Android), full-window, in
 the harness's `settings.onboarding` seat (we take the shipped step's id, so a fresh
 install meets the agent instead of being asked for a DeepSeek key). The host keeps the
-state in `$DSH_HOME/wevvy/firstrun.json` (`src/firstrun.ts`): *done* once Start was
+state in `$DSH_HOME/ceis/firstrun.json` (`src/firstrun.ts`): *done* once Start was
 pressed, the permissions page seen, which source answers. The pages are therefore never
 skipped on a fresh install and never shown twice:
 
 1. **Welcome**: the app's mark (the avatar comes with the conversation, on the Meet page),
-   *Welcome to wevvy*, the three feature rows (chat, hands, reach), the community notice,
+   *Welcome to ceis*, the three feature rows (chat, hands, reach), the community notice,
    one blue *Sign in* pill and *Use your own API key instead*, which goes to the models page
    with no account (the sign-in can come later; *Skip for now* there with no key saved is
    Welcome again). Sign-in
@@ -103,22 +103,22 @@ skipped on a fresh install and never shown twice:
    hands, pictures and clips; OpenRouter and then OpenAI elsewhere), each row saying what it
    covers (*chat · screen operation · pictures · clips*), with *Get a key* opening the vendor's
    key page and *Add key* taking the key right there (it goes to the credential store under
-   `WEVVY_KEY_<PROVIDER>`; `cloud.json` keeps the name only). Under OpenAI, **Sign in with
+   `CEIS_KEY_<PROVIDER>`; `cloud.json` keeps the name only). Under OpenAI, **Sign in with
    ChatGPT**: a Plus, Pro or Team plan signed in through OpenAI's page, which covers chat and
    the hands only (no pictures, no clips), with the one honest line that OpenAI's terms
    cover using a ChatGPT plan inside OpenAI's own Codex and other apps have had this access
    cut off before. *More ways* folds out the rest of the catalogue, the servers on this
    computer (Ollama, LM Studio, vLLM) and any OpenAI-compatible endpoint by hand. *Skip for
    now* until a key is saved or a sign-in finished; *Continue* then.
-5. **Allow wevvy to use your computer?** (macOS only): *Accessibility* and *Screen
+5. **Allow ceis to use your computer?** (macOS only): *Accessibility* and *Screen
    Recording* rows, each with *Allow* that asks the system through the desktop shell and
    turns into a green check as the system grants it (polled, and again when the window gets
    focus or the page becomes visible; one hook, `permissions.ts`, behind every place that
    shows a permission); once *Allow* has been pressed the button reads *Open System
-   Settings*. Only **wevvy Desktop** has to be switched on: macOS attributes the bundled
+   Settings*. Only **ceis Desktop** has to be switched on: macOS attributes the bundled
    runtime's captures and events to the app that started it, so there is no second entry to
    hunt for. For *Screen Recording* the shell makes one capture attempt before it opens the
-   pane, so wevvy is on the pane's list, and when the permission is granted while the app
+   pane, so ceis is on the pane's list, and when the permission is granted while the app
    runs a dialog says macOS applies it only to freshly started apps, with *Restart now*
    (`relaunch` over the bridge). *Try it* rows (a test screenshot, a mouse move) and the
    runtime row say whether it works (the row names the binary and, when its last start for
@@ -127,11 +127,11 @@ skipped on a fresh install and never shown twice:
    On Linux and Windows the page is skipped.
 6. **Meet <name>**: the face, *Start*.
 
-Start binds the **main chat** (the agent's own folder, `~/wevvy`, registered as a
+Start binds the **main chat** (the agent's own folder, `~/ceis`, registered as a
 workspace so the composer is live) as the **first conversation**, the phone's
 `FirstConversation`: the app speaks first (three scripted lines, no tokens, never in the
 model's history) and asks what to call you. From there the model does the talking and
-reports what happened in a small `wevvy-naming` block at the end of its reply (the
+reports what happened in a small `ceis-naming` block at the end of its reply (the
 address, its name suggestions, the name it got); the chat shows the suggestions as the
 naming card (*NamingCard*, a tap or a typed name), and the phase moves on that block and
 on nothing else: a reply without one means the person talked about something else, the
@@ -180,7 +180,7 @@ and you pick by clicking or in words ("the second one", "第三个", "regenerate
 *Finalizing* draws the other poses, the look goes on for every device, *Share avatar*
 offers the card. Once it is on, the host leaves the phone's memory line (`- <date>: the
 user changed my avatar to "…"`) and asks the agent to say so in one sentence and write
-the `wevvy-avatar` fence, which the chat shows as a small card with the new face. The
+the `ceis-avatar` fence, which the chat shows as a small card with the new face. The
 agent's own `draw_new_look` still opens the studio for anything it wants to propose.
 
 **The face moves.** The face is animated per state: the dragon's four states
@@ -213,16 +213,16 @@ first and *Reject* in grey), and every answer is written to the agent page's
 headline. The same question, *Allow once*, *Always in <app>* (for the hands' tools; the
 app is the window title's first part), *Deny* (the host's `ApprovalDesk` sits first in
 the `approval/request` waterfall and answers for the card), is on the **capsule**, the
-small always-on-top pill the shell shows when the wevvy window is not in front, so
+small always-on-top pill the shell shows when the ceis window is not in front, so
 you can answer from wherever you are.
 *Always in <app>* writes a `computer_app:<app>` grant: the hands' tools in that app are
 allowed without asking until you revoke the grant, on the agent page or under Settings →
 Computer use → *Always allowed*. Settings → **Computer use** shows the two macOS
 permissions with *Allow* and *Open System Settings* (through the desktop shell; the
 first time the hands are about to start, the shell asks for them in order with a word on
-why, the phone's and Codex's way: Accessibility, then Screen Recording for wevvy
+why, the phone's and Codex's way: Accessibility, then Screen Recording for ceis
 Desktop, which since 0.1.36 is the binary that captures and clicks; the bundled
-`wevvy` runtime only needs them when it runs without the shell), *Keep the screen
+`ceis` runtime only needs them when it runs without the shell), *Keep the screen
 awake while it works* (the shell holds a power-save
 blocker while a session runs) and the note that anything that sends, pays or deletes is
 asked first.
@@ -233,24 +233,24 @@ the host opens a *hold* (contract C1: `{type:"hold", tool:"computer", status:"on
 by:"agent", reason}`), the trajectory card in the chat says **Your turn · <reason> ·
 Done**, the capsule says it outside the window (amber, the glow amber with it), and the
 tool call waits (up to ten minutes) until you press **Done**. **I'll take it**, on the
-trajectory card and on the capsule, opens a hold yourself (`POST /wevvy/cloud/holds`)
+trajectory card and on the capsule, opens a hold yourself (`POST /ceis/cloud/holds`)
 so the agent pauses before its next hands call while you use the mouse; *Done* resumes.
 Questions keep *Open*. Stop (the square) still cancels the turn.
 
 **The operator.** The hands themselves are the shell's (`src/operator.ts`, a port of
 UI-TARS-desktop's `NutJSOperator` on `@computer-use/nut-js`): the screenshot through
 Electron's `desktopCapturer` at the display's size (on a Mac, through the helper
-*wevvy Computer Use* and ScreenCaptureKit instead; see [desktop.md](desktop.md#macos-permissions)),
+*ceis Computer Use* and ScreenCaptureKit instead; see [desktop.md](desktop.md#macos-permissions)),
 the pointer moved straight to the
 point and left there 100 ms before the click, drags, scrolls, typing through the
 clipboard for anything beyond ASCII, the hotkey table (`ctrl` is ⌘ on a Mac). The
-runtime's `wevvy mcp` reaches them over a loopback HTTP server the shell starts per
-launch (`WEVVY_OPERATOR_URL` / `WEVVY_OPERATOR_TOKEN` in its environment, which
+runtime's `ceis mcp` reaches them over a loopback HTTP server the shell starts per
+launch (`CEIS_OPERATOR_URL` / `CEIS_OPERATOR_TOKEN` in its environment, which
 the preset passes through to the MCP server), so the model's coordinates (pixels of
 the picture it was shown) are mapped once to the operator's screen pixels and land
 where it pointed, on a scaled display as on a plain one
 ([gui.md](gui.md#hands-on-the-computer-the-picture-is-the-unit)). Without the shell
-(`wevvy` run on its own) the runtime falls back to `pyautogui` / `xdotool`.
+(`ceis` run on its own) the runtime falls back to `pyautogui` / `xdotool`.
 
 **Breathing, not flowing.** Since 0.1.40 nothing in the desktop app runs round a rim,
 sweeps across a surface or shimmers: every light that says "working" (the dot by a
@@ -283,7 +283,7 @@ says which session has the screen in `hands.run`; the glow and the capsule used 
 the calls in flight and went dark between every two), and it goes 400 ms after the turn
 ends, after *Stop*, or after five minutes without a call. The glow cannot take focus or a
 click, and it, the
-capsule and the wevvy window itself while the hands have the screen all have
+capsule and the ceis window itself while the hands have the screen all have
 `setContentProtection(true)`, so none of them is in the screenshots the runtime takes;
 on Linux, where content protection does nothing, the glow and the capsule step out of the
 way for the instant of the capture instead. The phone's long-press ring has no desktop
@@ -296,14 +296,14 @@ in a 36 px ring of three hues (the action blue, violet, cyan) breathing with fou
 bars, **Step N** and what the hands are doing (*looking at the screen*, *clicked "Save"*,
 *typed "hello"*; the last step's words stay while the model thinks about the next),
 **I'll take it** and a red **Stop**. It slides in over 320 ms when the
-hands start, stays for the whole run like the glow, is shown only while the wevvy
+hands start, stays for the whole run like the glow, is shown only while the ceis
 window is not the one in front (the chat
 shows the same in the trajectory card), and goes 220 ms after the run ends. When the
 hands are about to click or drag under it, it moves to the bottom of the work area first
 (and back up next time), the way the phone's capsule dodges the finger. A hold turns it
 amber with **Your turn · <reason> · Done**; a question the agent asked before a step
 hangs under it as a card with *Allow once*, *Always in <app>*, *Deny*. The shell feeds it
-over IPC from the main window (`wevvy:overlay`, `{hands: {active, held, step, title,
+over IPC from the main window (`ceis:overlay`, `{hands: {active, held, step, title,
 text, face, stop, take, x, y, kind}, cards}`) and its answers come back the same way.
 
 **The trajectory** is how a hands run is looked at, during and after it, in the chat: a
@@ -328,10 +328,10 @@ assistant message before acting. The caps: **40 steps per run** (older ones drop
 front and the card says *the first N steps are no longer kept*), **4 runs in all**, and
 the pictures together under **64 MB** (the oldest go first; their steps keep their words
 and say the picture is gone). Nothing is written to disk; a restart forgets it. The
-browser half reads `GET /wevvy/cloud/trajectory?session=<id>` (`{rev, runs: [{id,
+browser half reads `GET /ceis/cloud/trajectory?session=<id>` (`{rev, runs: [{id,
 sessionId, source, device, startedAt, endedAt, firstCall, lastCall, dropped, steps: [{i,
 seq, at, width, height, title, action, words, callId}]}]}`, no bytes) and `GET
-/wevvy/cloud/stage/frame?seq=N` for a picture (immutable, cached an hour); the live
+/ceis/cloud/stage/frame?seq=N` for a picture (immutable, cached an hour); the live
 state's `trajectory: {rev, sessions}` says when to read again. When the agent looks at a
 *phone* through Reach (`device_screen`), the run is a *device* run with the phone's name:
 that is what the phone app shows while its own Hands work ([gui.md](gui.md)), seen from
@@ -351,13 +351,13 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
   harness's own row in our card), **Appearance** (the harness's light / dark / system
   switch; the accent follows the face), **App behavior** when the desktop shell is there:
   *Open at login* (a login item; a freedesktop autostart entry on Linux), *Show in the
-  menu bar* / *system tray* (an icon with *Open wevvy*, *New chat*, *Quit*), *Quick
+  menu bar* / *system tray* (an icon with *Open ceis*, *New chat*, *Quit*), *Quick
   chat with ⌥ Space* (Ctrl+Alt+Space elsewhere: the window comes up with a fresh chat
   and the composer focused; pressed while it is in front, it steps aside), all kept in
   `desktop.json` under the app's home; **Shortcuts** (*Quick Chat* with its combination:
   *Change* records the next one you press, Esc cancels, *Default* puts the platform's back,
-  and a line says so when another app already holds it; and the keyboard reference); **About** (wevvy, built on DeepSeek Harness, the licence, and two version
-  lines that are always there: *wevvy Desktop <app> · harness <bundle>: installed*
+  and a line says so when another app already holds it; and the keyboard reference); **About** (ceis, built on DeepSeek Harness, the licence, and two version
+  lines that are always there: *ceis Desktop <app> · harness <bundle>: installed*
   and *Latest 0.1.x: you have it* / *0.1.x is out · Update* / *Could not check · tap to
   try again*; the check reads `wevvy.in/dl/index.json` first and GitHub's releases
   second, once a day); and *Developer*: *Show DeepSeek
@@ -368,20 +368,20 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
   you: **Chat** (*The model that talks with you.*), **Operating the screen** (*Looks at the
   screen and acts for you. Needs a model that can see images.*), **Making pictures**
   (*Portraits of your Muse and the pictures you ask for.*) and **Making clips** (*Short
-  clips of your Muse.*), a picker on each. Every picker lists wevvy Cloud first while
+  clips of your Muse.*), a picker on each. Every picker lists ceis Cloud first while
   signed in, its recommended model marked *Recommended*, then one group per provider you
   added, each holding only the models that can do the row's job; the value reads
   `<provider> · <model>`. A chat change says *Applies to new chats.*; a hands change takes
-  effect at the hands' next step (the plugin restarts `wevvy mcp` with the new model,
+  effect at the hands' next step (the plugin restarts `ceis mcp` with the new model,
   no cold restart). The hands speak OpenAI's shape only, so an Anthropic or native Gemini
   key is named in one sentence under the row and not listed. A row nothing can do shows
   the gate's sentence (*Pictures need a provider with image models: Alibaba Cloud
   Bailian, Zhipu GLM, SiliconFlow, …*) and *Add a provider*; the page ends with *Add a
   provider*, which opens the ways on under Account. When you have not chosen, a row
   follows the provider new chats answer through (its catalogue default for the job) when
-  that is one of your own, else wevvy Cloud while signed in, else the first of your
+  that is one of your own, else ceis Cloud while signed in, else the first of your
   providers that can.
-- **Account** (under *Advanced*), the wevvy account: sign in or the masked
+- **Account** (under *Advanced*), the ceis account: sign in or the masked
   identifier, the allowance, the look, *Open Devices*, a line that opens Settings → Models
   with what chat and the hands use now, and the block the own keys share with the account:
   - **Ways on**: your account's row first while signed in (what it covers right now, from
@@ -392,7 +392,7 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
     any chat or hands choice that pointed at it. The custom endpoints are one row each (#294):
     a saved endpoint reads its name over its host and has *Rename* beside *Change key* and
     *Remove*; the *Add an endpoint* row under them adds another with a key of its own
-    (`WEVVY_KEY_CUSTOM`, `WEVVY_KEY_CUSTOM_2`, ...) without touching the others, and
+    (`CEIS_KEY_CUSTOM`, `CEIS_KEY_CUSTOM_2`, ...) without touching the others, and
     each stands as a group of its own in the Models page's pickers. An endpoint saved before
     this stays the first row. The ChatGPT row runs the bundled runtime's
     sign-in: *Sign in* opens OpenAI's page, the row waits with *Cancel* (and *Open the
@@ -402,24 +402,24 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
     sign-in on file comes back after a restart, with its local bridge. Signed out of the
     account, the same block is under the sign-in form, so a key can be changed without an
     account. Once a key is saved, a card asks **Use it for** (*Pick what this key should
-    handle. wevvy Cloud keeps the rest.*) with a toggle per thing the key can handle
+    handle. ceis Cloud keeps the rest.*) with a toggle per thing the key can handle
     (chat, the screen, pictures, clips), all on, each naming the model it would get; *Use
     it* switches those rows on the Models page to the provider, *Not now* changes nothing,
     and a footnote says *You can change this any time under Settings › Models.*
 - **Media**, the models that draw the face and its clips: the same two pickers as
-  Settings → Models' *Making pictures* and *Making clips*, wevvy Cloud first while
+  Settings → Models' *Making pictures* and *Making clips*, ceis Cloud first while
   signed in, then each own provider's models (the video picker has *Off* too). Pictures
   through your own key go to that provider directly (Model Studio's native image API,
   OpenRouter's image API, the OpenAI shape for OpenAI, Zhipu, SiliconFlow, Volcengine and
   xAI), and the studio says *Drawn with <provider> · <model>. Nothing is billed to your
-  wevvy Cloud account.* in place of the estimate; a Google key draws only through the
+  ceis Cloud account.* in place of the estimate; a Google key draws only through the
   OpenAI-compatible layer. When nothing configured covers pictures or clips the row says who could,
-  where you are, with the way to Settings → wevvy Cloud (the same sentence the avatar studio
+  where you are, with the way to Settings → ceis Cloud (the same sentence the avatar studio
   shows in place of the estimate), and with only the ChatGPT sign-in, that pictures and
   clips are not covered by it.
   Below: *Animate the avatar after a change*, *Make / Redo clips* with the state of each
   of the four, and the cost note. When clips through your own key failed and you are
-  signed in, the failure line offers *Use wevvy Cloud this time*: that one run through
+  signed in, the failure line offers *Use ceis Cloud this time*: that one run through
   the account, the picker untouched; the studio offers the same after a failed round.
 - **Models**, **Agents**: the harness's pages, unchanged, under *Advanced*.
 - **Connectors**, a catalogue: a search field, category chips (*All*,
@@ -437,10 +437,10 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
     the runtime answered; when it did not, the reason: no runtime, a path that leads
     nowhere, or a runtime that did not start, with the start's own error), *Mailbox*, *Calendar*,
     *Address book* (the runtime's connectors, on when their tools arrive through
-    `wevvy mcp`), *Reach: your other devices*, *Web*, *Files*, *Terminal*, the
+    `ceis mcp`), *Reach: your other devices*, *Web*, *Files*, *Terminal*, the
     rooms, *Schedule*. *Connect* on the mailbox, the calendar or the address book opens a
     **consent sheet** (what the agent gets, who decides, where the
-    credentials live), followed by the steps (`wevvy vault set …`, the `config.toml`
+    credentials live), followed by the steps (`ceis vault set …`, the `config.toml`
     lines, restart) with copy buttons; there is no sign-in button on purpose, the
     credentials stay in your own vault.
   - **Services**: the catalogue (`src/connectors-catalogue.ts`, seventy-five remote
@@ -464,12 +464,12 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
     rows under the search field also search the public **MCP Registry**
     (`registry.modelcontextprotocol.io`) once two characters are typed, and **Connect by
     address** takes any Streamable HTTP URL, with a key or a pre-registered OAuth client
-    under *More options*. Credentials live in `$DSH_HOME/wevvy/connectors.json`,
+    under *More options*. Credentials live in `$DSH_HOME/ceis/connectors.json`,
     this computer only, and never reach the model: the agent's `dsh-mcp-client` is
     pointed at a **loopback proxy** (`/c/<id>/mcp`, guarded by a secret header) that
     adds the token or key, refreshes it, filters `tools/list` to the switched-on tools
     and refuses `tools/call` on the rest; the tools appear as `mcp__<service>__<tool>`
-    and the preset row `wevvy-connectors-tools` mounts one client per connection and
+    and the preset row `ceis-connectors-tools` mounts one client per connection and
     follows the page (connect, switch, disconnect; no restart). A connection whose
     refresh is refused turns to *Needs sign-in* with *Sign in again*; a key is replaced
     in place.
@@ -483,10 +483,10 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
   *key* or *address* rows.
 - **Computer use**: the system permissions (macOS), keep awake, the risk note.
 - **File system access**: the folders the agent uses (home, the Library, Downloads,
-  wevvy's own files; each opens in the file manager, the page grants nothing), the
+  ceis's own files; each opens in the file manager, the page grants nothing), the
   rules (reading anything you name; writing under the chat's permission preset, which is
   *workspace-write* unless the Agents page says otherwise: the chat's folder freely, the
-  main chat's being `~/wevvy`, and outside it a change is refused unless the agent asks
+  main chat's being `~/ceis`, and outside it a change is refused unless the agent asks
   you for it and you allow it once; *read-only* asks before every change, *full access*
   asks nothing; the sandbox), and *Full Disk Access* on macOS, which is only about reading
   Desktop, Documents and Downloads. The home folder, Downloads and the app's own files are
@@ -514,7 +514,7 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
   side chats* (同时同步旁聊; this computer's own switch, off by default; *Off: side
   chats stay on this device. On: this device's side chats go to the account and the
   other devices' side chats come here*; see [every-device.md](every-device.md)), *Help
-  improve wevvy's AI models* (the relay's switch, with how many turns it kept and
+  improve ceis's AI models* (the relay's switch, with how many turns it kept and
   *Delete*), as on every other app; then *On this computer*: **Import memory**,
   **Download your agent data** (a zip in Downloads: the account snapshot without the
   sign-in token, the look and faces, the rooms, memory, and the chats as the harness
@@ -530,7 +530,7 @@ page it opened, named for the page you came from; a pick in the sidebar starts f
   back to the welcome sheet, the way a fresh install starts.
 
 Wallet, secure storage and message channels are not there: the Cloud has no wallet;
-members have an allowance ([cloud.md](cloud.md#allowance)). wevvy keeps no
+members have an allowance ([cloud.md](cloud.md#allowance)). ceis keeps no
 passwords for the agent, and messages reach you through the phone app's notifications
 rather than a messenger.
 
@@ -541,8 +541,8 @@ rather than a messenger.
 The four rooms are on the rail (Chats, Search,
 Feed, Ideas, Goals, Library, Devices), each one `main` panel of the harness's layout,
 so the chat column stays where it is and a room opens in its place. One host service
-(`wevvy-rooms`, `src/rooms.ts`) keeps them in `$DSH_HOME/wevvy/rooms.json`,
-serves `/wevvy/rooms/*` and streams changes to the browser half:
+(`ceis-rooms`, `src/rooms.ts`) keeps them in `$DSH_HOME/ceis/rooms.json`,
+serves `/ceis/rooms/*` and streams changes to the browser half:
 
 - **Feed**, posts the agent writes for you in a hidden chat, from your *feed
   instructions*, your goals and the profile: title, Markdown body with links inline, a
@@ -568,18 +568,18 @@ serves `/wevvy/rooms/*` and streams changes to the browser half:
   phone's flow: "I'd like to create a Health goal." goes into the chat you are in (a
   fresh one when it is busy) with the phone's shaping note; the agent asks at most three
   short questions, one at a time (what, why and by when, how often to check) and then
-  writes one `wevvy-goal` fence, which the chat shows as a *Goal created* card (title,
+  writes one `ceis-goal` fence, which the chat shows as a *Goal created* card (title,
   why, steps, *Checks daily at 09:00* / *every N hours*, *See in Goals*) and the host
   turns into the goal: that chat becomes its home, and a check is scheduled there with
   the harness's schedule plugin (*Time to check on this goal: …*, *First time round: …*).
-  Every check, and any turn where progress changed, ends with a `wevvy-goal-update`
+  Every check, and any turn where progress changed, ends with a `ceis-goal-update`
   fence (`goal_id`, `progress`, `status` on_track / attention / done, `note`): a *Goal
   update* card in the chat with the bar and the note, the goal's status, progress and
   timeline updated; the agent may also call `goals_room_update`. *Type it out* in the
   menu still creates a goal from your own words; *Check in* runs a check now.
 - **Library**: shelves (All, Documents, Web; Media: Images, Videos, Podcasts; System
   files at the foot), *Select*, *+ Create…* (a brief → a chat that writes the file under
-  `~/wevvy/Library`, `构件` in Chinese, with the workspace-write preset), *Recent*
+  `~/ceis/Library`, `构件` in Chinese, with the workspace-write preset), *Recent*
   and a card grid; a viewer and a Markdown editor for text (restoring IDENTITY.md or SOUL.md
   to the stock text asks first), pictures and media inline, *Open* / *Show in folder* for the rest. Everything the agent delivers with `present`
   lands here, and `library_add` lists a file without delivering it.
@@ -589,7 +589,7 @@ is the agent's working room: the chats column and search leave it out while it r
 (`batches` in the rooms view) and it is archived once parsed, so the chats column stays
 yours; the request itself goes into that chat as a one-line notice (*Writing today's feed*),
 not as a message in your voice. Up to 1.0.4 the chat appeared in the column, with the batch's
-prompt as a user bubble, for as long as the batch ran. A `wevvy-feed` fence the agent
+prompt as a user bubble, for as long as the batch ran. A `ceis-feed` fence the agent
 writes in any chat (the phone's way of posting) lands in the Feed too and shows as a
 *Posted to your feed* card.
 
@@ -597,7 +597,7 @@ writes in any chat (the phone's way of posting) lands in the Feed too and shows 
 
 Settings (with its shortcut; a dot on it and on the ••• button
 when a newer release is out), **Update to 0.1.x** when there is one (opens the release
-page), **About wevvy** (the version line *wevvy Desktop <app> · harness <bundle>*,
+page), **About ceis** (the version line *ceis Desktop <app> · harness <bundle>*,
 the licence, GitHub / Releases / Docs / Issues), Keyboard shortcuts, Schedules and
 the harness's other panels (Plugins and whatever else is installed), collapse / expand
 the chats column, *Report a problem*: under the desktop shell a screenshot of the
@@ -618,9 +618,9 @@ nowhere else.
   `deepseek-v4.1-flash`), **Operating the screen** (`for: ["gui"]`, default
   `qwen3.8-27b`), **Making pictures** and **Making clips**; a DeepSeek entry is shown as
   sighted only when its id says `v4.1`, `vision` or `ocr`. The hands model is written to
-  `$DSH_HOME/wevvy/hands.json` (mode 0600) and handed to `wevvy mcp` as its
+  `$DSH_HOME/ceis/hands.json` (mode 0600) and handed to `ceis mcp` as its
   environment by the plugin's own MCP client, which it restarts when the model changes.
-  When a model of your own fails under a turn, the card offers *Use wevvy Cloud this
+  When a model of your own fails under a turn, the card offers *Use ceis Cloud this
   time* (signed in): that one message again through the account, the chat back to its
   model when the turn ends, the Models page as it was. Nothing falls back on its own.
 - **Connectors on every device.** What you connected here (service, label, URL for a

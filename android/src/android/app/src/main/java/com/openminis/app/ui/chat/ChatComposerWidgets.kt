@@ -120,7 +120,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.outlined.Mic // wevvy
+import androidx.compose.material.icons.outlined.Mic // ceis
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.CloseFullscreen
@@ -273,7 +273,7 @@ import com.openminis.app.data.repository.MemoryRepository
 import com.openminis.app.data.repository.ProviderRepository
 import com.openminis.app.ui.browser.BrowserSheet
 import com.openminis.app.ui.theme.ChatColors
-import io.github.wevvy.ui.glass.liquidGlass // wevvy: Liquid Glass status bar (design.md addendum)
+import io.github.ceis.ui.glass.liquidGlass // ceis: Liquid Glass status bar (design.md addendum)
 import com.openminis.app.ui.components.MinisTextButton
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -374,14 +374,14 @@ internal fun AttachmentChip(
 @Composable
 internal fun InputCircleButton(
     onClick: () -> Unit,
-    plain: Boolean = false, // wevvy: flat fill circle on the glass pill (design.md: no glass on glass)
+    plain: Boolean = false, // ceis: flat fill circle on the glass pill (design.md: no glass on glass)
     content: @Composable () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .size(40.dp)
             .then(
-                // wevvy: on the composer's Liquid Glass the button sits ON
+                // ceis: on the composer's Liquid Glass the button sits ON
                 // the material as a flat translucent fill, never glass
                 // itself. Off the pill it keeps the upstream disc and border.
                 if (plain) Modifier
@@ -418,16 +418,16 @@ internal fun MicButton(
     // [T-android-voice-panel] While the inline voice panel is active the same
     // slot switches back to text input — keyboard glyph (mirrors iOS "T").
     isVoiceActive: Boolean = false,
-    plain: Boolean = false, // wevvy: flat fill circle on the glass pill (design.md: no glass on glass)
+    plain: Boolean = false, // ceis: flat fill circle on the glass pill (design.md: no glass on glass)
 ) {
-    // wevvy: on the glass pill the mic is a flat fill circle like the plus
+    // ceis: on the glass pill the mic is a flat fill circle like the plus
     // button; recording keeps its red tint.
     val bg = if (isRecording) Color.Red.copy(alpha = 0.15f)
              else if (plain) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.07f)
              else ChatColors.inputIconBg
     val tint = if (isRecording) Color.Red
                else MaterialTheme.colorScheme.onSurfaceVariant
-    val borderColor = if (isRecording || plain) Color.Transparent else ChatColors.inputIconBorder // wevvy: plain composer
+    val borderColor = if (isRecording || plain) Color.Transparent else ChatColors.inputIconBorder // ceis: plain composer
     Box(
         modifier = Modifier
             .size(40.dp)
@@ -441,11 +441,11 @@ internal fun MicButton(
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            if (isVoiceActive) Icons.Default.Keyboard else if (plain) Icons.Outlined.Mic else Icons.Default.Mic, // wevvy: plain composer
+            if (isVoiceActive) Icons.Default.Keyboard else if (plain) Icons.Outlined.Mic else Icons.Default.Mic, // ceis: plain composer
             contentDescription = if (isVoiceActive) "Switch to keyboard"
             else if (isRecording) "Stop recording" else "Voice input",
             tint = tint,
-            modifier = Modifier.size(if (plain) 22.dp else 20.dp), // wevvy: Muse's outlined mic
+            modifier = Modifier.size(if (plain) 22.dp else 20.dp), // ceis: Muse's outlined mic
         )
         if (!localeBadge.isNullOrEmpty()) {
             Text(
@@ -723,8 +723,8 @@ private fun ToolPreviewThumbnail(
                         try { android.graphics.BitmapFactory.decodeFile(path) } catch (_: Exception) { null }
                     }
                 }
-                // wevvy: a finished action that saved no screenshot keeps its last live frame.
-                val bitmap = liveBitmap ?: savedBitmap ?: io.github.wevvy.status.BrowserFrames.get(block.id)
+                // ceis: a finished action that saved no screenshot keeps its last live frame.
+                val bitmap = liveBitmap ?: savedBitmap ?: io.github.ceis.status.BrowserFrames.get(block.id)
                 if (bitmap != null) {
                     Image(
                         bitmap = bitmap.asImageBitmap(),
@@ -807,7 +807,7 @@ internal fun FloatingToolStatusBar(
     // dueling local-remember sheets, no LaunchedEffect(lastIndex) page
     // jumps when a new tool starts mid-view).
     onOpenDetail: (String) -> Unit = {},
-    // wevvy: when the host screen has a Haze backdrop (the home shell), the
+    // ceis: when the host screen has a Haze backdrop (the home shell), the
     // bar floats in Liquid Glass; null keeps the flat fill.
     nmHazeState: dev.chrisbanes.haze.HazeState? = null,
 ) {
@@ -858,7 +858,7 @@ internal fun FloatingToolStatusBar(
                 .height(barHeight)
                 .align(Alignment.BottomCenter)
                 .shadow(elevation = 8.dp, shape = RoundedCornerShape(10.dp), ambientColor = Color.Black.copy(alpha = 0.06f), spotColor = Color.Black.copy(alpha = 0.12f))
-                // wevvy: Liquid Glass over the shell's backdrop; flat fill otherwise.
+                // ceis: Liquid Glass over the shell's backdrop; flat fill otherwise.
                 .then(
                     if (nmHazeState != null) {
                         Modifier.liquidGlass(
@@ -901,7 +901,7 @@ internal fun FloatingToolStatusBar(
             // stays clean.
 
             // Tool title
-            // wevvy: a finished browser step reads "<title> · Done", the way Muse closes its browser card.
+            // ceis: a finished browser step reads "<title> · Done", the way Muse closes its browser card.
             val nmTitle = block.toolTitle.ifEmpty { block.toolName }
             Text(
                 text = if (isDone && block.toolName == "browser_use") "$nmTitle · ${stringResource(R.string.nm_tool_done)}" else nmTitle,

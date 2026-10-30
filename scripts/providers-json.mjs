@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Copies the own-key provider catalogue (wevvy/llm/providers.json, the source of truth;
+// Copies the own-key provider catalogue (ceis/llm/providers.json, the source of truth;
 // contract C11) to the clients that cannot read the runtime's package data — the desktop
 // plugin's assets, the Android app's assets, the iPhone app's bundle — and to the relay,
 // which orders it per region for its "ways on" guidance. Run after editing the catalogue:
@@ -27,7 +27,7 @@
 // to send one stable id per conversation (OpenCode Go: `x-opencode-session`). The runtime sends
 // it with its own user agent; the desktop writes such an entry as its model adapter's catalog
 // route of the same id, which sends the header itself; the phones send it to OpenCode's host
-// (io.github.wevvy.net.OpenCodeSession, WevvyOpenCodeSession.swift); the relay's guidance
+// (io.github.ceis.net.OpenCodeSession, CeisOpenCodeSession.swift); the relay's guidance
 // lists such an entry apart, under `session_providers`, so the apps of before never offer it.
 // The copies are byte-identical to the source; the source is validated here so a typo never
 // reaches a client.
@@ -36,13 +36,13 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const source = resolve(root, 'wevvy/llm/providers.json')
+const source = resolve(root, 'ceis/llm/providers.json')
 const targets = [
-  resolve(root, 'harness/dsh-wevvy/assets/providers.json'),
-  resolve(root, 'android/src/android/app/src/main/assets/wevvy/providers.json'),
+  resolve(root, 'harness/dsh-ceis/assets/providers.json'),
+  resolve(root, 'android/src/android/app/src/main/assets/ceis/providers.json'),
   resolve(root, 'android/src/ios/NanoMuse/Resources/providers.json'),
-  // the relay builds the "ways on" guidance from the same facts (cloud/wevvy_cloud/providers.py)
-  resolve(root, 'cloud/wevvy_cloud/providers.json'),
+  // the relay builds the "ways on" guidance from the same facts (cloud/ceis_cloud/providers.py)
+  resolve(root, 'cloud/ceis_cloud/providers.json'),
 ]
 
 const PROTOCOLS = new Set(['openai', 'openai-responses', 'anthropic', 'gemini'])

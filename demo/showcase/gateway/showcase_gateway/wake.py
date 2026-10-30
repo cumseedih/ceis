@@ -3,7 +3,7 @@
 A slept account container (accounts.py) is started again when a request on its host proves
 the account's token — the way the runtime itself accepts requests: ``Authorization: Bearer``,
 the socket's first ``{"kind": "auth"}`` frame, a signed inline link (``?exp=&sig=``, see
-``wevvy/server/tickets.py``; the signature is checked here with the same recipe), or the
+``ceis/server/tickets.py``; the signature is checked here with the same recipe), or the
 legacy ``?token=``. Anyone can type the address; only the person has the token, so only the
 person can make the box spend a container on it.
 
@@ -25,7 +25,7 @@ from starlette.requests import Request
 
 Proof = Callable[[str], bool]
 
-# the runtime's signed links (wevvy/server/tickets.py): the same numbers
+# the runtime's signed links (ceis/server/tickets.py): the same numbers
 TICKET_MAX_AHEAD_S = 13 * 3600
 TICKET_SIG_HEX = 32
 
@@ -82,7 +82,7 @@ def token_from_first_frame(text: str | None) -> str | None:
     return token if isinstance(token, str) and token else None
 
 
-WAKE_PAGE = """<!doctype html><html lang="__LANG__"><meta charset="utf-8"><title>wevvy</title>
+WAKE_PAGE = """<!doctype html><html lang="__LANG__"><meta charset="utf-8"><title>ceis</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
 font:15px/1.5 system-ui,sans-serif;color:#1b1730;background:#f4f3fa;text-align:center;padding:24px">
@@ -93,7 +93,7 @@ font:15px/1.5 system-ui,sans-serif;color:#1b1730;background:#f4f3fa;text-align:c
   const m = document.getElementById("m"), s = document.getElementById("s");
   const T = __STRINGS__;
   const fromHash = (location.hash.slice(1).split("&").find((p) => p.startsWith("token=")) || "").slice(6);
-  const token = fromHash || localStorage.getItem("wevvy_token") || "";
+  const token = fromHash || localStorage.getItem("ceis_token") || "";
   const signin = "__SIGNIN__";
   const again = (why) => {
     m.textContent = why;
@@ -126,7 +126,7 @@ WAKE_STRINGS = {
         "no_token": "Open your Muse from where you signed in.",
         "not_yours": "That link is no longer yours.",
         "could_not_wake": "Could not wake your Muse.",
-        "unreachable": "Could not reach wevvy.",
+        "unreachable": "Could not reach ceis.",
         "try_again": "Try again in a moment.",
     },
     "zh": {
@@ -137,7 +137,7 @@ WAKE_STRINGS = {
         "no_token": "请从你登录的地方打开你的 Muse。",
         "not_yours": "这个链接已经不属于你了。",
         "could_not_wake": "没能唤醒你的 Muse。",
-        "unreachable": "连不上 wevvy。",
+        "unreachable": "连不上 ceis。",
         "try_again": "请稍后再试。",
     },
 }

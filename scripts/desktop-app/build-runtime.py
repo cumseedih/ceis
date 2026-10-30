@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Build the runtime wevvy Desktop carries for the hands: a one-folder PyInstaller build of
-`wevvy` (serve, chat, the hub, this computer's screen and hands — `wevvy mcp` is what the
+"""Build the runtime ceis Desktop carries for the hands: a one-folder PyInstaller build of
+`ceis` (serve, chat, the hub, this computer's screen and hands — `ceis mcp` is what the
 desktop's preset points at) at harness/desktop/runtime/, where electron-builder picks it up as
 an extra resource.
 
@@ -9,7 +9,7 @@ an extra resource.
     python scripts/desktop-app/build-runtime.py --target build/runtime   # somewhere else
 
 Needs: the repository's Python environment with `pip install -e ".[hands]" pyinstaller`.
-The web app must already be built into wevvy/server/static (it is committed).
+The web app must already be built into ceis/server/static (it is committed).
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SPEC = ROOT / "scripts" / "desktop-app" / "wevvy_runtime.spec"
+SPEC = ROOT / "scripts" / "desktop-app" / "ceis_runtime.spec"
 WORK = ROOT / "build" / "runtime-pyi"
 DIST = ROOT / "build" / "runtime-dist"
 TARGET = ROOT / "harness" / "desktop" / "runtime"
@@ -53,8 +53,8 @@ def build(target: Path) -> Path:
         str(SPEC),
         cwd=str(ROOT),
     )
-    built = DIST / "wevvy"
-    exe = built / ("wevvy.exe" if sys.platform == "win32" else "wevvy")
+    built = DIST / "ceis"
+    exe = built / ("ceis.exe" if sys.platform == "win32" else "ceis")
     if not exe.exists():
         raise SystemExit(f"PyInstaller produced nothing at {exe}")
     shutil.rmtree(target, ignore_errors=True)
@@ -81,13 +81,13 @@ def check(exe: Path) -> None:
     for d in (home, cwd):
         shutil.rmtree(d, ignore_errors=True)
     cwd.mkdir(parents=True)
-    env = dict(os.environ, WEVVY_DATA_DIR=str(home), PYTHONUTF8="1")
+    env = dict(os.environ, CEIS_DATA_DIR=str(home), PYTHONUTF8="1")
     for key in (
         "OPENAI_API_KEY",
         "DASHSCOPE_API_KEY",
         "ANTHROPIC_API_KEY",
         "OPENAI_BASE_URL",
-        "WEVVY_WORKSPACE",
+        "CEIS_WORKSPACE",
     ):
         env.pop(key, None)
     # A startup log can exceed a pipe's capacity before the server listens.
@@ -158,7 +158,7 @@ def main() -> None:
     if not target.is_absolute():
         target = ROOT / target
     if args.check_only:
-        exe = target / ("wevvy.exe" if sys.platform == "win32" else "wevvy")
+        exe = target / ("ceis.exe" if sys.platform == "win32" else "ceis")
     else:
         exe = build(target)
     if args.check or args.check_only:

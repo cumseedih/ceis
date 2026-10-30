@@ -1,6 +1,6 @@
 # Chat apps
 
-Your wevvy inside the chat apps you already use: Feishu (飞书 / Lark), DingTalk
+Your ceis inside the chat apps you already use: Feishu (飞书 / Lark), DingTalk
 (钉钉), WeCom (企业微信) and Telegram. Write to the bot from your phone and the same
 Muse answers: one conversation per chat, the reply typed out as it comes, tool work
 shown as a status line, approvals answered with a word or a button. Chats you mark
@@ -12,10 +12,10 @@ inside your network (Telegram: long polling), so the runtime behind your router 
 laptop is enough. The vendors' own SDKs do the socket work; they are optional extras:
 
 ```sh
-pip install 'wevvy[feishu]'      # lark-oapi
-pip install 'wevvy[dingtalk]'    # dingtalk-stream
-pip install 'wevvy[wecom]'       # wecom-aibot-sdk-python
-pip install 'wevvy[channels]'    # all three; Telegram needs nothing extra
+pip install 'ceis[feishu]'      # lark-oapi
+pip install 'ceis[dingtalk]'    # dingtalk-stream
+pip install 'ceis[wecom]'       # wecom-aibot-sdk-python
+pip install 'ceis[channels]'    # all three; Telegram needs nothing extra
 ```
 
 The Docker image carries all of them. Without an SDK the app shows the line to install
@@ -26,8 +26,8 @@ and leaves the switch alone.
 * **App**: Settings → *Chat apps* (「聊天入口」). One card per app: the switch, the
   credentials, who may talk to it, the paired chats and their *deliver here* switch,
   a *Send a test message* button and the setup steps with a link to the vendor console.
-* **Terminal**: `wevvy channels status | pending | approve <code> | deny <code> |
-  login feishu [--lark] | test <name>`. With `wevvy serve` running the commands go
+* **Terminal**: `ceis channels status | pending | approve <code> | deny <code> |
+  login feishu [--lark] | test <name>`. With `ceis serve` running the commands go
   through its API; otherwise they edit the files under `<data_dir>/channels/` and the
   server picks them up when it starts (or on *Reload*).
 * **API**: `GET /api/channels`, `PUT /api/channels/<name>`, `POST
@@ -55,7 +55,7 @@ The console names below are as of 2026; vendors move things around.
 
 ### Feishu / Lark
 
-The short way: in the app press **Create the bot by QR code** (or run `wevvy
+The short way: in the app press **Create the bot by QR code** (or run `ceis
 channels login feishu`, `--lark` for the international edition), scan with Feishu,
 confirm, done: the App ID and Secret are saved and the channel switches on. This is
 Feishu's own scan-to-create flow for personal agents; it makes an app with the bot
@@ -126,7 +126,7 @@ Anyone who finds the bot can write to it; the Muse answers only people you let i
 * The first direct message from an unknown person gets a **pairing code** (six
   letters and digits, no 0/O/1/I, good for ten minutes) and nothing else; the
   message does not reach the Muse. Approve the code under Settings → Chat apps, or
-  `wevvy channels approve <code>`. The person is told, and from then on their
+  `ceis channels approve <code>`. The person is told, and from then on their
   messages go through.
 * **Always allowed** (`allow_from`): vendor user ids that never need a code. A lone
   `*` lets everyone in, only for a bot nobody else can reach.
@@ -189,7 +189,7 @@ of them, useful from a script or a reminder.
 
 | What you see | What it means |
 |---|---|
-| **Not installed** | the SDK is missing on the machine running wevvy: run the line shown (`pip install 'wevvy[feishu]'`), then switch the channel on again |
+| **Not installed** | the SDK is missing on the machine running ceis: run the line shown (`pip install 'ceis[feishu]'`), then switch the channel on again |
 | **Needs settings** | a required field is empty; the card names it |
 | **Error** with the vendor's words | the credentials were refused or the vendor is unreachable; fix and switch off/on, or *Save* again |
 | the bot does not answer in a group | the group policy is *mention* and the bot was not @-mentioned; or the sender is not paired (groups never show codes) |
@@ -198,7 +198,7 @@ of them, useful from a script or a reminder.
 | DingTalk connects but gets nothing | the robot's receive mode is not *Stream*, or the version was not published |
 | WeCom: connection errors behind a proxy | the socket bypasses `HTTPS_PROXY`; the host must be reachable directly |
 | Telegram: `Conflict: terminated by other getUpdates request` | the same token is polled from two places (another runtime, or a webhook); use one |
-| codes keep coming back | approve one within ten minutes; `wevvy channels pending` lists them |
-| `wevvy channels …` says the server refused the token | `server.token` in config.toml differs from the running server's; or run it with the same `--config` |
+| codes keep coming back | approve one within ten minutes; `ceis channels pending` lists them |
+| `ceis channels …` says the server refused the token | `server.token` in config.toml differs from the running server's; or run it with the same `--config` |
 
-`wevvy channels status --json` prints the same view the app gets.
+`ceis channels status --json` prints the same view the app gets.

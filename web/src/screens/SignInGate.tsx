@@ -3,7 +3,7 @@ import { useT } from "../i18n";
 import { useStore } from "../store";
 
 /**
- * The door: this runtime insists on a wevvy Cloud account (cloud.required, the default),
+ * The door: this runtime insists on a ceis Cloud account (cloud.required, the default),
  * so before anything else the person signs in with a code sent to their e-mail address.
  * The composition is strict: back and settings discs, the bare mark, the heading, one
  * pill input, the SMS notice, Continue. Nothing else.
@@ -16,7 +16,7 @@ export function SignInGate() {
       <SignIn
         frame
         onSignedIn={async () => {
-          toast(t("Signed in to wevvy."));
+          toast(t("Signed in to ceis."));
           await Promise.all([refreshSettings(), refreshHub()]);
         }}
       />

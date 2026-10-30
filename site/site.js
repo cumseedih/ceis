@@ -1,4 +1,4 @@
-// wevvy landing page: language toggle + the live phone mock in the hero.
+// ceis landing page: language toggle + the live phone mock in the hero.
 (function () {
   "use strict";
 
@@ -7,15 +7,15 @@
   function setLang(lang) {
     html.lang = lang;
     try {
-      localStorage.setItem("wevvy-site-lang", lang);
+      localStorage.setItem("ceis-site-lang", lang);
     } catch (e) {
       /* private mode */
     }
-    document.title = lang === "zh-CN" ? "wevvy — 开源的个人 AI 智能体" : "wevvy — an open-source personal AI agent";
+    document.title = lang === "zh-CN" ? "ceis — 开源的个人 AI 智能体" : "ceis — an open-source personal AI agent";
   }
   var saved = null;
   try {
-    saved = localStorage.getItem("wevvy-site-lang");
+    saved = localStorage.getItem("ceis-site-lang");
   } catch (e) {
     /* ignore */
   }
@@ -28,7 +28,7 @@
   });
 
   // ---- mascot ---------------------------------------------------------------------
-  var MASCOT = window.WEVVY_MASCOT || {};
+  var MASCOT = window.CEIS_MASCOT || {};
   function panda(el, mood) {
     if (!el || el.dataset.current === mood) return;
     el.dataset.current = mood;

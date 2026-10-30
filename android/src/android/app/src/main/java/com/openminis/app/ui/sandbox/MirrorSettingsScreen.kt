@@ -98,8 +98,8 @@ enum class MirrorCategory(
     val iconColor: Color
         get() = when (this) {
             ALPINE -> Color(0xFF005ABF)
-            PIP -> io.github.wevvy.ui.theme.WevvyColors.success
-            NPM -> io.github.wevvy.ui.theme.WevvyColors.error
+            PIP -> io.github.ceis.ui.theme.CeisColors.success
+            NPM -> io.github.ceis.ui.theme.CeisColors.error
         }
 }
 
@@ -589,9 +589,9 @@ private fun CircleIconBadge(icon: ImageVector, tint: Color) {
 @Composable
 private fun LatencyBadge(ms: Int) {
     val color = when {
-        ms < 200 -> io.github.wevvy.ui.theme.WevvyColors.success
+        ms < 200 -> io.github.ceis.ui.theme.CeisColors.success
         ms < 500 -> Color(0xFFFF9500)
-        else -> io.github.wevvy.ui.theme.WevvyColors.error
+        else -> io.github.ceis.ui.theme.CeisColors.error
     }
     Box(
         modifier = Modifier
@@ -623,7 +623,7 @@ fun MirrorCategoryDetailScreen(
 
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(category.displayName) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {

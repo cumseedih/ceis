@@ -1,20 +1,20 @@
 # The public showcase
 
 A page anyone can open: a phone in the browser with 微信, 支付宝, 铁路12306 and the other
-[MobileGym](https://github.com/Purewhiter/mobilegym) apps on it, and wevvy installed. The
-page opens on the wevvy app, and a **private wevvy is started for you** on the showcase
+[MobileGym](https://github.com/Purewhiter/mobilegym) apps on it, and ceis installed. The
+page opens on the ceis app, and a **private ceis is started for you** on the showcase
 server (your own container, your own token, phone operation on) for thirty minutes and
 within a model budget. Beside the phone are a few lines to try, one set per language ([The
 lines](#the-lines)): a new look for the Muse (it draws itself), the apps on the phone operated
 for you ("打开微信，看看张伟最新发来的消息说了什么"; "Open Spotify and play Bad Habits by Ed
 Sheeran"), a send that waits for the visitor's word, two apps read for one answer, memory and
 a reminder; a tap puts the line in the chat on the phone, and anything else can be typed
-there. This is wevvy's web entry, what [wevvy.in/web](https://wevvy.in/web/) leads
+there. This is ceis's web entry, what [wevvy.in/web](https://wevvy.in/web/) leads
 to.
 
 The page (`site/page/`) is plain HTML and a little script, with MobileGym in a frame on the
-same origin as `/phone.html`; it talks to the wevvy app on the phone through
-`window.__WEVVY__` on that frame (open, draft, start, reset, state, subscribe; see
+same origin as `/phone.html`; it talks to the ceis app on the phone through
+`window.__CEIS__` on that frame (open, draft, start, reset, state, subscribe; see
 `demo/mobilegym/README.md`) and the app passes drafts on to the web app over `postMessage`.
 On a hosted session the web app runs lite (`?ui=lite`): the phone layout at any width, drawn
 the way the Android app draws it: the face on its disc with the name tag under it, the round
@@ -32,11 +32,11 @@ They are not copied into this repository: `site/compose.mjs` lifts the markup fr
 checkout's `web/index.html` at build time and takes its `styles.css`, `state-builder.js`,
 `boot-hero.js` and icons as they are (one default changed: the phone's address is
 `/phone.html`), so an upstream change arrives with the next build. One thing is added to the
-dock, first in it: wevvy's launcher icon, a shortcut: a tap brings the app to the front
-(or turns the phone on), and it is lit while wevvy is the app on the screen; it carries no
+dock, first in it: ceis's launcher icon, a shortcut: a tap brings the app to the front
+(or turns the phone on), and it is lit while ceis is the app on the screen; it carries no
 State Builder tab, so their script leaves it alone (`page.js` handles it, reading `front` from
-`window.__WEVVY__.state()`). Our panel sits beside the phone, two columns wide: the words
-(the status, the headline, the notice with the downloads, *Show wevvy* / *Start over*, the
+`window.__CEIS__.state()`). Our panel sits beside the phone, two columns wide: the words
+(the status, the headline, the notice with the downloads, *Show ceis* / *Start over*, the
 fine print) and the lines to try. The phone is scaled to the window's height and the panel is
 no taller than the stage, so the whole page is in view at once and nothing in it scrolls (only
 in a window shorter than about 600px do the lines scroll inside their column); below 1280px
@@ -44,10 +44,10 @@ their chrome folds under the phone, and below 1000px everything is one column, t
 its own size, and the page itself scrolls.
 
 **The phone turns itself on, and the Muse starts when a person is looking.** On this page and
-in the frame alike the phone boots as soon as the page is there and wevvy comes to the
+in the frame alike the phone boots as soon as the page is there and ceis comes to the
 front, so the first thing a visitor sees is the welcome page. Pressing *Start* is another
 matter: it starts a container on the server and takes a share of the day's model budget, so
-the page does not press it for every load. It presses it (`window.__WEVVY__.start()`, what
+the page does not press it for every load. It presses it (`window.__CEIS__.start()`, what
 the pill does) once the stage has been in view for six seconds with the tab in front, or at
 the first sign of a hand: a pointer moving over the page, a key, a touch, the wheel. It never
 presses it for a browser that says it is driven by a script (`navigator.webdriver`), nor past
@@ -63,10 +63,10 @@ still slips into Chinese now and then after Chinese screen text; the setting mak
 exception rather than the rule.
 
 **The frame on the project site.** [wevvy.in](https://wevvy.in/) opens on this page in an
-`<iframe>` of `https://demo.wevvy.dev/?embed=1`. In that mode the page has no header of its
+`<iframe>` of `https://demo.ceis.dev/?embed=1`. In that mode the page has no header of its
 own (the site's bar is above it). The site passes its language and theme on the first load
-(`&lang=zh`, `&theme=dark`) and afterwards over `postMessage` (`{type: "wevvy:lang", lang}`,
-`{type: "wevvy:theme", theme}`; only from the project site's origins), and links out of the
+(`&lang=zh`, `&theme=dark`) and afterwards over `postMessage` (`{type: "ceis:lang", lang}`,
+`{type: "ceis:theme", theme}`; only from the project site's origins), and links out of the
 page open in the top window, not inside the frame. The page lays itself out in the frame's
 height and nothing in it scrolls, so a wheel turned over the frame moves the homepage (the
 browser hands a scroll on to the parent when the frame has nowhere to go); over the phone's
@@ -78,7 +78,7 @@ and MobileGym's guide and dock cards going dark with them.
 The column beside the phone is not one list translated twice: the English set stays on the
 apps of the phone an international visitor knows by name and the Chinese set on the ones a
 Chinese visitor uses, and three ideas (the look, the memory, the reminder) are the same in
-both. MobileGym's phone has 27 apps of its own (wevvy is the 28th) and every one of them
+both. MobileGym's phone has 27 apps of its own (ceis is the 28th) and every one of them
 has an English interface (`res/strings.en.ts`), but the seeded data is Chinese: the contacts,
 the chats, the bills, the SMS threads. So the English lines go where that shows least: Spotify, Weather, Reddit,
 X, and the Messages thread where the tap that sends is the point. The Chinese set keeps to
@@ -153,20 +153,20 @@ phone lives in the visitor's tab (~400 MB of *their* memory). The server runs th
 
 | | |
 |---|---|
-| **Caddy** | HTTPS, the static site (the page at `/`, MobileGym + the wevvy app at `/phone.html`), `/api/demo/*` to the gateway, and one hostname per session |
-| **gateway** (`gateway/`) | Starts a wevvy container per visitor, relays the phone's HTTP and WebSocket to it, proxies the container's model calls to the provider with the demo key, keeps the books |
+| **Caddy** | HTTPS, the static site (the page at `/`, MobileGym + the ceis app at `/phone.html`), `/api/demo/*` to the gateway, and one hostname per session |
+| **gateway** (`gateway/`) | Starts a ceis container per visitor, relays the phone's HTTP and WebSocket to it, proxies the container's model calls to the provider with the demo key, keeps the books |
 | **sessions** | `ghcr.io/nano-muse/nanoMuse` containers on an internal Docker network with no way out; the gateway is the only thing they can reach |
 
 ```
-visitor's browser ──HTTPS──▶ Caddy ── demo.wevvy.dev ──▶ /srv/site (the page; /phone.html = MobileGym + wevvy app)
+visitor's browser ──HTTPS──▶ Caddy ── demo.ceis.dev ──▶ /srv/site (the page; /phone.html = MobileGym + ceis app)
    │  the page                   │                      └▶ /api/demo/* ──▶ gateway
-   │   └ MobileGym phone (frame) └── <id>.s.wevvy.dev ─────────────────▶ gateway ──▶ nm-<id>:8787
-   │      └ wevvy app (iframe)                                                          │
+   │   └ MobileGym phone (frame) └── <id>.s.ceis.dev ─────────────────▶ gateway ──▶ nm-<id>:8787
+   │      └ ceis app (iframe)                                                          │
    └──────────────────────────────────────────────────────────────────────────────┘        │
           models, pictures, clips ◀── gateway ◀── /llm/<id>/{main,gui}[/images/*|/api/v1/*] ◀─┘
 ```
 
-A session is one hostname (`<id>.s.wevvy.dev`) because the wevvy web app and the
+A session is one hostname (`<id>.s.ceis.dev`) because the ceis web app and the
 MobileGym module both take a server *origin*, and because the browser then keeps each session's
 token in its own `localStorage`. The wildcard certificate that needs is why Caddy is built with
 the Cloudflare DNS module. The token itself travels as the socket's first frame and in the
@@ -184,13 +184,13 @@ httpx's) carries the value: it is rewritten to `token=[redacted]` before it is w
 - **No network** from the containers except to the gateway (`docker network --internal`). The
   web fetch and shell tools cannot reach the internet from a demo session; the phone can.
 - **The demo key never leaves the server.** Containers get a per-session key and
-  `WEVVY_LLM_BASE_URL=http://gateway:8000/llm/<id>/main`; the gateway swaps the key and
+  `CEIS_LLM_BASE_URL=http://gateway:8000/llm/<id>/main`; the gateway swaps the key and
   forwards to the provider. Streaming passes through; `usage` (asked for on streams) is what
   the budget counts.
 - **Budgets:** per session `SESSION_LLM_REQUESTS` / `SESSION_LLM_TOKENS`, per day (Asia/Shanghai)
   `DAILY_LLM_REQUESTS` / `DAILY_LLM_TOKENS`. Over budget, the model call gets an OpenAI-shaped
   429 (`session_budget` / `daily_budget`) and the agent tells the visitor in those words
-  (`wevvy/server/failures.py`): the demo's share is used up, start over or install the
+  (`ceis/server/failures.py`): the demo's share is used up, start over or install the
   app, not "the provider is rate-limiting this key".
 - **Per visitor (IP):** `PER_IP_ACTIVE` sessions at once, `PER_IP_DAILY` in any 24 hours: a
   rolling window from each start, so the allowance comes back to each visitor a day after they
@@ -199,7 +199,7 @@ httpx's) carries the value: it is rewritten to `token=[redacted]` before it is w
   up (no container, a health check that never answered) is not counted. `MAX_SESSIONS`
   overall. The counts live in the gateway's memory; a restart starts them over.
 - **Who is trying it** (`DEMO_SIGNIN_REQUIRED=1`, the default): before the phone starts a Muse,
-  the visitor signs in to wevvy Cloud (the Android app's door: a code to a phone or an
+  the visitor signs in to ceis Cloud (the Android app's door: a code to a phone or an
   inbox, or the account's password) on the phone's own pages (`demo/mobilegym`,
   `SetupPage.tsx`). The gateway puts the sign-in to the relay (`POST /v1/auth/code`,
   `/verify`, `/login`, the visitor's address forwarded), notes the account in `VISITOR_DB`: its
@@ -235,20 +235,20 @@ httpx's) carries the value: it is rewritten to `token=[redacted]` before it is w
 Two lanes, two models, both set by the operator in the gateway's `.env` (`.env.example` lists
 the names; `docker-compose.yml` pins none): `main` (the model that talks to the visitor) is
 whatever `MAIN_MODEL` names on `MAIN_BASE_URL` with `MAIN_API_KEY`, and empty means the
-gateway's own default, the chat model every wevvy client starts with (`deepseek-v4.1-flash`
+gateway's own default, the chat model every ceis client starts with (`deepseek-v4.1-flash`
 on 阿里云百炼 at the time of writing); `gui` (the one that reads screens and taps; many small
 calls with a screenshot each) is `GUI_MODEL`, and empty means `qwen3.8-27b` on the main lane's
 host and key, a fixed default not derived from the chat model; set `GUI_*` to change it or to
 split the lanes across keys or providers. A chat model that takes no images (DeepSeek before
 V4.1: `deepseek-v4-pro`, `deepseek-chat`; not `deepseek-flash` or `deepseek-v4-flash`, which
-V4.1 Flash serves, the same rule as the runtime's `wevvy/llm/vision.py`) is kept away from
-screenshots (`WEVVY_LLM_VISION=off`); the operator lane still looks. What a running showcase
+V4.1 Flash serves, the same rule as the runtime's `ceis/llm/vision.py`) is kept away from
+screenshots (`CEIS_LLM_VISION=off`); the operator lane still looks. What a running showcase
 actually uses is what `GET /api/demo/info` says (`demo_model`, `gui_model`), not this page.
 
 **The capsule decides.** While the hands work on the simulated phone, an approval the run
 raises (a tap on *Pay*, *Send*, *Delete*…) is shown on the capsule over the operated app with
 **Allow once / Deny**, answered from there (`POST /api/approvals/{id}`, `scope: once`); the
-visitor is not sent back into the wevvy app for it, and the shade gets no notification on
+visitor is not sent back into the ceis app for it, and the shade gets no notification on
 top of the card. A hold, whether the agent hands the phone over (*Your turn*, the reason under it) or the
 visitor takes it from the chat (*You have the phone*), is a card with **Done**
 (`POST /api/holds/{id}/done`). Only a question a finished task left offers *Open*.
@@ -258,8 +258,8 @@ chat is the avatar studio's ([docs/avatar.md](../../docs/avatar.md)): eight pict
 candidates, then the chosen one's poses. The container speaks the OpenAI images API at its
 model's address (`…/images/generations`, `…/images/edits`); the gateway answers those two
 calls itself, on Model Studio's native multimodal endpoint with the demo key, the way
-wevvy Cloud's relay does, and tells the container the model's name
-(`WEVVY_LLM_IMAGE_MODEL`). On by itself when `MAIN_BASE_URL` is a Model Studio host
+ceis Cloud's relay does, and tells the container the model's name
+(`CEIS_LLM_IMAGE_MODEL`). On by itself when `MAIN_BASE_URL` is a Model Studio host
 (`IMAGE_MODEL=qwen-image-3.0`), off with `IMAGE_MODEL=` empty; `IMAGE_PER_SESSION` (12) and
 `DAILY_IMAGES` (400) count apart from the chat budget. A visitor's own key draws nothing
 through the gateway; `/api/demo/info` says `image_model: null` and the page greys the lines
@@ -268,7 +268,7 @@ out.
 **Clips of the chosen face** (`gateway/showcase_gateway/clips.py`): after the stills the
 studio animates the face (four short clips, one per mood) through the asynchronous video
 API, which it looks for at `[llm] video_base_url`; the gateway names the session's own model
-address there (`WEVVY_LLM_VIDEO_BASE_URL`), so the four calls of a clip land on it: the
+address there (`CEIS_LLM_VIDEO_BASE_URL`), so the four calls of a clip land on it: the
 upload policy, the first frame, the task, the polling. Model Studio wants the frame in its
 storage or at a public URL, neither of which a container without internet can manage, so the
 gateway stands in for the storage (the policy points back at it, the frame is kept a few
@@ -290,7 +290,7 @@ together may spend `TRIAL_DAILY_TOKENS` a day; each is held to `TRIAL_RPM` reque
 Trials live in SQLite on the `gateway-data` volume and survive restarts; `GET /api/trial/<id>`
 with the key shows what is left, and `/api/demo/info` carries the totals.
 
-### wevvy Web: a kept Muse per Cloud account
+### ceis Web: a kept Muse per Cloud account
 
 The showcase gives a visitor a Muse for half an hour. With `WEB_ENABLED=1` the same gateway
 gives a *person* one that stays: a kept Muse per account, for anyone who would rather not
@@ -300,13 +300,13 @@ the showcase site, the phone, so [wevvy.in/web/](https://wevvy.in/web/), which t
 project site's Caddy block hands to the gateway, stays the web entry either way. On, `/web/`
 is a sign-in page (served by the gateway; the site's Caddy block hands `/web/*` and
 `/api/web/*` over to it): an e-mail or a mobile number, then the six-digit code.
-The gateway asks wevvy Cloud for the code and checks it (`POST /v1/auth/code`,
+The gateway asks ceis Cloud for the code and checks it (`POST /v1/auth/code`,
 `/v1/auth/verify`, the visitor's address forwarded so the relay's per-address limits still
 count the right person), gets the account's key back, and starts, or wakes, the account's
 container: `nmw-<slug>` with three named volumes (`/data`, `/workspace`, `/home/muse`), on the
-`wevvy-web` network (a way out, and the relay next to it), signed in from the environment
-(`WEVVY_CLOUD_KEY`, `WEVVY_CLOUD_BASE_URL=http://wevvy-relay:8787`,
-`WEVVY_HUB_NAME=Web`, `WEVVY_ONBOARDED=1`; `wevvy/hub/service.py`,
+`ceis-web` network (a way out, and the relay next to it), signed in from the environment
+(`CEIS_CLOUD_KEY`, `CEIS_CLOUD_BASE_URL=http://ceis-relay:8787`,
+`CEIS_HUB_NAME=Web`, `CEIS_ONBOARDED=1`; `ceis/hub/service.py`,
 `_seed_from_env`). The browser is sent to `https://<slug>.<SESSION_DOMAIN>/#token=…`, the same
 door the phone's QR code opens, and the runtime there makes the Cloud its model on first
 start and takes its place on the hub as one of the account's devices, so the phone can ask
@@ -337,16 +337,16 @@ idles at ~150 MB), a domain on Cloudflare, and a 百炼 key (or any OpenAI-compa
 that takes images).
 
 ```bash
-# 1. DNS on Cloudflare:   demo.wevvy.dev  A  <server>   DNS only (see the note on the proxy)
-#                         *.s.wevvy.dev   A  <server>   DNS only; sessions are WebSockets to Caddy
+# 1. DNS on Cloudflare:   demo.ceis.dev  A  <server>   DNS only (see the note on the proxy)
+#                         *.s.ceis.dev   A  <server>   DNS only; sessions are WebSockets to Caddy
 #    Cloudflare → My Profile → API Tokens: Zone → DNS → Edit and Zone → Zone → Read on the zone.
 
 # 2. the code
-git clone https://github.com/nano-muse/nanoMuse.git && cd wevvy/demo/showcase
+git clone https://github.com/nano-muse/nanoMuse.git && cd ceis/demo/showcase
 cp .env.example .env && $EDITOR .env          # names, ACME_EMAIL, CLOUDFLARE_API_TOKEN, keys
 
 # 3. what the sessions run
-docker pull ghcr.io/nano-muse/nanoMuse:latest  # or: docker build -t wevvy:latest ../.. && set WEVVY_IMAGE
+docker pull ghcr.io/nano-muse/nanoMuse:latest  # or: docker build -t ceis:latest ../.. && set CEIS_IMAGE
 
 # 4. (optional, 1.9 GB) MobileGym's companion data: app media and home-screen widgets.
 #    Without it the phone works but media apps render empty and two home widgets show an error.
@@ -360,9 +360,9 @@ docker compose up -d --build
 docker compose logs -f gateway
 ```
 
-Open `https://demo.wevvy.dev`: the phone turns itself on with wevvy in front, and a
+Open `https://demo.ceis.dev`: the phone turns itself on with ceis in front, and a
 Muse starts after the sign-in (or by itself once the page has been in view for a while, see
-above). `curl https://demo.wevvy.dev/api/demo/info` shows sessions in use and today's spend.
+above). `curl https://demo.ceis.dev/api/demo/info` shows sessions in use and today's spend.
 
 Updating: `git pull && docker pull ghcr.io/nano-muse/nanoMuse:latest && docker compose pull && docker compose up -d`.
 Sessions in flight end when the gateway restarts; visitors get *Your Muse on the showcase server
@@ -424,17 +424,17 @@ build is still running, or its installer did not arrive whole, the feed stays on
 release (`index.json` says which under `win`). The site block serves the directory at [wevvy.in/dl/](https://wevvy.in/dl/) with a
 listing, and the site's download switch ("GitHub / 国内镜像") rewrites its links to
 `https://wevvy.in/dl/<tag>/<file>`. About 1.3 GB per release; `MIRROR_RELEASES_KEEP` in
-`/etc/default/wevvy-site-mirror` changes how many are kept. `install.sh` installs this too and
-starts the first fetch in the background (`journalctl -u wevvy-release-mirror` to watch it).
+`/etc/default/ceis-site-mirror` changes how many are kept. `install.sh` installs this too and
+starts the first fetch in the background (`journalctl -u ceis-release-mirror` to watch it).
 
 And it counts: the site block writes a JSON access log (`logs/caddy/`, rolled, kept seven days),
-and `mirror/traffic.py` (`wevvy-traffic`, every ten minutes) turns what was added since the
-last run into daily counts in `/var/lib/wevvy-traffic/traffic.db`: page views, visitors (a
+and `mirror/traffic.py` (`ceis-traffic`, every ten minutes) turns what was added since the
+last run into daily counts in `/var/lib/ceis-traffic/traffic.db`: page views, visitors (a
 hash of address and browser under a salt made for the day and dropped two days later; no address
 is ever written), crawlers, downloads per file from `/dl/`, referring sites, the pages; once a run
 it also records the repository's stars and GitHub's own release download counts. The relay
-(cloud/deploy/wevvy-hk) mounts the database read-only and shows it on its operator page;
-`wevvy-traffic --report` prints the last two weeks in the terminal.
+(cloud/deploy/ceis-hk) mounts the database read-only and shows it on its operator page;
+`ceis-traffic --report` prints the last two weeks in the terminal.
 
 ### Running it on your machine
 
@@ -442,12 +442,12 @@ The gateway runs anywhere Docker does; Caddy is only for TLS and names. Browsers
 `*.localhost` to the loopback, so:
 
 ```bash
-docker network create --internal wevvy-sessions
-docker build -t wevvy:local ../..                        # the sessions' image
-site/build.sh                                              # clones MobileGym, builds with VITE_WEVVY_DEMO=/api/demo, adds the page
+docker network create --internal ceis-sessions
+docker build -t ceis:local ../..                        # the sessions' image
+site/build.sh                                              # clones MobileGym, builds with VITE_CEIS_DEMO=/api/demo, adds the page
 cd gateway && pip install -e '.[dev]' && cd ..
 PUBLIC_SCHEME=http SITE_HOST=localhost SESSION_DOMAIN=s.localhost PUBLIC_PORT=:8000 \
-WEVVY_IMAGE=wevvy:local SITE_DIR=$PWD/site/dist \
+CEIS_IMAGE=ceis:local SITE_DIR=$PWD/site/dist \
 MAIN_API_KEY=sk-... python -m showcase_gateway              # http://localhost:8000
 ```
 

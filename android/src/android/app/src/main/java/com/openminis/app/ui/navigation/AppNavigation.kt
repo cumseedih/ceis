@@ -93,7 +93,7 @@ object Routes {
     const val SETTINGS = "settings"
     const val PROVIDER_LIST = "providers"
     const val ADD_PROVIDER = "add_provider"
-    // wevvy: the same form, pre-filled for a known vendor (`bailian` = Alibaba Cloud Bailian)
+    // ceis: the same form, pre-filled for a known vendor (`bailian` = Alibaba Cloud Bailian)
     const val ADD_PROVIDER_PATTERN = "add_provider?preset={preset}"
     fun addProvider(preset: String?): String = if (preset.isNullOrBlank()) ADD_PROVIDER else "add_provider?preset=$preset"
     const val PROVIDER_DETAIL = "provider/{instanceId}"
@@ -246,18 +246,18 @@ fun AppNavigation(
         (context.applicationContext as com.openminis.app.MinisApp).mountedFoldersStore
     }
 
-    // wevvy: whether SESSION_LIST renders the home shell (compact windows) — decided here,
+    // ceis: whether SESSION_LIST renders the home shell (compact windows) — decided here,
     // ahead of the deep-link effects, and published for the non-composable entry points
     // (MainActivity's warm deep links). Written during composition on purpose so the effects
     // below already see it. Wide windows keep the upstream list/detail behaviour.
     val nmHomeActive = !shouldUseTwoPane()
-    io.github.wevvy.ui.home.HomeShell.active = nmHomeActive
+    io.github.ceis.ui.home.HomeShell.active = nmHomeActive
 
     // App-icon quick action (New chat / Voice / Camera): the draft's id, decided once per
     // launch, with the voice / camera action seeded so ChatScreen consumes it on its first
     // LaunchedEffect tick. Upstream mounted the NavHost straight into chat/<draft>; in compact
     // windows the home shell opens the draft itself (see the deep-link effect and the
-    // startDestination block below). wevvy: remembered, so a recomposition does not mint a
+    // startDestination block below). ceis: remembered, so a recomposition does not mint a
     // new id and re-seed the action.
     val quickActionSession: String? = remember(initialDeepLink) {
         when (initialDeepLink) {
@@ -281,8 +281,8 @@ fun AppNavigation(
                 navController.safeNavigate(Routes.terminal(initialDeepLink.initCommand))
             }
             is DeepLinkAction.OpenSession -> {
-                // wevvy: in compact windows the home shell shows the chat itself.
-                if (io.github.wevvy.ui.home.HomeShell.openSession(navController, initialDeepLink.sessionId)) {
+                // ceis: in compact windows the home shell shows the chat itself.
+                if (io.github.ceis.ui.home.HomeShell.openSession(navController, initialDeepLink.sessionId)) {
                     return@LaunchedEffect
                 }
                 // T-double-chat-fix: on process-death recreation NavController
@@ -320,10 +320,10 @@ fun AppNavigation(
             is DeepLinkAction.OpenPermissionSettings -> {
                 navController.safeNavigate(Routes.PERMISSIONS)
             }
-            // wevvy: a cold start from the feed's notification: the shell mounts on its own and
+            // ceis: a cold start from the feed's notification: the shell mounts on its own and
             // picks the tab up from the bus
             is DeepLinkAction.OpenHomeTab -> {
-                io.github.wevvy.ui.home.HomeShell.openTab(navController, initialDeepLink.tab)
+                io.github.ceis.ui.home.HomeShell.openTab(navController, initialDeepLink.tab)
             }
             // OpenHtmlPreview is handled by setting startDestination
             // (see below) so the NavHost mounts directly into the right
@@ -339,9 +339,9 @@ fun AppNavigation(
                 // Navigation handled by startDestination = chat/<__new__…>
                 // when the launch intent carries one of these actions.
                 // Nothing to do here — see startDestination block below.
-                // wevvy: except in compact windows, where the home shell opens the draft.
+                // ceis: except in compact windows, where the home shell opens the draft.
                 if (nmHomeActive && quickActionSession != null) {
-                    io.github.wevvy.ui.home.HomeShell.openSession(navController, quickActionSession)
+                    io.github.ceis.ui.home.HomeShell.openSession(navController, quickActionSession)
                 }
             }
             else -> {}
@@ -358,15 +358,15 @@ fun AppNavigation(
     // regardless of mode 1 / 2 / 0. Wait for the start destination to
     // settle into RESUMED before navigating; for mode 3 (Home) we don't
     // need to navigate at all so we can skip the wait entirely.
-    // wevvy: in compact windows SESSION_LIST renders the home shell
-    // (io.github.wevvy.ui.home), which opens on the main chat by itself —
+    // ceis: in compact windows SESSION_LIST renders the home shell
+    // (io.github.ceis.ui.home), which opens on the main chat by itself —
     // the launch-session resolver and the warm-share fallback below step
     // aside for it (`nmHomeActive`, decided above). Wide windows keep the
     // upstream list/detail behaviour.
     LaunchedEffect(Unit) {
         val hasDeepLink = initialDeepLink != null && initialDeepLink !is DeepLinkAction.Unknown
         if (hasDeepLink) return@LaunchedEffect
-        if (nmHomeActive) return@LaunchedEffect // wevvy
+        if (nmHomeActive) return@LaunchedEffect // ceis
         val hasPendingShare =
             com.openminis.app.share.ShareCoordinator.bufferVersion.value > 0
         val rawMode = getAppearancePrefs(context).getInt(KEY_LAUNCH_SESSION, 0)
@@ -491,7 +491,7 @@ fun AppNavigation(
     LaunchedEffect(shareBufferVersion) {
         if (shareBufferVersion == 0) return@LaunchedEffect
         val current = navController.currentDestination?.route ?: return@LaunchedEffect
-        // wevvy: the home shell has a ChatScreen mounted that drains the buffer itself.
+        // ceis: the home shell has a ChatScreen mounted that drains the buffer itself.
         if (current == Routes.SESSION_LIST && !nmHomeActive) {
             navController.safeNavigate(Routes.chat("__new__${java.util.UUID.randomUUID()}")) {
                 popUpTo(Routes.SESSION_LIST) { inclusive = false }
@@ -510,7 +510,7 @@ fun AppNavigation(
     // draft chat, seeding the pending action so ChatScreen consumes it on
     // its first LaunchedEffect tick. Mirrors the htmlShortcut path —
     // avoids a sessions-list flash and a duplicate back-stack entry.
-    // wevvy: the draft id is minted (and the action seeded) in `quickActionSession` above;
+    // ceis: the draft id is minted (and the action seeded) in `quickActionSession` above;
     // in compact windows the home shell opens it, so the NavHost starts on SESSION_LIST.
     val quickActionStart: String? = quickActionSession?.takeIf { !nmHomeActive }?.let { Routes.chat(it) }
     val startDestination = when {
@@ -593,10 +593,10 @@ fun AppNavigation(
         // them keeps working unchanged. On a phone the scaffold resolves to a
         // single pane, so those pushes look and behave exactly as before.
         composable(Routes.SESSION_LIST) {
-            // wevvy: compact windows open on the home shell (main chat +
+            // ceis: compact windows open on the home shell (main chat +
             // bottom tabs); the upstream split keeps wide windows.
             if (!shouldUseTwoPane()) {
-                io.github.wevvy.ui.home.WevvyHome(
+                io.github.ceis.ui.home.CeisHome(
                     navController = navController,
                     chatRepository = chatRepository,
                     providerRepository = providerRepository,
@@ -616,194 +616,194 @@ fun AppNavigation(
             )
         }
 
-        // wevvy: the agent's system files (SOUL / USER / MEMORY / feed
+        // ceis: the agent's system files (SOUL / USER / MEMORY / feed
         // preferences / HEARTBEAT), one file page, and the memory import.
-        composable(io.github.wevvy.ui.sysfiles.ROUTE_SYSTEM_FILES) {
-            io.github.wevvy.ui.sysfiles.SystemFilesScreen(
+        composable(io.github.ceis.ui.sysfiles.ROUTE_SYSTEM_FILES) {
+            io.github.ceis.ui.sysfiles.SystemFilesScreen(
                 onBack = { navController.safePopBackStack() },
-                onOpen = { kind -> navController.safeNavigate(io.github.wevvy.ui.sysfiles.systemFileRoute(kind)) },
-                onImport = { navController.safeNavigate(io.github.wevvy.ui.sysfiles.ROUTE_MEMORY_IMPORT) },
+                onOpen = { kind -> navController.safeNavigate(io.github.ceis.ui.sysfiles.systemFileRoute(kind)) },
+                onImport = { navController.safeNavigate(io.github.ceis.ui.sysfiles.ROUTE_MEMORY_IMPORT) },
                 onOpenMemory = { navController.safeNavigate(Routes.MEMORY) },
             )
         }
         composable(
-            route = io.github.wevvy.ui.sysfiles.ROUTE_SYSTEM_FILE,
+            route = io.github.ceis.ui.sysfiles.ROUTE_SYSTEM_FILE,
             arguments = listOf(navArgument("key") { type = NavType.StringType }),
         ) { entry ->
             val kind = entry.arguments?.getString("key")
-                ?.let { k -> io.github.wevvy.sysfiles.SystemFiles.entries.firstOrNull { it.name == k } }
+                ?.let { k -> io.github.ceis.sysfiles.SystemFiles.entries.firstOrNull { it.name == k } }
                 ?: return@composable
-            io.github.wevvy.ui.sysfiles.SystemFileScreen(
+            io.github.ceis.ui.sysfiles.SystemFileScreen(
                 kind = kind,
                 onBack = { navController.safePopBackStack() },
                 onOpenMemory = { navController.safeNavigate(Routes.MEMORY) },
                 onOpenRoutines = { navController.safeNavigate(Routes.SCHEDULED_TASKS) },
             )
         }
-        composable(io.github.wevvy.ui.sysfiles.ROUTE_MEMORY_IMPORT) {
-            io.github.wevvy.ui.sysfiles.MemoryImportScreen(onBack = { navController.safePopBackStack() })
+        composable(io.github.ceis.ui.sysfiles.ROUTE_MEMORY_IMPORT) {
+            io.github.ceis.ui.sysfiles.MemoryImportScreen(onBack = { navController.safePopBackStack() })
         }
-        // wevvy: the face — generate, pick, pose.
-        composable(io.github.wevvy.ui.avatar.ROUTE_AVATAR_STUDIO) {
-            io.github.wevvy.ui.avatar.AvatarStudioScreen(
+        // ceis: the face — generate, pick, pose.
+        composable(io.github.ceis.ui.avatar.ROUTE_AVATAR_STUDIO) {
+            io.github.ceis.ui.avatar.AvatarStudioScreen(
                 onBack = { navController.safePopBackStack() },
                 onOpenSoul = { navController.safeNavigate(Routes.SOUL) },
-                onOpenMediaModels = { navController.safeNavigate(io.github.wevvy.ui.media.ROUTE_MEDIA_MODELS) },
+                onOpenMediaModels = { navController.safeNavigate(io.github.ceis.ui.media.ROUTE_MEDIA_MODELS) },
             )
         }
-        // wevvy: Settings → Models — the four slots (chat, the screen, pictures, clips), each
+        // ceis: Settings → Models — the four slots (chat, the screen, pictures, clips), each
         // row a picker; and the "Use it for" card after a provider of the person's own is saved.
-        composable(io.github.wevvy.ui.models.ROUTE_MODELS) {
-            io.github.wevvy.ui.models.ModelsScreen(
+        composable(io.github.ceis.ui.models.ROUTE_MODELS) {
+            io.github.ceis.ui.models.ModelsScreen(
                 onBack = { navController.safePopBackStack() },
-                onPick = { slot -> navController.safeNavigate(io.github.wevvy.ui.models.modelPickRoute(slot)) },
+                onPick = { slot -> navController.safeNavigate(io.github.ceis.ui.models.modelPickRoute(slot)) },
                 onAddProvider = { navController.safeNavigate(Routes.ADD_PROVIDER) },
-                onOpenMedia = { navController.safeNavigate(io.github.wevvy.ui.media.ROUTE_MEDIA_MODELS) },
+                onOpenMedia = { navController.safeNavigate(io.github.ceis.ui.media.ROUTE_MEDIA_MODELS) },
             )
         }
         composable(
-            route = io.github.wevvy.ui.models.ROUTE_MODEL_PICK,
+            route = io.github.ceis.ui.models.ROUTE_MODEL_PICK,
             arguments = listOf(navArgument("slot") { type = NavType.StringType }),
         ) { backStackEntry ->
-            val slot = io.github.wevvy.models.ModelSlots.Slot.byKey(backStackEntry.arguments?.getString("slot")) ?: return@composable
-            io.github.wevvy.ui.models.SlotPickerScreen(
+            val slot = io.github.ceis.models.ModelSlots.Slot.byKey(backStackEntry.arguments?.getString("slot")) ?: return@composable
+            io.github.ceis.ui.models.SlotPickerScreen(
                 slot = slot,
                 onBack = { navController.safePopBackStack() },
                 onAddProvider = { navController.safeNavigate(Routes.ADD_PROVIDER) },
             )
         }
         composable(
-            route = io.github.wevvy.ui.models.ROUTE_USE_IT_FOR,
+            route = io.github.ceis.ui.models.ROUTE_USE_IT_FOR,
             arguments = listOf(navArgument("instanceId") { type = NavType.StringType }),
         ) { backStackEntry ->
             val instanceId = backStackEntry.arguments?.getString("instanceId") ?: return@composable
-            io.github.wevvy.ui.models.UseItForScreen(
+            io.github.ceis.ui.models.UseItForScreen(
                 instanceId = instanceId,
                 onDone = { navController.safePopBackStack() },
             )
         }
-        // wevvy: the three models — chat, image, video — and what stops without each.
-        composable(io.github.wevvy.ui.media.ROUTE_MEDIA_MODELS) {
-            io.github.wevvy.ui.media.MediaModelsScreen(
+        // ceis: the three models — chat, image, video — and what stops without each.
+        composable(io.github.ceis.ui.media.ROUTE_MEDIA_MODELS) {
+            io.github.ceis.ui.media.MediaModelsScreen(
                 onBack = { navController.safePopBackStack() },
                 onOpenModelGroups = { navController.safeNavigate(Routes.MODEL_GROUPS) },
                 onOpenProviders = { navController.safeNavigate(Routes.PROVIDER_LIST) },
             )
         }
-        // wevvy: wevvy Cloud — sign in with a phone/e-mail code for a starter allowance,
+        // ceis: ceis Cloud — sign in with a phone/e-mail code for a starter allowance,
         // and the account page (balance, sign out) behind Settings.
-        composable(io.github.wevvy.ui.cloud.ROUTE_CLOUD_SIGN_IN) {
-            io.github.wevvy.ui.cloud.CloudSignInScreen(
+        composable(io.github.ceis.ui.cloud.ROUTE_CLOUD_SIGN_IN) {
+            io.github.ceis.ui.cloud.CloudSignInScreen(
                 onBack = { navController.safePopBackStack() },
                 onSignedIn = { navController.safePopBackStack() },
-                onOpenSettings = { navController.safeNavigate(Routes.SETTINGS) }, // wevvy: the door's gear opens Settings
+                onOpenSettings = { navController.safeNavigate(Routes.SETTINGS) }, // ceis: the door's gear opens Settings
             )
         }
-        composable(io.github.wevvy.ui.cloud.ROUTE_CLOUD_ACCOUNT) {
-            io.github.wevvy.ui.cloud.CloudAccountScreen(
+        composable(io.github.ceis.ui.cloud.ROUTE_CLOUD_ACCOUNT) {
+            io.github.ceis.ui.cloud.CloudAccountScreen(
                 onBack = { navController.safePopBackStack() },
-                onSignIn = { navController.safeNavigate(io.github.wevvy.ui.cloud.ROUTE_CLOUD_SIGN_IN) },
+                onSignIn = { navController.safeNavigate(io.github.ceis.ui.cloud.ROUTE_CLOUD_SIGN_IN) },
                 onOpenProvider = { id -> navController.safeNavigate(Routes.providerDetail(id)) },
                 onOpenModelGroups = { navController.safeNavigate(Routes.MODEL_GROUPS) },
-                onOpenDataControls = { navController.safeNavigate(io.github.wevvy.ui.cloud.ROUTE_DATA_CONTROLS) },
-                // wevvy: "Ask this device" — back to the chat with "@<name> " in the composer
-                onAskDevice = { name -> io.github.wevvy.ui.home.HomeShell.prefill(navController, "@$name ") },
+                onOpenDataControls = { navController.safeNavigate(io.github.ceis.ui.cloud.ROUTE_DATA_CONTROLS) },
+                // ceis: "Ask this device" — back to the chat with "@<name> " in the composer
+                onAskDevice = { name -> io.github.ceis.ui.home.HomeShell.prefill(navController, "@$name ") },
             )
         }
-        // wevvy: Settings → Data controls — the switch over what wevvy Cloud keeps of the chats.
-        composable(io.github.wevvy.ui.cloud.ROUTE_DATA_CONTROLS) {
-            io.github.wevvy.ui.cloud.DataControlsScreen(
+        // ceis: Settings → Data controls — the switch over what ceis Cloud keeps of the chats.
+        composable(io.github.ceis.ui.cloud.ROUTE_DATA_CONTROLS) {
+            io.github.ceis.ui.cloud.DataControlsScreen(
                 onBack = { navController.safePopBackStack() },
-                onSignIn = { navController.safeNavigate(io.github.wevvy.ui.cloud.ROUTE_CLOUD_SIGN_IN) },
+                onSignIn = { navController.safeNavigate(io.github.ceis.ui.cloud.ROUTE_CLOUD_SIGN_IN) },
             )
         }
-        // wevvy: Settings → Network — the HTTP proxy for own providers and the ChatGPT plan.
-        composable(io.github.wevvy.ui.net.ROUTE_NETWORK) {
-            io.github.wevvy.ui.net.NetworkScreen(onBack = { navController.safePopBackStack() })
+        // ceis: Settings → Network — the HTTP proxy for own providers and the ChatGPT plan.
+        composable(io.github.ceis.ui.net.ROUTE_NETWORK) {
+            io.github.ceis.ui.net.NetworkScreen(onBack = { navController.safePopBackStack() })
         }
-        // wevvy: the phone's screen as a hand — the switch, what it needs, the screen model.
-        composable(io.github.wevvy.ui.hands.ROUTE_HANDS) {
-            io.github.wevvy.ui.hands.HandsScreen(
+        // ceis: the phone's screen as a hand — the switch, what it needs, the screen model.
+        composable(io.github.ceis.ui.hands.ROUTE_HANDS) {
+            io.github.ceis.ui.hands.HandsScreen(
                 onBack = { navController.safePopBackStack() },
                 onOpenProviders = { navController.safeNavigate(Routes.PROVIDER_LIST) },
-                onOpenHandsModel = { navController.safeNavigate(io.github.wevvy.ui.models.modelPickRoute(io.github.wevvy.models.ModelSlots.Slot.HANDS)) },
+                onOpenHandsModel = { navController.safeNavigate(io.github.ceis.ui.models.modelPickRoute(io.github.ceis.models.ModelSlots.Slot.HANDS)) },
             )
         }
-        // wevvy: the account's computers, and how one joins.
-        composable(io.github.wevvy.ui.reach.ROUTE_COMPUTERS) {
-            io.github.wevvy.ui.reach.ComputersScreen(
+        // ceis: the account's computers, and how one joins.
+        composable(io.github.ceis.ui.reach.ROUTE_COMPUTERS) {
+            io.github.ceis.ui.reach.ComputersScreen(
                 onBack = { navController.safePopBackStack() },
-                onOpenAccount = { navController.safeNavigate(io.github.wevvy.ui.cloud.ROUTE_CLOUD_ACCOUNT) },
+                onOpenAccount = { navController.safeNavigate(io.github.ceis.ui.cloud.ROUTE_CLOUD_ACCOUNT) },
             )
         }
-        // wevvy: the services the agent can be let into — the connectors catalogue, each a remote MCP server.
-        composable(io.github.wevvy.ui.connectors.ROUTE_CONNECTORS) {
-            io.github.wevvy.ui.connectors.ConnectorsScreen(
+        // ceis: the services the agent can be let into — the connectors catalogue, each a remote MCP server.
+        composable(io.github.ceis.ui.connectors.ROUTE_CONNECTORS) {
+            io.github.ceis.ui.connectors.ConnectorsScreen(
                 onBack = { navController.safePopBackStack() },
                 onOpenMcp = { navController.safeNavigate(Routes.MCP) },
             )
         }
-        // wevvy: the coding agents (Cursor, Codex, Claude Code) on the account's computers.
-        composable(io.github.wevvy.ui.coding.ROUTE_CODING) {
-            io.github.wevvy.ui.coding.CodingScreen(
+        // ceis: the coding agents (Cursor, Codex, Claude Code) on the account's computers.
+        composable(io.github.ceis.ui.coding.ROUTE_CODING) {
+            io.github.ceis.ui.coding.CodingScreen(
                 onBack = { navController.safePopBackStack() },
-                onOpenDevices = { navController.safeNavigate(io.github.wevvy.ui.cloud.ROUTE_CLOUD_ACCOUNT) },
+                onOpenDevices = { navController.safeNavigate(io.github.ceis.ui.cloud.ROUTE_CLOUD_ACCOUNT) },
             )
         }
-        // wevvy: the agent's page behind the face — today's activity, approvals, daily,
+        // ceis: the agent's page behind the face — today's activity, approvals, daily,
         // soul & memory; the pen offers "Change avatar" (back to the chat, pre-typed) and
         // "Edit name".
-        composable(io.github.wevvy.ui.profile.ROUTE_AGENT_PROFILE) {
+        composable(io.github.ceis.ui.profile.ROUTE_AGENT_PROFILE) {
             val ctx = LocalContext.current
-            io.github.wevvy.ui.profile.AgentProfileScreen(
+            io.github.ceis.ui.profile.AgentProfileScreen(
                 chatRepository = chatRepository,
                 onBack = { navController.safePopBackStack() },
                 onEditName = { navController.safeNavigate(Routes.SOUL) },
                 onChangeAvatar = {
-                    io.github.wevvy.ui.home.HomeBus.prefillComposer(ctx.getString(com.openminis.app.R.string.nm_profile_change_avatar_prefill))
+                    io.github.ceis.ui.home.HomeBus.prefillComposer(ctx.getString(com.openminis.app.R.string.nm_profile_change_avatar_prefill))
                     navController.safePopBackStack()
                 },
-                onOpenAvatarStudio = { navController.safeNavigate(io.github.wevvy.ui.avatar.ROUTE_AVATAR_STUDIO) },
+                onOpenAvatarStudio = { navController.safeNavigate(io.github.ceis.ui.avatar.ROUTE_AVATAR_STUDIO) },
                 onOpenSession = { id ->
-                    io.github.wevvy.ui.home.HomeBus.showSession(id)
+                    io.github.ceis.ui.home.HomeBus.showSession(id)
                     navController.safePopBackStack()
                 },
                 onOpenPermissions = { navController.safeNavigate(Routes.PERMISSIONS) },
                 onOpenRoutines = { navController.safeNavigate(Routes.SCHEDULED_TASKS) },
-                onOpenSystemFile = { kind -> navController.safeNavigate(io.github.wevvy.ui.sysfiles.systemFileRoute(kind)) },
+                onOpenSystemFile = { kind -> navController.safeNavigate(io.github.ceis.ui.sysfiles.systemFileRoute(kind)) },
             )
         }
 
-        // wevvy: the full OpenMinis session list (folders, search, bulk
+        // ceis: the full OpenMinis session list (folders, search, bulk
         // actions), one tap behind the drawer's archive glyph. Picking a chat
         // hands it to the home shell underneath.
-        // wevvy: the template conversation list (Figma Chat List), fed by the
+        // ceis: the template conversation list (Figma Chat List), fed by the
         // app's real session store. Picking a chat hands it to the home shell
         // underneath; the compose button starts a new one.
-        composable(io.github.wevvy.ui.home.ROUTE_MESSAGES) {
-            io.github.wevvy.ui.chat.NmMessagesScreen(
+        composable(io.github.ceis.ui.home.ROUTE_MESSAGES) {
+            io.github.ceis.ui.chat.NmMessagesScreen(
                 chatRepository = chatRepository,
                 onSessionClick = { id ->
-                    io.github.wevvy.ui.home.HomeBus.showSession(id)
+                    io.github.ceis.ui.home.HomeBus.showSession(id)
                     navController.safePopBackStack()
                 },
                 onNewChat = {
-                    io.github.wevvy.ui.home.HomeBus.showSession("__new__${java.util.UUID.randomUUID()}")
+                    io.github.ceis.ui.home.HomeBus.showSession("__new__${java.util.UUID.randomUUID()}")
                     navController.safePopBackStack()
                 },
             )
         }
 
-        composable(io.github.wevvy.ui.home.ROUTE_ALL_CHATS) {
+        composable(io.github.ceis.ui.home.ROUTE_ALL_CHATS) {
             com.openminis.app.ui.sessions.SessionListScreen(
                 chatRepository = chatRepository,
                 providerRepository = providerRepository,
                 onSessionClick = { id ->
-                    io.github.wevvy.ui.home.HomeBus.showSession(id)
+                    io.github.ceis.ui.home.HomeBus.showSession(id)
                     navController.safePopBackStack()
                 },
                 onNewChat = { id ->
-                    io.github.wevvy.ui.home.HomeBus.showSession(id)
+                    io.github.ceis.ui.home.HomeBus.showSession(id)
                     navController.safePopBackStack()
                 },
                 onSettingsClick = { navController.safeNavigate(Routes.SETTINGS) },
@@ -835,58 +835,58 @@ fun AppNavigation(
             val settingsCtx = LocalContext.current
             SettingsScreen(
                 onBack = { navController.safePopBackStack() },
-                onConnectorsClick = { navController.safeNavigate(io.github.wevvy.ui.connectors.ROUTE_CONNECTORS) }, // wevvy
-                onWalletClick = { navController.safeNavigate(io.github.wevvy.ui.cloud.ROUTE_CLOUD_ACCOUNT) }, // wevvy
-                // wevvy: the usage card's Upgrade goes to the account page, which shows the
+                onConnectorsClick = { navController.safeNavigate(io.github.ceis.ui.connectors.ROUTE_CONNECTORS) }, // ceis
+                onWalletClick = { navController.safeNavigate(io.github.ceis.ui.cloud.ROUTE_CLOUD_ACCOUNT) }, // ceis
+                // ceis: the usage card's Upgrade goes to the account page, which shows the
                 // real ways to get more allowance (invites, one's own key); there is no
                 // checkout flow, so this is the honest destination rather than a dead button.
-                onUpgradeClick = { navController.safeNavigate(io.github.wevvy.ui.cloud.ROUTE_CLOUD_ACCOUNT) }, // wevvy
-                onCredentialsClick = { navController.safeNavigate(Routes.PROVIDER_LIST) }, // wevvy: the app's own-key credential workflows
+                onUpgradeClick = { navController.safeNavigate(io.github.ceis.ui.cloud.ROUTE_CLOUD_ACCOUNT) }, // ceis
+                onCredentialsClick = { navController.safeNavigate(Routes.PROVIDER_LIST) }, // ceis: the app's own-key credential workflows
                 onPermissionsClick = { navController.safeNavigate(Routes.PERMISSIONS) },
-                onMessagingClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_STATUS_MESSAGING) }, // wevvy
-                onDevicesClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_HUB_DEVICES) }, // wevvy
+                onMessagingClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_STATUS_MESSAGING) }, // ceis
+                onDevicesClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_HUB_DEVICES) }, // ceis
                 onNotificationsClick = { navController.safeNavigate(Routes.BACKGROUND) },
                 onAppearanceClick = { navController.safeNavigate(Routes.APPEARANCE) },
-                onAppLockClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_STATUS_APPLOCK) }, // wevvy
-                onDefaultAssistantClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_HUB_ASSISTANT) }, // wevvy
-                onHomeScreenClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_STATUS_HOMESCREEN) }, // wevvy
-                onRedeemClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_STATUS_REDEEM) }, // wevvy
-                onDataControlsClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_HUB_DATA) }, // wevvy
-                onReportIssueClick = { openExternalUrl(settingsCtx, buildBugReportUrl()) }, // wevvy
-                onHelpClick = { navController.safeNavigate(Routes.ABOUT) }, // wevvy
-                onAppUpdatesClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_APP_UPDATES) }, // wevvy
-                onLegalInfoClick = { navController.safeNavigate(io.github.wevvy.ui.settings.ROUTE_SETTINGS_HUB_LEGAL) }, // wevvy
+                onAppLockClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_STATUS_APPLOCK) }, // ceis
+                onDefaultAssistantClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_HUB_ASSISTANT) }, // ceis
+                onHomeScreenClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_STATUS_HOMESCREEN) }, // ceis
+                onRedeemClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_STATUS_REDEEM) }, // ceis
+                onDataControlsClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_HUB_DATA) }, // ceis
+                onReportIssueClick = { openExternalUrl(settingsCtx, buildBugReportUrl()) }, // ceis
+                onHelpClick = { navController.safeNavigate(Routes.ABOUT) }, // ceis
+                onAppUpdatesClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_APP_UPDATES) }, // ceis
+                onLegalInfoClick = { navController.safeNavigate(io.github.ceis.ui.settings.ROUTE_SETTINGS_HUB_LEGAL) }, // ceis
             )
         }
 
-        // wevvy: the 17-entry settings structure's sub-hubs, status pages and app updates.
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_HUB_DEVICES) {
-            io.github.wevvy.ui.settings.DevicesHubScreen(
+        // ceis: the 17-entry settings structure's sub-hubs, status pages and app updates.
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_HUB_DEVICES) {
+            io.github.ceis.ui.settings.DevicesHubScreen(
                 onBack = { navController.safePopBackStack() },
-                onComputersClick = { navController.safeNavigate(io.github.wevvy.ui.reach.ROUTE_COMPUTERS) },
-                onCodingClick = { navController.safeNavigate(io.github.wevvy.ui.coding.ROUTE_CODING) },
-                onHandsClick = { navController.safeNavigate(io.github.wevvy.ui.hands.ROUTE_HANDS) },
+                onComputersClick = { navController.safeNavigate(io.github.ceis.ui.reach.ROUTE_COMPUTERS) },
+                onCodingClick = { navController.safeNavigate(io.github.ceis.ui.coding.ROUTE_CODING) },
+                onHandsClick = { navController.safeNavigate(io.github.ceis.ui.hands.ROUTE_HANDS) },
             )
         }
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_HUB_ASSISTANT) {
-            io.github.wevvy.ui.settings.AssistantHubScreen(
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_HUB_ASSISTANT) {
+            io.github.ceis.ui.settings.AssistantHubScreen(
                 onBack = { navController.safePopBackStack() },
-                onModelsClick = { navController.safeNavigate(io.github.wevvy.ui.models.ROUTE_MODELS) },
+                onModelsClick = { navController.safeNavigate(io.github.ceis.ui.models.ROUTE_MODELS) },
                 onSoulClick = { navController.safeNavigate(Routes.SOUL) },
-                onAvatarClick = { navController.safeNavigate(io.github.wevvy.ui.avatar.ROUTE_AVATAR_STUDIO) },
+                onAvatarClick = { navController.safeNavigate(io.github.ceis.ui.avatar.ROUTE_AVATAR_STUDIO) },
                 onProvidersClick = { navController.safeNavigate(Routes.PROVIDER_LIST) },
                 onEnvVarsClick = { navController.safeNavigate(Routes.ENV_VARS) },
-                onNetworkClick = { navController.safeNavigate(io.github.wevvy.ui.net.ROUTE_NETWORK) },
+                onNetworkClick = { navController.safeNavigate(io.github.ceis.ui.net.ROUTE_NETWORK) },
                 onSkillsClick = { navController.safeNavigate(Routes.SKILLS) },
                 onUsageClick = { navController.safeNavigate(Routes.USAGE_STATS) },
             )
         }
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_HUB_DATA) {
-            io.github.wevvy.ui.settings.DataHubScreen(
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_HUB_DATA) {
+            io.github.ceis.ui.settings.DataHubScreen(
                 onBack = { navController.safePopBackStack() },
-                onDataControlsClick = { navController.safeNavigate(io.github.wevvy.ui.cloud.ROUTE_DATA_CONTROLS) },
+                onDataControlsClick = { navController.safeNavigate(io.github.ceis.ui.cloud.ROUTE_DATA_CONTROLS) },
                 onMemoryClick = { navController.safeNavigate(Routes.MEMORY) },
-                onSystemFilesClick = { navController.safeNavigate(io.github.wevvy.ui.sysfiles.ROUTE_SYSTEM_FILES) },
+                onSystemFilesClick = { navController.safeNavigate(io.github.ceis.ui.sysfiles.ROUTE_SYSTEM_FILES) },
                 onStorageClick = { navController.safeNavigate(Routes.STORAGE) },
                 onSharedFoldersClick = { navController.safeNavigate(Routes.SHARED_FOLDERS) },
                 onMountedFoldersClick = { navController.safeNavigate(Routes.MOUNTED_FOLDERS) },
@@ -894,40 +894,40 @@ fun AppNavigation(
                 onLogsClick = { navController.safeNavigate(Routes.LOGS) },
             )
         }
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_HUB_LEGAL) {
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_HUB_LEGAL) {
             val legalCtx = LocalContext.current
-            io.github.wevvy.ui.settings.LegalHubScreen(
+            io.github.ceis.ui.settings.LegalHubScreen(
                 onBack = { navController.safePopBackStack() },
-                onPrivacyClick = { openExternalUrl(legalCtx, io.github.wevvy.cloud.WevvyCloud.PRIVACY_URL) },
+                onPrivacyClick = { openExternalUrl(legalCtx, io.github.ceis.cloud.CeisCloud.PRIVACY_URL) },
                 onAboutClick = { navController.safeNavigate(Routes.ABOUT) },
             )
         }
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_APP_UPDATES) {
-            io.github.wevvy.ui.settings.AppUpdatesScreen(
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_APP_UPDATES) {
+            io.github.ceis.ui.settings.AppUpdatesScreen(
                 onBack = { navController.safePopBackStack() },
             )
         }
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_STATUS_MESSAGING) {
-            io.github.wevvy.ui.settings.FeatureStatusScreen(
-                kind = io.github.wevvy.ui.settings.StatusKind.MESSAGING,
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_STATUS_MESSAGING) {
+            io.github.ceis.ui.settings.FeatureStatusScreen(
+                kind = io.github.ceis.ui.settings.StatusKind.MESSAGING,
                 onBack = { navController.safePopBackStack() },
             )
         }
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_STATUS_APPLOCK) {
-            // wevvy: the route stays; the placeholder status page became the working App lock page
-            io.github.wevvy.ui.settings.AppLockScreen(
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_STATUS_APPLOCK) {
+            // ceis: the route stays; the placeholder status page became the working App lock page
+            io.github.ceis.ui.settings.AppLockScreen(
                 onBack = { navController.safePopBackStack() },
             )
         }
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_STATUS_HOMESCREEN) {
-            // wevvy: the route stays; the placeholder status page became the working home-screen pin page
-            io.github.wevvy.ui.settings.HomeScreenPinScreen(
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_STATUS_HOMESCREEN) {
+            // ceis: the route stays; the placeholder status page became the working home-screen pin page
+            io.github.ceis.ui.settings.HomeScreenPinScreen(
                 onBack = { navController.safePopBackStack() },
             )
         }
-        composable(io.github.wevvy.ui.settings.ROUTE_SETTINGS_STATUS_REDEEM) {
-            // wevvy: the route stays; the placeholder status page became the working referral page
-            io.github.wevvy.ui.settings.RedeemScreen(
+        composable(io.github.ceis.ui.settings.ROUTE_SETTINGS_STATUS_REDEEM) {
+            // ceis: the route stays; the placeholder status page became the working referral page
+            io.github.ceis.ui.settings.RedeemScreen(
                 onBack = { navController.safePopBackStack() },
             )
         }
@@ -1191,16 +1191,16 @@ fun AppNavigation(
         }
 
         composable(
-            route = Routes.ADD_PROVIDER_PATTERN, // wevvy: optional ?preset=…; plain ADD_PROVIDER still matches
+            route = Routes.ADD_PROVIDER_PATTERN, // ceis: optional ?preset=…; plain ADD_PROVIDER still matches
             arguments = listOf(navArgument("preset") { type = NavType.StringType; nullable = true; defaultValue = null }),
         ) { backStackEntry ->
-            // wevvy: the instances before the form, so the save can open "Use it for" on the new one
+            // ceis: the instances before the form, so the save can open "Use it for" on the new one
             val nmBefore = remember { providerRepository.config.value.instances.map { it.id }.toSet() }
             AddProviderScreen(
                 providerRepository = providerRepository,
                 onBack = { navController.safePopBackStack() },
-                onSaved = { io.github.wevvy.ui.models.UseItFor.afterProviderSaved(navController, providerRepository, nmBefore) }, // wevvy
-                preset = backStackEntry.arguments?.getString("preset"), // wevvy
+                onSaved = { io.github.ceis.ui.models.UseItFor.afterProviderSaved(navController, providerRepository, nmBefore) }, // ceis
+                preset = backStackEntry.arguments?.getString("preset"), // ceis
             )
         }
 
@@ -1222,7 +1222,7 @@ fun AppNavigation(
                 onVoiceServiceClick = { id ->
                     navController.safeNavigate(Routes.shadowVoiceDetail(id))
                 },
-                onKeyAdded = { id -> io.github.wevvy.ui.models.UseItFor.open(navController, id) }, // wevvy: the "Use it for" card
+                onKeyAdded = { id -> io.github.ceis.ui.models.UseItFor.open(navController, id) }, // ceis: the "Use it for" card
             )
         }
 

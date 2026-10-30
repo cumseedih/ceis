@@ -1,6 +1,6 @@
 /**
  * Small gettext-style i18n: the English source text is the key, `t()` looks it up in the
- * dictionary of the current locale and falls back to the key itself. wevvy ships English
+ * dictionary of the current locale and falls back to the key itself. ceis ships English
  * only, so the dictionary is empty and `t()` returns its key; the machinery stays so a
  * locale can be added later without touching the call sites.
  *
@@ -17,7 +17,7 @@ export const LOCALES: Array<{ value: LocaleSetting; label: string }> = [
   { value: "en", label: "English" },
 ];
 
-const STORAGE_KEY = "wevvy_locale";
+const STORAGE_KEY = "ceis_locale";
 const DICTS: Record<Locale, Record<string, string>> = { en: {} };
 
 function load(): LocaleSetting {

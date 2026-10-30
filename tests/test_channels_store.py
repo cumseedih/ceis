@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from wevvy.channels.base import Channel, Field
-from wevvy.channels.store import (
+from ceis.channels.base import Channel, Field
+from ceis.channels.store import (
     CODE_ALPHABET,
     CODE_LENGTH,
     ChannelSettingsStore,
@@ -17,8 +17,8 @@ from wevvy.channels.store import (
     new_code,
     vault_name,
 )
-from wevvy.config import Settings
-from wevvy.vault.vault import CredentialVault
+from ceis.config import Settings
+from ceis.vault.vault import CredentialVault
 
 
 class Demo(Channel):

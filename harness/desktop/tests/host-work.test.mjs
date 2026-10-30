@@ -42,17 +42,17 @@ function fakeHost() {
         res.writeHead(401).end("unauthorized");
         return;
       }
-      if (req.method === "GET" && url.pathname === "/wevvy/cloud/work") {
+      if (req.method === "GET" && url.pathname === "/ceis/cloud/work") {
         res.writeHead(workStatus, { "content-type": "application/json" }).end(JSON.stringify(workBody));
         return;
       }
-      if (req.method === "POST" && url.pathname === "/wevvy/cloud/work/gate") {
+      if (req.method === "POST" && url.pathname === "/ceis/cloud/work/gate") {
         const body = JSON.parse(await collect());
         seen.gates.push(body);
         res.writeHead(gateStatus, { "content-type": "application/json" }).end(JSON.stringify(gateBody ?? body));
         return;
       }
-      if (req.method === "POST" && url.pathname === "/wevvy/cloud/work/stop") {
+      if (req.method === "POST" && url.pathname === "/ceis/cloud/work/stop") {
         seen.stops += 1;
         res.writeHead(stopStatus, { "content-type": "application/json" }).end(JSON.stringify(stopBody));
         return;

@@ -11,17 +11,17 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from wevvy.agent import MuseAgent
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.schema import Function, LLMResponse, ToolCall, ToolResult
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.server.events import EventBus
-from wevvy.server.webui import WebUI
-from wevvy.tools import Terminate, ToolCollection
-from wevvy.tools.base import BaseTool
-from wevvy.tools.shell import Shell
-from wevvy.ui import HeadlessUI
+from ceis.agent import MuseAgent
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.schema import Function, LLMResponse, ToolCall, ToolResult
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.server.events import EventBus
+from ceis.server.webui import WebUI
+from ceis.tools import Terminate, ToolCollection
+from ceis.tools.base import BaseTool
+from ceis.tools.shell import Shell
+from ceis.ui import HeadlessUI
 
 
 def tc(name: str, **args: Any) -> ToolCall:

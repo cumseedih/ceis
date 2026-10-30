@@ -75,7 +75,7 @@ data class SoulMetadata(
         const val DISPLAY_EMOJI = "🐾"
 
         val DEFAULT = SoulMetadata(
-            name = "wevvy",
+            name = "ceis",
             // Default emoji is intentionally empty — UI uses the fixed
             // [displayEmoji] sparkle and [SoulMDParser.serialize] no longer
             // writes the `emoji:` line. The field is kept on the struct only
@@ -318,7 +318,7 @@ object SoulStore {
      * `SoulStore.defaultContent` byte-for-byte (74c0daf).
      */
     val DEFAULT_CONTENT: String = """---
-name: "wevvy"
+name: "ceis"
 style: ""
 lang: "auto"
 ---
@@ -377,8 +377,8 @@ lang: "auto"
             tmp.delete()
         }
         _cachedMetadata.value = file.metadata
-        // wevvy: the agent's name is the account's — the other devices hear of a change
-        io.github.wevvy.cloud.ProfileSync.changed()
+        // ceis: the agent's name is the account's — the other devices hear of a change
+        io.github.ceis.cloud.ProfileSync.changed()
     }
 
     /**
@@ -484,7 +484,7 @@ object SystemPromptBuilder {
         val file = SoulStore.load(context)
         val name = (file?.metadata?.name ?: SoulMetadata.DEFAULT.name)
             .trim()
-            .ifEmpty { "wevvy" }
+            .ifEmpty { "ceis" }
 
         val style = (file?.metadata?.style ?: "").trim()
 

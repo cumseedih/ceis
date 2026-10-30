@@ -11,17 +11,17 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy import search as search_mod
-from wevvy.config import SearchSettings, Settings, apply_app_settings, load_app_settings
-from wevvy.llm import MockLLM
-from wevvy.search import SearchResult, WebSearchProvider, _region
-from wevvy.server.api import create_app
-from wevvy.server.service import MuseService
-from wevvy.tools import WebSearch
-from wevvy.vault import CredentialVault
+from ceis import search as search_mod
+from ceis.config import SearchSettings, Settings, apply_app_settings, load_app_settings
+from ceis.llm import MockLLM
+from ceis.search import SearchResult, WebSearchProvider, _region
+from ceis.server.api import create_app
+from ceis.server.service import MuseService
+from ceis.tools import WebSearch
+from ceis.vault import CredentialVault
 
 DDG_ROWS = [
-    {"title": "wevvy", "href": "https://github.com/nano-muse/nanoMuse", "body": "An agent."},
+    {"title": "ceis", "href": "https://github.com/nano-muse/nanoMuse", "body": "An agent."},
     {"title": "Muse", "href": "https://example.com/muse", "body": "Something else."},
 ]
 
@@ -84,9 +84,9 @@ async def test_duckduckgo_is_the_default(ddg):
     p = WebSearchProvider(SearchSettings())
     assert p.name == "duckduckgo" and p.configured and p.host == "duckduckgo.com"
     assert p.describe() == "DuckDuckGo (no key needed)"
-    results, note = await p.search("wevvy", 1, "cn-zh")
-    assert note == "" and [r.title for r in results] == ["wevvy"]
-    assert ddg == [{"query": "wevvy", "max_results": 1, "region": "cn-zh"}]
+    results, note = await p.search("ceis", 1, "cn-zh")
+    assert note == "" and [r.title for r in results] == ["ceis"]
+    assert ddg == [{"query": "ceis", "max_results": 1, "region": "cn-zh"}]
 
 
 async def test_brave(wire: Wire, ddg):
@@ -102,13 +102,13 @@ async def test_brave(wire: Wire, ddg):
     p = WebSearchProvider(SearchSettings(provider="brave", api_key="brv-key"))
     assert p.configured and p.host == "api.search.brave.com"
     assert p.describe() == "Brave Search (key set)"
-    results, note = await p.search("wevvy", 2, "cn-zh")
+    results, note = await p.search("ceis", 2, "cn-zh")
     assert note == "" and ddg == []
     assert [(r.title, r.snippet) for r in results] == [("A", "first"), ("B", "second")]
     req = wire.requests[0]
     assert req.method == "GET" and req.url.host == "api.search.brave.com"
     assert req.headers["X-Subscription-Token"] == "brv-key"
-    assert req.url.params["q"] == "wevvy" and req.url.params["count"] == "2"
+    assert req.url.params["q"] == "ceis" and req.url.params["count"] == "2"
     assert req.url.params["country"] == "CN" and req.url.params["search_lang"] == "zh"
     # no region → no country/lang parameters
     await p.search("x", 1, "")
@@ -122,14 +122,14 @@ async def test_tavily(wire: Wire, ddg):
         ]
     }
     p = WebSearchProvider(SearchSettings(provider="tavily", api_key="tvly-key"))
-    results, note = await p.search("wevvy", 5, "")
+    results, note = await p.search("ceis", 5, "")
     assert note == "" and ddg == []
     assert results[0].title == "T" and len(results[0].snippet) == 400
     req = wire.requests[0]
     assert req.method == "POST" and req.url == "https://api.tavily.com/search"
     assert req.headers["Authorization"] == "Bearer tvly-key"
     assert json.loads(req.content) == {
-        "query": "wevvy",
+        "query": "ceis",
         "max_results": 5,
         "search_depth": "basic",
     }
@@ -145,7 +145,7 @@ async def test_serply(wire: Wire, ddg):
     p = WebSearchProvider(SearchSettings(provider="serply", api_key="srp-key"))
     assert p.configured and p.host == "api.serply.io"
     assert p.describe() == "Serply (key set)"
-    results, note = await p.search("wevvy", 15, "cn-zh")
+    results, note = await p.search("ceis", 15, "cn-zh")
     assert note == "" and ddg == []
     assert len(results) == 2
     assert results[0].title == "G" and results[0].url == "https://g.example"
@@ -154,8 +154,8 @@ async def test_serply(wire: Wire, ddg):
     assert req.method == "GET" and req.url.host == "api.serply.io"
     assert req.url.path == "/v1/search"
     assert req.headers["X-Api-Key"] == "srp-key"
-    assert req.headers["User-Agent"] == "wevvy"
-    assert req.url.params["q"] == "wevvy" and req.url.params["num"] == "10"
+    assert req.headers["User-Agent"] == "ceis"
+    assert req.url.params["q"] == "ceis" and req.url.params["num"] == "10"
     assert req.url.params["gl"] == "CN"
     # no region → no gl parameter; max_results trims the returned list
     results, _ = await p.search("x", 1, "")
@@ -163,11 +163,11 @@ async def test_serply(wire: Wire, ddg):
     assert [r.title for r in results] == ["G"]
     # a refused key or rate limit falls back to DuckDuckGo with the usual note
     wire.status = 401
-    results, note = await p.search("wevvy", 2, "")
+    results, note = await p.search("ceis", 2, "")
     assert note == "Serply failed (the key was refused (HTTP 401)); results from DuckDuckGo"
-    assert [r.title for r in results] == ["wevvy", "Muse"] and len(ddg) == 1
+    assert [r.title for r in results] == ["ceis", "Muse"] and len(ddg) == 1
     wire.status = 429
-    _, note = await p.search("wevvy", 2, "")
+    _, note = await p.search("ceis", 2, "")
     assert note == "Serply failed (rate limited (HTTP 429)); results from DuckDuckGo"
 
 
@@ -185,7 +185,7 @@ async def test_you_without_a_key(wire: Wire, ddg):
     # no key is a configured provider, not a fallback to DuckDuckGo
     assert p.configured and p.host == "api.you.com"
     assert p.describe() == "You.com (no key: 100 searches a day)"
-    results, note = await p.search("wevvy", 3, "cn-zh")
+    results, note = await p.search("ceis", 3, "cn-zh")
     assert note == "" and ddg == []
     assert [(r.title, r.snippet) for r in results] == [
         ("Y", "first"),
@@ -196,23 +196,23 @@ async def test_you_without_a_key(wire: Wire, ddg):
     assert req.method == "GET" and req.url.host == "api.you.com"
     assert req.url.path == "/v1/agents/search"
     assert "X-API-Key" not in req.headers
-    assert req.headers["User-Agent"] == "youdotcom-integration/nano-muse-wevvy"
-    assert req.url.params["query"] == "wevvy" and req.url.params["count"] == "3"
+    assert req.headers["User-Agent"] == "youdotcom-integration/nano-muse-ceis"
+    assert req.url.params["query"] == "ceis" and req.url.params["count"] == "3"
     assert req.url.params["country"] == "CN"
     await p.search("x", 1, "")
     assert "country" not in wire.requests[1].url.params
     # web results come first; the count caps the list
-    results, _ = await p.search("wevvy", 2, "")
+    results, _ = await p.search("ceis", 2, "")
     assert [r.title for r in results] == ["Y", "Z"]
     # past the daily limit: a clear reason, then DuckDuckGo once
     wire.status = 429
-    results, note = await p.search("wevvy", 2, "")
+    results, note = await p.search("ceis", 2, "")
     assert (
         note == "You.com failed (the keyless limit is used up (HTTP 429)); results from DuckDuckGo"
     )
-    assert [r.title for r in results] == ["wevvy", "Muse"] and len(ddg) == 1
+    assert [r.title for r in results] == ["ceis", "Muse"] and len(ddg) == 1
     wire.status = 401
-    _, note = await p.search("wevvy", 2, "")
+    _, note = await p.search("ceis", 2, "")
     assert "the keyless limit is used up (HTTP 401)" in note
 
 
@@ -224,17 +224,17 @@ async def test_you_with_a_key(wire: Wire, ddg):
     # the Sentinel sees the host the search really goes to
     assert p.configured and p.host == "ydc-index.io"
     assert p.describe() == "You.com (key set)"
-    results, note = await p.search("wevvy", 2, "")
+    results, note = await p.search("ceis", 2, "")
     assert note == "" and ddg == [] and results[0].title == "K"
     req = wire.requests[0]
     assert (
-        req.method == "GET" and req.url == "https://ydc-index.io/v1/search?query=wevvy&count=2"
+        req.method == "GET" and req.url == "https://ydc-index.io/v1/search?query=ceis&count=2"
     )
     assert req.headers["X-API-Key"] == "ydc-key"
-    assert req.headers["User-Agent"] == "youdotcom-integration/nano-muse-wevvy"
+    assert req.headers["User-Agent"] == "youdotcom-integration/nano-muse-ceis"
     # a refused key reads as one, not as the keyless limit
     wire.status = 401
-    _, note = await p.search("wevvy", 2, "")
+    _, note = await p.search("ceis", 2, "")
     assert "the key was refused (HTTP 401)" in note
 
 
@@ -243,7 +243,7 @@ async def test_searxng(wire: Wire, ddg):
     p = WebSearchProvider(SearchSettings(provider="searxng", base_url="http://127.0.0.1:8080/"))
     assert p.configured and p.host == "127.0.0.1"
     assert p.describe() == "SearXNG at http://127.0.0.1:8080/"
-    results, note = await p.search("wevvy", 3, "cn-zh")
+    results, note = await p.search("ceis", 3, "cn-zh")
     assert note == "" and results[0].snippet == "from searx" and ddg == []
     req = wire.requests[0]
     assert str(req.url).startswith("http://127.0.0.1:8080/search?")
@@ -252,9 +252,9 @@ async def test_searxng(wire: Wire, ddg):
     assert "language" not in wire.requests[1].url.params
     # a SearXNG that is not one (HTML instead of JSON) is a clear error, not a traceback
     wire.text = "<html>not a search api</html>"
-    results, note = await p.search("wevvy", 3, "")
+    results, note = await p.search("ceis", 3, "")
     assert "not JSON" in note and "results from DuckDuckGo" in note
-    assert [r.title for r in results] == ["wevvy", "Muse"]
+    assert [r.title for r in results] == ["ceis", "Muse"]
 
 
 async def test_failures_fall_back_to_duckduckgo_with_a_note(
@@ -262,16 +262,16 @@ async def test_failures_fall_back_to_duckduckgo_with_a_note(
 ):
     p = WebSearchProvider(SearchSettings(provider="brave", api_key="k"))
     wire.status = 429
-    results, note = await p.search("wevvy", 2, "")
+    results, note = await p.search("ceis", 2, "")
     assert (
         results and note == "Brave Search failed (rate limited (HTTP 429)); results from DuckDuckGo"
     )
     wire.status = 401
-    _, note = await p.search("wevvy", 2, "")
+    _, note = await p.search("ceis", 2, "")
     assert "the key was refused (HTTP 401)" in note
     wire.status = 500
     wire.text = "boom"
-    _, note = await p.search("wevvy", 2, "")
+    _, note = await p.search("ceis", 2, "")
     assert "HTTP 500: boom" in note
     assert len(ddg) == 3
 
@@ -281,7 +281,7 @@ async def test_failures_fall_back_to_duckduckgo_with_a_note(
     monkeypatch.setattr(
         search_mod, "_client", lambda: httpx.AsyncClient(transport=httpx.MockTransport(unreachable))
     )
-    _, note = await p.search("wevvy", 2, "")
+    _, note = await p.search("ceis", 2, "")
     assert (
         note
         == "Brave Search failed (could not reach api.search.brave.com); results from DuckDuckGo"
@@ -295,22 +295,22 @@ async def test_failures_fall_back_to_duckduckgo_with_a_note(
     # fallback = false: the query never reaches DuckDuckGo's host
     strict = WebSearchProvider(SearchSettings(provider="brave", api_key="k", fallback=False))
     with pytest.raises(RuntimeError, match="rate limited"):
-        await strict.search("wevvy", 2, "")
+        await strict.search("ceis", 2, "")
     unset = WebSearchProvider(SearchSettings(provider="brave", fallback=False))
     with pytest.raises(RuntimeError, match="no API key"):
-        await unset.search("wevvy", 2, "")
+        await unset.search("ceis", 2, "")
     assert len(ddg) == 4
 
 
 async def test_unconfigured_provider_uses_duckduckgo_and_says_so(wire: Wire, ddg):
     p = WebSearchProvider(SearchSettings(provider="brave"))
     assert not p.configured and p.describe() == "Brave Search (no key)"
-    results, note = await p.search("wevvy", 2, "")
+    results, note = await p.search("ceis", 2, "")
     assert results and note == "Brave Search: no API key; results from DuckDuckGo"
     assert wire.requests == []
     p = WebSearchProvider(SearchSettings(provider="searxng"))
     assert not p.configured
-    _, note = await p.search("wevvy", 2, "")
+    _, note = await p.search("ceis", 2, "")
     assert note == "SearXNG: no instance URL; results from DuckDuckGo"
 
 
@@ -342,12 +342,12 @@ async def test_tool_renders_results_and_the_note(wire: Wire, ddg):
     wire.body = {
         "web": {"results": [{"title": "A", "url": "https://a.example", "description": "first"}]}
     }
-    out = await tool.execute(query="wevvy", max_results=1)
+    out = await tool.execute(query="ceis", max_results=1)
     assert out.output == "1. A\n   https://a.example\n   first"
     wire.status = 429
-    out = await tool.execute(query="wevvy", max_results=2)
+    out = await tool.execute(query="ceis", max_results=2)
     lines = out.output.splitlines()
-    assert lines[0].startswith("(Brave Search failed") and lines[1] == "1. wevvy"
+    assert lines[0].startswith("(Brave Search failed") and lines[1] == "1. ceis"
     assert (await tool.execute(query="  ")).error
     # the default tool is DuckDuckGo
     plain = WebSearch()
@@ -368,12 +368,12 @@ def test_settings_layering(settings: Settings, monkeypatch: pytest.MonkeyPatch):
     assert web.api_key == "{{vault:SEARCH_API_KEY}}"
     # environment variables
     monkeypatch.chdir(settings.data_dir)  # no ./config/config.toml here
-    monkeypatch.delenv("WEVVY_CONFIG", raising=False)
-    monkeypatch.setenv("WEVVY_SEARCH_PROVIDER", "brave")
-    monkeypatch.setenv("WEVVY_SEARCH_API_KEY", "env-key")
-    monkeypatch.setenv("WEVVY_DATA_DIR", str(settings.data_dir))
-    monkeypatch.setenv("WEVVY_WORKSPACE", str(settings.agent.workspace))
-    from wevvy.config import load_settings
+    monkeypatch.delenv("CEIS_CONFIG", raising=False)
+    monkeypatch.setenv("CEIS_SEARCH_PROVIDER", "brave")
+    monkeypatch.setenv("CEIS_SEARCH_API_KEY", "env-key")
+    monkeypatch.setenv("CEIS_DATA_DIR", str(settings.data_dir))
+    monkeypatch.setenv("CEIS_WORKSPACE", str(settings.agent.workspace))
+    from ceis.config import load_settings
 
     loaded = load_settings(None)
     assert loaded.connectors.search.provider == "brave"

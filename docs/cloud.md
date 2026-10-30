@@ -1,7 +1,7 @@
-# wevvy Cloud
+# ceis Cloud
 
 The "start now" path: sign up with a phone number (mainland China; the code comes by SMS)
-or an e-mail address, get a free allowance, and use wevvy without an API key of your own.
+or an e-mail address, get a free allowance, and use ceis without an API key of your own.
 Bringing your own key still works exactly as before: this is one more
 provider, not a replacement.
 
@@ -14,14 +14,14 @@ own (the Cloud) or a key of your own. Codes by SMS reach mainland China numbers
 only (号码认证服务 sends nowhere else); a Hong Kong, Taiwan or overseas number is
 told so at once (`phone_region`) and signs in with an e-mail address instead.
 Signing out brings that screen back
-(self-hosters: `[cloud] required = false` or `WEVVY_CLOUD_REQUIRED=0` on the
+(self-hosters: `[cloud] required = false` or `CEIS_CLOUD_REQUIRED=0` on the
 runtime). The screen is a door, not a wall: *Use your own API key instead* steps
 past it into setup's own-key path, and with a key of your own the app works
 signed out (chat, hands, pictures, clips); the sign-in waits under
-*Connections* (phones: *Settings → wevvy Cloud*) for the Cloud models, sync
+*Connections* (phones: *Settings → ceis Cloud*) for the Cloud models, sync
 and your devices. After the code the app has:
 
-- a provider called **wevvy Cloud** under *Settings → Providers*, an
+- a provider called **ceis Cloud** under *Settings → Providers*, an
   ordinary OpenAI-compatible provider whose key is the token the relay issued;
 - the four rows of *Settings → Models* (web console: *Connections*) on the
   account's models when you had chosen none: the recommended chat model, the
@@ -29,12 +29,12 @@ and your devices. After the code the app has:
   a computer; each model on the relay's menu says which of the two it is for),
   the picture model and the clip model. A row you have not set follows one
   order: the chat model's provider when it is a key of yours that can do the
-  job, else wevvy Cloud while signed in, else the first key of yours that
+  job, else ceis Cloud while signed in, else the first key of yours that
   can; the *Automatic* entry of the row says what that gives right now, and a
   key you add later asks *Use it for* before any row moves
   ([own-key.md](own-key.md#which-model-does-what)).
 
-*Settings → wevvy Cloud* (the *Account* screen) shows who is signed in (a
+*Settings → ceis Cloud* (the *Account* screen) shows who is signed in (a
 masked hint, never the number) and since when; sets, changes or removes the
 **password** (eight characters or more; scrypt on the relay; locked for a while
 after repeated wrong attempts, and a fresh code sign-in opens it again); today's
@@ -122,7 +122,7 @@ The relay is the code in [`cloud/`](../cloud/README.md). It stores:
 Images and tool results are never stored, and message content only as the
 *Data controls* and *Conversation sync* sections below say; with both switches off, nothing: the request
 is forwarded to the upstream model (Alibaba Cloud Model Studio) and the reply
-is streamed back. Every response carries an `X-Wevvy-Request` id so a problem report
+is streamed back. Every response carries an `X-Ceis-Request` id so a problem report
 can be matched to a ledger row without any content being logged. Deleting the
 account (`POST /v1/auth/delete` with the account's key) removes all of it: the
 account, keys, devices, profile, ledger, events, kept conversations, video
@@ -133,7 +133,7 @@ and that the same address signing up again is a new, empty account. See
 
 ## Data controls
 
-*Settings → Data controls → Help improve wevvy's AI models* is a switch each
+*Settings → Data controls → Help improve ceis's AI models* is a switch each
 person owns, the same on the phone, the web app, the desktop and the console.
 Off, the relay forwards a chat request and keeps nothing of it. On, each turn
 is kept as a training view: what you wrote, what the model answered and the
@@ -250,7 +250,7 @@ first pull instead of minting a second main and learning the id from a
 `main_exists` refusal (a 1.0.3 client reads the extra row as any conversation
 row and behaves the same). Any other `scope` is 400 `bad_scope`.
 `POST /v1/sync/working` says the device named in `device` (or in
-`X-Wevvy-Device`) is answering in `cid` (`working: true`) or has finished
+`X-Ceis-Device`) is answering in `cid` (`working: true`) or has finished
 (`false`); the relay keeps the live ones in memory for ten minutes (never in
 the database, so a restart forgets them), lists them under `working` in the
 state (`[{cid, from, device_name, working, at}]`) and sends a `working` frame
@@ -280,12 +280,12 @@ an orphan. Refusals name the row: `main_exists` with `cid_main` when a second
 `conversation_deleted`, `bad_cid`, `bad_mid`, `bad_kind`, `bad_role`. A
 tombstone keeps its row for 30 days and is then swept. After an accepted push
 or a deletion the hub tells the account's other devices with a `sync` frame
-(`DELETE` from the console carries the deleting device in `X-Wevvy-Device`
+(`DELETE` from the console carries the deleting device in `X-Ceis-Device`
 so it can skip its own echo).
 
 ## Allowance
 
-wevvy is a community project and charges nothing. The public relay at
+ceis is a community project and charges nothing. The public relay at
 `cloud.wevvy.in` is paid for by the developer, so each account has a pool
 to draw on, for its lifetime, not by the day (relay 0.5):
 
@@ -295,7 +295,7 @@ to draw on, for its lifetime, not by the day (relay 0.5):
 | free allowance | **¥10 per account** at the time of writing, across chat, pictures and clips; it does not reset. The figure is the relay's to set (it can go up without an app update; the apps print what the relay says, `/v1/config`), and the account page always shows the current one |
 | invitations | each *new* person who signs up with your code adds **¥5** (again, the relay's figure) to your pool, and the same to theirs; both sides get it after your friend's first request, not at sign-up |
 | when it is gone | bring your own key or a plan you already pay for: in mainland China, [Alibaba Cloud Bailian](own-key.md) first (one key covers chat, the hands, pictures and clips); elsewhere, [OpenRouter](https://openrouter.ai/keys) or OpenAI first (Bailian only signs up accounts from mainland China); a ChatGPT, Claude or Kimi plan signs in where the client has the flow; any OpenAI-compatible endpoint works; sign-in and your devices are unaffected |
-| members | the developer and the people they list have no limit, and may set any model the provider has (a chat model for chat, an image one for pictures, a video one for clips): the apps' model pickers show those rows as *wevvy Cloud* without naming any model (relay 0.10 reads the provider's list under the Cloud key; the ids still drive selection internally), and an id can still be typed (*Other model…*) |
+| members | the developer and the people they list have no limit, and may set any model the provider has (a chat model for chat, an image one for pictures, a video one for clips): the apps' model pickers show those rows as *ceis Cloud* without naming any model (relay 0.10 reads the provider's list under the Cloud key; the ids still drive selection internally), and an id can still be typed (*Other model…*) |
 | rate | 30 requests per minute |
 | tokens | no ceiling; usage is metered and shown |
 
@@ -323,7 +323,7 @@ or fifty pictures. A new face (four candidates, four poses and four clips)
 comes to about ¥3.5, and the app shows the estimate and what is left before it
 draws.
 
-*Settings → wevvy Cloud* shows what was used of the pool in ¥ and $, what
+*Settings → ceis Cloud* shows what was used of the pool in ¥ and $, what
 is left, and how the pool grows. At 80 % the app says so once; when the pool
 is spent the relay refuses with `allowance_exhausted` and the app shows the
 ways on: your own key, a plan you already pay for, or an invitation (+¥5 for
@@ -338,7 +338,7 @@ Since relay 0.21 the refusal and `/v1/me` carry the whole card as data, not
 only two links (contract C11): `spend.guidance` (and `guidance` beside the
 `allowance_exhausted` error) lists the region's providers in order with what
 each one's key covers (`covers: chat | vision | image | video`, from the shared
-catalogue [`wevvy/llm/providers.json`](../wevvy/llm/providers.json), of
+catalogue [`ceis/llm/providers.json`](../ceis/llm/providers.json), of
 which the relay ships its own copy), the plans a person may already pay for and
 which clients can sign in with them (`plans`: ChatGPT everywhere, Claude and
 Kimi on the phones, OpenRouter on the phones), the local servers (`local`), the
@@ -386,7 +386,7 @@ out, and the route says nothing about whether the number has an account or wheth
 it is off; the person is told `403 account_disabled` when they sign in with a code,
 or with the right password (a wrong one is answered like any wrong password).
 
-wevvy asks for one thing in return: a star on
+ceis asks for one thing in return: a star on
 [GitHub](https://github.com/nano-muse/nanoMuse), which is what helps the
 project be found. The moments are the relay's to set, not the app's (0.1.35):
 `GET /v1/nudges` says when an ask is fair: after the third, tenth and
@@ -410,7 +410,7 @@ card changes; its title and buttons stay the app's. Apps built against relay
 ## Controls
 
 The operator can pause parts of the relay without a restart or a deploy
-(relay 0.22, *Controls* on the admin console; `wevvy-cloud admin controls
+(relay 0.22, *Controls* on the admin console; `ceis-cloud admin controls
 …` on the command line; see [`cloud/README.md`](../cloud/README.md#controls-022)).
 Five switches, each on by default, each kept in the database so a restart
 keeps it, each with a line in an audit log saying who flipped it, when and
@@ -519,7 +519,7 @@ forms, so a relay that sets other figures is described rightly, and an older
 relay without the two fields is read as ten minutes and eight characters.
 
 Everything else is the OpenAI API: `GET /v1/models` (with `architecture`
-modalities so the picture model is recognisable, and a `wevvy` block per
+modalities so the picture model is recognisable, and a `ceis` block per
 model with its `kind`, prices, `for` (the lane(s) a chat model is for: `chat`
 and / or `gui`) and `recommended_for`), `GET /v1/models/{id}?kind=chat` (a
 member checks a typed id: `listed`, `priced_as`), `POST /v1/chat/completions`
@@ -527,7 +527,7 @@ with streaming, `POST /v1/images/generations` and `/v1/images/edits`, and the
 clips under the provider's own paths (`POST
 /api/v1/services/aigc/video-generation/video-synthesis`, `GET
 /api/v1/tasks/{id}` for the account's own tasks, `GET /api/v1/uploads`). Errors
-are `{"error": {"message", "type": "wevvy_cloud", "code"}}` with a stable
+are `{"error": {"message", "type": "ceis_cloud", "code"}}` with a stable
 `code` the app turns into a sentence. Relay 0.22 adds the codes of the
 operator's [switches](#controls): `403 signup_closed`, `503 service_paused`,
 `503 sync_paused`, `503 hub_paused` (and the hub's close code `4003

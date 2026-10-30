@@ -1,7 +1,7 @@
 # The showcase's front door. Two names:
 #
-#   SITE_HOST         the page around the phone (/, with MobileGym + the wevvy app at
-#                     /phone.html), plus /api/demo/*, /api/trial* and /llm/trial/*; wevvy
+#   SITE_HOST         the page around the phone (/, with MobileGym + the ceis app at
+#                     /phone.html), plus /api/demo/*, /api/trial* and /llm/trial/*; ceis
 #                     Web's /web/ and /api/web/* are the project site's (mirror/wevvy.in.caddy)
 #   *.SESSION_DOMAIN  one hostname per visitor session, everything relayed to the gateway
 #

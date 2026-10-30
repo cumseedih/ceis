@@ -6,11 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from wevvy.llm import MockLLM
-from wevvy.memory import MemoryStore, tidy
-from wevvy.memory.consolidate import plan
-from wevvy.schema import LLMResponse
-from wevvy.tools.memory_tools import Remember
+from ceis.llm import MockLLM
+from ceis.memory import MemoryStore, tidy
+from ceis.memory.consolidate import plan
+from ceis.schema import LLMResponse
+from ceis.tools.memory_tools import Remember
 
 
 def seeded(tmp_path: Path) -> MemoryStore:
@@ -134,8 +134,8 @@ async def test_remember_updates_instead_of_duplicating(tmp_path: Path):
 
 
 def test_tidy_summary_follows_the_reply_language():
-    from wevvy.memory import MemoryChange, MemoryItem, TidyReport
-    from wevvy.server.service import _tidy_summary
+    from ceis.memory import MemoryChange, MemoryItem, TidyReport
+    from ceis.server.service import _tidy_summary
 
     def item(content: str) -> MemoryItem:
         return MemoryItem(
@@ -183,8 +183,8 @@ def test_tidy_summary_follows_the_reply_language():
 def test_the_guard_judges_every_script_and_refuses_what_it_cannot_judge():
     """#270: the tokenizer was ASCII only, so a Russian merge had nothing to compare
     against and the guard approved anything, invented facts included."""
-    from wevvy.memory import MemoryItem
-    from wevvy.memory.consolidate import _no_new_words
+    from ceis.memory import MemoryItem
+    from ceis.memory.consolidate import _no_new_words
 
     def item(content: str) -> MemoryItem:
         return MemoryItem(id="m", content=content, category="fact", created_at="", source="user")
@@ -214,7 +214,7 @@ def test_the_guard_judges_every_script_and_refuses_what_it_cannot_judge():
 
 
 def test_tokens_and_similarity_cover_cyrillic_and_the_other_alphabets():
-    from wevvy.memory.store import similarity, tokenize
+    from ceis.memory.store import similarity, tokenize
 
     assert tokenize("Пользователь предпочитает окна у прохода") == {
         "пользователь",

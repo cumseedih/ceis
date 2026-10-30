@@ -11,12 +11,12 @@ from test_cloud import sign_up
 from test_hub import connect, hello
 from test_hub import sign_up as ws_sign_up
 
-from wevvy_cloud.api import create_app
-from wevvy_cloud.config import Settings
-from wevvy_cloud.db import Database
-from wevvy_cloud.senders import LogSender
-from wevvy_cloud.service import Cloud
-from wevvy_cloud.sync import LIMITS, clean_attachments, cut_text, valid_id
+from ceis_cloud.api import create_app
+from ceis_cloud.config import Settings
+from ceis_cloud.db import Database
+from ceis_cloud.senders import LogSender
+from ceis_cloud.service import Cloud
+from ceis_cloud.sync import LIMITS, clean_attachments, cut_text, valid_id
 
 
 def uid() -> str:
@@ -279,7 +279,7 @@ async def test_retention_drops_the_oldest_conversations_messages():
     old, mid_conv, new = uid(), uid(), uid()
     # three conversations, by age; the limit is lowered for the test
     store.push(account_id, "a", [conv(old, created_at=1000), conv(mid_conv, created_at=2000), conv(new, created_at=3000)], [])
-    import wevvy_cloud.sync as sync_mod
+    import ceis_cloud.sync as sync_mod
 
     saved = dict(LIMITS)
     try:
@@ -308,7 +308,7 @@ async def test_side_conversations_are_capped_per_account():
     key = await signed_in(client, sender)
     store = app.state.sync
     account_id = cloud.authenticate(key).account_id
-    import wevvy_cloud.sync as sync_mod
+    import ceis_cloud.sync as sync_mod
 
     saved = dict(LIMITS)
     try:
@@ -606,7 +606,7 @@ async def test_working_is_presence_kept_ten_minutes_in_memory():
     # another device's `false` does not clear the desk's `true`; the desk's own does
     await client.post("/v1/sync/working", json={"cid": main, "working": False, "device": "phone-1"}, headers=auth(key))
     assert len((await client.get("/v1/sync/state", headers=auth(key))).json()["working"]) == 1
-    r = await client.post("/v1/sync/working", json={"cid": main, "working": False}, headers={**auth(key), "X-Wevvy-Device": "pc-1"})
+    r = await client.post("/v1/sync/working", json={"cid": main, "working": False}, headers={**auth(key), "X-Ceis-Device": "pc-1"})
     assert r.status_code == 204
     assert (await client.get("/v1/sync/state", headers=auth(key))).json()["working"] == []
     # expiry: ten minutes without a `false` and the entry is gone
@@ -663,7 +663,7 @@ async def test_a_body_over_the_limit_names_both_sizes():
     err = r.json()["error"]
     assert err["code"] == "too_large" and err["message"] == "Request body is 0.0 MB; this relay accepts up to 0 MB"
     # the default is 16 MiB since 0.20
-    from wevvy_cloud.config import Settings as RelaySettings
+    from ceis_cloud.config import Settings as RelaySettings
 
     assert RelaySettings(database=":memory:", secret="s").max_request_bytes == 16 * 1024 * 1024
 
@@ -765,7 +765,7 @@ async def test_a_revoked_or_reset_key_is_bad_key_not_account_deleted():
     """Only a deleted account answers `account_deleted`. A key revoked by a sign-out, one the
     relay never issued (a reset), or one whose tombstone has aged out, is `bad_key` — the
     phone keeps the account's data aside and waits for the next sign-in (contract C12)."""
-    from wevvy_cloud import db as dbmod
+    from ceis_cloud import db as dbmod
 
     app, client, sender, up, cloud, settings = make()
     first = await sign_up(client, sender, "13800138001", "pixel")

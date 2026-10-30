@@ -14,7 +14,7 @@ import com.openminis.app.ui.navigation.Routes
  *   minis://settings                            → Settings home
  *   minis://settings/providers                  → Provider list
  *   minis://settings/providers/<instanceId>     → Provider detail
- *   minis://settings/providers/add[?preset=<catalogue id>[:oauth]] → Add a provider (wevvy: pre-filled for a vendor of assets/wevvy/providers.json; `:oauth` opens on its sign-in)
+ *   minis://settings/providers/add[?preset=<catalogue id>[:oauth]] → Add a provider (ceis: pre-filled for a vendor of assets/ceis/providers.json; `:oauth` opens on its sign-in)
  *   minis://settings/model-groups               → Model Groups (incl. Agent Loop section)
  *   minis://settings/model-groups/<groupId>     → Model Group detail
  *   minis://settings/usage                      → Token usage
@@ -94,16 +94,16 @@ sealed class DeepLinkAction {
         val title: String,
     ) : DeepLinkAction()
 
-    /** wevvy: one of the home shell's tabs (`minis://feed`), where a Feed notification lands. */
-    data class OpenHomeTab(val tab: io.github.wevvy.ui.home.HomeTab) : DeepLinkAction()
+    /** ceis: one of the home shell's tabs (`minis://feed`), where a Feed notification lands. */
+    data class OpenHomeTab(val tab: io.github.ceis.ui.home.HomeTab) : DeepLinkAction()
 
     data object Unknown : DeepLinkAction()
 }
 
 object DeepLinkHandler {
     fun parse(uri: Uri?): DeepLinkAction {
-        // wevvy: the system knows the app as `wevvy://`, the app itself says `minis://`; both are read here
-        if (uri == null || !io.github.wevvy.deeplink.OwnScheme.isOwn(uri.scheme)) return DeepLinkAction.Unknown
+        // ceis: the system knows the app as `ceis://`, the app itself says `minis://`; both are read here
+        if (uri == null || !io.github.ceis.deeplink.OwnScheme.isOwn(uri.scheme)) return DeepLinkAction.Unknown
         val host = uri.host ?: return DeepLinkAction.Unknown
         val path = uri.path.orEmpty()
 
@@ -126,7 +126,7 @@ object DeepLinkHandler {
                 else -> DeepLinkAction.Unknown
             }
             "settings" -> parseSettingsPath(uri)
-            "feed" -> DeepLinkAction.OpenHomeTab(io.github.wevvy.ui.home.HomeTab.FEED) // wevvy: the feed's notification opens the Feed tab
+            "feed" -> DeepLinkAction.OpenHomeTab(io.github.ceis.ui.home.HomeTab.FEED) // ceis: the feed's notification opens the Feed tab
             "session" -> {
                 // minis://session/<sessionId>                → OpenSession
                 // minis://session/<sessionId>/<resource-path> → OpenHtmlPreview
@@ -173,7 +173,7 @@ object DeepLinkHandler {
 
         return when (head) {
             "providers" ->
-                if (arg == "add") DeepLinkAction.OpenSettingsScreen(Routes.addProvider(uri.getQueryParameter("preset"))) // wevvy: pre-filled provider form
+                if (arg == "add") DeepLinkAction.OpenSettingsScreen(Routes.addProvider(uri.getQueryParameter("preset"))) // ceis: pre-filled provider form
                 else if (arg != null) DeepLinkAction.OpenSettingsScreen(Routes.providerDetail(arg))
                 else DeepLinkAction.OpenSettingsScreen(Routes.PROVIDER_LIST)
             "model-groups", "model_groups" ->
@@ -198,16 +198,16 @@ object DeepLinkHandler {
                 DeepLinkAction.OpenSettingsScreen(Routes.LOGS)
             }
             "appearance" -> DeepLinkAction.OpenSettingsScreen(Routes.APPEARANCE)
-            "soul" -> DeepLinkAction.OpenSettingsScreen(Routes.SOUL) // wevvy: the name pill links here
-            "avatar", "face" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.avatar.ROUTE_AVATAR_STUDIO) // wevvy: the avatar studio
-            "media" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.media.ROUTE_MEDIA_MODELS) // wevvy: image & video models
-            "models" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.models.ROUTE_MODELS) // wevvy: Settings → Models
-            "hands", "screen" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.hands.ROUTE_HANDS) // wevvy: the screen as a hand
-            "computers", "pc" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.reach.ROUTE_COMPUTERS) // wevvy: the account's computers
-            "cloud", "devices" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.cloud.ROUTE_CLOUD_ACCOUNT) // wevvy: the account and its devices on the hub
-            "coding", "agents" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.coding.ROUTE_CODING) // wevvy: the coding agents on the account's computers
-            "profile" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.profile.ROUTE_AGENT_PROFILE) // wevvy: the face links here
-            "network", "proxy" -> DeepLinkAction.OpenSettingsScreen(io.github.wevvy.ui.net.ROUTE_NETWORK) // wevvy: the proxy for own providers
+            "soul" -> DeepLinkAction.OpenSettingsScreen(Routes.SOUL) // ceis: the name pill links here
+            "avatar", "face" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.avatar.ROUTE_AVATAR_STUDIO) // ceis: the avatar studio
+            "media" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.media.ROUTE_MEDIA_MODELS) // ceis: image & video models
+            "models" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.models.ROUTE_MODELS) // ceis: Settings → Models
+            "hands", "screen" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.hands.ROUTE_HANDS) // ceis: the screen as a hand
+            "computers", "pc" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.reach.ROUTE_COMPUTERS) // ceis: the account's computers
+            "cloud", "devices" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.cloud.ROUTE_CLOUD_ACCOUNT) // ceis: the account and its devices on the hub
+            "coding", "agents" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.coding.ROUTE_CODING) // ceis: the coding agents on the account's computers
+            "profile" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.profile.ROUTE_AGENT_PROFILE) // ceis: the face links here
+            "network", "proxy" -> DeepLinkAction.OpenSettingsScreen(io.github.ceis.ui.net.ROUTE_NETWORK) // ceis: the proxy for own providers
             "background" -> DeepLinkAction.OpenSettingsScreen(Routes.BACKGROUND)
             "about" -> DeepLinkAction.OpenSettingsScreen(Routes.ABOUT)
             "permissions" -> DeepLinkAction.OpenPermissionSettings

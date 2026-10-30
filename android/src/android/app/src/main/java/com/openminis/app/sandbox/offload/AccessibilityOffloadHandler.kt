@@ -54,7 +54,7 @@ Groups:
 Output: JSON envelope { ok, data | error: { code, message } }.
 Use --compact to emit on a single line; --quiet to strip the envelope.
 
-First-run: enable "wevvy" under Settings → Accessibility, then `service ping`.
+First-run: enable "ceis" under Settings → Accessibility, then `service ping`.
 """
         private const val SERVICE_HELP = "service status | ping\n"
         private const val UI_HELP = """ui dump | find | info | node | screenshot
@@ -95,7 +95,7 @@ First-run: enable "wevvy" under Settings → Accessibility, then `service ping`.
             return NativeOffloadResult(if (args.positional.isEmpty()) 2 else 0, TOP_HELP)
         }
         val sub = args.positional[0]
-        io.github.wevvy.status.KeepAwake.a11yTouched() // wevvy: the screen stays on while this runs
+        io.github.ceis.status.KeepAwake.a11yTouched() // ceis: the screen stays on while this runs
         // T330: tri-state agent gate via OffloadPermissionManager. `service`
         // and `--version` are diagnostic and pass through so the agent (or
         // a curious developer) can still verify the service runs even when
@@ -147,12 +147,12 @@ First-run: enable "wevvy" under Settings → Accessibility, then `service ping`.
                         "Android is blocking the accessibility toggle for this install " +
                             "(\"Restricted setting\" — applies to apps installed from a " +
                             "downloaded APK). Allow it via App info → ⋮ → Allow restricted " +
-                            "settings, then enable wevvy under Settings → Accessibility. " +
+                            "settings, then enable ceis under Settings → Accessibility. " +
                             "Settings → Permissions → System Permissions has a one-tap fix " +
                             "when Shizuku is available."
                     } else {
                         "Accessibility permission was revoked (this happens after a force-stop). " +
-                            "Re-enable wevvy under Settings → Accessibility, or use Settings → " +
+                            "Re-enable ceis under Settings → Accessibility, or use Settings → " +
                             "Permissions → Integrations to repair it with Shizuku."
                     },
                     exit = 77,
@@ -189,7 +189,7 @@ First-run: enable "wevvy" under Settings → Accessibility, then `service ping`.
             }
         } catch (e: NotRunning) {
             err(args, "SERVICE_NOT_RUNNING",
-                e.message ?: "Accessibility service is not running. Enable wevvy under Settings → Accessibility.",
+                e.message ?: "Accessibility service is not running. Enable ceis under Settings → Accessibility.",
                 exit = 77)
         } catch (e: Throwable) {
             AppLogger.warning(TAG, "uncaught: ${e.javaClass.simpleName} ${e.message}")
@@ -230,7 +230,7 @@ First-run: enable "wevvy" under Settings → Accessibility, then `service ping`.
                             "Allow it via App info → ⋮ → Allow restricted settings first.\n",
                     )
                 else
-                    NativeOffloadResult(77, "✗ Accessibility service is not running — go to Settings → Accessibility → wevvy to enable\n")
+                    NativeOffloadResult(77, "✗ Accessibility service is not running — go to Settings → Accessibility → ceis to enable\n")
             }
             else -> NativeOffloadResult(2, "$TOOL service: unknown action\n$SERVICE_HELP")
         }
@@ -1116,7 +1116,7 @@ First-run: enable "wevvy" under Settings → Accessibility, then `service ping`.
 
     private fun svcOrThrow(): MinisAccessibilityService =
         MinisAccessibilityService.getInstance()
-            ?: throw NotRunning("Accessibility service is not running. Enable wevvy under Settings → Accessibility.")
+            ?: throw NotRunning("Accessibility service is not running. Enable ceis under Settings → Accessibility.")
 
     private fun ok(args: OffloadArgs, data: Any): NativeOffloadResult {
         val body = JSONObject().put("ok", true).put("data", data).toString()

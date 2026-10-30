@@ -43,7 +43,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import com.openminis.app.ui.theme.ChatColors
-import io.github.wevvy.ui.glass.liquidGlass // wevvy: Liquid Glass menu material (design.md addendum)
+import io.github.ceis.ui.glass.liquidGlass // ceis: Liquid Glass menu material (design.md addendum)
 
 /**
  * App-wide popup menu with a unified look: softer rounded corners, a lifted
@@ -72,7 +72,7 @@ fun MinisMenu(
     // in dark, a subtle shade in light) so the menu pops out — same fix already
     // validated on the text-selection toolbar (T-android-text-toolbar-dark-
     // visibility). The dark-mode `border` below adds the extra edge definition.
-    // wevvy: pure canvas like the drawer and chat, black in dark and white in
+    // ceis: pure canvas like the drawer and chat, black in dark and white in
     // light. The hairline border carries the definition.
     containerColor: Color = ChatColors.background,
     tonalElevation: Dp = 3.dp,
@@ -89,7 +89,7 @@ fun MinisMenu(
     // Light mode now also gets a hairline (was null): with the launcher-style
     // soft halo replacing the old tight shadow, the popup's edge needs a
     // subtle line of its own to stay crisply bounded on light surfaces.
-    // wevvy: a touch stronger in dark so the black menu stays defined
+    // ceis: a touch stronger in dark so the black menu stays defined
     // against the black chat.
     border: BorderStroke? = if (ChatColors.isDark) {
         BorderStroke(0.75.dp, Color.White.copy(alpha = 0.14f))
@@ -190,7 +190,7 @@ fun MinisMenu(
                         ambientColor = Color.Black.copy(alpha = 0.35f),
                         spotColor = Color.Black.copy(alpha = 0.35f),
                     )
-                    // wevvy: Liquid Glass material. A menu lives in its own
+                    // ceis: Liquid Glass material. A menu lives in its own
                     // popup window, so it cannot sample the app's backdrop;
                     // liquidGlass falls back to its near-opaque tint with
                     // the specular edge, and the border below still draws.

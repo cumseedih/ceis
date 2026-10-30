@@ -84,8 +84,8 @@ class ConfigConfirmNotifier(
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_wevvy) // wevvy: flat status-bar mark // wevvy: flat status-bar mark // wevvy: flat status-bar mark
-            .setLargeIcon(io.github.wevvy.identity.WevvyIdentity.face(context)) // wevvy: the agent is the sender
+            .setSmallIcon(R.drawable.ic_stat_ceis) // ceis: flat status-bar mark // ceis: flat status-bar mark // ceis: flat status-bar mark
+            .setLargeIcon(io.github.ceis.identity.CeisIdentity.face(context)) // ceis: the agent is the sender
             .setContentTitle(context.getString(R.string.notif_config_confirm_title))
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))

@@ -14,8 +14,8 @@ import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
 
-from wevvy.avatar import studio as studio_mod
-from wevvy.avatar.studio import (
+from ceis.avatar import studio as studio_mod
+from ceis.avatar.studio import (
     CLIP_MOODS,
     PICTURES_PER_FACE,
     Endpoint,
@@ -24,10 +24,10 @@ from wevvy.avatar.studio import (
     parse_choice,
     parse_request,
 )
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.server import create_app
+from ceis.server.service import MuseService
 
 
 @pytest.mark.parametrize(
@@ -395,7 +395,7 @@ def test_video_host_is_the_root_of_the_model_url(base: str, host: str) -> None:
         base_url=base,
         api_key="k",
         image_model="i",
-        cloud="wevvy" in base,
+        cloud="ceis" in base,
         video_model="wan2.2-i2v-flash",
     )
     assert ep.video_host == host and ep.clips

@@ -14,18 +14,18 @@ import pytest
 from fastapi.testclient import TestClient
 
 from tests.test_phone import AutoApproveUI, png
-from wevvy.computer import hands as hands_mod
-from wevvy.computer.link import ComputerLink
-from wevvy.config import GUISettings, HandsSettings, Settings
-from wevvy.llm import MockLLM
-from wevvy.phone.link import STOP_MARKER, DeviceStopped
-from wevvy.phone.operator import COMPUTER, PhoneOperator, parse_step, to_computer_action
-from wevvy.phone.screen import Screen
-from wevvy.schema import Function, LLMResponse, RiskLevel, ToolCall
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
-from wevvy.tools.computer import ComputerAct, ComputerScreen, ComputerTask
+from ceis.computer import hands as hands_mod
+from ceis.computer.link import ComputerLink
+from ceis.config import GUISettings, HandsSettings, Settings
+from ceis.llm import MockLLM
+from ceis.phone.link import STOP_MARKER, DeviceStopped
+from ceis.phone.operator import COMPUTER, PhoneOperator, parse_step, to_computer_action
+from ceis.phone.screen import Screen
+from ceis.schema import Function, LLMResponse, RiskLevel, ToolCall
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.server import create_app
+from ceis.server.service import MuseService
+from ceis.tools.computer import ComputerAct, ComputerScreen, ComputerTask
 
 SCREEN_RAW = {
     "app": "firefox",
@@ -76,9 +76,9 @@ def fake_screen(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
     def capture(max_width: int = 1600) -> dict[str, Any]:
         return dict(screens[0] if len(screens) == 1 else screens.pop(0))
 
-    monkeypatch.setattr("wevvy.computer.link.capture", capture)
-    monkeypatch.setattr("wevvy.computer.link.active_window", lambda: ("firefox", "Firefox"))
-    monkeypatch.setattr("wevvy.computer.link.screen_size", lambda: (1920, 1080))
+    monkeypatch.setattr("ceis.computer.link.capture", capture)
+    monkeypatch.setattr("ceis.computer.link.active_window", lambda: ("firefox", "Firefox"))
+    monkeypatch.setattr("ceis.computer.link.screen_size", lambda: (1920, 1080))
     return screens
 
 
@@ -222,7 +222,7 @@ def test_a_black_capture_is_an_error_not_a_picture(monkeypatch: pytest.MonkeyPat
 
     from PIL import Image
 
-    from wevvy.computer import screen as screen_mod
+    from ceis.computer import screen as screen_mod
 
     class Grab:
         def __init__(self, w: int, h: int, px: bytes) -> None:
@@ -360,7 +360,7 @@ async def test_operator_runs_on_the_computer(settings: Settings, fake_screen) ->
         [
             step("open", "Open the text editor", text="gedit"),
             step("left_click", "Click in the document", coordinate=[499, 499]),
-            step("type", "Type the note", text="hello from wevvy"),
+            step("type", "Type the note", text="hello from ceis"),
             step("key", "Save with Ctrl+S", keys=["ctrl", "s"]),
             step("answer", "Report", text="Saved the note."),
         ]
@@ -384,7 +384,7 @@ async def test_operator_runs_on_the_computer(settings: Settings, fake_screen) ->
     assert outcome.status == "done" and outcome.message == "Saved the note." and outcome.steps == 5
     assert hands.calls[0] == ("open", "gedit")
     assert hands.calls[1] == ("click", 959.0, 539.5, "left", 1)  # 999-grid → 1920×1080
-    assert ("type", "hello from wevvy") in hands.calls and ("key", ("ctrl", "s")) in hands.calls
+    assert ("type", "hello from ceis") in hands.calls and ("key", ("ctrl", "s")) in hands.calls
     # the save went through the Sentinel as a sensitive step
     assert [r.summary for r in ui.requests] == ["computer_act: press ctrl+s in Firefox (firefox)"]
     report = outcome.report()
@@ -449,7 +449,7 @@ def test_hands_switch_adds_the_tools_and_the_card_follows_a_task(server) -> None
     assert client.put("/api/connections/hands", json={"mode": "nope"}).status_code == 400
     assert client.put("/api/connections/hands", json={"mode": "window"}).status_code == 200
     assert service.settings.hands.mode == "window"
-    from wevvy.config import Settings, apply_app_settings, load_app_settings
+    from ceis.config import Settings, apply_app_settings, load_app_settings
 
     fresh = Settings()
     apply_app_settings(fresh, load_app_settings(service.data_dir))

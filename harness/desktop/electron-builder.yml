@@ -1,4 +1,4 @@
-# electron-builder: the installers of wevvy Desktop — the desktop built on DeepSeek
+# electron-builder: the installers of ceis Desktop — the desktop built on DeepSeek
 # Harness. `npm run dist` here after scripts/prepare-dsh.mjs has staged dsh/ (and, for the
 # hands, after scripts/desktop-app/build-runtime.py --target harness/desktop/runtime has put
 # the runtime at runtime/); .github/workflows/desktop-app.yml does all of it per platform.
@@ -6,13 +6,13 @@
 # environment: Windows asks for "Run anyway"; on macOS the workflow runs `--dir` and
 # scripts/desktop-app/package-mac.sh, which ad-hoc signs (or signs and notarizes) the
 # bundle and writes the zip and an APFS dmg (docs/desktop.md).
-# The appId is wevvy's own (the previous desktop app's id is retired with
+# The appId is ceis's own (the previous desktop app's id is retired with
 # upstream), so it installs as its own app with its own permission entries.
-appId: com.wevvy.desktop
-productName: wevvy
-executableName: wevvy-desktop
-copyright: GPL-3.0-or-later · the wevvy community · built on DeepSeek Harness (MIT)
-artifactName: wevvy-Desktop-${version}-${os}-${arch}.${ext}
+appId: com.ceis.desktop
+productName: ceis
+executableName: ceis-desktop
+copyright: GPL-3.0-or-later · the ceis community · built on DeepSeek Harness (MIT)
+artifactName: ceis-Desktop-${version}-${os}-${arch}.${ext}
 directories:
   output: dist
   buildResources: resources
@@ -53,10 +53,10 @@ linux:
       arch: [x64]
     # the same unpacked app as an archive: for machines where the AppImage cannot mount
     # (no FUSE, or fusermount not permitted — `--appimage-extract-and-run` is the other way)
-    # and the .deb does not apply; unpack anywhere and run ./wevvy-desktop (docs/desktop.md)
+    # and the .deb does not apply; unpack anywhere and run ./ceis-desktop (docs/desktop.md)
     - target: tar.gz
       arch: [x64]
-  artifactName: wevvy-Desktop-${version}-linux-x64.${ext}
+  artifactName: ceis-Desktop-${version}-linux-x64.${ext}
   category: Utility
   # the icon set, one PNG per size (resources/icons/<n>x<n>.png, made from app-icon.png): the deb
   # installs each under /usr/share/icons/hicolor/<n>x<n>/apps/. A single 1024px PNG landed only in
@@ -65,7 +65,7 @@ linux:
   synopsis: an open-source personal agent for every device you own; the desktop built on DeepSeek Harness
   desktop:
     entry:
-      StartupWMClass: wevvy-desktop
+      StartupWMClass: ceis-desktop
 deb:
   depends: ["libgtk-3-0", "libnotify4", "libnss3", "libxss1", "libxtst6", "xdg-utils", "libatspi2.0-0", "libuuid1", "libsecret-1-0", "xdotool"]
 win:
@@ -88,11 +88,11 @@ nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  shortcutName: wevvy
+  shortcutName: ceis
   # electron-builder keeps files with these extensions out of the installer's 7z archive and
   # writes them into the installer one by one instead, and when it does it skips every
   # node_modules folder. The default list has .mp4, so the face's clips under
-  # resources/dsh/node_modules/dsh-wevvy/assets/ were in neither place: the Windows install
+  # resources/dsh/node_modules/dsh-ceis/assets/ were in neither place: the Windows install
   # had no dragon-*.mp4 and the face above the chat stood still (1.0.0; Linux and macOS, which
   # do not go through NSIS, had them). Nothing here is big enough to be worth the exception:
   # everything goes into the archive. tests/installer.test.mjs keeps this line, and the
@@ -109,12 +109,12 @@ mac:
   hardenedRuntime: false
   gatekeeperAssess: false
   identity: null
-  # "wevvy Computer Use.app" — the helper that holds Screen Recording and Accessibility and
+  # "ceis Computer Use.app" — the helper that holds Screen Recording and Accessibility and
   # takes the screenshots and moves the mouse (mac/computer-use/, built by its build.sh in the
   # workflow before electron-builder runs). extraFiles land under Contents/; a bundle in
   # Contents/Helpers is nested code, which package-mac.sh signs before the outer app.
   # Nothing is signed here (identity: null), so the helper arrives as build.sh left it.
   extraFiles:
-    - from: mac/computer-use/build/wevvy Computer Use.app
-      to: Helpers/wevvy Computer Use.app
+    - from: mac/computer-use/build/ceis Computer Use.app
+      to: Helpers/ceis Computer Use.app
       filter: ["**/*"]

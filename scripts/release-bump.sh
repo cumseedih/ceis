@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Move every version file of wevvy to the next version, for the release commit.
+# Move every version file of ceis to the next version, for the release commit.
 #
 #   scripts/release-bump.sh <old> <new> <old-code> <new-code> [<relay-old> <relay-new>]
 #   scripts/release-bump.sh 0.1.40 0.1.41 41 42            # the apps and the runtime
@@ -7,10 +7,10 @@
 #   scripts/release-bump.sh --check 0.1.40 0.1.41 41 42    # only say what would move
 #
 # Edits, in place: scripts/rebrand.py (VERSION_NAME / VERSION_CODE; run it afterwards, it writes
-# the Android versionName/versionCode and the iOS MARKETING_VERSION), wevvy/__init__.py,
+# the Android versionName/versionCode and the iOS MARKETING_VERSION), ceis/__init__.py,
 # pyproject.toml, CITATION.cff (version and today's date-released), the relay console's
 # VERSION, web/ and the two harness/* package.json files with their lock files, and, with the
-# last two arguments, cloud/wevvy_cloud/__init__.py and cloud/pyproject.toml. Run from the
+# last two arguments, cloud/ceis_cloud/__init__.py and cloud/pyproject.toml. Run from the
 # repository root; the release recipe is in CONTRIBUTING.md.
 #
 # Every pattern must match exactly one line of its file before anything is written; a file
@@ -84,19 +84,19 @@ EOF
 plan() {
   bump scripts/rebrand.py "^VERSION_NAME = \"$old_re\"$" "VERSION_NAME = \"$new\""
   bump scripts/rebrand.py "^VERSION_CODE = $oc$" "VERSION_CODE = $nc"
-  bump wevvy/__init__.py "^__version__ = \"$old_re\"$" "__version__ = \"$new\""
+  bump ceis/__init__.py "^__version__ = \"$old_re\"$" "__version__ = \"$new\""
   bump pyproject.toml "^version = \"$old_re\"$" "version = \"$new\""
   bump CITATION.cff "^version: $old_re$" "version: $new"
   bump CITATION.cff "^date-released: .*$" "date-released: $(date +%F)"
-  bump cloud/wevvy_cloud/console/app.js "const VERSION = \"$old_re\";" "const VERSION = \"$new\";"
-  for pkg in web/package.json harness/dsh-wevvy/package.json harness/desktop/package.json; do
+  bump cloud/ceis_cloud/console/app.js "const VERSION = \"$old_re\";" "const VERSION = \"$new\";"
+  for pkg in web/package.json harness/dsh-ceis/package.json harness/desktop/package.json; do
     bump "$pkg" "^  \"version\": \"$old_re\",$" "  \"version\": \"$new\","
   done
   for l in web/package-lock.json harness/desktop/package-lock.json; do
     lock "$l" || failed=1
   done
   if [ -n "$rold" ]; then
-    bump cloud/wevvy_cloud/__init__.py "^__version__ = \"$rold_re\"$" "__version__ = \"$rnew\""
+    bump cloud/ceis_cloud/__init__.py "^__version__ = \"$rold_re\"$" "__version__ = \"$rnew\""
     bump cloud/pyproject.toml "^version = \"$rold_re\"$" "version = \"$rnew\""
   fi
 }

@@ -5,13 +5,13 @@ from __future__ import annotations
 from pathlib import Path
 
 from tests.test_phone import AutoApproveUI
-from wevvy.app import WevvyApp
-from wevvy.cloud import CLOUD_KEY, DEFAULT_CHAT_MODEL, DEFAULT_GUI_MODEL, model_url
-from wevvy.config import LLMSettings, Settings
-from wevvy.llm.mock import MockLLM
-from wevvy.llm.openai_chat import OpenAIChatLLM
-from wevvy.llm.vision import model_takes_images
-from wevvy.server.connections import PROVIDERS
+from ceis.app import CeisApp
+from ceis.cloud import CLOUD_KEY, DEFAULT_CHAT_MODEL, DEFAULT_GUI_MODEL, model_url
+from ceis.config import LLMSettings, Settings
+from ceis.llm.mock import MockLLM
+from ceis.llm.openai_chat import OpenAIChatLLM
+from ceis.llm.vision import model_takes_images
+from ceis.server.connections import PROVIDERS
 
 
 def test_model_ids_say_whether_they_see():
@@ -62,7 +62,7 @@ def test_defaults_and_presets():
 
 
 def test_hands_model_follows_the_account(settings: Settings):
-    app = WevvyApp(settings, ui=AutoApproveUI(), llm=MockLLM([]))  # type: ignore[arg-type]
+    app = CeisApp(settings, ui=AutoApproveUI(), llm=MockLLM([]))  # type: ignore[arg-type]
     # own key, nothing under [gui]: the hands use the chat model
     assert not app.llm_is_cloud() and app.gui_model() == settings.llm.model
     # the account as the model: the relay's hands model, not the chat one
@@ -82,7 +82,7 @@ def test_hands_model_follows_the_account(settings: Settings):
 
 def test_hands_model_shares_the_chat_models_proxy(settings: Settings):
     settings.llm.proxy = "http://127.0.0.1:7890"
-    app = WevvyApp(settings, ui=AutoApproveUI(), llm=MockLLM([]))  # type: ignore[arg-type]
+    app = CeisApp(settings, ui=AutoApproveUI(), llm=MockLLM([]))  # type: ignore[arg-type]
     # same host as the chat model: reached the same way
     assert app.make_gui_llm().settings.proxy == "http://127.0.0.1:7890"  # type: ignore[attr-defined]
     # a [gui] model on its own host is not sent through the chat model's proxy
@@ -93,9 +93,9 @@ def test_hands_model_shares_the_chat_models_proxy(settings: Settings):
 
 
 def test_llm_ready_reads_the_vault_and_the_sign_in(settings: Settings, tmp_path: Path):
-    from wevvy.llm.chatgpt import Token, TokenStore
-    from wevvy.llm.factory import llm_ready
-    from wevvy.vault import CredentialVault
+    from ceis.llm.chatgpt import Token, TokenStore
+    from ceis.llm.factory import llm_ready
+    from ceis.vault import CredentialVault
 
     vault = CredentialVault(tmp_path / "v.json", tmp_path / "v.key")
     llm = LLMSettings(api_key="")

@@ -18,7 +18,7 @@ updates:
   # a React major is not ours to take here.
   - package-ecosystem: npm
     # the Electron shell (npm), the dsh plugin (pnpm) and the docs site (npm)
-    directories: ["/harness/desktop", "/harness/dsh-wevvy", "/website"]
+    directories: ["/harness/desktop", "/harness/dsh-ceis", "/website"]
     schedule:
       interval: monthly
     groups:

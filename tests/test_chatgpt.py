@@ -19,8 +19,8 @@ import httpx
 import pytest
 from typer.testing import CliRunner
 
-from wevvy.config import LLMSettings
-from wevvy.llm.chatgpt import (
+from ceis.config import LLMSettings
+from ceis.llm.chatgpt import (
     REGION_CODE,
     Auth,
     ChatGPTError,
@@ -33,8 +33,8 @@ from wevvy.llm.chatgpt import (
     failure_line,
     plan_label,
 )
-from wevvy.llm.codex import CodexClient, CodexLLM, StreamState, sse_events, to_codex
-from wevvy.schema import Message
+from ceis.llm.codex import CodexClient, CodexLLM, StreamState, sse_events, to_codex
+from ceis.schema import Message
 
 TOKEN_URL = "https://auth.test/oauth/token"
 RESPONSES_URL = "https://codex.test/responses"
@@ -388,7 +388,7 @@ async def test_a_401_refreshes_the_token_once_and_retries(tmp_path: Path):
         if bearer == jwt(nonce="old"):
             return httpx.Response(401, json={"error": {"message": "expired"}})
         assert request.headers["chatgpt-account-id"] == "acct-1"
-        assert request.headers["originator"] == "wevvy"
+        assert request.headers["originator"] == "ceis"
         assert request.headers["openai-beta"] == "responses=experimental"
         body = json.loads(request.content)
         assert body["store"] is False and body["instructions"].startswith("You are")
@@ -574,7 +574,7 @@ def test_the_request_carries_the_codex_shape_and_the_proxy_setting():
 async def test_the_proxy_app_reports_the_usage_and_the_failure_codes(tmp_path: Path):
     from httpx import ASGITransport
 
-    from wevvy.llm.chatgpt_proxy import make_app
+    from ceis.llm.chatgpt_proxy import make_app
 
     store = TokenStore.in_dir(tmp_path)
     store.save(token())
@@ -633,7 +633,7 @@ async def test_the_proxy_app_reports_the_usage_and_the_failure_codes(tmp_path: P
 
 
 def test_the_cli_usage_refuses_when_signed_out(cli_home: Path):
-    from wevvy.cli import app
+    from ceis.cli import app
 
     out = CliRunner().invoke(app, ["chatgpt", "usage", "--json"])
     assert out.exit_code == 1
@@ -643,20 +643,20 @@ def test_the_cli_usage_refuses_when_signed_out(cli_home: Path):
 # ----------------------------------------------------------------------------- the CLI
 @pytest.fixture()
 def cli_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """A home of its own: no ./config/config.toml, no ~/.wevvy, a temporary data dir."""
-    from wevvy import config as config_module
+    """A home of its own: no ./config/config.toml, no ~/.ceis, a temporary data dir."""
+    from ceis import config as config_module
 
-    for var in ("WEVVY_CONFIG", "DEEPSEEK_API_KEY", "OPENAI_API_KEY"):
+    for var in ("CEIS_CONFIG", "DEEPSEEK_API_KEY", "OPENAI_API_KEY"):
         monkeypatch.delenv(var, raising=False)
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(config_module, "DEFAULT_DATA_DIR", tmp_path / "home")
     data = tmp_path / "data"
-    monkeypatch.setenv("WEVVY_DATA_DIR", str(data))
+    monkeypatch.setenv("CEIS_DATA_DIR", str(data))
     return data
 
 
 def test_the_cli_status_and_logout_as_json(cli_home: Path):
-    from wevvy.cli import app
+    from ceis.cli import app
 
     runner = CliRunner()
     out = runner.invoke(app, ["chatgpt", "status", "--json"])
@@ -689,7 +689,7 @@ def test_the_cli_status_and_logout_as_json(cli_home: Path):
 
 
 def test_the_cli_status_in_words(cli_home: Path):
-    from wevvy.cli import app
+    from ceis.cli import app
 
     runner = CliRunner()
     out = runner.invoke(app, ["chatgpt", "status"])
@@ -700,7 +700,7 @@ def test_the_cli_status_in_words(cli_home: Path):
 
 
 def test_the_cli_proxy_refuses_when_signed_out(cli_home: Path):
-    from wevvy.cli import app
+    from ceis.cli import app
 
     out = CliRunner().invoke(app, ["chatgpt", "proxy", "--json"])
     assert out.exit_code == 1
@@ -712,7 +712,7 @@ async def test_the_login_flow_against_a_local_fake(tmp_path: Path):
     """The whole PKCE flow with a fake token endpoint: the port, the callback, the exchange."""
     from urllib.parse import parse_qs, urlparse
 
-    from wevvy.llm.chatgpt import LoginFlow
+    from ceis.llm.chatgpt import LoginFlow
 
     store = TokenStore.in_dir(tmp_path)
     exchanged: list[dict[str, str]] = []
@@ -729,7 +729,7 @@ async def test_the_login_flow_against_a_local_fake(tmp_path: Path):
         assert await flow.listen() is True
         query = parse_qs(urlparse(flow.url).query)
         assert query["code_challenge_method"] == ["S256"] and query["state"] == [flow.state]
-        assert query["originator"] == ["wevvy"] and query["redirect_uri"] == [flow.redirect_uri]
+        assert query["originator"] == ["ceis"] and query["redirect_uri"] == [flow.redirect_uri]
         port = flow._server.sockets[0].getsockname()[1]  # type: ignore[union-attr]
 
         async def browser() -> None:

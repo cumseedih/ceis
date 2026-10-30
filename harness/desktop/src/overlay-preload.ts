@@ -7,18 +7,18 @@ type Listener = (state: unknown) => void;
 
 function onState(listener: Listener): () => void {
   const handler = (_e: Electron.IpcRendererEvent, state: unknown) => listener(state);
-  ipcRenderer.on("wevvy:overlay:state", handler);
-  ipcRenderer.send("wevvy:overlay:ready");
-  return () => ipcRenderer.off("wevvy:overlay:state", handler);
+  ipcRenderer.on("ceis:overlay:state", handler);
+  ipcRenderer.send("ceis:overlay:ready");
+  return () => ipcRenderer.off("ceis:overlay:state", handler);
 }
 
-contextBridge.exposeInMainWorld("wevvyGlow", {
+contextBridge.exposeInMainWorld("ceisGlow", {
   onState,
   platform: process.platform,
-  leak: (x: number, y: number, type: string) => ipcRenderer.send("wevvy:overlay:leak", { x, y, type }),
+  leak: (x: number, y: number, type: string) => ipcRenderer.send("ceis:overlay:leak", { x, y, type }),
 });
-contextBridge.exposeInMainWorld("wevvyCapsule", {
+contextBridge.exposeInMainWorld("ceisCapsule", {
   onState,
-  act: (card: string, action: string) => ipcRenderer.send("wevvy:overlay:act", { card, action }),
-  resize: (height: number) => ipcRenderer.send("wevvy:overlay:resize", height),
+  act: (card: string, action: string) => ipcRenderer.send("ceis:overlay:act", { card, action }),
+  resize: (height: number) => ipcRenderer.send("ceis:overlay:resize", height),
 });

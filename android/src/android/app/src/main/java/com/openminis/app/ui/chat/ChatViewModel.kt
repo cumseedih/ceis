@@ -13,7 +13,7 @@ import com.openminis.app.agent.Level
 import com.openminis.app.agent.ToolLoopDetector
 import com.openminis.app.browser.BrowserActionInput
 import com.openminis.app.browser.BrowserTabPool
-import io.github.wevvy.browser.nmBrowserHandOver // wevvy
+import io.github.ceis.browser.nmBrowserHandOver // ceis
 import com.openminis.app.data.db.MessageEntity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Compress
@@ -167,10 +167,10 @@ class ChatViewModel(
          */
         internal fun shouldSplitOnError(error: Throwable): Boolean {
             if (error is CancellationException) return false
-            // wevvy: a content check saying no (the relay's `content_rejected`, a provider's
+            // ceis: a content check saying no (the relay's `content_rejected`, a provider's
             // `DataInspectionFailed`) is about the words, not the size; halving sends the same
             // words twice, and one long chat was refused two hundred times in an hour that way.
-            if (error is LLMError.ProviderError && io.github.wevvy.cloud.RelayRefusal.contentCheck(error.detail)) return false
+            if (error is LLMError.ProviderError && io.github.ceis.cloud.RelayRefusal.contentCheck(error.detail)) return false
             if (error is LLMError) {
                 return when (error) {
                     // Never worth a smaller payload:
@@ -804,7 +804,7 @@ class ChatViewModel(
      */
     private val _canResume = MutableStateFlow(false)
     val canResume: StateFlow<Boolean> = _canResume.asStateFlow()
-    // wevvy: set when the turn ceiling stops a long task; the chat shows a "continue?" card.
+    // ceis: set when the turn ceiling stops a long task; the chat shows a "continue?" card.
     private val _nmContinueAsk = MutableStateFlow<Int?>(null)
     val nmContinueAsk: StateFlow<Int?> = _nmContinueAsk.asStateFlow()
     fun nmContinue(keepGoing: Boolean) {
@@ -2576,7 +2576,7 @@ class ChatViewModel(
     private fun applyRequestImageBudget(messages: List<LLMMessage>): List<LLMMessage> {
         // Collect every image in chronological order so the planner can
         // walk in reverse and protect the most recent images.
-        // wevvy: `screenshot` marks a tool-result image (a screen the agent took), which the
+        // ceis: `screenshot` marks a tool-result image (a screen the agent took), which the
         // count rule below applies to; the person's own pictures are never counted (C9).
         data class ImageRef(val msgIdx: Int, val partIdx: Int, val image: ImageBudget.BudgetImage, val screenshot: Boolean = false)
         val images = mutableListOf<ImageRef>()
@@ -2602,7 +2602,7 @@ class ChatViewModel(
                                         part.imageLinuxPath,
                                         part.imageMimeType ?: "image/jpeg",
                                     ),
-                                    screenshot = true, // wevvy
+                                    screenshot = true, // ceis
                                 )
                             )
                         }
@@ -2613,8 +2613,8 @@ class ChatViewModel(
         }
         if (images.isEmpty()) return messages
 
-        // wevvy: the four newest screenshots only, whatever the bytes — the relay caps a request at 6 MiB (C9)
-        val plan = io.github.wevvy.chat.ScreenshotBudget.apply(
+        // ceis: the four newest screenshots only, whatever the bytes — the relay caps a request at 6 MiB (C9)
+        val plan = io.github.ceis.chat.ScreenshotBudget.apply(
             ImageBudget.planRequestBudget(images.map { it.image }),
             images.map { it.image },
             images.map { it.screenshot },
@@ -3616,17 +3616,17 @@ class ChatViewModel(
     /** The real session ID (same as sessionId for existing sessions, generated on first message for drafts). */
     internal var realSessionId: String = if (isDraft) "" else sessionId
 
-    // wevvy: the first conversation — scripted opening, "what should I call
-    // you?", then the name chooser. Logic lives in io.github.wevvy.onboarding;
+    // ceis: the first conversation — scripted opening, "what should I call
+    // you?", then the name chooser. Logic lives in io.github.ceis.onboarding;
     // this VM only seeds the virtual messages, intercepts the name, and appends
     // the phase addendum to the system prompt. Declared before init so
     // loadSession() can use it.
     internal val nmFirstConversation =
-        io.github.wevvy.onboarding.FirstConversation(context, memoryRepository)
-    val nmNamingCard: StateFlow<io.github.wevvy.onboarding.NamingCardState?>
+        io.github.ceis.onboarding.FirstConversation(context, memoryRepository)
+    val nmNamingCard: StateFlow<io.github.ceis.onboarding.NamingCardState?>
         get() = nmFirstConversation.namingCard
 
-    // wevvy: the home shell asks the composer to take focus (profile page →
+    // ceis: the home shell asks the composer to take focus (profile page →
     // "Change avatar" pre-fills the text and wants the keyboard up).
     private val _nmFocusComposer = kotlinx.coroutines.flow.MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val nmFocusComposer: kotlinx.coroutines.flow.SharedFlow<Unit> = _nmFocusComposer
@@ -3639,20 +3639,20 @@ class ChatViewModel(
 
     init {
         loadSession()
-        // wevvy: rows synced from the account's other devices land in this chat while it is
+        // ceis: rows synced from the account's other devices land in this chat while it is
         // open — reloaded from the database between turns, never under a running one; what
         // arrives during a turn is shown the moment the turn ends (C8: no reload by hand).
         viewModelScope.launch {
             var nmPulledWhileStreaming = false
             launch {
-                io.github.wevvy.sync.ConversationSync.pulled.collect { ids ->
+                io.github.ceis.sync.ConversationSync.pulled.collect { ids ->
                     if (realSessionId.ifEmpty { sessionId } !in ids) return@collect
                     if (_isStreaming.value) nmPulledWhileStreaming = true else reloadSessionFromDb()
                 }
             }
             _isStreaming.collect { streaming ->
                 // the turn is over: the reply goes up and the other devices hear "done" (C9)
-                if (!streaming) io.github.wevvy.sync.ConversationSync.turnEnded(realSessionId.ifEmpty { sessionId })
+                if (!streaming) io.github.ceis.sync.ConversationSync.turnEnded(realSessionId.ifEmpty { sessionId })
                 if (!streaming && nmPulledWhileStreaming) {
                     // a breath after the end: the turn's last rows are still being written
                     kotlinx.coroutines.delay(1_500)
@@ -3719,7 +3719,7 @@ class ChatViewModel(
                         }
                 }
             }
-        // wevvy: the main chat follows the chat slot (Settings › Models, the "Use it for"
+        // ceis: the main chat follows the chat slot (Settings › Models, the "Use it for"
         // card, a pick in a chat's picker: ModelSlots.followPick → mainChatFollows). Its row is
         // rewritten there; this view-model lives as long as the app, so it is told as well and
         // re-resolves to the group that now leads with the pick. A draft (no row yet, not opened
@@ -3728,16 +3728,16 @@ class ChatViewModel(
         // whatever the Models page says. A side chat with a row keeps its model.
         viewModelScope.launch {
             sessionLoaded.first { it }
-            io.github.wevvy.models.ModelSlots.chatSlotWritten.collect { pick ->
+            io.github.ceis.models.ModelSlots.chatSlotWritten.collect { pick ->
                 val sid = realSessionId.ifEmpty { sessionId }
-                val isMain = io.github.wevvy.home.MainChat.isMain(context, sid)
+                val isMain = io.github.ceis.home.MainChat.isMain(context, sid)
                 val isNew = realSessionId.isEmpty() && initialGroupId == null
-                if (!io.github.wevvy.models.MainChatFollow.shouldMove(isMain, _activeEntryId.value, _selectedGroupId.value, pick, isNew)) return@collect
+                if (!io.github.ceis.models.MainChatFollow.shouldMove(isMain, _activeEntryId.value, _selectedGroupId.value, pick, isNew)) return@collect
                 if (resolveProviderFromGroup(pick.groupId, pick.entryId)) {
                     _selectedGroupId.value = pick.groupId
                     val group = providerRepository.group(pick.groupId)
                     _selectedGroupName.value = group?.name ?: ""
-                    _activeEntryId.value?.let { persistBinding(io.github.wevvy.models.MainChatFollow.binding(pick.copy(entryId = it))) }
+                    _activeEntryId.value?.let { persistBinding(io.github.ceis.models.MainChatFollow.binding(pick.copy(entryId = it))) }
                     // the group's default thinking level comes along, as it does when the group is
                     // picked in this chat's own picker (applyGroupSessionDefaults) and on the
                     // iPhone; a draft has no row to write it to and keeps it in memory
@@ -3799,7 +3799,7 @@ class ChatViewModel(
                 // untouched (it has no in-group alternative to fall back to).
                 val groupBound = _selectedGroupId.value
                 val activeEntry = _activeEntryId.value
-                // wevvy: a member taken out of the bound group reaches the chats already
+                // ceis: a member taken out of the bound group reaches the chats already
                 // open, too. Upstream re-resolved only when the member's provider was
                 // disabled; a group edited in Settings (the Cloud card's "Change": the
                 // recommended model swapped for another) left every open chat — the main
@@ -3837,7 +3837,7 @@ class ChatViewModel(
                         currentProvider = null
                     }
                 }
-                // wevvy: a chat pinned to one of the Cloud's models (the picker in the
+                // ceis: a chat pinned to one of the Cloud's models (the picker in the
                 // chat's menu) follows the Cloud group once that model leaves it. The group
                 // is where Settings chooses the model, and a pick in the picker already
                 // moves the group (ModelSlots.followPick), so the two never disagree
@@ -3847,10 +3847,10 @@ class ChatViewModel(
                 } else {
                     null
                 }
-                if (pinned != null && io.github.wevvy.cloud.WevvyCloud.owns(context, pinned)) {
+                if (pinned != null && io.github.ceis.cloud.CeisCloud.owns(context, pinned)) {
                     val cloudGroup = providerRepository.defaultPrimaryGroupId
                         ?.let { id -> config.modelGroups.firstOrNull { it.id == id } }
-                        ?.takeIf { it.name == io.github.wevvy.cloud.WevvyCloud.LABEL && pinned.id !in it.memberEntryIds }
+                        ?.takeIf { it.name == io.github.ceis.cloud.CeisCloud.LABEL && pinned.id !in it.memberEntryIds }
                     if (cloudGroup != null && resolveProviderFromGroup(cloudGroup.id)) {
                         _selectedGroupId.value = cloudGroup.id
                         AppLogger.info(
@@ -3862,8 +3862,8 @@ class ChatViewModel(
                         }
                     }
                 }
-                // wevvy: a pin on a provider switched off since (the Cloud instance above
-                // all: Settings › Models › Use wevvy Cloud models) must not keep answering,
+                // ceis: a pin on a provider switched off since (the Cloud instance above
+                // all: Settings › Models › Use ceis Cloud models) must not keep answering,
                 // and spending, on it; upstream re-resolves group bindings only. Drop the
                 // provider so the default chain below runs; restoreFromBinding refuses the
                 // pin too, so a reload cannot bring it back.
@@ -3965,11 +3965,11 @@ class ChatViewModel(
         // sessionId so re-entering the session reuses the same instance.
         if (isDraft) {
             ChatViewModelStore.rename(sessionId, session.id)
-            nmFirstConversation.rebind(fromDraft = sessionId, toReal = session.id) // wevvy
-            // wevvy: the home shell's main chat may have been this draft;
+            nmFirstConversation.rebind(fromDraft = sessionId, toReal = session.id) // ceis
+            // ceis: the home shell's main chat may have been this draft;
             // prompt addenda (goal creation etc.) follow the id too.
-            io.github.wevvy.home.MainChat.onPromoted(context, sessionId, session.id)
-            io.github.wevvy.chat.SessionAddenda.rebind(sessionId, session.id)
+            io.github.ceis.home.MainChat.onPromoted(context, sessionId, session.id)
+            io.github.ceis.chat.SessionAddenda.rebind(sessionId, session.id)
             // Bring every disk/shell resource that was opened with the draft
             // id over to the real id *before* agent tools start running against
             // the persisted session — otherwise the first tool call (e.g.
@@ -4083,7 +4083,7 @@ class ChatViewModel(
     }.getOrDefault(false)
 
     private fun loadSession() {
-        _nmContinueAsk.value = null // wevvy: the "continue?" card belongs to the session that hit the ceiling
+        _nmContinueAsk.value = null // ceis: the "continue?" card belongs to the session that hit the ceiling
         // T-android-crash-detected-halt: when CrashFrequencyDetector
         // tripped (#459, ≥3 crashes in last hour), skip the heavy
         // session-restore path entirely. Re-running the same persisted
@@ -4139,7 +4139,7 @@ class ChatViewModel(
                     // newest-provider/newest-text-model. Was firstOrNull().
                     applyNewChatDefaultModel()
                 }
-                nmSeedFirstConversation() // wevvy: a fresh draft is where the first conversation starts
+                nmSeedFirstConversation() // ceis: a fresh draft is where the first conversation starts
                 return@launch
             }
 
@@ -4174,7 +4174,7 @@ class ChatViewModel(
                         // session whose model lives on an OAuth provider unable
                         // to restore, despite being signed in.
                         val apiKey = providerRepository.usableApiKey(instance) ?: ""
-                        // wevvy: `&& instance.isEnabled`, so a remembered model on a provider
+                        // ceis: `&& instance.isEnabled`, so a remembered model on a provider
                         // switched off since (the Cloud instance) falls back to the default.
                         if (providerRepository.hasAnyCredential(instance) && instance.isEnabled) {
                             currentProvider = ProviderFactory.create(instance, apiKey, entry.model, context)
@@ -4398,7 +4398,7 @@ class ChatViewModel(
                 }
                 applyCompactMarkerGraying(ordered, marker, loaded.messages, historyDbIds)
             }
-            nmSeedFirstConversation() // wevvy: re-seat the virtual opening in the session it belongs to
+            nmSeedFirstConversation() // ceis: re-seat the virtual opening in the session it belongs to
 
             // Cold-start interrupt detection: an agent loop that was killed by
             // the OS (or app force-quit) leaves agentHistory in one of four
@@ -4423,10 +4423,10 @@ class ChatViewModel(
             // while a request is genuinely in flight THERE. Without it, Case D
             // would light Resume on a turn that is merely still waiting.
             val trackerActive = SessionActivityTracker.isActive(activeSessionId)
-            // wevvy: a tail another device wrote (a message synced in while that device
+            // ceis: a tail another device wrote (a message synced in while that device
             // works on it) is not this phone's turn — no Resume banner, no PAUSED badge (C9).
             val nmRemoteTail = lastEntry != null &&
-                io.github.wevvy.sync.RemoteRows.isRemote(context, activeSessionId, lastEntry.dbMessageId)
+                io.github.ceis.sync.RemoteRows.isRemote(context, activeSessionId, lastEntry.dbMessageId)
             if (lastEntry != null && !_isStreaming.value && !trackerActive && !nmRemoteTail) {
                 val isInterrupted = when (lastEntry.role) {
                     LLMMessage.Role.USER -> {
@@ -4802,7 +4802,7 @@ class ChatViewModel(
                     // [T-android-group-resolve-skip-uncredentialed] An explicit
                     // entry pin on an OAuth provider must restore too.
                     if (!providerRepository.hasAnyCredential(instance)) return false
-                    // wevvy: a pin on a provider that is switched off falls back to the
+                    // ceis: a pin on a provider that is switched off falls back to the
                     // default, as a group binding does; the Cloud instance switched off in
                     // Settings › Models must not answer a chat that once pinned one of its models.
                     if (!instance.isEnabled) return false
@@ -5148,7 +5148,7 @@ class ChatViewModel(
     fun clearChat() {
         if (_isStreaming.value) cancelStream()
         val sid = activeSessionId
-        io.github.wevvy.guard.Grants.clearSession(sid) // wevvy: "allow for this chat" ends with the chat
+        io.github.ceis.guard.Grants.clearSession(sid) // ceis: "allow for this chat" ends with the chat
         // T-streaming-side-channel: ensure no stale stream delta survives a
         // session wipe; the messages list is about to be cleared, so any
         // pending key would be orphaned.
@@ -5163,7 +5163,7 @@ class ChatViewModel(
         _cachedLatestMarker = null
         toolLoopDetector.reset()
         _canResume.value = false
-        _nmContinueAsk.value = null // wevvy
+        _nmContinueAsk.value = null // ceis
         _attachments.value = emptyList()
         _promptQueue.value = emptyList()
         _hasInjectedShareContent.value = false
@@ -5343,11 +5343,11 @@ class ChatViewModel(
 
         val initialProvider = currentProvider
         if (initialProvider == null) {
-            _error.value = context.getString(R.string.nm_chat_no_model) // wevvy: where to fix it, in the person's language
+            _error.value = context.getString(R.string.nm_chat_no_model) // ceis: where to fix it, in the person's language
             return false
         }
         _canResume.value = false
-        _nmContinueAsk.value = null // wevvy
+        _nmContinueAsk.value = null // ceis
         _error.value = null
 
         // T149 parity: revoke memory_writes in the parts we're about to drop
@@ -5498,7 +5498,7 @@ class ChatViewModel(
     fun retryFromMessage(messageId: String) {
         if (_isStreaming.value) return
         _canResume.value = false
-        _nmContinueAsk.value = null // wevvy
+        _nmContinueAsk.value = null // ceis
         val messages = _messages.value
         val index = messages.indexOfFirst { it.id == messageId }
         if (index < 0) return
@@ -5509,7 +5509,7 @@ class ChatViewModel(
 
         val initialProvider = currentProvider
         if (initialProvider == null) {
-            _error.value = context.getString(R.string.nm_chat_no_model) // wevvy: where to fix it, in the person's language
+            _error.value = context.getString(R.string.nm_chat_no_model) // ceis: where to fix it, in the person's language
             return
         }
         val provider: LLMProvider = initialProvider
@@ -5647,7 +5647,7 @@ class ChatViewModel(
     fun deleteFromMessage(messageId: String) {
         if (_isStreaming.value) return
         _canResume.value = false
-        _nmContinueAsk.value = null // wevvy
+        _nmContinueAsk.value = null // ceis
         val messages = _messages.value
         val index = messages.indexOfFirst { it.id == messageId }
         if (index < 0) return
@@ -5804,7 +5804,7 @@ class ChatViewModel(
 
         val baseSystemPrompt = buildSystemPrompt()
         val systemPrompt = if ((provider as? com.openminis.app.provider.anthropic.AnthropicProvider)?.isOAuth == true) {
-            val prefix = io.github.wevvy.cloud.ClaudeSignIn.identifier // wevvy: empty on a build without it, never throws; the provider refuses the send (#373)
+            val prefix = io.github.ceis.cloud.ClaudeSignIn.identifier // ceis: empty on a build without it, never throws; the provider refuses the send (#373)
             if (baseSystemPrompt?.startsWith(prefix) == true) baseSystemPrompt
             else "$prefix\n\n${baseSystemPrompt ?: ""}"
         } else baseSystemPrompt
@@ -6126,7 +6126,7 @@ class ChatViewModel(
             attachmentUris = attachmentUris,
             isQueued = true,
             queuedPromptId = prompt.id,
-            createdAtMillis = System.currentTimeMillis(), // wevvy: time dividers
+            createdAtMillis = System.currentTimeMillis(), // ceis: time dividers
         )
         _messages.value = _messages.value + chatMsg
         clearAttachments()
@@ -6264,7 +6264,7 @@ class ChatViewModel(
             bodyPartsJson = queuedPaste?.partsJson,
         )
         val userEntity = chatRepository.appendMessage(sid, "user", userPartsJson)
-        io.github.wevvy.sync.ConversationSync.sent(sid) // wevvy: pushed at send (C8), then "working" (C9)
+        io.github.ceis.sync.ConversationSync.sent(sid) // ceis: pushed at send (C8), then "working" (C9)
         agentHistory.add(
             LLMMessage(
                 role = LLMMessage.Role.USER,
@@ -6314,7 +6314,7 @@ class ChatViewModel(
                 imageUris = prepared.imageUris,
                 attachmentNames = prepared.attachmentNames,
                 attachmentUris = prepared.nonImageUris,
-                createdAtMillis = userEntity.createdAt, // wevvy: time dividers
+                createdAtMillis = userEntity.createdAt, // ceis: time dividers
             )
             val nextAssistantMsg = ChatMessage(
                 id = newAssistantId,
@@ -6323,7 +6323,7 @@ class ChatViewModel(
                 isStreaming = true,
                 isAwaitingModelResponse = true,
                 thinkingLevel = _thinkingLevel.value,
-                createdAtMillis = System.currentTimeMillis(), // wevvy: time dividers
+                createdAtMillis = System.currentTimeMillis(), // ceis: time dividers
             )
             _messages.value = _messages.value + queuedUserMsg + nextAssistantMsg
             // Note: ChatScreen's `lastUserAppendMs` (the trailing-row
@@ -6413,7 +6413,7 @@ class ChatViewModel(
                 bodyPartsJson = drainPaste?.partsJson,
             )
             chatRepository.appendMessage(sid, "user", userPartsJson)
-            io.github.wevvy.sync.ConversationSync.sent(sid) // wevvy: pushed at send (C8), then "working" (C9)
+            io.github.ceis.sync.ConversationSync.sent(sid) // ceis: pushed at send (C8), then "working" (C9)
 
             agentHistory.add(LLMMessage(
                 role = LLMMessage.Role.USER,
@@ -6432,7 +6432,7 @@ class ChatViewModel(
                     fallbackProviders = fallbackProviders,
                     fallbackStrategy = fallbackStrategy,
                 )
-                nmAfterTurn() // wevvy: queued prompts complete turns too
+                nmAfterTurn() // ceis: queued prompts complete turns too
             } catch (e: CancellationException) {
                 Log.d(TAG, "Agent loop (queued-drain) cancelled")
                 // Cancel mid-drain: cancelStream() will check _promptQueue
@@ -6447,7 +6447,7 @@ class ChatViewModel(
         }
     }
 
-    // wevvy: StarPrompt counts a task only for a turn the person started (composer, idea or
+    // ceis: StarPrompt counts a task only for a turn the person started (composer, idea or
     // goal card) after the first conversation was over. The screens mark that just before
     // sendMessage; routines, the feed and goal checks (HeadlessChatRunner) never do, and the
     // screen takes the flag back when the stream ends.
@@ -6456,9 +6456,9 @@ class ChatViewModel(
     fun nmMarkPersonTurn() {
         val fc = nmFirstConversation
         val sid = realSessionId.ifEmpty { sessionId }
-        nmCountableTurn = io.github.wevvy.community.StarPrompt.Gate.countsAsTask(
+        nmCountableTurn = io.github.ceis.community.StarPrompt.Gate.countsAsTask(
             personStarted = true,
-            firstConversationOver = !fc.isBoundTo(sid) || fc.phase == io.github.wevvy.onboarding.Phase.DONE,
+            firstConversationOver = !fc.isBoundTo(sid) || fc.phase == io.github.ceis.onboarding.Phase.DONE,
         )
     }
 
@@ -6466,23 +6466,23 @@ class ChatViewModel(
     fun nmTakeCountableTurn(): Boolean = nmCountableTurn.also { nmCountableTurn = false }
 
     fun sendMessage(text: String) {
-        // wevvy: "change your avatar to …" (and a pick while the options are
+        // ceis: "change your avatar to …" (and a pick while the options are
         // up) is handled in the app, not by the model.
         if (nmInterceptAvatar(text)) { nmCountableTurn = false; return }
-        // wevvy: "@Mac …" opens a turn for that device — the mention comes out of the text,
-        // a one-turn note sends the work there through wevvy-pc (contract C7, rule 8).
-        val nmText = io.github.wevvy.sync.DeviceMention.apply(context, realSessionId.ifEmpty { sessionId }, text)
-        // wevvy: during the first conversation the text goes to the model as
-        // it is; the model says what it meant in a `wevvy-naming` block and
+        // ceis: "@Mac …" opens a turn for that device — the mention comes out of the text,
+        // a one-turn note sends the work there through ceis-pc (contract C7, rule 8).
+        val nmText = io.github.ceis.sync.DeviceMention.apply(context, realSessionId.ifEmpty { sessionId }, text)
+        // ceis: during the first conversation the text goes to the model as
+        // it is; the model says what it meant in a `ceis-naming` block and
         // nmAfterTurn moves the phase (see FirstConversation).
         sendMessage(nmText, skipContextCheck = false)
     }
 
-    // ─── wevvy: changing the face from the chat ─────────────────────────
-    // See io.github.wevvy.avatar.AvatarFlow. The request and the pick are
+    // ─── ceis: changing the face from the chat ─────────────────────────
+    // See io.github.ceis.avatar.AvatarFlow. The request and the pick are
     // persisted as ordinary user/assistant messages (so the history stays
     // consistent and the model later sees what happened); the options card is
-    // virtual while the choice is open and is persisted as a `wevvy-avatar`
+    // virtual while the choice is open and is persisted as a `ceis-avatar`
     // fence once made. The share card is virtual only — the profile page has
     // the same share button.
 
@@ -6495,13 +6495,13 @@ class ChatViewModel(
     private var nmPendingFace: NmPendingFace? = null
 
     private fun nmInterceptAvatar(text: String): Boolean {
-        val flow = io.github.wevvy.avatar.AvatarFlow
+        val flow = io.github.ceis.avatar.AvatarFlow
         val sid = realSessionId.ifEmpty { sessionId }
         // A pick or "again" while the options are up in this chat.
-        if (realSessionId.isNotEmpty() && flow.stage.value is io.github.wevvy.avatar.AvatarFlow.Stage.Choosing && flow.isActiveIn(sid)) {
+        if (realSessionId.isNotEmpty() && flow.stage.value is io.github.ceis.avatar.AvatarFlow.Stage.Choosing && flow.isActiveIn(sid)) {
             when (val c = flow.parseChoice(text)) {
-                is io.github.wevvy.avatar.AvatarFlow.Choice.Index -> {
-                    if (io.github.wevvy.avatar.AvatarStudio.slots.value.getOrNull(c.index) is io.github.wevvy.avatar.AvatarStudio.Slot.Ready) {
+                is io.github.ceis.avatar.AvatarFlow.Choice.Index -> {
+                    if (io.github.ceis.avatar.AvatarStudio.slots.value.getOrNull(c.index) is io.github.ceis.avatar.AvatarStudio.Slot.Ready) {
                         viewModelScope.launch {
                             nmAppendUserLine(sid, text)
                             nmChooseAvatarInternal(sid, c.index)
@@ -6509,8 +6509,8 @@ class ChatViewModel(
                         return true
                     }
                 }
-                io.github.wevvy.avatar.AvatarFlow.Choice.Regenerate -> {
-                    val desc = (flow.stage.value as? io.github.wevvy.avatar.AvatarFlow.Stage.Choosing)?.description.orEmpty()
+                io.github.ceis.avatar.AvatarFlow.Choice.Regenerate -> {
+                    val desc = (flow.stage.value as? io.github.ceis.avatar.AvatarFlow.Stage.Choosing)?.description.orEmpty()
                     viewModelScope.launch {
                         nmAppendUserLine(sid, text)
                         if (flow.regenerate(context)) {
@@ -6526,15 +6526,15 @@ class ChatViewModel(
         val desc = flow.parseRequest(text) ?: return false
         // Without an image model the request goes to the chat model as usual, with a one-turn
         // note so the agent itself explains what is missing and links the setting.
-        if (io.github.wevvy.media.MediaModels.imageEndpoint(context) == null) {
-            io.github.wevvy.chat.SessionAddenda.add(sid, "nm-media-missing", io.github.wevvy.media.MediaModels.missingImageAddendum(), turns = 1)
+        if (io.github.ceis.media.MediaModels.imageEndpoint(context) == null) {
+            io.github.ceis.chat.SessionAddenda.add(sid, "nm-media-missing", io.github.ceis.media.MediaModels.missingImageAddendum(), turns = 1)
             return false
         }
         val referenceUri = _attachments.value.firstOrNull { it.isImage }?.uri
         _attachments.value = emptyList()
         // The first conversation's "what should I call you?" is not answered by this.
         nmFirstConversation.takeIf { it.isBoundTo(sid) }?.let { fc ->
-            if (fc.phase == io.github.wevvy.onboarding.Phase.ASK_AGENT_NAME) {
+            if (fc.phase == io.github.ceis.onboarding.Phase.ASK_AGENT_NAME) {
                 fc.dismissChooser()
                 _messages.value = _messages.value.filterNot { it.id == nmNamingCardId }
             }
@@ -6547,11 +6547,11 @@ class ChatViewModel(
             val reference = withContext(Dispatchers.IO) { flow.loadReference(context, referenceUri) }
             // Pictures paid from the Cloud allowance are priced first: the card says what
             // this face costs and what is left today, and nothing is drawn until the yes.
-            if (io.github.wevvy.cloud.FaceCost.onCloud(context)) {
-                val job = io.github.wevvy.cloud.FaceCost.newFace(context)
-                val est = io.github.wevvy.cloud.FaceCost.estimate(context, job)
-                nmPendingFace = NmPendingFace(realSid, desc, reference, io.github.wevvy.cloud.FaceCost.blocked(est))
-                nmShowAvatarConfirmCard(io.github.wevvy.cloud.FaceCost.describe(context, job, est))
+            if (io.github.ceis.cloud.FaceCost.onCloud(context)) {
+                val job = io.github.ceis.cloud.FaceCost.newFace(context)
+                val est = io.github.ceis.cloud.FaceCost.estimate(context, job)
+                nmPendingFace = NmPendingFace(realSid, desc, reference, io.github.ceis.cloud.FaceCost.blocked(est))
+                nmShowAvatarConfirmCard(io.github.ceis.cloud.FaceCost.describe(context, job, est))
             } else {
                 nmStartFace(realSid, desc, reference)
             }
@@ -6560,7 +6560,7 @@ class ChatViewModel(
     }
 
     private suspend fun nmStartFace(realSid: String, desc: String, reference: android.graphics.Bitmap?) {
-        val flow = io.github.wevvy.avatar.AvatarFlow
+        val flow = io.github.ceis.avatar.AvatarFlow
         if (flow.start(context, realSid, desc, reference)) {
             // Honest about the wait: pictures take a while, so the reply says "drawing
             // now" at once (persisted, so the transcript never ends on an unanswered
@@ -6570,7 +6570,7 @@ class ChatViewModel(
             nmAnnounceWhenDrawn(realSid, desc)
         } else {
             // No image model: say so as the agent, and point at the setting.
-            val why = io.github.wevvy.avatar.AvatarStudio.error.value
+            val why = io.github.ceis.avatar.AvatarStudio.error.value
                 ?: context.getString(R.string.nm_avatar_no_provider)
             nmAppendAssistantLine(realSid, context.getString(R.string.nm_avatar_cannot_start, why))
         }
@@ -6604,15 +6604,15 @@ class ChatViewModel(
         viewModelScope.launch { nmAppendAssistantLine(pending.sid, context.getString(R.string.nm_face_cost_declined)) }
     }
 
-    // ─── wevvy: the free allowance is spent ──────────────────────────────
+    // ─── ceis: the free allowance is spent ──────────────────────────────
     // The relay's 429 arrives through the model client as "rate limited"; the
     // structured body was kept aside by AllowanceSignal. When the error is about
     // to be shown, the card with the two ways on (own key, invite)
     // is added under it — virtual, never persisted.
 
     private val nmAllowanceCardId = "nm_allowance_card"
-    private val _nmAllowance = kotlinx.coroutines.flow.MutableStateFlow<io.github.wevvy.cloud.AllowanceSignal.Exhausted?>(null)
-    val nmAllowance: kotlinx.coroutines.flow.StateFlow<io.github.wevvy.cloud.AllowanceSignal.Exhausted?> = _nmAllowance
+    private val _nmAllowance = kotlinx.coroutines.flow.MutableStateFlow<io.github.ceis.cloud.AllowanceSignal.Exhausted?>(null)
+    val nmAllowance: kotlinx.coroutines.flow.StateFlow<io.github.ceis.cloud.AllowanceSignal.Exhausted?> = _nmAllowance
 
     /**
      * The error text to show for a failed turn — the allowance sentence when the relay said so
@@ -6622,17 +6622,17 @@ class ChatViewModel(
      * kept aside by `ReachSignal`, [fallback] otherwise.
      */
     private fun nmAllowanceErrorText(fallback: String): String {
-        val info = io.github.wevvy.cloud.AllowanceSignal.takeFresh()
+        val info = io.github.ceis.cloud.AllowanceSignal.takeFresh()
         if (info == null) {
-            io.github.wevvy.cloud.AllowanceSignal.takeFreshRefusal()?.let { refusal ->
+            io.github.ceis.cloud.AllowanceSignal.takeFreshRefusal()?.let { refusal ->
                 // a key the relay no longer takes: the account's state follows (contract C12)
-                if (refusal.kind == io.github.wevvy.cloud.RelayRefusal.Kind.SIGNED_OUT) {
-                    viewModelScope.launch { runCatching { io.github.wevvy.cloud.WevvyCloud.refresh(context) } }
+                if (refusal.kind == io.github.ceis.cloud.RelayRefusal.Kind.SIGNED_OUT) {
+                    viewModelScope.launch { runCatching { io.github.ceis.cloud.CeisCloud.refresh(context) } }
                 }
-                return io.github.wevvy.cloud.RelayRefusal.canonical(refusal)
+                return io.github.ceis.cloud.RelayRefusal.canonical(refusal)
             }
-            val reach = io.github.wevvy.net.ReachSignal.takeFresh() ?: return fallback
-            return io.github.wevvy.net.ProviderReach.canonical(reach)
+            val reach = io.github.ceis.net.ReachSignal.takeFresh() ?: return fallback
+            return io.github.ceis.net.ProviderReach.canonical(reach)
         }
         _nmAllowance.value = info
         _messages.value = _messages.value.filterNot { it.id == nmAllowanceCardId } + ChatMessage(
@@ -6642,10 +6642,10 @@ class ChatViewModel(
             toolBlocks = listOf(AssistantBlock(id = "${nmAllowanceCardId}_block", kind = "nm_allowance", content = "")),
         )
         // the cached account shows the pool as spent until the next /v1/me
-        viewModelScope.launch { runCatching { io.github.wevvy.cloud.WevvyCloud.refresh(context) } }
+        viewModelScope.launch { runCatching { io.github.ceis.cloud.CeisCloud.refresh(context) } }
         if (info.dailyCap) return context.getString(R.string.nm_ways_title_day)
         if (info.paused) return context.getString(R.string.nm_cloud_err_allowance_paused)
-        return io.github.wevvy.cloud.WevvyCloud.allowanceSentence(context)
+        return io.github.ceis.cloud.CeisCloud.allowanceSentence(context)
     }
 
     private var nmAllowanceCheckedAt = 0L
@@ -6657,7 +6657,7 @@ class ChatViewModel(
      * own card ([nmAllowanceErrorText]).
      */
     private fun nmAllowanceHeadsUp() {
-        val cloudId = io.github.wevvy.cloud.WevvyCloud.instance(context)?.id ?: return
+        val cloudId = io.github.ceis.cloud.CeisCloud.instance(context)?.id ?: return
         val entryId = _activeEntryId.value ?: return
         val entry = providerRepository.config.value.modelEntries.find { it.id == entryId } ?: return
         if (entry.providerInstanceId != cloudId) return
@@ -6665,16 +6665,16 @@ class ChatViewModel(
         if (now - nmAllowanceCheckedAt < 60_000) return
         nmAllowanceCheckedAt = now
         viewModelScope.launch {
-            val a = runCatching { io.github.wevvy.cloud.WevvyCloud.refresh(context) }.getOrNull() ?: return@launch
+            val a = runCatching { io.github.ceis.cloud.CeisCloud.refresh(context) }.getOrNull() ?: return@launch
             // The line shows dollars, so it needs the relay's conversion rate (pricesInMoney).
             if (!a.limited || !a.pricesInMoney || a.exhausted || !(a.warn || a.spendFraction >= 0.8f)) return@launch
-            if (!io.github.wevvy.cloud.WevvyCloud.markWarned(context, a.grantCny)) return@launch
+            if (!io.github.ceis.cloud.CeisCloud.markWarned(context, a.grantCny)) return@launch
             appendSystemInfo(
                 context.getString(
                     R.string.nm_cloud_warn_line,
-                    io.github.wevvy.ui.cloud.money(a.toUsd(a.leftCny.coerceAtLeast(0.0))),
-                    io.github.wevvy.ui.cloud.money(a.toUsd(a.grantCny)),
-                    io.github.wevvy.cloud.WevvyCloud.inviteBonusText(context),
+                    io.github.ceis.ui.cloud.money(a.toUsd(a.leftCny.coerceAtLeast(0.0))),
+                    io.github.ceis.ui.cloud.money(a.toUsd(a.grantCny)),
+                    io.github.ceis.cloud.CeisCloud.inviteBonusText(context),
                 ),
                 "info",
             )
@@ -6688,15 +6688,15 @@ class ChatViewModel(
      */
     private fun nmAnnounceWhenDrawn(sid: String, desc: String) {
         viewModelScope.launch {
-            val slots = io.github.wevvy.avatar.AvatarStudio.slots.first { list ->
-                list.none { it is io.github.wevvy.avatar.AvatarStudio.Slot.Loading }
+            val slots = io.github.ceis.avatar.AvatarStudio.slots.first { list ->
+                list.none { it is io.github.ceis.avatar.AvatarStudio.Slot.Loading }
             }
-            val flow = io.github.wevvy.avatar.AvatarFlow
-            if (!flow.isActiveIn(sid) || flow.stage.value !is io.github.wevvy.avatar.AvatarFlow.Stage.Choosing) return@launch
-            if (slots.any { it is io.github.wevvy.avatar.AvatarStudio.Slot.Ready }) {
+            val flow = io.github.ceis.avatar.AvatarFlow
+            if (!flow.isActiveIn(sid) || flow.stage.value !is io.github.ceis.avatar.AvatarFlow.Stage.Choosing) return@launch
+            if (slots.any { it is io.github.ceis.avatar.AvatarStudio.Slot.Ready }) {
                 nmAppendAssistantLine(sid, flow.optionsReadyText(context, desc))
             } else {
-                val why = (slots.firstOrNull { it is io.github.wevvy.avatar.AvatarStudio.Slot.Failed } as? io.github.wevvy.avatar.AvatarStudio.Slot.Failed)?.message
+                val why = (slots.firstOrNull { it is io.github.ceis.avatar.AvatarStudio.Slot.Failed } as? io.github.ceis.avatar.AvatarStudio.Slot.Failed)?.message
                     ?: context.getString(R.string.nm_avatar_no_provider)
                 nmAppendAssistantLine(sid, context.getString(R.string.nm_avatar_cannot_start, why))
             }
@@ -6716,7 +6716,7 @@ class ChatViewModel(
     /** A tile on the options card was tapped. */
     fun nmChooseAvatar(index: Int) {
         val sid = realSessionId.ifEmpty { sessionId }
-        val flow = io.github.wevvy.avatar.AvatarFlow
+        val flow = io.github.ceis.avatar.AvatarFlow
         if (!flow.isActiveIn(sid)) return
         viewModelScope.launch {
             nmAppendUserLine(sid, context.getString(R.string.nm_avatar_pick_line, index + 1))
@@ -6726,9 +6726,9 @@ class ChatViewModel(
 
     /** "Again" on the options card. */
     fun nmRegenerateAvatar() {
-        val flow = io.github.wevvy.avatar.AvatarFlow
+        val flow = io.github.ceis.avatar.AvatarFlow
         val sid = realSessionId.ifEmpty { sessionId }
-        val desc = (flow.stage.value as? io.github.wevvy.avatar.AvatarFlow.Stage.Choosing)?.description.orEmpty()
+        val desc = (flow.stage.value as? io.github.ceis.avatar.AvatarFlow.Stage.Choosing)?.description.orEmpty()
         if (flow.regenerate(context) && realSessionId.isNotEmpty()) {
             viewModelScope.launch {
                 nmAppendAssistantLine(sid, context.getString(R.string.nm_avatar_drawing_again))
@@ -6739,7 +6739,7 @@ class ChatViewModel(
 
     /** The options card was dismissed without a pick. */
     fun nmCancelAvatar() {
-        io.github.wevvy.avatar.AvatarFlow.cancel()
+        io.github.ceis.avatar.AvatarFlow.cancel()
         _messages.value = _messages.value.filterNot { it.id == nmAvatarCardId }
     }
 
@@ -6748,12 +6748,12 @@ class ChatViewModel(
     }
 
     private suspend fun nmChooseAvatarInternal(sid: String, index: Int) {
-        val flow = io.github.wevvy.avatar.AvatarFlow
-        val desc = (flow.stage.value as? io.github.wevvy.avatar.AvatarFlow.Stage.Choosing)?.description ?: return
+        val flow = io.github.ceis.avatar.AvatarFlow
+        val desc = (flow.stage.value as? io.github.ceis.avatar.AvatarFlow.Stage.Choosing)?.description ?: return
         val files = flow.choose(context, index) ?: return
         _messages.value = _messages.value.filterNot { it.id == nmAvatarCardId }
         // Muse announces the new face at once; the poses land in the header as they finish.
-        val clipsNote = if (io.github.wevvy.avatar.AvatarMotion.enabled(context)) " " + context.getString(R.string.nm_avatar_clips_coming) else ""
+        val clipsNote = if (io.github.ceis.avatar.AvatarMotion.enabled(context)) " " + context.getString(R.string.nm_avatar_clips_coming) else ""
         nmAppendAssistantLine(sid, flow.adoptedText(context, desc) + clipsNote + "\n\n" + flow.optionsFence(desc, index, files))
         viewModelScope.launch {
             val done = flow.done.first { it.sessionId == sid }
@@ -6790,8 +6790,8 @@ class ChatViewModel(
     }
     // ───────────────────────────────────────────────────────────────────────
 
-    // ─── wevvy: first conversation ──────────────────────────────────────
-    // See io.github.wevvy.onboarding.FirstConversation for the flow. The
+    // ─── ceis: first conversation ──────────────────────────────────────
+    // See io.github.ceis.onboarding.FirstConversation for the flow. The
     // opening and the chooser are virtual messages: in _messages only, never
     // in the DB or agentHistory. The model hears about the phase through
     // buildSystemPrompt().
@@ -6812,7 +6812,7 @@ class ChatViewModel(
             )
         }
         _messages.value = intro + _messages.value.filterNot { it.id.startsWith("nm_intro_") }
-        if (fc.phase == io.github.wevvy.onboarding.Phase.ASK_AGENT_NAME) nmShowNamingCard()
+        if (fc.phase == io.github.ceis.onboarding.Phase.ASK_AGENT_NAME) nmShowNamingCard()
     }
 
     private fun nmShowNamingCard() {
@@ -6825,9 +6825,9 @@ class ChatViewModel(
         )
     }
 
-    // wevvy: what the user typed during the first conversation goes to the model as it is —
+    // ceis: what the user typed during the first conversation goes to the model as it is —
     // the model reads it (a name, a "no thanks", or something else entirely) and reports back in
-    // a `wevvy-naming` block; see FirstConversation.afterTurn.
+    // a `ceis-naming` block; see FirstConversation.afterTurn.
 
     /** A suggestion chip was tapped: name the agent and send the name as the user's message. */
     fun nmPickName(name: String) {
@@ -6839,11 +6839,11 @@ class ChatViewModel(
         val sid = realSessionId.ifEmpty { sessionId }
         // Goal blocks in the reply just finished, and the turn budget of any
         // prompt addendum, are settled first — they apply to every session.
-        io.github.wevvy.chat.SessionAddenda.onTurnFinished(sid)
+        io.github.ceis.chat.SessionAddenda.onTurnFinished(sid)
         nmAllowanceHeadsUp()
         _messages.value.lastOrNull { it.role == "assistant" }?.content?.let { text ->
-            io.github.wevvy.goals.GoalFlow.afterTurn(context, sid, text)
-            io.github.wevvy.feed.FeedFlow.afterTurn(context, sid, text)
+            io.github.ceis.goals.GoalFlow.afterTurn(context, sid, text)
+            io.github.ceis.feed.FeedFlow.afterTurn(context, sid, text)
         }
         val fc = nmFirstConversation
         if (!fc.isBoundTo(sid)) return
@@ -6857,8 +6857,8 @@ class ChatViewModel(
         }
         // The agent has its name and a model just answered: the first feed day is written
         // in the background, once per install (FeedFlow).
-        if (phaseBefore != io.github.wevvy.onboarding.Phase.DONE && fc.phase == io.github.wevvy.onboarding.Phase.DONE) {
-            io.github.wevvy.feed.FeedFlow.writeFirstDay(context)
+        if (phaseBefore != io.github.ceis.onboarding.Phase.DONE && fc.phase == io.github.ceis.onboarding.Phase.DONE) {
+            io.github.ceis.feed.FeedFlow.writeFirstDay(context)
         }
     }
     // ───────────────────────────────────────────────────────────────────────
@@ -6930,7 +6930,7 @@ class ChatViewModel(
         // A fresh send supersedes any pending resume — mirror iOS which clears
         // canResume at the top of send().
         _canResume.value = false
-        _nmContinueAsk.value = null // wevvy
+        _nmContinueAsk.value = null // ceis
         // T185: clear the share-injected flag the moment the user actually
         // sends. Without this, the "Move to…" capsule (gated on
         // hasInjectedShareContent) keeps floating over the user-message row
@@ -6943,7 +6943,7 @@ class ChatViewModel(
 
         val initialProvider = currentProvider
         if (initialProvider == null) {
-            _error.value = context.getString(R.string.nm_chat_no_model) // wevvy: where to fix it, in the person's language
+            _error.value = context.getString(R.string.nm_chat_no_model) // ceis: where to fix it, in the person's language
             return
         }
         var provider: LLMProvider = initialProvider
@@ -6982,9 +6982,9 @@ class ChatViewModel(
         if (editingId != null) _editingMessageId.value = null
 
         viewModelScope.launch {
-            streamJob = coroutineContext[Job] // wevvy: Stop during the setup (session, attachments, the user row) cancels it too, not only the agent loop launched below (#340)
+            streamJob = coroutineContext[Job] // ceis: Stop during the setup (session, attachments, the user row) cancels it too, not only the agent loop launched below (#340)
             var streamLaunched = false
-            var userRowShown = false // wevvy: set once the person's line is on screen; a Stop before that gives the composer its text back (#340)
+            var userRowShown = false // ceis: set once the person's line is on screen; a Stop before that gives the composer its text back (#340)
             try {
             // Ensure session exists in DB (creates on first message for draft sessions)
             val activeSessionId = ensureSession()
@@ -7015,8 +7015,8 @@ class ChatViewModel(
                 bodyPartsJson = pasted?.partsJson,
             )
             val persistedUser = chatRepository.appendMessage(activeSessionId, "user", userPartsJson)
-            io.github.wevvy.sync.ConversationSync.sent(activeSessionId) // wevvy: the person's line reaches the other devices at send (C8), then "working" (C9)
-            io.github.wevvy.chat.RoutineWakes.claim(activeSessionId, persistedUser.id) // wevvy: a routine's prompt is marked as such on its row
+            io.github.ceis.sync.ConversationSync.sent(activeSessionId) // ceis: the person's line reaches the other devices at send (C8), then "working" (C9)
+            io.github.ceis.chat.RoutineWakes.claim(activeSessionId, persistedUser.id) // ceis: a routine's prompt is marked as such on its row
 
             val userMsg = ChatMessage(
                 id = persistedUser.id,
@@ -7039,10 +7039,10 @@ class ChatViewModel(
                 // ChatMessage.attachmentNames depends on.
                 attachmentNames = prepared.attachmentNames + (pasted?.uiNames ?: emptyList()),
                 attachmentUris = prepared.nonImageUris + (pasted?.uiUris ?: emptyList()),
-                createdAtMillis = persistedUser.createdAt, // wevvy: time dividers
+                createdAtMillis = persistedUser.createdAt, // ceis: time dividers
             )
             _messages.value = _messages.value + userMsg
-            userRowShown = true // wevvy: (#340)
+            userRowShown = true // ceis: (#340)
             val imageParts = prepared.imageParts
 
             // T132: build the user contentParts in iOS order — caption first
@@ -7111,7 +7111,7 @@ class ChatViewModel(
             // Anthropic OAuth requires the Claude Code prefix in the system prompt
             val baseSystemPrompt = buildSystemPrompt()
             val systemPrompt = if ((provider as? com.openminis.app.provider.anthropic.AnthropicProvider)?.isOAuth == true) {
-                val prefix = io.github.wevvy.cloud.ClaudeSignIn.identifier // wevvy: empty on a build without it, never throws; the provider refuses the send (#373)
+                val prefix = io.github.ceis.cloud.ClaudeSignIn.identifier // ceis: empty on a build without it, never throws; the provider refuses the send (#373)
                 if (baseSystemPrompt?.startsWith(prefix) == true) baseSystemPrompt
                 else "$prefix\n\n${baseSystemPrompt ?: ""}"
             } else baseSystemPrompt
@@ -7154,7 +7154,7 @@ class ChatViewModel(
                             fallbackStrategy = activeFallbackStrategy,
                         )
                         AppLogger.info(TAG_STREAM, "send runAgentLoop RETURN normal")
-                        nmAfterTurn() // wevvy: the first conversation steps forward when a turn completes
+                        nmAfterTurn() // ceis: the first conversation steps forward when a turn completes
                         // Drain any prompts the user queued while this loop was running.
                         // Skipped on cancel: cancelled job won't reach here.
                         drainQueuedPrompts(provider, systemPrompt, fallbackProviders, activeFallbackStrategy)
@@ -7197,7 +7197,7 @@ class ChatViewModel(
                 AppLogger.info(TAG_STREAM, "send streamJob EXIT")
             }
             } catch (e: CancellationException) {
-                // wevvy: Stop before the user row is on screen means the message was not sent; the
+                // ceis: Stop before the user row is on screen means the message was not sent; the
                 // composer gets its text and attachments back instead of losing them (#340)
                 if (!streamLaunched && !userRowShown) {
                     if (_inputText.value.isEmpty()) _inputText.value = text
@@ -7217,7 +7217,7 @@ class ChatViewModel(
      *
      *  Also clears [ChatMessage.isAwaitingModelResponse] — without this, an
      *  exception thrown after a tool turn (which sets isAwaitingModelResponse=
-     *  true at runAgentLoop ~4015) leaves the "wevvy is thinking" indicator
+     *  true at runAgentLoop ~4015) leaves the "ceis is thinking" indicator
      *  on screen even though streaming is over. The flag is per-message and
      *  is not implicitly cleared by isStreaming=false. */
     private fun setInlineError(errorText: String) {
@@ -7227,10 +7227,10 @@ class ChatViewModel(
         // would stick across reloads. An exception with a blank `message`
         // (`e.message ?: "Unknown error"` only guards null, not "") is the
         // realistic source. Coalesce to a generic non-empty message.
-        // wevvy: a turn refused for a spent allowance gets the plain sentence and the ways-on card;
+        // ceis: a turn refused for a spent allowance gets the plain sentence and the ways-on card;
         // a Claude sign-in on a build without its identifier gets its sentence in the person's language (#373).
         val safeError = nmAllowanceErrorText(
-            io.github.wevvy.cloud.ClaudeSignIn.userText(context, errorText).ifBlank { context.getString(R.string.error_empty_response_generic) },
+            io.github.ceis.cloud.ClaudeSignIn.userText(context, errorText).ifBlank { context.getString(R.string.error_empty_response_generic) },
         )
         // T-streaming-side-channel: before mutating the canonical message,
         // drain any in-flight streaming delta so the error frame carries
@@ -7348,13 +7348,13 @@ class ChatViewModel(
      *   - Sync the DB: if we popped a trailing assistant, drop just its
      *     persisted row so a re-load doesn't resurrect the failed turn.
      */
-    // wevvy: "Use wevvy Cloud this time" — a turn on a model of the person's own that
+    // ceis: "Use ceis Cloud this time" — a turn on a model of the person's own that
     // failed is retried once on the relay's chat model; the chat's binding and every slot of
-    // Settings → Models stay as they are (io.github.wevvy.chat.CloudRetry).
+    // Settings → Models stay as they are (io.github.ceis.chat.CloudRetry).
     private var nmOneTurnProvider: LLMProvider? = null
-    fun nmOffersCloudRetry(): Boolean = io.github.wevvy.chat.CloudRetry.offered(context, _activeEntryId.value)
+    fun nmOffersCloudRetry(): Boolean = io.github.ceis.chat.CloudRetry.offered(context, _activeEntryId.value)
     fun nmRetryLastOnCloud() {
-        nmOneTurnProvider = io.github.wevvy.chat.CloudRetry.provider(context) ?: return
+        nmOneTurnProvider = io.github.ceis.chat.CloudRetry.provider(context) ?: return
         retryLast()
     }
 
@@ -7421,7 +7421,7 @@ class ChatViewModel(
             }
         }
 
-        // wevvy: one turn on the relay when the card asked for it; currentProvider is untouched
+        // ceis: one turn on the relay when the card asked for it; currentProvider is untouched
         val initialProvider = nmOneTurnProvider?.also { nmOneTurnProvider = null } ?: currentProvider ?: return
         var provider: LLMProvider = initialProvider
         _error.value = null
@@ -7486,7 +7486,7 @@ class ChatViewModel(
 
             val baseSystemPrompt = buildSystemPrompt()
             val systemPrompt = if ((provider as? com.openminis.app.provider.anthropic.AnthropicProvider)?.isOAuth == true) {
-                val prefix = io.github.wevvy.cloud.ClaudeSignIn.identifier // wevvy: empty on a build without it, never throws; the provider refuses the send (#373)
+                val prefix = io.github.ceis.cloud.ClaudeSignIn.identifier // ceis: empty on a build without it, never throws; the provider refuses the send (#373)
                 if (baseSystemPrompt?.startsWith(prefix) == true) baseSystemPrompt
                 else "$prefix\n\n${baseSystemPrompt ?: ""}"
             } else baseSystemPrompt
@@ -7514,7 +7514,7 @@ class ChatViewModel(
                             fallbackStrategy = activeFallbackStrategy,
                         )
                         AppLogger.info(TAG_STREAM, "retryLast runAgentLoop RETURN normal")
-                        nmAfterTurn() // wevvy
+                        nmAfterTurn() // ceis
                         drainQueuedPrompts(provider, systemPrompt, fallbackProviders, activeFallbackStrategy)
                         AppLogger.info(TAG_STREAM, "retryLast drainQueuedPrompts RETURN")
                     } catch (e: CancellationException) {
@@ -8099,7 +8099,7 @@ class ChatViewModel(
         val allToolInputs = mutableMapOf<String, String>()
 
         // Add placeholder assistant message (once). Mark as awaiting so the
-        // "wevvy is thinking" indicator shows during the initial request gap
+        // "ceis is thinking" indicator shows during the initial request gap
         // before the first stream chunk arrives. Mirrors iOS isAwaitingModelResponse.
         // T300: snapshot the user's current thinking level at message
         // creation so the renderer can hide Deep Thinking blocks for
@@ -8287,7 +8287,7 @@ class ChatViewModel(
                     // placeholder, while `loopExitedNormally = true` below
                     // deliberately skips finalizeAtTurnLimit at the loop tail.
                     //
-                    // Without this the bubble stays on "wevvy is thinking"
+                    // Without this the bubble stays on "ceis is thinking"
                     // forever — the streamJob's finally only clears the GLOBAL
                     // _isStreaming, not the per-message flags. Reachable with no
                     // failure at all: ContextPolicy gives every model with a
@@ -8735,7 +8735,7 @@ class ChatViewModel(
                                 toolTitle = liveTitle,
                                 content = "",
                             )
-                            // wevvy: the words under the face follow the pill — as soon as the
+                            // ceis: the words under the face follow the pill — as soon as the
                             // model's tool_title is in, the status line says it (not only at dispatch).
                             if (!partialTitle.isNullOrEmpty() && partialTitle != SessionActivityTracker.currentToolTitle.value) {
                                 SessionActivityTracker.updateToolStatus(
@@ -9574,7 +9574,7 @@ class ChatViewModel(
             }
 
             // Update UI with tool statuses. Mark as awaiting the next model
-            // response so "wevvy is thinking" shows during the network gap
+            // response so "ceis is thinking" shows during the network gap
             // between tool results being sent and the next turn's first chunk.
             // Mirrors iOS isAwaitingModelResponse.
             withContext(Dispatchers.Main) {
@@ -9726,7 +9726,7 @@ class ChatViewModel(
         if (_streamingById.value.containsKey(assistantId)) {
             _streamingById.value = _streamingById.value - assistantId
         }
-        // wevvy: instead of an error, the chat asks "continue?" (the Resume state stays set
+        // ceis: instead of an error, the chat asks "continue?" (the Resume state stays set
         // underneath, so the upstream banner still works if the card is dismissed).
         _nmContinueAsk.value = MAX_AGENT_TURNS
         // [T-android-group-pause-badge-restamp] A LIVE interruption just
@@ -9862,7 +9862,7 @@ class ChatViewModel(
             // [T-vision-group-attribution / GH#182] iOS rewrites the tool block's
             // live content here so the card names the model as it works. Android
             // has no equivalent channel — no tool streams partial output to its
-            // card, and the progress label ("wevvy is reading Image",
+            // card, and the progress label ("ceis is reading Image",
             // ChatToolFormatting.kt:102) is a static per-tool string. Building
             // that plumbing is a separate change, so for now the per-attempt
             // signal goes to the log, where a fallback is still traceable. The
@@ -9955,17 +9955,17 @@ class ChatViewModel(
                 return ToolExecutionResult("Error: 'command' is required", false, toolTitle = toolTitle)
             }
 
-            // wevvy: delete / send / pay stop for the user's yes; installs run with a notice.
+            // ceis: delete / send / pay stop for the user's yes; installs run with a notice.
             var nmNotice: String? = null
             run {
                 val idx = toolBlocks.indexOfFirst { it.id == toolId }
-                val gate = io.github.wevvy.guard.RiskGate.checkShell(activeSessionId, command)
+                val gate = io.github.ceis.guard.RiskGate.checkShell(activeSessionId, command)
                 when (gate) {
-                    is io.github.wevvy.guard.GateOutcome.Denied -> {
+                    is io.github.ceis.guard.GateOutcome.Denied -> {
                         if (idx >= 0) toolBlocks[idx] = toolBlocks[idx].copy(content = "")
                         return ToolExecutionResult(gate.message, false, toolTitle = toolTitle)
                     }
-                    is io.github.wevvy.guard.GateOutcome.Allowed -> nmNotice = gate.notice
+                    is io.github.ceis.guard.GateOutcome.Allowed -> nmNotice = gate.notice
                 }
             }
 
@@ -10124,7 +10124,7 @@ class ChatViewModel(
             } ?: redactedOut
 
             ToolExecutionResult(
-                output = nmNotice?.let { "$withReminder\n\n$it" } ?: withReminder, // wevvy: install notice
+                output = nmNotice?.let { "$withReminder\n\n$it" } ?: withReminder, // ceis: install notice
                 success = result.exitCode == 0,
                 toolTitle = toolTitle,
                 timedOut = timedOut,
@@ -10137,7 +10137,7 @@ class ChatViewModel(
     private suspend fun executeBrowserUseTool(argsJson: String): ToolExecutionResult {
         val input = BrowserActionInput.parse(argsJson)
             ?: return ToolExecutionResult("Error: Invalid browser_use input", false)
-        // wevvy: hand_over — the page needs the person; the browser goes to them and the call waits for Done.
+        // ceis: hand_over — the page needs the person; the browser goes to them and the call waits for Done.
         if (input.action == com.openminis.app.browser.BrowserAction.HAND_OVER) {
             return nmBrowserHandOver(input, argsJson)
         }
@@ -10147,8 +10147,8 @@ class ChatViewModel(
             val toolTitle = try {
                 JSONObject(argsJson).optString("tool_title", "browser_use")
             } catch (_: Exception) { "browser_use" }
-            // wevvy: a refused password / code field hands the browser to the user.
-            if (result.text.contains(io.github.wevvy.guard.BrowserGuard.HANDOFF_PREFIX)) {
+            // ceis: a refused password / code field hands the browser to the user.
+            if (result.text.contains(io.github.ceis.guard.BrowserGuard.HANDOFF_PREFIX)) {
                 withContext(Dispatchers.Main) { openBrowserSheetForUrl(result.pageURL ?: "") }
             }
 
@@ -10838,10 +10838,10 @@ CLI tools at /usr/local/bin with the `android-` prefix give you access to Androi
 - android-weather <latitude> <longitude> — Open-Meteo forecast (current + hourly + daily). No API key needed.
 - android-shizuku-cli — invoke privileged Android system APIs (package management, settings, system commands) via Shizuku when granted. Curated subcommands return structured JSON; for anything not covered, fall back to `android-shizuku-cli exec <any shell command>` which runs the command via `sh -c` with Shizuku privilege (same surface as `adb shell`). Run with no args (or --help) for the subcommand list.
 - android-a11y-cli — drive system UI (read screen, tap, type, swipe, scroll) via the Android AccessibilityService when enabled. Run with no args (or --help) for the subcommand list.
-- minis-open <url-or-path>: Opens a resource inside wevvy without leaving the chat. Accepts http/https URLs (→ built-in WebKit preview) and chat-resource file paths under /var/minis/** (→ built-in file preview, routed by extension: images to the image viewer, .md to markdown preview, .html to HTML preview, .pdf/office docs to QuickLook, audio/video to the media player, else share sheet). Examples: minis-open https://example.com, minis-open /var/minis/workspace/report.md, minis-open /var/minis/attachments/chart.png. Prefer this over android-open for anything that can be previewed in-app so the user doesn't lose conversation context. Use android-open for non-web schemes (tel:, mailto:, geo:, intent:, etc.) or when the user explicitly wants the system handler.
+- minis-open <url-or-path>: Opens a resource inside ceis without leaving the chat. Accepts http/https URLs (→ built-in WebKit preview) and chat-resource file paths under /var/minis/** (→ built-in file preview, routed by extension: images to the image viewer, .md to markdown preview, .html to HTML preview, .pdf/office docs to QuickLook, audio/video to the media player, else share sheet). Examples: minis-open https://example.com, minis-open /var/minis/workspace/report.md, minis-open /var/minis/attachments/chart.png. Prefer this over android-open for anything that can be previewed in-app so the user doesn't lose conversation context. Use android-open for non-web schemes (tel:, mailto:, geo:, intent:, etc.) or when the user explicitly wants the system handler.
 - minis-sessions-cli: Manage chat sessions. `list` recent or by date range, `search --keywords` cross-session, `messages --id` to read, `send` to create/continue a session, `retry` to re-run, `status` to check, `open` to navigate the app UI. Run --help for full options.
 - minis-model-use: Invoke other LLM models pre-configured by the user. Use `minis-model-use list` to see them (includes each model's modality capabilities like image_output, audio_output, etc.), `minis-model-use search <query>` to filter by name/provider. `minis-model-use run --model <id_or_name>` sends an OpenAI-compatible messages request; pass input via --input <json_file> or stdin, output goes to stdout or --output <path>. The OpenAI shape is the PRIMARY input for every model and modality; standard params are auto-converted to the underlying provider, so do not hand-write provider-native bodies as the primary input. For provider-specific extras the standard schema doesn't model (web-search plugins, image-to-image fields, TTS/video or other custom endpoints), escape hatches exist for OpenAI-compatible providers (they error or are ignored on Anthropic/Gemini models): `extra_body` (object merged verbatim into the request body), a custom `endpoint` path, and a top-level `passthrough` envelope for fully verbatim requests with RAW (unparsed) responses. Results may carry `warnings` (fields that were ignored/downgraded and why) and `applied_extras` (which extras actually took effect) — read them to self-correct. Run --help for the full contract before using these. Models may support multimodal output (image generation, TTS/audio, video) — check the modalities field in list output. For image_output models, pass generation params in the input JSON: top-level `n`/`size`/`quality`/`prompt` (OpenAI /images/generations style) or `generation_config.{aspect_ratio,image_size,number_of_images,person_generation}` (Gemini). Run with --help for full usage.
-- minis-config: Read or change wevvy settings programmatically. Run `minis-config --help` for subcommands and `minis-config topic-help <topic>` for details on a specific area. For array-valued fields (e.g. `models`, `groups`, `envvars`, `defaults.agentLoopEntries`) the `get` subcommand accepts `--filter <keywords>` (whitespace-AND, case-insensitive substring match against each element's JSON) and `--page <N> --page-size <N>` (default 20, max 100) — use these instead of dumping the full list when you only need a subset, and check the response's `pagination` / `agent_hint` fields for the next-page command. Every write triggers an in-app confirmation sheet and is logged to a revertable audit (1000-entry rolling log). After a successful change the response includes a `user_message` field — relay it (or paraphrase) so the user knows how to review or revert via Settings → Logs → Config Changes. If the call returns `permission_denied`, the user has disabled minis-config in [Settings → Permissions](minis://settings/permissions); relay that message and don't retry. You CAN add new providers and write their `apiKey` (literal string OR a `${'$'}${'$'}ENV_VAR` reference to copy from an env var at write time), but `get` never echoes API keys / OAuth tokens / env var values back — those reads return `permission_denied` by design. OAuth tokens and env var values are not settable via this tool; for an env var, point the user at [Set ENV_NAME](minis://settings/environments?create_key=ENV_NAME&create_value=) so they enter the value themselves.
+- minis-config: Read or change ceis settings programmatically. Run `minis-config --help` for subcommands and `minis-config topic-help <topic>` for details on a specific area. For array-valued fields (e.g. `models`, `groups`, `envvars`, `defaults.agentLoopEntries`) the `get` subcommand accepts `--filter <keywords>` (whitespace-AND, case-insensitive substring match against each element's JSON) and `--page <N> --page-size <N>` (default 20, max 100) — use these instead of dumping the full list when you only need a subset, and check the response's `pagination` / `agent_hint` fields for the next-page command. Every write triggers an in-app confirmation sheet and is logged to a revertable audit (1000-entry rolling log). After a successful change the response includes a `user_message` field — relay it (or paraphrase) so the user knows how to review or revert via Settings → Logs → Config Changes. If the call returns `permission_denied`, the user has disabled minis-config in [Settings → Permissions](minis://settings/permissions); relay that message and don't retry. You CAN add new providers and write their `apiKey` (literal string OR a `${'$'}${'$'}ENV_VAR` reference to copy from an env var at write time), but `get` never echoes API keys / OAuth tokens / env var values back — those reads return `permission_denied` by design. OAuth tokens and env var values are not settable via this tool; for an env var, point the user at [Set ENV_NAME](minis://settings/environments?create_key=ENV_NAME&create_value=) so they enter the value themselves.
 - minis-scheduled: Create and manage scheduled tasks — prompts that run automatically at a chosen time. `minis-scheduled create --time HH:MM --prompt "..." [--label L] [--repeat once|daily|weekdays|custom --days mon,tue,...] [--target new|follow-up|rerun --session <id> --message <id>] [--model <modelId>] [--start YYYY-MM-DD] [--end YYYY-MM-DD]` schedules it; `list` shows existing tasks (with nextTriggerMs and run history), `delete --id <taskId>`, `enable`/`disable --id <taskId>`, and `run --id <taskId>` fires one immediately. Target modes: `new` runs the prompt in a fresh chat; `follow-up` appends the prompt to an existing chat (--session); `rerun` re-runs an existing chat (--session) from a chosen user message (--message). Use this when the user asks to "remind me / do X every morning / run this later / schedule a task". Run --help for full usage.
 Interactive terminal: minis://open_terminal opens a terminal for tasks that require interactive stdin (passwords, ssh, TUI apps like htop/vi). Write it as a Markdown link in your response — the app opens it when tapped. The optional init_command parameter pre-fills (NOT executes) a command; it MUST be fully percent-encoded (spaces → %20, & → %26, | → %7C, etc.). Only use this for genuinely interactive sessions — for everything else, use shell_execute. Examples: [Open Terminal](minis://open_terminal), [Login to SSH](minis://open_terminal?init_command=ssh%20user%40host).
 
@@ -10909,8 +10909,8 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
                 append("\n\n")
                 append(dailyMemoryFragment)
             }
-            // wevvy: USER.md — what the agent knows about the person, kept as a file they can edit.
-            io.github.wevvy.sysfiles.UserFile.promptFragment(context)?.let { append("\n\n").append(it) }
+            // ceis: USER.md — what the agent knows about the person, kept as a file they can edit.
+            io.github.ceis.sysfiles.UserFile.promptFragment(context)?.let { append("\n\n").append(it) }
             // Runtime context goes last so the prefix above stays byte-stable
             // across requests within the same day. Keep ordering deterministic
             // (date → tz → lang → model count) — any reorder defeats the cache.
@@ -10918,27 +10918,27 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
             append("- Current date: ").append(dateStr).append(" (").append(tzId).append(")\n")
             append("- Device language: ").append(lang).append("\n")
             append("- minis-model-use models available: ").append(modelUseCount)
-            // wevvy: the first-conversation addendum — a few lines for two
+            // ceis: the first-conversation addendum — a few lines for two
             // turns, then null. Last so the cacheable prefix stays untouched.
             if (nmFirstConversation.isBoundTo(realSessionId.ifEmpty { sessionId })) {
                 nmFirstConversation.promptAddendum()?.let { append("\n\n").append(it) }
             }
-            // wevvy: how approvals work here.
-            append("\n\n").append(io.github.wevvy.guard.RiskPolicy.promptParagraph())
-            // wevvy: the three models (chat / image / video) and what is not set.
-            append("\n\n").append(io.github.wevvy.media.MediaModels.promptParagraph(context))
-            // wevvy: the ladder for apps without an API, and the screen as the last rung.
-            append("\n\n").append(io.github.wevvy.hands.Hands.promptParagraph(context))
-            // wevvy: the paired computers and wevvy-pc.
-            append("\n\n").append(io.github.wevvy.reach.Computers.promptParagraph(context))
-            // wevvy: turn-limited addenda for this session (goal creation).
-            io.github.wevvy.chat.SessionAddenda.forPrompt(realSessionId.ifEmpty { sessionId })
+            // ceis: how approvals work here.
+            append("\n\n").append(io.github.ceis.guard.RiskPolicy.promptParagraph())
+            // ceis: the three models (chat / image / video) and what is not set.
+            append("\n\n").append(io.github.ceis.media.MediaModels.promptParagraph(context))
+            // ceis: the ladder for apps without an API, and the screen as the last rung.
+            append("\n\n").append(io.github.ceis.hands.Hands.promptParagraph(context))
+            // ceis: the paired computers and ceis-pc.
+            append("\n\n").append(io.github.ceis.reach.Computers.promptParagraph(context))
+            // ceis: turn-limited addenda for this session (goal creation).
+            io.github.ceis.chat.SessionAddenda.forPrompt(realSessionId.ifEmpty { sessionId })
                 ?.let { append("\n\n").append(it) }
-            // wevvy: a goal's conversation carries the goal's context and reporting protocol.
-            io.github.wevvy.goals.GoalFlow.systemAddendum(context, realSessionId.ifEmpty { sessionId })
+            // ceis: a goal's conversation carries the goal's context and reporting protocol.
+            io.github.ceis.goals.GoalFlow.systemAddendum(context, realSessionId.ifEmpty { sessionId })
                 ?.let { append("\n\n").append(it) }
-            // wevvy: the feed's conversation carries the user's feed preferences and the post protocol.
-            io.github.wevvy.feed.FeedFlow.systemAddendum(context, realSessionId.ifEmpty { sessionId })
+            // ceis: the feed's conversation carries the user's feed preferences and the post protocol.
+            io.github.ceis.feed.FeedFlow.systemAddendum(context, realSessionId.ifEmpty { sessionId })
                 ?.let { append("\n\n").append(it) }
         }
     }
@@ -12081,7 +12081,7 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
 
             val baseSystemPrompt = buildSystemPrompt()
             val systemPrompt = if ((provider as? com.openminis.app.provider.anthropic.AnthropicProvider)?.isOAuth == true) {
-                val prefix = io.github.wevvy.cloud.ClaudeSignIn.identifier // wevvy: empty on a build without it, never throws; the provider refuses the send (#373)
+                val prefix = io.github.ceis.cloud.ClaudeSignIn.identifier // ceis: empty on a build without it, never throws; the provider refuses the send (#373)
                 if (baseSystemPrompt?.startsWith(prefix) == true) baseSystemPrompt
                 else "$prefix\n\n${baseSystemPrompt ?: ""}"
             } else baseSystemPrompt
@@ -12169,11 +12169,11 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
      */
     private fun handleUserCancelledCleanup() {
         val msgs = _messages.value.toMutableList()
-        val lastIdx = io.github.wevvy.chat.InterruptedReply.lastRealAssistantIndex(msgs) // wevvy: never the on-screen-only intro (#340)
+        val lastIdx = io.github.ceis.chat.InterruptedReply.lastRealAssistantIndex(msgs) // ceis: never the on-screen-only intro (#340)
         if (lastIdx < 0) return
         var last = msgs[lastIdx]
 
-        // T73: clear "wevvy is thinking…" the moment the user taps Stop.
+        // T73: clear "ceis is thinking…" the moment the user taps Stop.
         // isAwaitingModelResponse is set true at runAgentLoop entry (≈ line
         // 2785) so the typing indicator shows during the initial request
         // gap before the first stream chunk. The cancel paths below didn't
@@ -12241,7 +12241,7 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
         // Stop fired while still in the pre-first-chunk thinking gap (no
         // partial text, no tool_use emitted, no committed history for this
         // turn). The placeholder ChatMessage runAgentLoop pushed at L5248 is
-        // not in the DB and would otherwise render as an empty "wevvy" header
+        // not in the DB and would otherwise render as an empty "ceis" header
         // bubble with no body. Drop it so the UI snaps back to idle the
         // instant the user taps Stop. Mirrors the iOS #566/#569 boundary:
         // a candidate WITH real text or any emitted tool_use is kept (handled
@@ -12269,7 +12269,7 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
             )
             viewModelScope.launch(Dispatchers.IO) {
                 val partsJson = buildAssistantPartsJson(parts)
-                // wevvy: a session id the database does not know yet (Stop inside the session insert) must not take the process down (#340)
+                // ceis: a session id the database does not know yet (Stop inside the session insert) must not take the process down (#340)
                 runCatching { chatRepository.appendMessage(activeSessionId, "assistant", partsJson) }
                     .onFailure { AppLogger.warning(TAG_STREAM, "cancel: interrupted reply not persisted: ${it.message}") }
             }
@@ -12325,11 +12325,11 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
     fun resume() {
         if (_isStreaming.value || !_canResume.value) return
         val provider = currentProvider ?: run {
-            _error.value = context.getString(R.string.nm_chat_no_model) // wevvy: where to fix it, in the person's language
+            _error.value = context.getString(R.string.nm_chat_no_model) // ceis: where to fix it, in the person's language
             return
         }
         _canResume.value = false
-        _nmContinueAsk.value = null // wevvy
+        _nmContinueAsk.value = null // ceis
         _error.value = null
         // [T-error-persist-android] resume() follows finalizeAtTurnLimit's
         // setInlineError (which persisted an error sticker on the last assistant
@@ -12371,7 +12371,7 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
             val baseSystemPrompt = buildSystemPrompt()
             val systemPrompt =
                 if ((provider as? com.openminis.app.provider.anthropic.AnthropicProvider)?.isOAuth == true) {
-                    val prefix = io.github.wevvy.cloud.ClaudeSignIn.identifier // wevvy: empty on a build without it, never throws; the provider refuses the send (#373)
+                    val prefix = io.github.ceis.cloud.ClaudeSignIn.identifier // ceis: empty on a build without it, never throws; the provider refuses the send (#373)
                     if (baseSystemPrompt?.startsWith(prefix) == true) baseSystemPrompt
                     else "$prefix\n\n${baseSystemPrompt ?: ""}"
                 } else baseSystemPrompt
@@ -12400,7 +12400,7 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
                             fallbackStrategy = activeFallbackStrategy,
                         )
                         AppLogger.info(TAG_STREAM, "resume runAgentLoop RETURN normal")
-                        nmAfterTurn() // wevvy
+                        nmAfterTurn() // ceis
                         drainQueuedPrompts(provider, systemPrompt, fallbackProviders, activeFallbackStrategy)
                         AppLogger.info(TAG_STREAM, "resume drainQueuedPrompts RETURN")
                     } catch (e: CancellationException) {
@@ -12768,7 +12768,7 @@ Scheduled tasks: crontab / at / nohup loops will stop when the app is suspended,
                 // a non-null "" would render an empty banner. Defends against any
                 // legacy/other-writer "" row.
                 error = entity.errorInfo?.takeIf { it.isNotBlank() },
-                createdAtMillis = entity.createdAt, // wevvy: feeds the transcript's time dividers
+                createdAtMillis = entity.createdAt, // ceis: feeds the transcript's time dividers
             )
         }.let { messages ->
             // Merge consecutive assistant messages into one:

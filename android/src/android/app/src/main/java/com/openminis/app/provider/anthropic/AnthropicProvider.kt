@@ -80,7 +80,7 @@ class AnthropicProvider(
         // [T-android-stale-conn-retry-hang] Shared pool — see NetworkMonitor.
         // Network-transition eviction must reach provider connections.
         .connectionPool(com.openminis.app.network.NetworkMonitor.sharedLLMConnectionPool)
-        .proxyAuthenticator(io.github.wevvy.net.OwnProviderProxy.authenticator) // wevvy: Settings → Network, a proxy with a password
+        .proxyAuthenticator(io.github.ceis.net.OwnProviderProxy.authenticator) // ceis: Settings → Network, a proxy with a password
         .build()
 
     override suspend fun sendMessageClamped(
@@ -288,11 +288,11 @@ class AnthropicProvider(
      */
     internal fun resolveSystemPrompt(userPrompt: String?): JSONArray? {
         if (isOAuth) {
-            // wevvy: read the Claude Code identifier only on the OAuth path; the public build leaves
+            // ceis: read the Claude Code identifier only on the OAuth path; the public build leaves
             // it empty, and an API key never needs it (#333). An empty one refuses the send with a
             // provider error the chat shows as one sentence, instead of throwing out of the getter (#373)
-            val claudeCodePrefix = io.github.wevvy.cloud.ClaudeSignIn.identifier
-            if (claudeCodePrefix.isEmpty()) throw LLMError.ProviderError(io.github.wevvy.cloud.ClaudeSignIn.MISSING)
+            val claudeCodePrefix = io.github.ceis.cloud.ClaudeSignIn.identifier
+            if (claudeCodePrefix.isEmpty()) throw LLMError.ProviderError(io.github.ceis.cloud.ClaudeSignIn.MISSING)
             // Strip the prefix if the caller already prepended it; the tail is the real user prompt.
             val tail = when {
                 userPrompt == null -> ""

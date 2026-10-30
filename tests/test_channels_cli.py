@@ -1,4 +1,4 @@
-"""``wevvy channels`` from a terminal, with no server running (the files are edited)
+"""``ceis channels`` from a terminal, with no server running (the files are edited)
 and with one (the API is called)."""
 
 from __future__ import annotations
@@ -12,8 +12,8 @@ import httpx
 import pytest
 from typer.testing import CliRunner
 
-from wevvy.channels.cli import channels_app
-from wevvy.channels.store import PairingStore
+from ceis.channels.cli import channels_app
+from ceis.channels.store import PairingStore
 
 runner = CliRunner()
 
@@ -146,7 +146,7 @@ def test_a_bad_setting_is_named(tmp_path: Path):
     assert "2 setting(s)" in result.output
     assert "sentinel.mode" in result.output and "agent.max_steps" in result.output
 
-    from wevvy.cli import app
+    from ceis.cli import app
 
     result = CliRunner().invoke(app, ["chatgpt", "status", "--config", str(path)])
     assert result.exit_code == 1

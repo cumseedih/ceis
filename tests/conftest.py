@@ -9,7 +9,7 @@ from typing import Any
 
 import pytest
 
-from wevvy.config import Settings
+from ceis.config import Settings
 
 # The address every ``.example`` host resolves to in the tests. It has to count as public for
 # the SSRF guard, and Python's ``ipaddress`` files the documentation ranges (TEST-NET-1 to 3,
@@ -49,13 +49,13 @@ def _example_hosts_resolve_offline(monkeypatch: pytest.MonkeyPatch) -> None:
 def _own_environment(monkeypatch: pytest.MonkeyPatch) -> None:
     """The developer's shell does not reach the tests.
 
-    ``load_settings`` honours ``WEVVY_*`` and the provider key variables over the
-    config file, so a ``WEVVY_DATA_DIR`` exported for a trial run sent a test's skills
+    ``load_settings`` honours ``CEIS_*`` and the provider key variables over the
+    config file, so a ``CEIS_DATA_DIR`` exported for a trial run sent a test's skills
     into that data directory, and an exported ``OPENAI_API_KEY`` shows a "no key" test a
     key. Each test starts without them; one that needs a variable sets it itself.
     """
     for name in list(os.environ):
-        if name.startswith("WEVVY_") or name in ("DEEPSEEK_API_KEY", "OPENAI_API_KEY"):
+        if name.startswith("CEIS_") or name in ("DEEPSEEK_API_KEY", "OPENAI_API_KEY"):
             monkeypatch.delenv(name, raising=False)
 
 

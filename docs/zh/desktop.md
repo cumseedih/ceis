@@ -1,17 +1,17 @@
-# wevvy 桌面版
+# ceis 桌面版
 
-电脑上的 Muse，装在一个窗口里：wevvy 建在
+电脑上的 Muse，装在一个窗口里：ceis 建在
 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`dsh`）之上，窗口的
 布局一屏一屏见 [desktop-muse.md](desktop-muse.md)，账号、形象、在这台电脑屏幕上动手的
 「手」（Hands）、够得着账号下每一台其他设备的 Reach，都以插件的形式加进来
 （[harness.md](harness.md)）。支持 Windows 10 以上、macOS 12 以上和 Linux x64；每个平台一个
-安装包，不需要先装别的：harness、wevvy 插件包和负责手的运行时都在里面。
+安装包，不需要先装别的：harness、ceis 插件包和负责手的运行时都在里面。
 
 | | |
 | --- | --- |
-| Windows | `wevvy-Desktop-<version>-win-x64.exe`（NSIS；没有证书，所以 SmartScreen 会要你点「仍要运行」） |
-| macOS | `wevvy-Desktop-<version>-mac-arm64.dmg` / `-mac-x64.dmg`（另有 `.zip`）；除非该版本签了名并公证过，否则是 ad-hoc 签名，需要在「系统设置 → 隐私与安全性」里点一次「仍要打开」 |
-| Linux | `wevvy-Desktop-<version>-linux-x64.deb`（推荐）/ `.AppImage` / `.tar.gz`；见 [Linux 注意事项](#linux-notes) |
+| Windows | `ceis-Desktop-<version>-win-x64.exe`（NSIS；没有证书，所以 SmartScreen 会要你点「仍要运行」） |
+| macOS | `ceis-Desktop-<version>-mac-arm64.dmg` / `-mac-x64.dmg`（另有 `.zip`）；除非该版本签了名并公证过，否则是 ad-hoc 签名，需要在「系统设置 → 隐私与安全性」里点一次「仍要打开」 |
+| Linux | `ceis-Desktop-<version>-linux-x64.deb`（推荐）/ `.AppImage` / `.tar.gz`；见 [Linux 注意事项](#linux-notes) |
 
 每个版本都带着这些安装包（`.github/workflows/desktop-app.yml`；旁边有 `SHA256SUMS-desktop.txt`）。
 Windows 版本还带着 electron-updater 要读的更新元数据：`latest.yml` 写着安装包的名字和它的
@@ -20,10 +20,10 @@ SHA-512，旁边是安装包的 `.exe.blockmap`。CI 在把它们附上 release 
 的会被拒绝（`harness/desktop/scripts/update-feed-check.mjs`）。这套元数据对应的更新源是下载镜像的
 [wevvy.in/dl/win/](https://wevvy.in/dl/win/)：只有当一个版本的 `latest.yml`、安装包和 `.blockmap`
 三个都到齐、安装包的字节也对得上时，它才切到这个版本；在那之前继续提供上一个版本。
-代码在 [`harness/`](../../harness/) 下：插件包在 `harness/dsh-wevvy`，Electron 外壳在
+代码在 [`harness/`](../../harness/) 下：插件包在 `harness/dsh-ceis`，Electron 外壳在
 `harness/desktop`；自己怎么构建见 [harness/README.md](../../harness/README.md)。到 0.1.29 为止，
 同名的安装包装的是 Python 运行时和网页版，套在它们自己的 Electron 外壳里（`desktop/app`），
-harness 构建以 *wevvy Harness* 的名字另放在旁边；从 0.1.30 起只有这一个桌面版，直接覆盖安装
+harness 构建以 *ceis Harness* 的名字另放在旁边；从 0.1.30 起只有这一个桌面版，直接覆盖安装
 在旧的上面（应用 id 相同）。
 
 ## Windows 软件内更新 {#updating-on-windows}
@@ -62,34 +62,34 @@ harness 保留外部下载方式。不带软件内更新能力的版本，需先
 聊天里手的一次运行的轨迹（每一步的截图、画在上面的动作和智能体说的话，运行中和运行后都能
 回看），带记忆的个人资料面板，那些设置页（连接器、电脑操作、文件访问、听写、权限、
 带导出和重置的数据控制），以及占满整个窗口的第一次打开。智能体是 dsh 的（它的智能体循环、
-工具、技能、目标、计划模式、压缩、子智能体、MCP），通过 `wevvy` 预设以 wevvy 的身份
+工具、技能、目标、计划模式、压缩、子智能体、MCP），通过 `ceis` 预设以 ceis 的身份
 说话，再加上：
 
 - **账号**：手机号或邮箱加验证码（或者密码，配上朋友的邀请码），对着
-  [wevvy Cloud](cloud.md) 登录；key 放在 dsh 的凭据存储里；账号的模型作为 harness 自带的
-  OpenAI 兼容适配器下的 *wevvy Cloud* 服务商（模型通路上没有任何我们自己的东西）；
+  [ceis Cloud](cloud.md) 登录；key 放在 dsh 的凭据存储里；账号的模型作为 harness 自带的
+  OpenAI 兼容适配器下的 *ceis Cloud* 服务商（模型通路上没有任何我们自己的东西）；
   「设置 → 账号」就是手机上那整个账号页（以人民币计的额度池和额度快用完时继续用的几条路、
   邀请码、按类型和按模型的用量、密码、持有 key 的设备、时间线、注销），通过 Host 的透传路由
-  读出来（`/wevvy/cloud/me`、`/sessions`、`/account-events`、`/password`、`/sign-out-all`、
+  读出来（`/ceis/cloud/me`、`/sessions`、`/account-events`、`/password`、`/sign-out-all`、
   `/delete-account`、`/config`）；
 - **一段你自己的视频当形象**：智能体页面钢笔菜单和形象工作室里的「你自己的视频…」接受一段
   MP4 或 MOV（最长 15 秒、最大 30 MB；H.264 视频，或这台电脑能解码的 HEVC：Windows 和 macOS
   带解码器，多数 Linux 构建没有，预览放不出来的视频会在那里被拒绝），先在形象的圆形框里预览，再在所有状态下
-  静音循环播放；视频只保存在这台电脑的 `$DSH_HOME/wevvy/avatar/own-clip.mp4`，不会发给
-  wevvy Cloud，「默认形象」可移除（回退规则见 [avatar.md](avatar.md)）；
-- **手（Hands）**，在这台电脑上：自带运行时的 `wevvy mcp` 走 stdio，运行时的
+  静音循环播放；视频只保存在这台电脑的 `$DSH_HOME/ceis/avatar/own-clip.mp4`，不会发给
+  ceis Cloud，「默认形象」可移除（回退规则见 [avatar.md](avatar.md)）；
+- **手（Hands）**，在这台电脑上：自带运行时的 `ceis mcp` 走 stdio，运行时的
   `computer_screen` 和 `computer_act` 工具连同它们的审批一起接进来，所以「我屏幕上是什么？」
   和「打开设置把音量调小」开箱就能用。鼠标、键盘和截图是应用自己的（`src/operator.ts`，
   把 UI-TARS-desktop 的操作器移植到了 `@computer-use/nut-js` 上），通过一个带每次启动随机令牌的
-  回环 HTTP 服务器回答运行时（运行时环境里的 `WEVVY_OPERATOR_URL` /
-  `WEVVY_OPERATOR_TOKEN`；`GET /info`、`POST /screenshot`、`POST /execute`）：每个平台上
+  回环 HTTP 服务器回答运行时（运行时环境里的 `CEIS_OPERATOR_URL` /
+  `CEIS_OPERATOR_TOKEN`；`GET /info`、`POST /screenshot`、`POST /execute`）：每个平台上
   都是同一条截图路径、同一个指针坐标空间，不需要 `xdotool` 或 `pyautogui`，坐标就是模型看到的
   那张图的像素（[gui.md](gui.md#hands-on-the-computer-the-picture-is-the-unit)）。不是由这个
   应用来跑运行时的时候，运行时自己的后端仍然是退路。运行时 `config.toml` 里打开的连接器
   （邮箱、日历、通讯录）经同一个服务器送过来，「设置 → 连接器」里有每一个的设置方法；
 - **房间**：动态、点子、目标和资源库，和手机上的一样，由 Host 保存在
-  `wevvy/rooms.json` 里，由智能体在隐藏聊天里写（动态和点子）或在各自的聊天里写（目标，
-  自动化部分用 harness 的日程插件；资源库里的作品放在 `~/wevvy/Library` 下），再加上记忆：
+  `ceis/rooms.json` 里，由智能体在隐藏聊天里写（动态和点子）或在各自的聊天里写（目标，
+  自动化部分用 harness 的日程插件；资源库里的作品放在 `~/ceis/Library` 下），再加上记忆：
   它对你的了解，每段聊天都会读进去（[desktop-muse.md](desktop-muse.md#rail-rooms)）；
 - **Reach**：这台电脑出现在账号的设备列表里，走 [hub](hub.md)（设备互联）；`devices`、
   `device_screen`、`device_shell`、`device_files`、`device_open`、`device_notify` 和 `delegate`
@@ -99,10 +99,10 @@ harness 保留外部下载方式。不带软件内更新能力的版本，需先
   聊天（从磁盘读取，发一条消息就启动助手自己的 CLI，运行连同它的工具一边跑一边显示，「停止」
   结束它），之后是账号下其他电脑的，走这台电脑同样声明的 `coding.*` hub 动作；设备卡片上的
   「编程助手」标签打开那台电脑的这一页（[coding-agents.md](coding-agents.md)）。
-- **网络**（设置 → wevvy Cloud → 网络）：给这个应用对外请求用的一个代理（`http://host:port`、
+- **网络**（设置 → ceis Cloud → 网络）：给这个应用对外请求用的一个代理（`http://host:port`、
   `https://`、`socks5://` 或 `socks5h://`，可以带 `user:pass@`，显示时会遮住）。dsh Host 发出的请求
   都经过它：你自己的 key、ChatGPT 登录的调用、「列出模型」、工具读取的网页、连接的服务、更新检查，
-  还有手的运行时（`wevvy mcp` 继承同一组变量）。wevvy Cloud（中继、hub 的 WebSocket、同步）和本机回环永远不经过。
+  还有手的运行时（`ceis mcp` 继承同一组变量）。ceis Cloud（中继、hub 的 WebSocket、同步）和本机回环永远不经过。
   外壳把它存在 `desktop.json` 里（权限 0600，因为地址里可能带密码），和「登录时启动」放在一起，启动 dsh Host 时写进它的环境
   （`HTTP_PROXY`、`HTTPS_PROXY`、SOCKS 时还有 `ALL_PROXY`，`NO_PROXY` 带着
   `localhost,127.0.0.1,::1`、`cloud.wevvy.in` 和插件所连的中继，以及让 Node 的 fetch 读这些
@@ -114,14 +114,14 @@ harness 保留外部下载方式。不带软件内更新能力的版本，需先
   （在远程控制卡片上选了「始终」的设备；在权限卡片上选了「在 <应用> 里始终允许」的手）、
   「先执行再告知」（桌面版目前没有东西落在这一档）。每一行写明允许了什么、给谁或在哪里、什么
   时候，带一个「撤回」；空状态说明是卡片上的「始终」把一行放到这里来的。电脑操作页和个人资料
-  抽屉各自保留较短的列表；这一张是完整的。Host 用 `GET /wevvy/cloud/grants` 回答这张表，
+  抽屉各自保留较短的列表；这一张是完整的。Host 用 `GET /ceis/cloud/grants` 回答这张表，
   `POST /grants/revoke {id}` 撤回其中任何一行。
 - **真正的退出会保护进行中的工作。** 退出（菜单里的「退出」、Ctrl+Q、托盘的「退出」，或者在没有
   托盘时关闭最后一个窗口）先问 Host 还有什么在进行：正在生成的回复、屏幕上的电脑操作、其他设备
   交来的任务、等你确认的操作。弹窗会列出这些工作，「继续运行」是默认；只有在这里明确确认，工作才会
   被结束，退出也会等工作结束之后才停止 Host。退出交接期间到来的任务会得到和平时一样的 busy 拒绝，
   请它的设备稍后再发一次。开着菜单栏图标时关闭窗口只是留在托盘，从来不算退出。相关路由是插件的
-  `GET /wevvy/cloud/work`（聚合）、`POST /work/gate {open}`（交接）和 `POST /work/stop`（确认后的结束）。
+  `GET /ceis/cloud/work`（聚合）、`POST /work/gate {open}`（交接）和 `POST /work/stop`（确认后的结束）。
 
 ## 额度用完时，以及中继的其他回答 {#when-the-allowance-is-used-up-and-the-relay-s-other-answers}
 
@@ -129,7 +129,7 @@ harness 保留外部下载方式。不带软件内更新能力的版本，需先
 聊天里、在那一轮没跑成的消息下面，显示手机和网页版显示的同一张卡片：
 
 - 一句话（*免费额度已用完。*），以及不管选哪条路，你的登录和设备都照常工作；
-- **自己的模型 key**：按你所在地区列出的服务商行（和「设置 → wevvy Cloud」里的同一组行，
+- **自己的模型 key**：按你所在地区列出的服务商行（和「设置 → ceis Cloud」里的同一组行，
   「添加 key」和「去拿 key」就在行内），下面折叠着「更多提供方，以及每把 key 各管什么」，
   这份清单是中继随拒绝和 `/v1/me` 一起发来的（`spend.guidance`，[cloud.md](cloud.md#allowance)），
   不是写死在应用里的，还有「图文教程」（[own-key.md](own-key.md)）；
@@ -138,7 +138,7 @@ harness 保留外部下载方式。不带软件内更新能力的版本，需先
 - 请你在 GitHub 上点一颗 star，只出现一次，且只在提示策略允许时：卡片的标题和按钮是应用
   自己的；那句话也是应用自己的，除非中继的策略带了一句（`star.text`、`star.text_zh`，最多
   200 个字符；中文界面取 `text_zh`，没有就取 `text`；[cloud.md](cloud.md)）；
-- 「打开“设置 → wevvy Cloud”」和「再试一次」（设好一条路之后，同样的话会再发一遍）。
+- 「打开“设置 → ceis Cloud”」和「再试一次」（设好一条路之后，同样的话会再发一遍）。
 
 中继的其他拒绝，每一种都是一句平实的话，用应用的语言说，从不直接显示状态码或 JSON 正文：
 
@@ -146,30 +146,30 @@ harness 保留外部下载方式。不带软件内更新能力的版本，需先
 | --- | --- | --- |
 | `413`（请求对中继或模型的窗口来说太大） | *这条消息超过了模型的窗口。缩短一些、去掉几个附件，或者开一个新聊天。* | 「新聊天」 |
 | `400 content_rejected`（服务商的内容审核没有放行这些内容；用自己的 key 时服务商自己的 `DataInspectionFailed` 读法相同） | *模型服务商的内容审核没有放行这次请求。换个说法试试；如果反复出现，就开一个新聊天，被拦下的可能是对话里更早的内容。* | 「新聊天」「再试一次」 |
-| `401`（key 在别处被收回了：在所有设备上退出登录、账号被删除） | *这次登录已失效。请在「设置 → wevvy Cloud」重新登录。* 桌面版同时自己退出登录，和 `/v1/me` 返回 401 时一样。 | 「登录」 |
-| `403`（账号被停用，或者中继不接受它） | *这个账号目前不能使用 wevvy Cloud。*，下面附中继的原话 | 「打开“设置 → wevvy Cloud”」 |
+| `401`（key 在别处被收回了：在所有设备上退出登录、账号被删除） | *这次登录已失效。请在「设置 → ceis Cloud」重新登录。* 桌面版同时自己退出登录，和 `/v1/me` 返回 401 时一样。 | 「登录」 |
+| `403`（账号被停用，或者中继不接受它） | *这个账号目前不能使用 ceis Cloud。*，下面附中继的原话 | 「打开“设置 → ceis Cloud”」 |
 | `429` 不带额度代码（同时的请求太多、服务商正忙） | *同时的请求太多。稍等片刻再试。*，中继给了 `retry_after` 时带上它 | 「再试一次」 |
 | `429 daily_cap`（设了每日份额的中继） | *今天的额度用完了，明天恢复。*，下面附中继自己的原话 | 「再试一次」 |
-| `404 model_not_offered` | *wevvy Cloud 不再提供这个模型。* | 「打开“设置 → wevvy Cloud”」 |
-| `5xx`，或者完全没有回应（连接被拒绝、超时） | *wevvy Cloud 没有回应。* / *连不上 wevvy Cloud。检查网络后再试。* | 「再试一次」 |
+| `404 model_not_offered` | *ceis Cloud 不再提供这个模型。* | 「打开“设置 → ceis Cloud”」 |
+| `5xx`，或者完全没有回应（连接被拒绝、超时） | *ceis Cloud 没有回应。* / *连不上 ceis Cloud。检查网络后再试。* | 「再试一次」 |
 | `429 allowance_exhausted` 且 `paused: true`（中继 0.22：运营者暂停了免费额度，[cloud.md](cloud.md#controls)） | 同一张额度卡片，开头换成 *这个中继暂时停发了免费额度，不是用完了。你的登录、设备和剩余额度都保持原样。* | 继续用的几条路，「再试一次」 |
-| `503 service_paused` | *wevvy Cloud 被运营者暂时停用了，你的登录和数据都保留着。稍后再试。* | 「再试一次」 |
+| `503 service_paused` | *ceis Cloud 被运营者暂时停用了，你的登录和数据都保留着。稍后再试。* | 「再试一次」 |
 | `503 sync_paused` | *这个中继暂时停止了对话同步，已存的内容保留着，各设备各自继续使用。* | 「再试一次」 |
 | `503 hub_paused` | *这个中继暂时停止了设备互联，各设备各自继续使用。* | 「再试一次」 |
-| `403 signup_closed`（只在登录时） | 中继自己的那句话：*这个中继暂时关闭了新注册；已有账号照常使用。* | 「打开“设置 → wevvy Cloud”」 |
+| `403 signup_closed`（只在登录时） | 中继自己的那句话：*这个中继暂时关闭了新注册；已有账号照常使用。* | 「打开“设置 → ceis Cloud”」 |
 
 拒绝不会被重试：0.1.40 之前，harness 把中继的 `429` 当成限流，再试五次（大约二十秒）之后才把
 原始回复摆出来；现在卡片立刻就在。用自己的 key 时被服务商拒绝的一轮也是同样的形状：按失败
 类型给一句话，返回的内容折叠在「返回的原文」下面。相关代码是 `src/refusals.ts`（Host 在
-`llm/stream` 瀑布流上读中继的回复，把失败改写成 `wevvy/<kind>`）和
+`llm/stream` 瀑布流上读中继的回复，把失败改写成 `ceis/<kind>`）和
 `src/client/RefusalCard.tsx` 里聊天的 `turn-error` 位置。
 
 聊天之外那些和中继打交道的页面（登录、模型列表、账号页、形象工作室、连接器、设备）对常见
-情况遵循同一条规则：连不上中继说 *连不上 wevvy Cloud。检查网络后再试。*，超时说
-*wevvy Cloud 没有及时响应。稍后再试。*，`429` 说 *刚才的请求太多了。稍等一下再试。*，
-`401` 说 *尚未登录 wevvy Cloud，或登录已失效。请重新登录。*，`5xx` 说 *wevvy Cloud
+情况遵循同一条规则：连不上中继说 *连不上 ceis Cloud。检查网络后再试。*，超时说
+*ceis Cloud 没有及时响应。稍后再试。*，`429` 说 *刚才的请求太多了。稍等一下再试。*，
+`401` 说 *尚未登录 ceis Cloud，或登录已失效。请重新登录。*，`5xx` 说 *ceis Cloud
 出了点问题（503）。过一分钟再试。* 并带上状态码；桌面端自己在本机回环上的 Host 完全没有
-响应时，说 *这台电脑上的 wevvy 没有响应。重启应用后再试。*。其他情况仍然是 *没成功：*
+响应时，说 *这台电脑上的 ceis 没有响应。重启应用后再试。*。其他情况仍然是 *没成功：*
 加上原样的消息（`src/client/api.ts` 里的 `failureText`；Host 这边把 `fetch failed` 或超时
 改写成 `unreachable` 503 和 `timeout` 504 两个代码）。
 
@@ -185,25 +185,25 @@ harness 保留外部下载方式。不带软件内更新能力的版本，需先
 
 ## 配置和数据 {#config-and-data}
 
-`~/.wevvy/desktop`（`WEVVY_DESKTOP_HOME` 可以把它挪到别处）是应用的 dsh 主目录：
-`profiles/wevvy` 下的 profile（插件列表，以及本人的 `cordis.patch.yml`，设置页和登录流程把
-`wevvy Cloud` 服务商写在这里），存着账号 key 的 dsh 凭据存储，会话，记录外壳和 Host 两边
+`~/.ceis/desktop`（`CEIS_DESKTOP_HOME` 可以把它挪到别处）是应用的 dsh 主目录：
+`profiles/ceis` 下的 profile（插件列表，以及本人的 `cordis.patch.yml`，设置页和登录流程把
+`ceis Cloud` 服务商写在这里），存着账号 key 的 dsh 凭据存储，会话，记录外壳和 Host 两边
 日志行的 `desktop.log`，还有 `port`，Host 上一次用的回环端口，下次启动先试它（然后试 38421，
 再任选一个空闲端口），这样窗口的来源（origin）以及浏览器侧存在那个来源下的一切，每次启动都
-保持不变。wevvy Harness 0.1.28–0.1.29 留在 `~/.wevvy/harness` 下的主目录会被接管一次。
-`WEVVY_CLOUD_URL` 把账号指向另一个中继；`WEVVY_PY` 把预设指向另一个负责手的运行时。
-CLI 自己的 `~/.dsh` 不会被碰。主目录下的 `wevvy/hands.json`（权限 0600）是「设置 → 模型」
-解析出来的手的模型（服务商、模型、base URL 和 key），和插件交给运行时的 `WEVVY_GUI_*` 环境变量
-是同一组值。0.1.41 起，手的 MCP 客户端由插件自己挂载（`dsh-wevvy/hands-tools`），不再是预设里
-固定的一行：在「操作屏幕」下换了模型，插件会释放客户端并用新环境变量重新启动 `wevvy mcp`，
-不用重启就生效（进行中的一次手的调用先做完）。什么都没配时这个文件会被删除；`wevvy/rooms.json`
+保持不变。ceis Harness 0.1.28–0.1.29 留在 `~/.ceis/harness` 下的主目录会被接管一次。
+`CEIS_CLOUD_URL` 把账号指向另一个中继；`CEIS_PY` 把预设指向另一个负责手的运行时。
+CLI 自己的 `~/.dsh` 不会被碰。主目录下的 `ceis/hands.json`（权限 0600）是「设置 → 模型」
+解析出来的手的模型（服务商、模型、base URL 和 key），和插件交给运行时的 `CEIS_GUI_*` 环境变量
+是同一组值。0.1.41 起，手的 MCP 客户端由插件自己挂载（`dsh-ceis/hands-tools`），不再是预设里
+固定的一行：在「操作屏幕」下换了模型，插件会释放客户端并用新环境变量重新启动 `ceis mcp`，
+不用重启就生效（进行中的一次手的调用先做完）。什么都没配时这个文件会被删除；`ceis/rooms.json`
 保存房间（动态，目标连同它们的步骤和进度，哪些点子试过了，资源库索引，记忆）。
 
 ## 模型 {#models}
 
 「设置 → 模型」紧跟在「通用」后面，模型替你做的每件事占一行：「对话」「操作屏幕」「生成图片」
-「生成视频」。登录时每个选择器都把 wevvy Cloud 排在最前，推荐的模型有标记，之后是你在
-「设置 → wevvy Cloud」下添加的每个服务商各一组，每组只有能做这件事的模型（操作屏幕需要能看图的
+「生成视频」。登录时每个选择器都把 ceis Cloud 排在最前，推荐的模型有标记，之后是你在
+「设置 → ceis Cloud」下添加的每个服务商各一组，每组只有能做这件事的模型（操作屏幕需要能看图的
 模型；手只会说 OpenAI 的接口格式，所以 Anthropic 或 Google 原生接口的 key 在行下点名、不进列表）。
 什么都做不了的一行用一句话说明谁能做，并给出「添加服务商」。
 
@@ -211,11 +211,11 @@ CLI 自己的 `~/.dsh` 不会被碰。主目录下的 `wevvy/hands.json`（权�
 起初只显示八个模型，目录里这一行的默认模型和你当前选的排在最前，组尾是「还有 {n} 个」；所有组加起来
 超过八个模型时，面板顶部出现「搜索模型」输入框，边打字边按模型 id 或名称过滤每一组（都不匹配时显示
 「没有匹配的模型」）。按 Esc 或点面板外面关闭；「设置 → 图像与视频」用的是同一个选择器。折叠和搜索
-的逻辑在 `harness/dsh-wevvy/src/client/model-list.ts`，由 `tests/model-list.test.mjs` 检查。
+的逻辑在 `harness/dsh-ceis/src/client/model-list.ts`，由 `tests/model-list.test.mjs` 检查。
 
 没选的时候一行用什么：新对话用的那个服务商，前提是它是你自己的、而且对这件事有模型（目录里的默认
-模型）；否则登录时用 wevvy Cloud；再否则用你第一个能做这件事的服务商。按这个顺序走的三行，选择器
-第一项是「自动」，行下写明现在落到哪个（比如「当前为 wevvy Cloud · qwen3.8-27b」）；选它就撤掉你
+模型）；否则登录时用 ceis Cloud；再否则用你第一个能做这件事的服务商。按这个顺序走的三行，选择器
+第一项是「自动」，行下写明现在落到哪个（比如「当前为 ceis Cloud · qwen3.8-27b」）；选它就撤掉你
 选过的那个，这一行重新按顺序走。选对话模型，新对话用它，主要聊天也跟着换过去（「对主要聊天和新对话
 生效；旁聊保留自己的模型。」）；旁聊保留各自的模型，同一个选择再选一次不会重写。手机上是同一条规则。
 新对话用的那个服务商没了（移除了它的 key，或退出了登录）时，对话这一格跟着挪：登录时挪到账号，否则挪到你
@@ -226,21 +226,21 @@ CLI 自己的 `~/.dsh` 不会被碰。主目录下的 `wevvy/hands.json`（权�
 
 存好一把 key 之后，一张小卡片问「用它来做什么」，这把 key 能做的每件事一个开关，默认全开；「就这样」
 把那几行换成这个服务商，「暂不」什么都不改。自己的模型在某一轮失败时，卡片在已登录的情况下给出
-「这次改用 wevvy Cloud」：这一条消息再走一次账号，这一轮结束后对话回到原来的模型，模型页保持
+「这次改用 ceis Cloud」：这一条消息再走一次账号，这一轮结束后对话回到原来的模型，模型页保持
 原样。「就这样」勾着对话时，主要聊天也一起换过去。不会自动回退。工作室一轮画失败、一组短视频失败后，也是同一个按钮。
 
-登录时，这一页最上面有一个开关「使用 wevvy Cloud 模型」。关掉之后，账号的模型从每个选择器和自动顺序里
-退出，Harness 的附带调用（对话标题、压缩上下文）改在对话那一行自己的模型上运行，还停在 wevvy Cloud 模型上的
-对话不会发出：一张卡片说明原因，给出换一个模型、新开对话，或「这次改用 wevvy Cloud」，后者是开关关着时唯一
-会消耗额度的东西。账号保持登录；同步、你的设备和「设置 → wevvy Cloud」照常工作。
+登录时，这一页最上面有一个开关「使用 ceis Cloud 模型」。关掉之后，账号的模型从每个选择器和自动顺序里
+退出，Harness 的附带调用（对话标题、压缩上下文）改在对话那一行自己的模型上运行，还停在 ceis Cloud 模型上的
+对话不会发出：一张卡片说明原因，给出换一个模型、新开对话，或「这次改用 ceis Cloud」，后者是开关关着时唯一
+会消耗额度的东西。账号保持登录；同步、你的设备和「设置 → ceis Cloud」照常工作。
 关掉时如果对话那一行还是账号的模型：你有自己的对话模型，就把这一行挪过去；一个都没有，就拒绝关闭，开关下面
 写一句原因，开关保持打开，因为没有别的模型能回答（四个客户端同一条规则）。反过来也一样：开关关着时移除最后
 一把自己的 key，账号的模型会重新打开，对话那一行回到账号的对话模型，key 那一行写一句说明；1.0.1 之前，对话
 会落到 dsh 自带的默认模型上，而没有任何 key 在为它服务。
 
-profile 里的 `node_modules/dsh-wevvy` 是一个链接（Windows 上是 junction），指向已安装应用里的
+profile 里的 `node_modules/dsh-ceis` 是一个链接（Windows 上是 junction），指向已安装应用里的
 插件；每次启动时，只要安装目录和链接目标不一致，就重写它：一次挪动了应用位置的更新，比如从
-`Programs\wevvy\wevvy-desktop` 挪到 `Programs\wevvy-desktop`，会留下一个指向空处的链接，
+`Programs\ceis\ceis-desktop` 挪到 `Programs\ceis-desktop`，会留下一个指向空处的链接，
 0.1.39 跨不过它，起不来（`desktop.log` 里是 `EEXIST: file already exists, symlink …`）。从 0.1.40
 起，失效的链接按链接删掉再重建；万一还是失败，提示信息会写明要手动删除的路径。
 
@@ -257,9 +257,9 @@ N min`。第二次启动会快很多，因为文件已经检查过一遍；如�
 ## macOS 权限 {#macos-permissions}
 
 手需要 macOS 给两样东西：截图要「录屏」，鼠标和键盘要「辅助功能」。从 0.1.38 起，这两项权限都
-归一个独立的小应用所有，即 **wevvy Computer Use**（`wevvy.app/Contents/Helpers/wevvy Computer
-Use.app`，bundle id 为 `io.github.wevvy.desktop.computer-use`）：你在「系统设置 → 隐私与安全性 →
-录屏」和「→ 辅助功能」里要打开的就是这一行。wevvy 桌面版本身两项都不持有。
+归一个独立的小应用所有，即 **ceis Computer Use**（`ceis.app/Contents/Helpers/ceis Computer
+Use.app`，bundle id 为 `io.github.ceis.desktop.computer-use`）：你在「系统设置 → 隐私与安全性 →
+录屏」和「→ 辅助功能」里要打开的就是这一行。ceis 桌面版本身两项都不持有。
 
 为什么要多一个应用。macOS 把一次权限请求归到「责任进程」（responsible process）头上，即
 LaunchServices 启动的那个进程，连同它派生出来的一切。在这几个面板看来，应用的子进程就是应用
@@ -276,24 +276,24 @@ LaunchServices 启动的那个进程，连同它派生出来的一切。在这�
 即便已经授予录屏权限，`CGDisplayCreateImage` 也什么都不返回，0.1.39 把这记成 `helper screenshot
 failed (no screenshot: noImage)`，然后用一帧 `desktopCapturer` 的画面盖过去，而那一帧要么全黑要么
 是旧的。应用启动时就启动这个助手程序（读取授权，并申请缺的那几项），退出时把它关掉；应用
-不在了，助手程序也会自己离开。它没有窗口，没有 Dock 图标；活动监视器里列为 *wevvy Computer
+不在了，助手程序也会自己离开。它没有窗口，没有 Dock 图标；活动监视器里列为 *ceis Computer
 Use*。
 
 在一台什么都还没授权的 Mac 上，你要做的事，只做一次（在 macOS 27.0.1、Apple 芯片上验证过）：
 
-1. 从「应用程序」文件夹打开 wevvy（先把它从磁盘映像拖进去；见下面的*隔离标记*）。
+1. 从「应用程序」文件夹打开 ceis（先把它从磁盘映像拖进去；见下面的*隔离标记*）。
    「设置 → 电脑操作 → 权限」，或者第一次要用到手的时候：我们自己的一个简短对话框会说明在申请
    什么、为什么。
-2. **录屏。** 系统对话框出现（*“wevvy Computer Use”想录制这台电脑的屏幕和音频*），带
-   「打开系统设置」。那个面板（macOS 15 及以后叫*屏幕与系统录音*）里列着 **wevvy Computer
+2. **录屏。** 系统对话框出现（*“ceis Computer Use”想录制这台电脑的屏幕和音频*），带
+   「打开系统设置」。那个面板（macOS 15 及以后叫*屏幕与系统录音*）里列着 **ceis Computer
    Use**；打开它。macOS 可能会提议「退出并重新打开」助手程序：怎么答都行，应用会自己再把助手
-   程序拉起来，下一张截图就是真实的屏幕。wevvy 本身什么都不重启；对话继续。
-3. **辅助功能。** 又是系统对话框，然后在辅助功能面板里打开 **wevvy Computer Use** 旁边的开关；
+   程序拉起来，下一张截图就是真实的屏幕。ceis 本身什么都不重启；对话继续。
+3. **辅助功能。** 又是系统对话框，然后在辅助功能面板里打开 **ceis Computer Use** 旁边的开关；
    macOS 会要你的密码或 Touch ID 才能拨动它。立即生效。
 
 权限页实时显示这两行，点明要打开的是这个助手程序，它的「试一下」按钮会截一张测试图、动一下
 鼠标，走的是真实的链路（应用 → 运行时 → 助手程序），所以那里能通过的，聊天里也能通过。在面板里
-关掉一项授权，手在下一步就会说出来：*macOS：到「系统设置 → 隐私与安全性 → 录屏」里打开 wevvy
+关掉一项授权，手在下一步就会说出来：*macOS：到「系统设置 → 隐私与安全性 → 录屏」里打开 ceis
 Computer Use。助手程序会自己重启；应用不需要。*（操作器返回 `403`；运行时从不退回到 `mss` 或
 `screencapture`）。
 
@@ -309,22 +309,22 @@ macOS 14 及以后，答「是」还要再用 ScreenCaptureKit（`SCShareableCon
 `desktopCapturer` 的画面顶替助手程序，因为一张全黑或过时的图会被当成屏幕送到模型面前。聊天和
 `computer_screen` 改为这样说：
 
-- 助手程序缺录屏权限：*macOS：到「系统设置 → 隐私与安全性 → 录屏」里打开 wevvy Computer Use。
+- 助手程序缺录屏权限：*macOS：到「系统设置 → 隐私与安全性 → 录屏」里打开 ceis Computer Use。
   助手程序会自己重启；应用不需要。*（就是那个 `403`；「设置 → 电脑操作」说的也一样）。
-- 授权在、ScreenCaptureKit 却失败了：*没有截图：wevvy Computer Use 没能截到图：
+- 授权在、ScreenCaptureKit 却失败了：*没有截图：ceis Computer Use 没能截到图：
   ScreenCaptureKit userDeclined (-3801): …*，SCK 错误的名字和代码，后面跟着系统给的文字
   （`noDisplayList`、`failedToStart`、`internalError`……；读者可以按代码去查）。
-- 助手程序没有启动（隔离标记还在、没有端口、App Translocation）：*没有截图：wevvy Computer Use
+- 助手程序没有启动（隔离标记还在、没有端口、App Translocation）：*没有截图：ceis Computer Use
   没有启动（…）*，附上日志里 `helper:` 行给出的原因；「设置 → 电脑操作」把同一个原因显示为
   *不可用*。
 
 0.1.38 之前的 `desktopCapturer` 路径只为没有助手程序 bundle 的构建保留（见下）。
 
-**在 Mac 上核对。** `~/.wevvy/desktop/desktop.log` 里有整条链路：
+**在 Mac 上核对。** `~/.ceis/desktop/desktop.log` 里有整条链路：
 
-- `helper: wevvy Computer Use <version> (pid …) at http://127.0.0.1:… — screen granted, accessibility true, capture ScreenCaptureKit`：
+- `helper: ceis Computer Use <version> (pid …) at http://127.0.0.1:… — screen granted, accessibility true, capture ScreenCaptureKit`：
   助手程序起来了，并且在 macOS 14+ 上说明用哪条路径截图（12 和 13 上是 `CoreGraphics`）。
-- `permissions: accessibility=granted screen=granted (wevvy Computer Use <version>, capture ScreenCaptureKit)`：
+- `permissions: accessibility=granted screen=granted (ceis Computer Use <version>, capture ScreenCaptureKit)`：
   应用启动时读到的授权；面板里开关开着、这里却是 `screen=denied` 时，版本号后面会带上
   ScreenCaptureKit 给的原因。
 - `operator: helper screenshot failed (…) — not falling back to desktopCapturer`：截图失败了，
@@ -333,17 +333,17 @@ macOS 14 及以后，答「是」还要再用 ScreenCaptureKit（`SCShareableCon
 然后「设置 → 电脑操作 → 试一下」：测试截图要么是助手程序截的图，要么是上面那个错误。
 
 **隔离标记。** 你下载的磁盘映像带着 macOS 的隔离标记（quarantine），从里面拷出来的每个文件也都
-带着，助手程序也不例外。打开 wevvy 会把 wevvy 自己的标记处理掉（Gatekeeper 的对话框，
+带着，助手程序也不例外。打开 ceis 会把 ceis 自己的标记处理掉（Gatekeeper 的对话框，
 「仍要打开」），但助手程序的不会，因为 LaunchServices 把它当作一个独立的应用来启动。一个带隔离
 标记、未经批准的助手程序会从一份「转移」（translocated）副本启动
 （`/private/var/folders/…/AppTranslocation/<random>/d/` 下的一个只读挂载，名字每次启动都变），
 Gatekeeper 自己的「无法验证」对话框也可能为它弹出来，而助手程序始终不回应。0.1.38 就是这样：
-助手程序在跑（活动监视器里看得到），辅助功能能授权，但录屏面板里始终不出现 *wevvy Computer
+助手程序在跑（活动监视器里看得到），辅助功能能授权，但录屏面板里始终不出现 *ceis Computer
 Use* 这一行，因为 tccd 记下的是一条已经不存在的路径。从 0.1.39 起，应用在第一次启动助手程序之前
-先去掉它的标记（对 `Contents/Helpers/wevvy Computer Use.app` 执行 `xattr -dr
+先去掉它的标记（对 `Contents/Helpers/ceis Computer Use.app` 执行 `xattr -dr
 com.apple.quarantine`；日志里写 `helper: removed the quarantine flag…`），之后助手程序就在原地
 启动，它的那几行也留得住。这需要 bundle 可写；你放在「应用程序」里的那份就是。如果直接从磁盘
-映像或「下载」文件夹里运行，wevvy 本身就被转移了，助手程序修不了，也不会被启动；日志会说
+映像或「下载」文件夹里运行，ceis 本身就被转移了，助手程序修不了，也不会被启动；日志会说
 *把它移到「应用程序」文件夹再打开一次*，这期间手走应用自己的路径（见下）。
 
 还有几点：
@@ -357,20 +357,20 @@ com.apple.quarantine`；日志里写 `helper: removed the quarantine flag…`）
 - *窗口模式*（手只在某一个应用的窗口里干活）列窗口和截取窗口画面也走助手程序
   （`GET /windows`、`POST /window`；macOS 14+ 上用 ScreenCaptureKit 的
   `SCContentFilter(desktopIndependentWindow:)`），所以助手程序的录屏那一行就覆盖了它。事件仍然
-  由运行时发出（`CGEventPostToPid`），macOS 把它们归到 **wevvy** 本身名下：所以窗口模式在助手
-  程序的两行之外，还需要辅助功能面板里的 *wevvy* 那一行，缺了就退回整个屏幕并给出提示。
+  由运行时发出（`CGEventPostToPid`），macOS 把它们归到 **ceis** 本身名下：所以窗口模式在助手
+  程序的两行之外，还需要辅助功能面板里的 *ceis* 那一行，缺了就退回整个屏幕并给出提示。
   没有助手程序 bundle 时，运行时自己截取窗口（`CGWindowListCreateImage`；运行时日志写
-  `window mode: the runtime captures windows itself …`），同样需要 *wevvy* 的录屏那一行。
+  `window mode: the runtime captures windows itself …`），同样需要 *ceis* 的录屏那一行。
   「设置 → 电脑操作」会说明窗口模式是否可用。
-- macOS 15 及以后会时不时再问一次，一个不经系统选择器就截屏的应用能不能继续；给 wevvy
+- macOS 15 及以后会时不时再问一次，一个不经系统选择器就截屏的应用能不能继续；给 ceis
   Computer Use 答「允许」。
 - 想把授权流程从头来过：`tccutil reset ScreenCapture
-  io.github.wevvy.desktop.computer-use; tccutil reset Accessibility
-  io.github.wevvy.desktop.computer-use`，然后再走一遍「设置 → 电脑操作 → 权限」。早先版本留在
-  *wevvy Desktop* / *wevvy* 名下的授权只有窗口模式会用到（见上），其他情况下可以关掉。
+  io.github.ceis.desktop.computer-use; tccutil reset Accessibility
+  io.github.ceis.desktop.computer-use`，然后再走一遍「设置 → 电脑操作 → 权限」。早先版本留在
+  *ceis Desktop* / *ceis* 名下的授权只有窗口模式会用到（见上），其他情况下可以关掉。
 
 没有助手程序 bundle 时（不带它的构建、`build.sh` 之前的开发运行），应用的行为和 0.1.38 之前
-一样：授权是 wevvy 桌面版自己的（`io.github.wevvy.desktop`），通过
+一样：授权是 ceis 桌面版自己的（`io.github.ceis.desktop`），通过
 `@computer-use/node-mac-permissions` 和 `@computer-use/mac-screen-capture-permissions` 读取，画面
 来自 `desktopCapturer`，输入来自 `@computer-use/nut-js`，录屏授权之后需要重启应用（「立即重启」）。
 bundle 在、却没启动起来（日志的 `helper:` 行会说原因）不属于这种情况：手会带着原因拒绝，直到它
@@ -399,30 +399,30 @@ bundle 在、却没启动起来（日志的 `helper:` 行会说原因）不属�
 （`harness/desktop/resources/entitlements.mac.plist`），用 notarytool 公证，并装订（staple）票据。
 证书从「钥匙串访问」导出为 `.p12` 再做 base64 编码；App Store Connect 密钥就是 `.p8` 文件的文本。
 
-助手程序 *wevvy Computer Use.app* 在 macOS runner 上由
+助手程序 *ceis Computer Use.app* 在 macOS runner 上由
 `harness/desktop/mac/computer-use/build.sh` 构建（纯 `swiftc`，arm64 和 x86_64 用 `lipo` 合并，
 部署目标 macOS 12.3，即第一个有 ScreenCaptureKit 的版本，二进制链接了它；SCK 截图在 14+ 上运行，
 之前的版本用 CoreGraphics），然后 electron-builder 把它拷进 `Contents/Helpers`
 （`electron-builder.yml` 里的 `mac.extraFiles`）。`package-mac.sh` 先给它签名，作为一个独立的
-bundle（同一身份、hardened runtime、它自己的标识符 `io.github.wevvy.desktop.computer-use`、
+bundle（同一身份、hardened runtime、它自己的标识符 `io.github.ceis.desktop.computer-use`、
 不带应用的任何 entitlement），然后再签外层的应用。本地 macOS 构建要在 `npm run dist:dir` 之前跑
 `build.sh`；不跑的话 electron-builder 只会警告源文件缺失，应用就不带助手程序出厂，走 0.1.38 之前
 的路径。
 
 ## Linux 注意事项 {#linux-notes}
 
-- **优先选 `.deb`**（Debian、Ubuntu 及其衍生版）：它安装 `/opt/wevvy/wevvy-desktop`、
-  图标集和桌面入口，启动器能找到它。`sudo apt install ./wevvy-Desktop-<version>-linux-x64.deb`。
+- **优先选 `.deb`**（Debian、Ubuntu 及其衍生版）：它安装 `/opt/ceis/ceis-desktop`、
+  图标集和桌面入口，启动器能找到它。`sudo apt install ./ceis-Desktop-<version>-linux-x64.deb`。
 - **AppImage 需要 FUSE。** 它启动时把自己挂载起来；机器上没有 `libfuse2`，或者不允许
   `fusermount`（容器、某些企业镜像；日志写 `fusermount: mount failed: Operation not permitted` /
   `Cannot mount AppImage, please check your FUSE setup`）时，改为解包运行：
-  `./wevvy-Desktop-<version>-linux-x64.AppImage --appimage-extract-and-run`，或者拿
+  `./ceis-Desktop-<version>-linux-x64.AppImage --appimage-extract-and-run`，或者拿
   **`.tar.gz`**，同一个应用，只是一个普通文件夹：解压到任何地方，在里面运行
-  `./wevvy-desktop`（不要 FUSE，不要 root）。
+  `./ceis-desktop`（不要 FUSE，不要 root）。
 - **图标点了没反应。** 应用一次只允许一个实例：已经有一份在跑时点启动器，是在告诉*那一份*把
   窗口显示出来。到 0.1.36 为止，关掉了窗口的那一份会为了托盘图标继续活着，却不回应；点击看
   起来像死了。从 0.1.37 起，正在跑的那一份收到点击会重新打开窗口；更早版本的那一份还在托盘
-  里：在那里退出它（「退出」），或者 `pkill -f /opt/wevvy/wevvy-desktop`，再点一次。
+  里：在那里退出它（「退出」），或者 `pkill -f /opt/ceis/ceis-desktop`，再点一次。
   只有「设置 → 通用 → 应用行为」里的菜单栏开关打开时，关窗口才会让应用留在托盘里；关着时，
   关窗口就是退出。不管哪种情况，在窗口里 **Ctrl+Q** 都能退出（帮助 → 退出；按 Alt 显示菜单栏）。
 - **Ubuntu 20.04 上没有托盘图标。** GNOME 3.36 的 appindicator 扩展（v33）不接受 Electron 44 发来
@@ -444,7 +444,7 @@ bundle（同一身份、hardened runtime、它自己的标识符 `io.github.wevv
   会话类型从 `XDG_SESSION_TYPE` 读；手动启动的 Wayland 合成器表现为只有 `WAYLAND_DISPLAY`、
   没有 `DISPLAY`，这也算。
 - **在这台电脑上动手**（X11）。什么都不用授权：应用自己的操作器通过 libnut（XTEST）移动指针和
-  打字，通过 Electron 的截图器截图，运行时的 `wevvy mcp` 经回环地址连到它；不需要 `xdotool`、
+  打字，通过 Electron 的截图器截图，运行时的 `ceis mcp` 经回环地址连到它；不需要 `xdotool`、
   `pyautogui` 或 `mss`，只要应用的操作器在回应，它们一个都不会被用到。指针在应用启动时所在的
   那个 X 显示（`DISPLAY`）上移动，坐标是根窗口像素：在 HiDPI 桌面上，那是逻辑尺寸乘以缩放系数
   （1920×1080、缩放 2 倍的显示器，对手来说是 3840×2160），模型看到的图是那个根窗口缩小到最宽
@@ -459,5 +459,5 @@ bundle（同一身份、hardened runtime、它自己的标识符 `io.github.wevv
   允许」让手在那个应用里一直干下去，直到你在「设置 → 权限」里撤回。ASCII 之外的文字通过剪贴板
   和 Ctrl+V 输入（不需要 `xclip`/`xsel`，用的是 Electron 的剪贴板）；之后把原来的剪贴板内容
   放回去。
-- 日志是 `~/.wevvy/desktop/desktop.log`（操作器的每个动作一行，`operator: click at 1249,1096`）；
+- 日志是 `~/.ceis/desktop/desktop.log`（操作器的每个动作一行，`operator: click at 1249,1096`）；
   启动器那边的在 `journalctl --user -n 200`。

@@ -7,7 +7,7 @@ import pytest
 from test_accounts import auth, make
 from test_cloud import sign_up
 
-from wevvy_cloud.nudges import DEFAULT_NUDGES, BadNudges, merge, validate
+from ceis_cloud.nudges import DEFAULT_NUDGES, BadNudges, merge, validate
 
 ADMIN = {"X-Admin-Token": "admin"}
 
@@ -114,11 +114,11 @@ async def test_card_text_round_trips_trimmed_and_defaults_to_empty():
     policy = (await client.get("/v1/nudges")).json()
     assert policy["star"]["text"] == "" and policy["star"]["text_zh"] == ""
     # a PUT with the two set comes back trimmed, on the public endpoint and on /v1/me
-    body = {"star": {"text": "  A star on GitHub helps others find wevvy. ", "text_zh": "\u3000在 GitHub 点个 star，让更多人找到它。\n"}}
+    body = {"star": {"text": "  A star on GitHub helps others find ceis. ", "text_zh": "\u3000在 GitHub 点个 star，让更多人找到它。\n"}}
     r = await client.put("/v1/admin/nudges", headers=ADMIN, json=body)
     assert r.status_code == 200, r.text
     star = r.json()["nudges"]["star"]
-    assert star["text"] == "A star on GitHub helps others find wevvy."
+    assert star["text"] == "A star on GitHub helps others find ceis."
     assert star["text_zh"] == "在 GitHub 点个 star，让更多人找到它。"
     assert r.json()["nudges"]["version"] == 2
     assert (await client.get("/v1/nudges")).json()["star"]["text_zh"] == star["text_zh"]

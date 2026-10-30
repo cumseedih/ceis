@@ -445,7 +445,7 @@ class OpenAIProvider private constructor(
         // a local proxy got reused on every retry (silent infinite hang).
         .connectionPool(com.openminis.app.network.NetworkMonitor.sharedLLMConnectionPool)
         .eventListenerFactory { OkHttpNetTraceListener() }
-        .proxyAuthenticator(io.github.wevvy.net.OwnProviderProxy.authenticator) // wevvy: Settings → Network, a proxy with a password
+        .proxyAuthenticator(io.github.ceis.net.OwnProviderProxy.authenticator) // ceis: Settings → Network, a proxy with a password
         .build()
 
     /** Detect OpenRouter base URL. */
@@ -706,8 +706,8 @@ class OpenAIProvider private constructor(
                 memBefore, serStartNs, failure = null,
             )
         }
-        // wevvy: OpenCode Go wants one stable id per conversation (io.github.wevvy.net.OpenCodeSession)
-        val request = buildRequest(bodyStr, if (io.github.wevvy.net.OpenCodeSession.wants(basePath)) derivePromptCacheKey(messages) else null)
+        // ceis: OpenCode Go wants one stable id per conversation (io.github.ceis.net.OpenCodeSession)
+        val request = buildRequest(bodyStr, if (io.github.ceis.net.OpenCodeSession.wants(basePath)) derivePromptCacheKey(messages) else null)
         val headerMap = mutableMapOf<String, String>()
         for (name in request.headers.names()) {
             headerMap[name] = request.headers[name] ?: ""
@@ -2390,7 +2390,7 @@ class OpenAIProvider private constructor(
      * the OAuth byte build, and the OkHttp RequestBody. Per-call peak heap
      * dropped by ~2× the body size (often tens of MB on long agent loops).
      */
-    private suspend fun buildRequest(bodyStr: String, opencodeSession: String? = null): Request { // wevvy: + opencodeSession
+    private suspend fun buildRequest(bodyStr: String, opencodeSession: String? = null): Request { // ceis: + opencodeSession
         val token = getToken()
 
         if (isOAuth && !forceChatCompletions) {
@@ -2459,8 +2459,8 @@ class OpenAIProvider private constructor(
         for ((key, value) in extraHeaders) {
             builder.header(key, value)
         }
-        // wevvy: the conversation's id for OpenCode, before the per-call overrides so those still win
-        opencodeSession?.let { builder.header(io.github.wevvy.net.OpenCodeSession.HEADER, it) }
+        // ceis: the conversation's id for OpenCode, before the per-call overrides so those still win
+        opencodeSession?.let { builder.header(io.github.ceis.net.OpenCodeSession.HEADER, it) }
         // [T-android-model-use-passthrough-mode] Per-call chat header overrides,
         // applied AFTER the ctor extraHeaders → same-name REPLACE over any
         // default (incl. Authorization/Content-Type). Empty on normal calls.
@@ -3432,13 +3432,13 @@ class OpenAIProvider private constructor(
     }
 
     private fun mapHttpError(statusCode: Int, body: String): LLMError {
-        // wevvy: the relay's "allowance used up" is a 429 with a structured body, and the
+        // ceis: the relay's "allowance used up" is a 429 with a structured body, and the
         // ChatGPT plan's "region not supported" / "sign-in expired" / "nothing left" are a 403,
         // a 401 and a 429 whose bodies the mapping below drops; keep them for the chat's cards.
-        io.github.wevvy.cloud.AllowanceSignal.noteHttpError(statusCode, body, fromRelay = io.github.wevvy.net.OwnProviderProxy.isRelay(basePath))
-        io.github.wevvy.net.ReachSignal.noteHttpError(
+        io.github.ceis.cloud.AllowanceSignal.noteHttpError(statusCode, body, fromRelay = io.github.ceis.net.OwnProviderProxy.isRelay(basePath))
+        io.github.ceis.net.ReachSignal.noteHttpError(
             statusCode, body,
-            host = if (isOAuth && !forceChatCompletions) "chatgpt.com" else io.github.wevvy.net.OwnProviderProxy.hostOf(basePath),
+            host = if (isOAuth && !forceChatCompletions) "chatgpt.com" else io.github.ceis.net.OwnProviderProxy.hostOf(basePath),
             oauth = isOAuth,
         )
         if (statusCode == 401 || statusCode == 403) return LLMError.InvalidApiKey()

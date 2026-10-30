@@ -25,20 +25,20 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-from wevvy.app import WevvyApp
-from wevvy.config import Settings, load_settings
-from wevvy.ui import HeadlessUI
+from ceis.app import CeisApp
+from ceis.config import Settings, load_settings
+from ceis.ui import HeadlessUI
 
 
 @dataclass
 class Scenario:
     name: str
     task: str
-    check: Callable[[str, WevvyApp, HeadlessUI, Path], Awaitable[str | None]]
+    check: Callable[[str, CeisApp, HeadlessUI, Path], Awaitable[str | None]]
     """Returns None when the run passed, otherwise what went wrong."""
 
 
-async def _plain(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> str | None:
+async def _plain(answer: str, muse: CeisApp, ui: HeadlessUI, ws: Path) -> str | None:
     if "ready" not in answer.lower():
         return f"expected 'ready', got {answer!r}"
     if any(k == "tool_call" and "terminate" not in str(p) for k, p in ui.events):
@@ -46,7 +46,7 @@ async def _plain(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> str |
     return None
 
 
-async def _compute(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> str | None:
+async def _compute(answer: str, muse: CeisApp, ui: HeadlessUI, ws: Path) -> str | None:
     if "75025" not in answer.replace(",", "").replace(" ", "").replace("\u202f", ""):
         return f"expected 75025 in {answer!r}"
     if not any(k == "tool_call" and "python_execute" in str(p) for k, p in ui.events):
@@ -54,7 +54,7 @@ async def _compute(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> str
     return None
 
 
-async def _artifact(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> str | None:
+async def _artifact(answer: str, muse: CeisApp, ui: HeadlessUI, ws: Path) -> str | None:
     files = list(ws.glob("*.md"))
     if not files:
         return "no .md file in the workspace"
@@ -64,7 +64,7 @@ async def _artifact(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> st
     return None
 
 
-async def _memory(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> str | None:
+async def _memory(answer: str, muse: CeisApp, ui: HeadlessUI, ws: Path) -> str | None:
     if muse.memory is None:
         return "memory disabled in this config"
     items = muse.memory.all()
@@ -73,7 +73,7 @@ async def _memory(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> str 
     return None
 
 
-async def _multistep(answer: str, muse: WevvyApp, ui: HeadlessUI, ws: Path) -> str | None:
+async def _multistep(answer: str, muse: CeisApp, ui: HeadlessUI, ws: Path) -> str | None:
     missing = [n for n in ("a.txt", "b.txt", "c.txt") if not (ws / n).is_file()]
     if missing:
         return f"missing {missing}"
@@ -129,14 +129,14 @@ def _settings(args: argparse.Namespace, root: Path) -> Settings:
 
 
 async def run_one(args: argparse.Namespace, sc: Scenario) -> tuple[bool, int, float, str, str]:
-    with tempfile.TemporaryDirectory(prefix="wevvy-check-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="ceis-check-") as tmp:
         root = Path(tmp)
         settings = _settings(args, root)
         settings.agent.workspace.mkdir(parents=True)
         ui = HeadlessUI(verbose=args.verbose)
         started = time.monotonic()
         try:
-            async with WevvyApp(settings, ui) as muse:
+            async with CeisApp(settings, ui) as muse:
                 answer = await muse.run(sc.task)
                 problem = await sc.check(answer or "", muse, ui, settings.agent.workspace)
                 mode = "native" if muse.llm.supports_native_tools else "prompt"

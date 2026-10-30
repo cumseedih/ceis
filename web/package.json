@@ -1,8 +1,8 @@
 {
-  "name": "wevvy-web",
+  "name": "ceis-web",
   "private": true,
   "version": "1.0.5",
-  "description": "wevvy mobile-first web app (chat, goals, ideas, memory, approvals)",
+  "description": "ceis mobile-first web app (chat, goals, ideas, memory, approvals)",
   "license": "GPL-3.0-or-later",
   "type": "module",
   "engines": {

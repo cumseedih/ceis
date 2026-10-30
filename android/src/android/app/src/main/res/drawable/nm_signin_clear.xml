@@ -3,7 +3,7 @@
     android:height="20dp"
     android:viewportWidth="20"
     android:viewportHeight="20">
-    <!-- wevvy: the field's clear button, a pale disc with a cross, as in the reference -->
+    <!-- ceis: the field's clear button, a pale disc with a cross, as in the reference -->
     <path
         android:pathData="M10,10m-9,0a9,9 0,1 1,18 0a9,9 0,1 1,-18 0"
         android:fillColor="#E8EAED" />

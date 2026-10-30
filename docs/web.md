@@ -1,6 +1,6 @@
 # The web console: your model, your key, your plan
 
-> The web console is the app `wevvy serve` serves at `/`: the front door of
+> The web console is the app `ceis serve` serves at `/`: the front door of
 > the desktop app and of a self-hosted runtime ([app.md](app.md)). This page is
 > about one part of it: how it picks the model that answers, and what it offers
 > when the model lacks something. The guide for making a key is
@@ -9,7 +9,7 @@
 ## One catalogue
 
 The console reads the same list of providers as the phones, the desktop and the
-relay: [`wevvy/llm/providers.json`](../wevvy/llm/providers.json) (contract
+relay: [`ceis/llm/providers.json`](../ceis/llm/providers.json) (contract
 C11). Each provider says what one key there covers, `chat`, `vision` (the
 hands read screenshots), `image` (the avatar studio's pictures), `video` (its
 clips), and which sign-ins it has besides a key. The console asks the runtime
@@ -32,7 +32,7 @@ model when the provider has no model that sees and you are signed in; a
 provider without `vision` and no account gets the one sentence instead of a
 blind hands model. A *Proxy (optional)* field under them takes an
 `http://host:port`, `https://` or `socks5://` address for this provider's
-requests only (`[llm] proxy`; wevvy Cloud never goes through it, a SOCKS
+requests only (`[llm] proxy`; ceis Cloud never goes through it, a SOCKS
 address needs `httpx[socks]` on the runtime); a saved password comes back as
 dots, and an emptied field clears it.
 
@@ -78,12 +78,12 @@ Models contract (0.1.41), one card each under the chat model. The value is
 `image` / `video`: the slot as set and its `effective_*`): an explicit choice,
 else the chat provider's own picture model when it has one, else your account's
 when signed in, else the one sentence and an *Add a provider* button. The
-picker offers *Automatic* first, a *wevvy Cloud* group when signed in, *The chat model's provider* when it has the capability
+picker offers *Automatic* first, a *ceis Cloud* group when signed in, *The chat model's provider* when it has the capability
 (its key serves, nothing to paste), and under *Add a provider* every catalogue
 provider with the capability for your region, plus *Other OpenAI-compatible
 endpoint* with a base URL; a provider without the capability is not offered.
 A model may be picked from what the endpoint lists (the relay's menu and the
-account's other models on wevvy Cloud) or left to the catalogue's default.
+account's other models on ceis Cloud) or left to the catalogue's default.
 *Save* calls `PUT /api/connections/image` or `/video` with `provider` (a
 catalogue id, or `openai` with a `base_url`), `model`, `base_url`, `api_key`
 (into the vault as `IMAGE_API_KEY` / `VIDEO_API_KEY`; the relay's row names the
@@ -115,7 +115,7 @@ chat* (`[llm] provider = "chatgpt"`) and *Sign out of ChatGPT*
 (`POST /api/chatgpt/logout`). The card says what the sign-in covers (chat and
 the hands, not pictures or clips) and carries the honest line about OpenAI's
 terms. A runtime without these routes answers 404; the card then names the
-command to run in a terminal, `wevvy chatgpt login`, instead of pretending.
+command to run in a terminal, `ceis chatgpt login`, instead of pretending.
 The sign-in's callback lands on port 1455 of the machine the runtime runs on.
 When the browser cannot reach it (a runtime on another computer, or the port
 taken; `port_bound: false` in the login's answer), the browser ends on an
@@ -157,11 +157,11 @@ on the phones and the desktop (contract C4 in [parity.md](parity.md)):
    chat draws them where the history begins (`GET /api/firstrun?lang=` returns
    them as `intro`).
 2. **The model asks your name** and, when you give it (or decline), reports it
-   in a ```` ```wevvy-naming ```` block at the end of its reply, the same
+   in a ```` ```ceis-naming ```` block at the end of its reply, the same
    JSON the desktop and the phones read (`user_address`, `suggest`,
-   `agent_name`; `wevvy/fences.py`). The runtime owns the phases
+   `agent_name`; `ceis/fences.py`). The runtime owns the phases
    (`none → ask_user_name → ask_agent_name → named → done`,
-   `wevvy/server/firstrun.py`, saved as `firstrun.json` next to the
+   `ceis/server/firstrun.py`, saved as `firstrun.json` next to the
    profile), writes your address to the profile and to memory as *Call them:
    …*, and tells the page over the socket (`firstrun` frame). The block itself
    is never shown, not even half-streamed.
@@ -198,7 +198,7 @@ A *How* link beside each goes to [own-key.md](own-key.md). The provider names
 come from the catalogue in the console's language (`name` / `name_zh`).
 
 **A turn the relay refused** is one sentence too, by the relay's `code`
-(`wevvy/server/failures.py`; the sentence is the key in `web/src/i18n/zh-CN.ts`,
+(`ceis/server/failures.py`; the sentence is the key in `web/src/i18n/zh-CN.ts`,
 so the Chinese is looked up from the English): the allowance used up (with the
 ways card under it), the daily cap, a rate limit, a bad key, a disabled account,
 a model the relay does not offer, the provider behind the relay in trouble,
@@ -214,7 +214,7 @@ with an error: …* and the five the operator's switches send
 | `429 provider_busy` | The model provider is busy; try again in a moment. |
 | `429 allowance_exhausted` with `paused: true` | The free allowance is paused on this relay for now, not used up. Your own model key under Connections keeps you going; your sign-in, your devices and what is left stay as they are. (the same ways card as a spent pool, the notice carries `paused`) |
 | `403 signup_closed` | New sign-ups are paused on this relay for now; existing accounts keep working. Try again later. |
-| `503 service_paused` | wevvy Cloud is paused by its operator for now; your sign-in and your data are kept. Try again later. |
+| `503 service_paused` | ceis Cloud is paused by its operator for now; your sign-in and your data are kept. Try again later. |
 | `503 sync_paused` | Conversation sync is paused on this relay for now; what is stored is kept and your devices keep working on their own. |
 | `503 hub_paused` | The device hub is paused on this relay for now; each device keeps working on its own. |
 
@@ -222,21 +222,21 @@ The raw reply stays under *Details* for a bug report, never as the only thing sh
 
 **A turn your own model failed** (a refused key, a model the endpoint does not
 know, a rate limit, a timeout, no connection) shows its sentence and, when you
-are signed in and the chat is not on the account, *Use wevvy Cloud this time*
+are signed in and the chat is not on the account, *Use ceis Cloud this time*
 (the own-key models contract, section 4; the desktop and the phones have the
 same). It sends the same words again with `via: "cloud"` (`POST
 /api/threads/{id}/send`, or the socket's `send` frame): the runtime runs that
 one turn on the relay's recommended chat model under the account's key, and the
-next turn is back on your model. `[llm]`, *Use wevvy Cloud models* and the
+next turn is back on your model. `[llm]`, *Use ceis Cloud models* and the
 conversation stay as they were; with the Cloud models switched off this button
 is the only thing that spends the allowance. The user bubble, the reply and a
 failure of that turn carry `model_used` (the model id); the reply shows
-*Answered by wevvy Cloud this time (model)* under it, and a notice that
+*Answered by ceis Cloud this time (model)* under it, and a notice that
 carries `model_used` does not offer the button again. Signed out, the runtime
-answers `401 signed_out` with *Sign in to wevvy Cloud first.*, shown under the
-button. Switching *Use wevvy Cloud models* off while the chat model is the
+answers `401 signed_out` with *Sign in to ceis Cloud first.*, shown under the
+button. Switching *Use ceis Cloud models* off while the chat model is the
 account's is refused with `409 chat_on_cloud` (*Add a provider of your own
-first; with wevvy Cloud off, nothing else could answer.*), shown under the
+first; with ceis Cloud off, nothing else could answer.*), shown under the
 switch.
 
 **A connection test that fails** (*Test* under a model, the hands) says the same
@@ -263,5 +263,5 @@ how long the grant lasts and when it was given, and can be revoked on its own.
 cd web && npm run lint && LANG=en_US.UTF-8 npx vitest run && npm run build
 ```
 
-The build writes `wevvy/server/static/`, which is committed with the change;
+The build writes `ceis/server/static/`, which is committed with the change;
 `web/tsconfig.tsbuildinfo` is a by-product and is not.

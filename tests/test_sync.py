@@ -15,15 +15,15 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy.cloud import CloudClient, CloudError
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.schema import LLMResponse
-from wevvy.server import create_app
-from wevvy.server.events import MAIN_THREAD
-from wevvy.server.service import MuseService
-from wevvy.sync import engine as engine_mod
-from wevvy.sync.mention import parse_mention, system_note
+from ceis.cloud import CloudClient, CloudError
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.schema import LLMResponse
+from ceis.server import create_app
+from ceis.server.events import MAIN_THREAD
+from ceis.server.service import MuseService
+from ceis.sync import engine as engine_mod
+from ceis.sync.mention import parse_mention, system_note
 
 DEVICES = [
     {"id": "pc-self", "name": "Desk", "kind": "computer", "online": True},
@@ -331,7 +331,7 @@ def synced(
     monkeypatch.setattr(engine_mod, "PUSH_DELAY_S", 0.05)
     llm = MockLLM([])
     service = MuseService(settings, llm=llm)
-    service.app.vault.set("WEVVY_CLOUD_KEY", "test-key")
+    service.app.vault.set("CEIS_CLOUD_KEY", "test-key")
     relay = FakeSyncRelay()
     service.sync.client = relay  # type: ignore[assignment]
     app = create_app(settings, service)
@@ -603,7 +603,7 @@ def _signed_in(
     monkeypatch.setattr(CloudClient, "models", fake_models)
     monkeypatch.setattr(engine_mod, "PUSH_DELAY_S", 0.05)
     service = MuseService(settings, llm=MockLLM([]))
-    service.app.vault.set("WEVVY_CLOUD_KEY", "test-key")
+    service.app.vault.set("CEIS_CLOUD_KEY", "test-key")
     return service
 
 

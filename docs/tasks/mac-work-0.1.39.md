@@ -1,4 +1,4 @@
-# Mac 侧协作任务 — wevvy 0.1.39（Mac 上的 Computer use、iOS 闪退、iOS 账号隔离）
+# Mac 侧协作任务 — ceis 0.1.39（Mac 上的 Computer use、iOS 闪退、iOS 账号隔离）
 
 这份文档是给在维护者（lgy0404）的 Mac 上运行的 Cursor 代理看的。把它整个粘贴给代理，它就有了
 全部上下文。维护者在 Linux 上开发，Linux 上另有一个代理（下文叫 **L**）同时在做这一版的其他事情；
@@ -12,10 +12,10 @@
 
 ## 0. 项目与分工
 
-wevvy 是一个开源（GPL-3.0-or-later）的个人 agent：手机 app（Android 和 iOS，基于 OpenMinis
-子树 `android/`）、桌面 app（`harness/dsh-wevvy/` 是一个 DeepSeek Harness 插件，
+ceis 是一个开源（GPL-3.0-or-later）的个人 agent：手机 app（Android 和 iOS，基于 OpenMinis
+子树 `android/`）、桌面 app（`harness/dsh-ceis/` 是一个 DeepSeek Harness 插件，
 `harness/desktop/` 是包着它的 Electron 壳，壳里带着 Python 运行时给「手」用）、Python 运行时
-`wevvy/`（agent 循环、Sentinel、工具、手机/电脑操作器）、Web 控制台 `web/`、中继 `cloud/`
+`ceis/`（agent 循环、Sentinel、工具、手机/电脑操作器）、Web 控制台 `web/`、中继 `cloud/`
 （登录、模型、hub、会话同步）。先读 [AGENTS.md](../../AGENTS.md)（目录、命令、约定，130 行）和
 [CONTRIBUTING.md](../../CONTRIBUTING.md)，再按任务读 [docs/desktop.md](../desktop.md)（尤其
 *macOS permissions*、*macOS signing*）、[docs/gui.md](../gui.md)（手怎么看屏幕、怎么点）、
@@ -31,21 +31,21 @@ build 39，中继 0.20.0。下一版 0.1.39 由 L 统一发布；**你不改任�
 
 | 归属 | 范围 |
 |---|---|
-| **M（你）** | `harness/desktop/mac/**`（权限助手 app）；`harness/desktop/src/mac-helper.ts`、`mac-permissions.ts`；`harness/desktop/src/operator.ts`、`main.ts`、`preload.ts` 里 **darwin 分支**；`harness/dsh-wevvy/src/hands-check.ts` 和 `src/client/{HandsCheck.tsx,permissions.ts,Capsule.tsx}` 的 **macOS 文案/逻辑**；`scripts/desktop-app/package-mac.sh`；`.github/workflows/desktop-app.yml` 的 macOS step；`wevvy/computer/mac_window.py`、`screen.py`/`operator.py`/`hands.py` 的 darwin 分支；**整个 `android/src/ios/**`**；`docs/desktop.md` 的两节 macOS、`docs/ios.md`。 |
+| **M（你）** | `harness/desktop/mac/**`（权限助手 app）；`harness/desktop/src/mac-helper.ts`、`mac-permissions.ts`；`harness/desktop/src/operator.ts`、`main.ts`、`preload.ts` 里 **darwin 分支**；`harness/dsh-ceis/src/hands-check.ts` 和 `src/client/{HandsCheck.tsx,permissions.ts,Capsule.tsx}` 的 **macOS 文案/逻辑**；`scripts/desktop-app/package-mac.sh`；`.github/workflows/desktop-app.yml` 的 macOS step；`ceis/computer/mac_window.py`、`screen.py`/`operator.py`/`hands.py` 的 darwin 分支；**整个 `android/src/ios/**`**；`docs/desktop.md` 的两节 macOS、`docs/ios.md`。 |
 | **L** | 其余一切：中继、运行时、Web、Android、Linux/Windows 桌面、文档站、技术报告、发布。L 这一轮同时在改：账号切换后的本地数据隔离（契约 C10，见第 4 节，Android/桌面/运行时由 L 做）、Linux 上手的点击失效问题（会动 `operator.ts`/`main.ts` 的 Linux 分支——所以你在这两个文件里的改动请只落在 darwin 分支、尽量小）、自带 key 的更多提供方（OpenAI 等，含能力分级）、去掉 Terminal 版发布、技术报告。 |
-| 共用文件 | `CHANGELOG.md`（在 `## [Unreleased]` 下相应 `### Desktop` / `### iOS` 小节**末尾**追加你的条目，过去时、具体、面向用户）；`harness/dsh-wevvy/src/client/locales.ts`（新 key 追加在 `en` 和 `zh` 两块的末尾）；`Localizable.xcstrings` 全归你。冲突由 L 在合并时解决。 |
+| 共用文件 | `CHANGELOG.md`（在 `## [Unreleased]` 下相应 `### Desktop` / `### iOS` 小节**末尾**追加你的条目，过去时、具体、面向用户）；`harness/dsh-ceis/src/client/locales.ts`（新 key 追加在 `en` 和 `zh` 两块的末尾）；`Localizable.xcstrings` 全归你。冲突由 L 在合并时解决。 |
 
 仓库约定里和你最相关的几条（全文在 AGENTS.md）：
 
 - **两棵树两套规矩。** `android/` 是上游 OpenMinis 子树，要保持可拉取：新代码放新文件
-  （iOS 放 `android/src/ios/Wevvy/*.swift`），改上游文件时每处带一行 `// wevvy:` 注释，
+  （iOS 放 `android/src/ios/Ceis/*.swift`），改上游文件时每处带一行 `// ceis:` 注释，
   一处一改；不要改 Kotlin 包名、Gradle namespace、沙盒路径、Xcode 工程结构；品牌替换只走
   `scripts/rebrand.py`（改脚本，不改结果）。
 - **每个字符串进每个语言。** 用户可见的字符串先英文、再简体中文、再该文件已有的全部语言：
   `Localizable.xcstrings` 的全部 locale；`locales.ts` 的 `en` 和 `zh`。语气平实具体，不用感叹号、
   不用营销词；中文同样。不要照抄 Meta 的界面文案。
 - **iOS 16 目标。** 用 `.nmOnChange(of:)`，不用双参数 `onChange`（iOS 17+）；类型名全局唯一；
-  `Wevvy/` 下的 Swift 文件在 device build 里 **零 warning**（CI 把 warning 当失败）。
+  `Ceis/` 下的 Swift 文件在 device build 里 **零 warning**（CI 把 warning 当失败）。
 - **文档随代码。** 改了人能看到、能做的事就同时改 `docs/` 对应页，并在 `CHANGELOG.md`
   *Unreleased* 下加一条。
 - **提交** 用 Conventional Commits（`fix(desktop): …`、`fix(ios): …`）并带 DCO 签名
@@ -62,68 +62,68 @@ xcode-select --install 2>/dev/null || true          # 命令行工具；完整 X
 brew install node@22 pnpm uv cliclick
 export PATH="/opt/homebrew/opt/node@22/bin:$PATH"    # Intel Mac 是 /usr/local/opt/node@22/bin
 node -v                                              # v22.x（CI 用 Node 22）
-git clone https://github.com/nano-muse/nanoMuse.git && cd wevvy
-uv venv && uv pip install -e ".[dev,hands]" && export WEVVY_PY="$PWD/.venv/bin/wevvy"
+git clone https://github.com/nano-muse/nanoMuse.git && cd ceis
+uv venv && uv pip install -e ".[dev,hands]" && export CEIS_PY="$PWD/.venv/bin/ceis"
 ```
 
 桌面 app 从源码构建（任务 A 用）：
 
 ```bash
-cd harness/dsh-wevvy && pnpm install --frozen-lockfile && pnpm build && pnpm typecheck && pnpm test
+cd harness/dsh-ceis && pnpm install --frozen-lockfile && pnpm build && pnpm typecheck && pnpm test
 cd ../desktop && npm ci && node scripts/prepare-dsh.mjs && npm run typecheck && npm test
-bash mac/computer-use/build.sh                       # → mac/computer-use/build/wevvy Computer Use.app（ARCHS=arm64 更快）
+bash mac/computer-use/build.sh                       # → mac/computer-use/build/ceis Computer Use.app（ARCHS=arm64 更快）
 ```
 
 两种跑法：
 
-- **开发态** `WEVVY_DESKTOP_HOME=/tmp/nm-mac/home npm start`：进程是 Electron.app，助手 app
-  走 `mac/computer-use/build/` 下刚构建的那个（`WEVVY_COMPUTER_USE_APP=<路径>` 可指定）。
-  一定设 `WEVVY_DESKTOP_HOME`，否则会动维护者已安装 app 的数据目录 `~/.wevvy/desktop`。
+- **开发态** `CEIS_DESKTOP_HOME=/tmp/nm-mac/home npm start`：进程是 Electron.app，助手 app
+  走 `mac/computer-use/build/` 下刚构建的那个（`CEIS_COMPUTER_USE_APP=<路径>` 可指定）。
+  一定设 `CEIS_DESKTOP_HOME`，否则会动维护者已安装 app 的数据目录 `~/.ceis/desktop`。
 - **打包态**（所有权限项都用它）：
   ```bash
   npm run dist:dir && ../../scripts/desktop-app/package-mac.sh arm64     # Intel 用 x64
-  open dist/mac-arm64/wevvy.app                                        # 或 dist/mac/
+  open dist/mac-arm64/ceis.app                                        # 或 dist/mac/
   ```
   没有证书时是 ad-hoc 签名，Gatekeeper 会说「无法验证」，到系统设置 → 隐私与安全性里点
   *仍要打开*。已发布的 0.1.38 安装包在
-  `https://github.com/nano-muse/nanoMuse/releases/download/v0.1.38/wevvy-Desktop-0.1.38-mac-arm64.dmg`
+  `https://github.com/nano-muse/nanoMuse/releases/download/v0.1.38/ceis-Desktop-0.1.38-mac-arm64.dmg`
   （x64 同名 `-mac-x64.dmg`），**先用它复现维护者看到的现象，再用源码构建修**。
 
-数据目录 `~/.wevvy/desktop`（`WEVVY_DESKTOP_HOME` 可改）：`desktop.log` 是壳和 Host 的日志
-（菜单里有 *Open log folder*），`profiles/wevvy/cordis.patch.yml` 是账号写入的提供方配置，
-`wevvy/hands.json` 是手用的模型。从头开始：`mv ~/.wevvy/desktop ~/.wevvy/desktop.bak`。
+数据目录 `~/.ceis/desktop`（`CEIS_DESKTOP_HOME` 可改）：`desktop.log` 是壳和 Host 的日志
+（菜单里有 *Open log folder*），`profiles/ceis/cordis.patch.yml` 是账号写入的提供方配置，
+`ceis/hands.json` 是手用的模型。从头开始：`mv ~/.ceis/desktop ~/.ceis/desktop.bak`。
 
-权限相关的系统命令：`tccutil reset ScreenCapture io.github.wevvy.desktop.computer-use`、
-`tccutil reset Accessibility io.github.wevvy.desktop.computer-use`（0.1.37 及之前的 bundle id 是
-`io.github.wevvy.desktop`，一并 reset）；`codesign -dv --verbose=2 <app>`；`spctl -a -vv <app>`；
-`xattr -l <app>`；Console.app 里按 `syspolicyd`、`tccd`、`wevvy` 过滤。
+权限相关的系统命令：`tccutil reset ScreenCapture io.github.ceis.desktop.computer-use`、
+`tccutil reset Accessibility io.github.ceis.desktop.computer-use`（0.1.37 及之前的 bundle id 是
+`io.github.ceis.desktop`，一并 reset）；`codesign -dv --verbose=2 <app>`；`spctl -a -vv <app>`；
+`xattr -l <app>`；Console.app 里按 `syspolicyd`、`tccd`、`ceis` 过滤。
 
 ## 2. 任务 A — Mac 上的 Computer use（最高优先级）
 
 ### A.1 现状和维护者看到的现象
 
 维护者的原话只有一句：「mac 的 CUA 还是不行」。没有更多细节，所以 **第一步是在这台 Mac 上用
-已发布的 0.1.38 复现并说清楚到底哪一步坏了**：是权限面板里没有出现「wevvy Computer Use」
+已发布的 0.1.38 复现并说清楚到底哪一步坏了**：是权限面板里没有出现「ceis Computer Use」
 这一行、授权了但截图是黑的、截图对了但点击落不到位置、点击落对了但 app 没反应、还是 Settings →
 Computer use 页面本身就报错。把 `desktop.log` 里 `helper:`、`operator`、`hands`、`runtime:`
 开头的行、系统设置两个面板的截图、`codesign`/`spctl`/`xattr` 的输出一起记下来。
 
 ### A.2 0.1.38 的实现（代码在哪）
 
-手在电脑上的链路：dsh agent → 运行时的 MCP 工具（`wevvy mcp`，stdio；
-`wevvy/bridge/mcp_server.py`）→ `computer_screen` / `computer_act` / `computer_task`
-（`wevvy/computer/`：`hands.py` 选后端，`operator.py` 是桌面 app 操作器的 HTTP 客户端，
+手在电脑上的链路：dsh agent → 运行时的 MCP 工具（`ceis mcp`，stdio；
+`ceis/bridge/mcp_server.py`）→ `computer_screen` / `computer_act` / `computer_task`
+（`ceis/computer/`：`hands.py` 选后端，`operator.py` 是桌面 app 操作器的 HTTP 客户端，
 `coords.py` 把模型看到的图片像素换算回屏幕坐标——坐标以**图片像素**为单位，见 gui.md）→ Electron
-壳的操作器服务（`harness/desktop/src/operator.ts`，loopback HTTP，`WEVVY_OPERATOR_URL` /
+壳的操作器服务（`harness/desktop/src/operator.ts`，loopback HTTP，`CEIS_OPERATOR_URL` /
 `_TOKEN`；`GET /info`、`POST /screenshot`、`POST /execute`）。
 
-0.1.38 在 macOS 上把截图和输入挪进了一个独立的小 app——**wevvy Computer Use.app**
+0.1.38 在 macOS 上把截图和输入挪进了一个独立的小 app——**ceis Computer Use.app**
 （学 Codex 的做法：macOS 把权限记在 LaunchServices 启动的「责任进程」名下，壳的子进程算壳自己，
 所以运行时过去从不出现在权限面板里；通过 `open` 启动的 app bundle 对自己负责，面板里就有它自己的
 一行）。实现：
 
 - `harness/desktop/mac/computer-use/`：`build.sh`（纯 swiftc，无 Xcode 工程，universal，ad-hoc
-  签名），`Info.plist`（bundle id `io.github.wevvy.desktop.computer-use`，`LSUIElement`），
+  签名），`Info.plist`（bundle id `io.github.ceis.desktop.computer-use`，`LSUIElement`），
   `Sources/{main,HTTPServer,Service,Permissions,Screenshot,Input,Keys}.swift`：Network.framework 的
   loopback HTTP，Bearer token；`GET /status`（两项权限的状态、主显示器尺寸和缩放）、
   `POST /request`（触发系统授权提示）、`POST /screenshot`（`CGDisplayCreateImage`，PNG/JPEG，
@@ -131,7 +131,7 @@ Computer use 页面本身就报错。把 `desktop.log` 里 `helper:`、`operator
   `keyboardSetUnicodeString`）、`POST /quit`；参数 `--token-file --port-file --parent-pid`，
   父进程退出它也退出。**还没做**：`press`/`release`（按住不放）这两个动作返回 "unknown action"；
   macOS 15 上 `CGDisplayCreateImage` 已 deprecated（ScreenCaptureKit 没接）。
-- `harness/desktop/src/mac-helper.ts`：找 bundle（`WEVVY_COMPUTER_USE_APP` → 打包后的
+- `harness/desktop/src/mac-helper.ts`：找 bundle（`CEIS_COMPUTER_USE_APP` → 打包后的
   `Contents/Helpers/` → 开发态 `mac/computer-use/build/`），`open -n -g -a` 启动，token 文件 0600，
   `status()` 2 秒缓存，失败后 30 秒退避，`restart()`。
 - `harness/desktop/src/operator.ts`：`OperatorOptions.helper`，`runWithHelper()`——助手可用时截图和
@@ -143,8 +143,8 @@ Computer use 页面本身就报错。把 `desktop.log` 里 `helper:`、`operator
 - dsh 插件侧：`src/hands-check.ts`（Settings → Computer use 页面的数据）、`src/client/HandsCheck.tsx`、
   `permissions.ts`、`Capsule.tsx`（`helper` 标志决定文案）、`locales.ts` 的 `pmOnlyHelper`、
   `pmTryShotBlackHelper`、`pmBlackBodyHelper`、`pmBlackRelaunchHelper` 等 key。
-- 打包：`electron-builder.yml` `mac.extraFiles` 把 `build/wevvy Computer Use.app` 放到
-  `wevvy.app/Contents/Helpers/`；`scripts/desktop-app/package-mac.sh` 先签助手再签外层
+- 打包：`electron-builder.yml` `mac.extraFiles` 把 `build/ceis Computer Use.app` 放到
+  `ceis.app/Contents/Helpers/`；`scripts/desktop-app/package-mac.sh` 先签助手再签外层
   （没有证书时都是 ad-hoc）；`.github/workflows/desktop-app.yml` 的 macOS job 跑 `build.sh`
   （CI 上 0 warning 通过）。
 - 文档：`docs/desktop.md` → *macOS permissions*、*macOS signing*。
@@ -155,12 +155,12 @@ Computer use 页面本身就报错。把 `desktop.log` 里 `helper:`、`operator
 1. **Gatekeeper 挡住了嵌套的助手。** 从 dmg 装的 app 带 `com.apple.quarantine`；外层 app 维护者
    手动「仍要打开」过，但 `open -a` 启动的助手是另一个 bundle，ad-hoc 签名 + quarantine 很可能被
    `syspolicyd` 静默拒绝，于是 `mac-helper.ts` 拿不到 `/status`，`operator.ts` 回退到进程内路径——
-   表现就是「和以前一样不行」。验证：`xattr -l ".../Contents/Helpers/wevvy Computer Use.app"`、
+   表现就是「和以前一样不行」。验证：`xattr -l ".../Contents/Helpers/ceis Computer Use.app"`、
    `spctl -a -vv` 它、Console 里 `syspolicyd` 的拒绝记录、`desktop.log` 里 `helper:` 的报错。
    可能的修法：首启时对自己 bundle 内的助手 `xattr -d com.apple.quarantine`（bundle 在用户可写的
    `/Applications` 里时可行）；或者不走 `open` 而用 `posix_spawn` + 让 TCC 把责任算给助手的别的办法；
    或者两条路都做并记录各自的权限归属结果。拿到 Developer ID 证书之前这是现实约束，文档要如实写。
-2. **TCC 归属。** 面板里出现的到底是「wevvy Computer Use」、「wevvy」还是「Electron」？
+2. **TCC 归属。** 面板里出现的到底是「ceis Computer Use」、「ceis」还是「Electron」？
    授权后 app 重启、助手重启，授权是否还在？ad-hoc 签名每次构建 cdhash 变，TCC 会忘记——开发态
    每次重编都要重新授权，这是已知的，写进文档即可；打包态同一个包内必须稳定。
 3. **截图。** 授权前是黑帧还是报错（0.1.38 的 UI 文案按「黑帧 → 一句话指引」设计，见
@@ -178,7 +178,7 @@ Computer use 页面本身就报错。把 `desktop.log` 里 `helper:`、`operator
 
 在一台重置过 TCC 的 Mac 上，用打包态的 app：
 
-1. Settings → Computer use 把人引导到系统设置里**正确的那一行**（wevvy Computer Use）去开
+1. Settings → Computer use 把人引导到系统设置里**正确的那一行**（ceis Computer Use）去开
    屏幕录制和辅助功能，一次说清楚，不多弹、不乱弹；
 2. 授权（及必要的重启）后，页面里的测试截图是真实屏幕；
 3. 一个真实任务跑通，例如「打开计算器，算 12×34，告诉我结果」或「打开系统设置，把音量调低」：
@@ -188,7 +188,7 @@ Computer use 页面本身就报错。把 `desktop.log` 里 `helper:`、`operator
 6. `docs/desktop.md` 的 *macOS permissions* 改成**真实的**行为（哪里不符合预期就改哪里，不要把
    没验证的话留在文档里）；`CHANGELOG.md` *Unreleased* → `### Desktop` 加条目；
 7. `cd harness/desktop && npm run typecheck && npm test` 和
-   `cd harness/dsh-wevvy && pnpm typecheck && pnpm test` 通过；`bash mac/computer-use/build.sh`
+   `cd harness/dsh-ceis && pnpm typecheck && pnpm test` 通过；`bash mac/computer-use/build.sh`
    0 warning；push 到 `mac/*` 分支会自动触发 **desktop app** workflow 的 macOS job，看它绿。
 
 分支 `mac/cua-0139`，PR 标题形如 `fix(desktop): make the hands work on macOS through the permission helper`，
@@ -215,36 +215,36 @@ TestFlight 上 build 8 = 0.1.37，build 9 = 0.1.38（2026-10-05 上传）。先�
 
 ### B.3 嫌疑（按可能性）
 
-0.1.38 在 iOS 上新加/改的东西都在 `android/src/ios/Wevvy/`（上游文件里的改动都带
-`// wevvy:`）：
+0.1.38 在 iOS 上新加/改的东西都在 `android/src/ios/Ceis/`（上游文件里的改动都带
+`// ceis:`）：
 
 1. **首次拉取写入的数据让启动时的加载崩了。** 0.1.38 的同步契约 C9：登录后第一次拉
    `GET /v1/sync/changes?since=0&scope=…&tail=300`，把最新 300 条消息及其会话落到本地
-   （`WevvySync.swift`、`WevvyChatGlue.swift`，以及 `Agent/Chat/AIChatViewModel+Persistence.swift`
+   （`CeisSync.swift`、`CeisChatGlue.swift`，以及 `Agent/Chat/AIChatViewModel+Persistence.swift`
    ~880 行 `nmRemote` 处）。「走完引导之后每次进都崩」最像持久化数据把启动路径弄崩：解码时
    non-optional 字段缺失、空数组下标、远端会话引用了本地不存在的东西、主线程外改 `@Published`。
-   看崩溃栈里有没有 `WevvySync`、`LocalChats`、`AIChatViewModel`。
-2. **输入框的 fail-safe。** `WevvyComposerField.swift`（`TextField(axis: .vertical)`）、
-   `WevvyComposerWatch.swift`（`failSafe`、`expect(_:)`），`Views/Chat/AIChatView.swift`
+   看崩溃栈里有没有 `CeisSync`、`LocalChats`、`AIChatViewModel`。
+2. **输入框的 fail-safe。** `CeisComposerField.swift`（`TextField(axis: .vertical)`）、
+   `CeisComposerWatch.swift`（`failSafe`、`expect(_:)`），`Views/Chat/AIChatView.swift`
    ~576–589 行按 `failSafe` 在 `.safeAreaInset(edge: .bottom)` 和 `.overlay` 之间切换——
    视图更新中改状态、`@FocusState` 桥接都可能出问题。
-3. **在线状态/「某设备正在处理」。** `WevvyPresence.swift`（过期定时器）、`WevvyHub.swift`
+3. **在线状态/「某设备正在处理」。** `CeisPresence.swift`（过期定时器）、`CeisHub.swift`
    的 `working` 帧、`ChatModels.swift:86` 加的字段（如果模型是 Codable，看解码路径）。
-4. **启动画面。** `WevvyLaunch.storyboard` + `WevvyLaunch.xcassets`，
-   `INFOPLIST_KEY_UILaunchStoryboardName = WevvyLaunch`（由 `scripts/rebrand.py` 的规则写入
+4. **启动画面。** `CeisLaunch.storyboard` + `CeisLaunch.xcassets`，
+   `INFOPLIST_KEY_UILaunchStoryboardName = CeisLaunch`（由 `scripts/rebrand.py` 的规则写入
    pbxproj）。NIB 加载失败会在任何 UI 之前崩（崩溃原因里有 `Could not load NIB`），但第一次启动能
    看到引导页就基本排除它。
-5. **中继地址选择器**（`WevvyRelayPicker.swift`、`WevvyCloud.swift` 的 `normalizedRelay` /
+5. **中继地址选择器**（`CeisRelayPicker.swift`、`CeisCloud.swift` 的 `normalizedRelay` /
    `isPrivateHost` / UserDefaults 读取）。
 6. 上游 OpenMinis 自己的引导 → 主界面切换（0.1.37 已发布，可能性低，除非 0.1.37 也崩）。
 
 ### B.4 验收
 
-根因写清楚（栈、哪一行、为什么）；修复在 `mac/ios-crash-0139`，新文件放 `Wevvy/`，上游文件
-的改动带 `// wevvy:`；能加回归测试就加到 `MinisTests/`（0.1.38 加了
-`WevvyRound5Tests.swift`，照它的样子）；复现脚本在真机或模拟器上走三遍不崩；
+根因写清楚（栈、哪一行、为什么）；修复在 `mac/ios-crash-0139`，新文件放 `Ceis/`，上游文件
+的改动带 `// ceis:`；能加回归测试就加到 `MinisTests/`（0.1.38 加了
+`CeisRound5Tests.swift`，照它的样子）；复现脚本在真机或模拟器上走三遍不崩；
 `xcodebuild build -project Minis.xcodeproj -scheme Minis -configuration Debug -destination
-'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO` 零 warning（`Wevvy/` 下）；`CHANGELOG.md`
+'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO` 零 warning（`Ceis/` 下）；`CHANGELOG.md`
 *Unreleased* → `### iOS` 加条目；`.venv/bin/python scripts/rebrand.py` 跑完输出 `clean`。
 CI 的 **iOS · build check** 只能手动触发：`gh workflow run "iOS · build check" --repo nano-muse/nanoMuse --ref mac/ios-crash-0139`。
 TestFlight 的上传由 L 在发布时做，你不用管。
@@ -257,7 +257,7 @@ Android、桌面、运行时由 L 做，**iOS 由你做**。规则：
 
 1. **每个本地会话记住它属于哪个账号。** 账号用 `GET /v1/me` 返回的 `account.id`（不透明 id，不是
    手机号/邮箱）。会话第一次被推到或从某账号拉下来时，把该 `account.id` 写进同步映射
-   （iOS 在 `WevvySync.swift` 的映射存储里）。登录前创建、从未同步过的会话没有归属。
+   （iOS 在 `CeisSync.swift` 的映射存储里）。登录前创建、从未同步过的会话没有归属。
 2. **只显示当前账号的会话。** 已登录账号 B 时，会话列表只显示归属为 B 或无归属的会话；账号 A 的
    会话**隐藏但不删除**（切回 A 时再出现）。未登录时本地有什么显示什么（设备是本人的；此时不会
    加载任何新东西）。
@@ -295,13 +295,13 @@ Android、桌面、运行时由 L 做，**iOS 由你做**。规则：
 
 | 事项 | 在哪 |
 |---|---|
-| 助手 app 源码 / 构建 | `harness/desktop/mac/computer-use/{build.sh,Info.plist,Sources/}`；bundle id `io.github.wevvy.desktop.computer-use` |
+| 助手 app 源码 / 构建 | `harness/desktop/mac/computer-use/{build.sh,Info.plist,Sources/}`；bundle id `io.github.ceis.desktop.computer-use` |
 | 壳里的 macOS 代码 | `harness/desktop/src/{mac-helper,mac-permissions,operator,main}.ts` |
-| Settings → Computer use 页面 | `harness/dsh-wevvy/src/hands-check.ts`、`src/client/{HandsCheck,Sections,Capsule}.tsx`、`src/client/permissions.ts`、`locales.ts`（`pm*`、`cu*` key） |
-| 运行时这一侧 | `wevvy/computer/{hands,operator,coords,link}.py`、`wevvy/bridge/mcp_server.py` |
-| 桌面 app 数据目录 / 日志 | `~/.wevvy/desktop/desktop.log`（`WEVVY_DESKTOP_HOME` 可改） |
+| Settings → Computer use 页面 | `harness/dsh-ceis/src/hands-check.ts`、`src/client/{HandsCheck,Sections,Capsule}.tsx`、`src/client/permissions.ts`、`locales.ts`（`pm*`、`cu*` key） |
+| 运行时这一侧 | `ceis/computer/{hands,operator,coords,link}.py`、`ceis/bridge/mcp_server.py` |
+| 桌面 app 数据目录 / 日志 | `~/.ceis/desktop/desktop.log`（`CEIS_DESKTOP_HOME` 可改） |
 | 打包 | `cd harness/desktop && npm run dist:dir && ../../scripts/desktop-app/package-mac.sh arm64` |
-| iOS 工程 | `android/src/ios/Minis.xcodeproj`，scheme `Minis`，我们的代码在 `Wevvy/`，测试在 `MinisTests/`，字符串 `Localizable.xcstrings` |
-| 上游改动标记 | `// wevvy:`；品牌替换 `python scripts/rebrand.py`（必须输出 `clean`） |
+| iOS 工程 | `android/src/ios/Minis.xcodeproj`，scheme `Minis`，我们的代码在 `Ceis/`，测试在 `MinisTests/`，字符串 `Localizable.xcstrings` |
+| 上游改动标记 | `// ceis:`；品牌替换 `python scripts/rebrand.py`（必须输出 `clean`） |
 | 文档 | `docs/desktop.md`（macOS 两节）、`docs/gui.md`、`docs/ios.md`、`docs/every-device.md`、`docs/hub.md`、`docs/cloud.md` |
 | 已发布的安装包 | `https://github.com/nano-muse/nanoMuse/releases/tag/v0.1.38` |

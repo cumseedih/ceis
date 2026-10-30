@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from wevvy.goals import GoalStore
-from wevvy.memory import MemoryStore
-from wevvy.memory.store import tokenize
+from ceis.goals import GoalStore
+from ceis.memory import MemoryStore
+from ceis.memory.store import tokenize
 
 
 def test_tokenize_mixed():
@@ -166,8 +166,8 @@ def test_goals_lifecycle(tmp_path: Path):
 def test_goals_tool_rates_creating_a_goal_as_a_change(tmp_path: Path):
     """A goal is work the model takes up again at every check-in, so creating one is
     ``moderate`` (strict mode asks); reading and bookkeeping stay ``safe``."""
-    from wevvy.schema import RiskLevel
-    from wevvy.tools import Goals
+    from ceis.schema import RiskLevel
+    from ceis.tools import Goals
 
     tool = Goals(store=GoalStore(tmp_path / "g.db"))
     assert tool.assess({"action": "create", "title": "Sell my old car"}).risk == RiskLevel.MODERATE
@@ -183,7 +183,7 @@ def test_goals_tool_rates_creating_a_goal_as_a_change(tmp_path: Path):
 def test_goal_categories_due_dates_and_check_ins(tmp_path: Path):
     from datetime import UTC, datetime, timedelta
 
-    from wevvy.goals import next_check_in, parse_check_in
+    from ceis.goals import next_check_in, parse_check_in
 
     store = GoalStore(tmp_path / "g.db")
     g = store.create(
@@ -284,7 +284,7 @@ def test_goal_proposals_are_the_users_call(tmp_path: Path):
 def test_goal_categories_due_and_check_ins(tmp_path: Path):
     from datetime import UTC, datetime, timedelta
 
-    from wevvy.goals import next_check_in, parse_check_in
+    from ceis.goals import next_check_in, parse_check_in
 
     store = GoalStore(tmp_path / "g.db")
     g = store.create(
@@ -405,7 +405,7 @@ def test_goal_categories_due_dates_and_proposals(tmp_path: Path):
 def test_goal_check_ins(tmp_path: Path):
     from datetime import UTC, datetime, timedelta
 
-    from wevvy.goals import next_check_in, parse_check_in
+    from ceis.goals import next_check_in, parse_check_in
 
     assert parse_check_in("daily 08:00") == ("daily", None, 8, 0)
     assert parse_check_in("weekly mon 09:30") == ("weekly", 0, 9, 30)

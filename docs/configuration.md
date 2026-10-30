@@ -1,18 +1,18 @@
 # Configuration
 
-wevvy reads one TOML file. `wevvy config init` writes a commented copy of [`config/config.example.toml`](../config/config.example.toml) to `config/config.toml`; `wevvy config show` prints the effective settings with secrets masked.
+ceis reads one TOML file. `ceis config init` writes a commented copy of [`config/config.example.toml`](../config/config.example.toml) to `config/config.toml`; `ceis config show` prints the effective settings with secrets masked.
 
 Search order:
 
-1. `--config PATH` / `WEVVY_CONFIG`
+1. `--config PATH` / `CEIS_CONFIG`
 2. `./config/config.toml`
-3. `~/.wevvy/config.toml` (an old `~/.wevvy/config.toml` is moved up with the data directory)
+3. `~/.ceis/config.toml` (an old `~/.ceis/config.toml` is moved up with the data directory)
 
 Any string value may contain `${VAR}` or `${VAR:-default}`; it is replaced with the environment variable when the file is loaded, so API keys never need to be written down. `api_key`, `address` and `password` may also be `{{vault:NAME}}`: the value is read from the encrypted vault when the client is built, never shown to the model.
 
 Three layers, later ones win: the file, then environment overrides, then whatever was changed in the app's *Connections* screen (`<data_dir>/app-settings.json`: model, email servers, browser switch, MCP servers added from the phone). That last file only ever refers to secrets as `{{vault:NAME}}`.
 
-A key the runtime has no setting for (a misspelt `modle`, a key from another version) is ignored and the default applies; the loader says so in the log with the key's path (`llm.modle`), and `wevvy doctor` lists such keys as a problem. Free-form tables (`[llm.extra_headers]`, an MCP server's `env`) and the `[channels.<name>]` tables of [channels.md](channels.md) take any key.
+A key the runtime has no setting for (a misspelt `modle`, a key from another version) is ignored and the default applies; the loader says so in the log with the key's path (`llm.modle`), and `ceis doctor` lists such keys as a problem. Free-form tables (`[llm.extra_headers]`, an MCP server's `env`) and the `[channels.<name>]` tables of [channels.md](channels.md) take any key.
 
 ## Environment overrides
 
@@ -20,24 +20,24 @@ These win over the file. They cover the settings people change most often and wh
 
 | Variable | Setting |
 |---|---|
-| `WEVVY_LLM_PROVIDER`, `WEVVY_LLM_MODEL`, `WEVVY_LLM_BASE_URL`, `WEVVY_LLM_API_KEY`, `WEVVY_LLM_TOOL_MODE`, `WEVVY_LLM_VISION`, `WEVVY_LLM_IMAGE_MODEL`, `WEVVY_LLM_VIDEO_MODEL`, `WEVVY_LLM_VIDEO_BASE_URL` | `[llm]` (`video_base_url`: the asynchronous video API on another host than the chat model's; a relaying host such as the showcase gateway names itself here) |
+| `CEIS_LLM_PROVIDER`, `CEIS_LLM_MODEL`, `CEIS_LLM_BASE_URL`, `CEIS_LLM_API_KEY`, `CEIS_LLM_TOOL_MODE`, `CEIS_LLM_VISION`, `CEIS_LLM_IMAGE_MODEL`, `CEIS_LLM_VIDEO_MODEL`, `CEIS_LLM_VIDEO_BASE_URL` | `[llm]` (`video_base_url`: the asynchronous video API on another host than the chat model's; a relaying host such as the showcase gateway names itself here) |
 | `DEEPSEEK_API_KEY`, `OPENAI_API_KEY` | used as `llm.api_key` when it is empty: DeepSeek's for a `*.deepseek.com` `base_url`, OpenAI's for every other host (OpenAI itself, OpenRouter, a gateway, vLLM) |
-| `WEVVY_DATA_DIR` (`NANOMUSE_DATA_DIR` still works) | `data_dir` (default `~/.wevvy`; the old `~/.nanomuse` is moved up once) |
-| `WEVVY_WORKSPACE` | `agent.workspace` (default: `./workspace` when the current directory has one, else `<data_dir>/workspace`) |
-| `WEVVY_SENTINEL_MODE` | `sentinel.mode` |
-| `WEVVY_SEARCH_PROVIDER`, `WEVVY_SEARCH_API_KEY`, `WEVVY_SEARCH_BASE_URL` | `[connectors.search]` |
-| `WEVVY_SERVER_HOST`, `WEVVY_SERVER_PORT`, `WEVVY_SERVER_TOKEN` | `[server]` |
-| `WEVVY_BROWSER_ENABLED=1` | `browser.enabled = true` (only ever turns it on; the browser Docker image sets it; the phone sets it through `WEVVY_DEVICE`) |
-| `WEVVY_BROWSER_BACKEND` | `browser.backend`: `auto`, `playwright` or `device` |
-| `WEVVY_GUI_ENABLED=1`, `WEVVY_GUI_PROVIDER`, `WEVVY_GUI_MODEL`, `WEVVY_GUI_BASE_URL`, `WEVVY_GUI_API_KEY` | `[gui]`: operating the phone, and the model that does it |
-| `WEVVY_IMAGE_PROVIDER`, `WEVVY_IMAGE_MODEL`, `WEVVY_IMAGE_BASE_URL`, `WEVVY_IMAGE_API_KEY`; the same with `VIDEO` | the [`[image]` and `[video]` slots](#image-and-video): where pictures and clips come from |
-| `WEVVY_VAULT_KEY` | Fernet key for the vault (default: `<data_dir>/vault.key`) |
-| `WEVVY_CLOUD_BASE_URL`, `WEVVY_CLOUD_REQUIRED`, `WEVVY_CLOUD_SYNC` | `[cloud]`: the relay a hosted runtime signs in against, whether a wevvy Cloud account is required, and the default for *Sync conversations between my devices* (`sync`, on unless set to `0`; the person's switch in *Settings → Data controls*, once touched, is what counts; [every-device.md](every-device.md#the-same-conversations-everywhere)) ([cloud.md](cloud.md); the relay's own variables are in [cloud/README.md](../cloud/README.md)) |
-| `WEVVY_HUB_NAME` | `hub.name`, what this device is called on the other devices |
-| `WEVVY_CLOUD_KEY`, `WEVVY_CLOUD_HINT`, `WEVVY_CLOUD_CHANNEL`, `WEVVY_ONBOARDED` | a hosted runtime (wevvy Web) starts signed in: the gateway that made the container hands over the account key (it goes into the vault like one typed in), the masked identifier and channel for the account page, and whether the first run is already done; nothing happens when the vault already holds a key |
-| `WEVVY_IN_CONTAINER=1` | says the runtime is inside a container (the image sets it; `/.dockerenv` is read too), so `sandbox.mode = auto` treats the container as the box instead of reporting bubblewrap missing |
-| `WEVVY_CODING_HOME` | where the coding CLIs' own homes (`~/.codex`, `~/.claude`, …) are looked for, default the user's home ([coding-agents.md](coding-agents.md)) |
-| `WEVVY_LOG_LEVEL` | `log_level` |
+| `CEIS_DATA_DIR` (`NANOMUSE_DATA_DIR` still works) | `data_dir` (default `~/.ceis`; the old `~/.nanomuse` is moved up once) |
+| `CEIS_WORKSPACE` | `agent.workspace` (default: `./workspace` when the current directory has one, else `<data_dir>/workspace`) |
+| `CEIS_SENTINEL_MODE` | `sentinel.mode` |
+| `CEIS_SEARCH_PROVIDER`, `CEIS_SEARCH_API_KEY`, `CEIS_SEARCH_BASE_URL` | `[connectors.search]` |
+| `CEIS_SERVER_HOST`, `CEIS_SERVER_PORT`, `CEIS_SERVER_TOKEN` | `[server]` |
+| `CEIS_BROWSER_ENABLED=1` | `browser.enabled = true` (only ever turns it on; the browser Docker image sets it; the phone sets it through `CEIS_DEVICE`) |
+| `CEIS_BROWSER_BACKEND` | `browser.backend`: `auto`, `playwright` or `device` |
+| `CEIS_GUI_ENABLED=1`, `CEIS_GUI_PROVIDER`, `CEIS_GUI_MODEL`, `CEIS_GUI_BASE_URL`, `CEIS_GUI_API_KEY` | `[gui]`: operating the phone, and the model that does it |
+| `CEIS_IMAGE_PROVIDER`, `CEIS_IMAGE_MODEL`, `CEIS_IMAGE_BASE_URL`, `CEIS_IMAGE_API_KEY`; the same with `VIDEO` | the [`[image]` and `[video]` slots](#image-and-video): where pictures and clips come from |
+| `CEIS_VAULT_KEY` | Fernet key for the vault (default: `<data_dir>/vault.key`) |
+| `CEIS_CLOUD_BASE_URL`, `CEIS_CLOUD_REQUIRED`, `CEIS_CLOUD_SYNC` | `[cloud]`: the relay a hosted runtime signs in against, whether a ceis Cloud account is required, and the default for *Sync conversations between my devices* (`sync`, on unless set to `0`; the person's switch in *Settings → Data controls*, once touched, is what counts; [every-device.md](every-device.md#the-same-conversations-everywhere)) ([cloud.md](cloud.md); the relay's own variables are in [cloud/README.md](../cloud/README.md)) |
+| `CEIS_HUB_NAME` | `hub.name`, what this device is called on the other devices |
+| `CEIS_CLOUD_KEY`, `CEIS_CLOUD_HINT`, `CEIS_CLOUD_CHANNEL`, `CEIS_ONBOARDED` | a hosted runtime (ceis Web) starts signed in: the gateway that made the container hands over the account key (it goes into the vault like one typed in), the masked identifier and channel for the account page, and whether the first run is already done; nothing happens when the vault already holds a key |
+| `CEIS_IN_CONTAINER=1` | says the runtime is inside a container (the image sets it; `/.dockerenv` is read too), so `sandbox.mode = auto` treats the container as the box instead of reporting bubblewrap missing |
+| `CEIS_CODING_HOME` | where the coding CLIs' own homes (`~/.codex`, `~/.claude`, …) are looked for, default the user's home ([coding-agents.md](coding-agents.md)) |
+| `CEIS_LOG_LEVEL` | `log_level` |
 
 ## `[llm]`
 
@@ -56,7 +56,7 @@ stream        = true
 tool_mode     = "auto"             # "auto" | "native" | "prompt" — see below
 vision        = "auto"             # pictures attached in chat go to the model: "auto" | "on" | "off"
 pass_reasoning = false             # send reasoning_content back with assistant turns (some DeepSeek endpoints)
-extra_headers = {}                 # e.g. { "X-End-User-Id" = "wevvy" }
+extra_headers = {}                 # e.g. { "X-End-User-Id" = "ceis" }
 extra_body    = {}                 # e.g. { "thinking" = { "type" = "enabled" } }
 proxy         = ""                 # an HTTP(S) or SOCKS proxy for this slot only, e.g. "http://127.0.0.1:7890"
 image_model   = ""                 # the older way to name the avatar studio's picture model on this host; see [image] below
@@ -64,7 +64,7 @@ video_model   = ""                 # the same for clips
 video_base_url = ""                # the asynchronous video API when it is not on this host (a relaying gateway)
 ```
 
-`proxy` sends this slot's requests (and, for a `chatgpt` slot, the sign-in's token refresh) through that proxy and ignores the environment's `HTTPS_PROXY` for them; empty, the environment decides. It never applies to wevvy Cloud or the hub. (The phones have the same switch under *Settings → Network*; [own-key.md](own-key.md#when-the-provider-cannot-be-reached).)
+`proxy` sends this slot's requests (and, for a `chatgpt` slot, the sign-in's token refresh) through that proxy and ignores the environment's `HTTPS_PROXY` for them; empty, the environment decides. It never applies to ceis Cloud or the hub. (The phones have the same switch under *Settings → Network*; [own-key.md](own-key.md#when-the-provider-cannot-be-reached).)
 
 Provider recipes:
 
@@ -82,27 +82,27 @@ Provider recipes:
 | vLLM / LM Studio | your served name | `http://localhost:8000/v1` | set `tool_mode = "prompt"` if the server ignores `tools` |
 | Company gateway | as required | as required | use `extra_headers` / `extra_body`; pick the provider by the API shape the gateway speaks |
 
-The same presets are offered in the web console (*Connections → Chat model*, and on first run), each with a link to where its key comes from; the exact hostnames live in `PROVIDERS` in `wevvy/server/connections.py`. A `base_url` saved from the app that has no path gains `/v1` (`http://host:8000` → `http://host:8000/v1`); the presets' own hosts are kept as they are. Ollama and custom endpoints may have no key. Custom endpoints added from the web console are a list (`endpoints` in `app-settings.json`, each `{id, label, base_url, api_key, models}` with the key in the vault as `ENDPOINT_<ID>_API_KEY`); a slot set on one of them carries its address and that vault reference, so this file never needs to know about the list ([web.md](web.md#where-it-shows)). A `[llm]` chat model set here on an unlisted host stays as it is; only one set from the app is moved into the list.
+The same presets are offered in the web console (*Connections → Chat model*, and on first run), each with a link to where its key comes from; the exact hostnames live in `PROVIDERS` in `ceis/server/connections.py`. A `base_url` saved from the app that has no path gains `/v1` (`http://host:8000` → `http://host:8000/v1`); the presets' own hosts are kept as they are. Ollama and custom endpoints may have no key. Custom endpoints added from the web console are a list (`endpoints` in `app-settings.json`, each `{id, label, base_url, api_key, models}` with the key in the vault as `ENDPOINT_<ID>_API_KEY`); a slot set on one of them carries its address and that vault reference, so this file never needs to know about the list ([web.md](web.md#where-it-shows)). A `[llm]` chat model set here on an unlisted host stays as it is; only one set from the app is moved into the list.
 
-`provider` may also be an id from the provider catalogue, [`wevvy/llm/providers.json`](../wevvy/llm/providers.json) (`bailian`, `deepseek`, `moonshot`, `zhipu`, `openrouter`, `openai`, `gemini`, …), in which case `base_url` and, when empty, `model` fill in from the catalogue and only `api_key` is yours. The catalogue also says what each provider's key covers (chat, the hands, pictures, clips); `GET /api/providers` on the server reports which slots use which provider and what that leaves uncovered, and the app shows one sentence for a feature nothing covers ([own-key.md](own-key.md)).
+`provider` may also be an id from the provider catalogue, [`ceis/llm/providers.json`](../ceis/llm/providers.json) (`bailian`, `deepseek`, `moonshot`, `zhipu`, `openrouter`, `openai`, `gemini`, …), in which case `base_url` and, when empty, `model` fill in from the catalogue and only `api_key` is yours. The catalogue also says what each provider's key covers (chat, the hands, pictures, clips); `GET /api/providers` on the server reports which slots use which provider and what that leaves uncovered, and the app shows one sentence for a feature nothing covers ([own-key.md](own-key.md)).
 
 ### A ChatGPT plan instead of a key
 
 ```toml
 [llm]
-provider = "chatgpt"     # the sign-in from `wevvy chatgpt login`; no base_url, no api_key
+provider = "chatgpt"     # the sign-in from `ceis chatgpt login`; no base_url, no api_key
 model    = ""            # empty → gpt-5.6-sol (also gpt-6.1-sol, gpt-6-sol, gpt-6-luna, gpt-6-astra, gpt-5.4, gpt-5.4-mini)
 ```
 
-A person with a ChatGPT plan (Plus, Pro, Team) can let wevvy use it for chat and for the hands, the way OpenAI's own Codex CLI does: `wevvy chatgpt login` opens OpenAI's sign-in page in the browser (PKCE, the same client id, scopes and redirect as Codex), waits for the callback on port 1455 of the machine the runtime runs on, and stores the tokens in `<data_dir>/chatgpt.json` (mode 0600), refreshed before they expire. `wevvy chatgpt status` says who is signed in and until when (never the tokens); `wevvy chatgpt logout` deletes the store. The same three steps are on the web console's *Connections* screen (*Or sign in with a ChatGPT plan*), which calls `POST /api/chatgpt/login`, `GET /api/chatgpt/status` and `POST /api/chatgpt/logout` on the runtime ([web.md](web.md)). After a sign-in nothing switches by itself: set `provider = "chatgpt"` here, pick *Use it for the chat* on the web, or `PUT /api/connections/llm {"provider": "chatgpt"}`. `[gui] provider = "chatgpt"` works the same way for the hands.
+A person with a ChatGPT plan (Plus, Pro, Team) can let ceis use it for chat and for the hands, the way OpenAI's own Codex CLI does: `ceis chatgpt login` opens OpenAI's sign-in page in the browser (PKCE, the same client id, scopes and redirect as Codex), waits for the callback on port 1455 of the machine the runtime runs on, and stores the tokens in `<data_dir>/chatgpt.json` (mode 0600), refreshed before they expire. `ceis chatgpt status` says who is signed in and until when (never the tokens); `ceis chatgpt logout` deletes the store. The same three steps are on the web console's *Connections* screen (*Or sign in with a ChatGPT plan*), which calls `POST /api/chatgpt/login`, `GET /api/chatgpt/status` and `POST /api/chatgpt/logout` on the runtime ([web.md](web.md)). After a sign-in nothing switches by itself: set `provider = "chatgpt"` here, pick *Use it for the chat* on the web, or `PUT /api/connections/llm {"provider": "chatgpt"}`. `[gui] provider = "chatgpt"` works the same way for the hands.
 
 What it covers: chat and vision (the hands read screenshots). The Codex backend has no image or video endpoints, so pictures and clips still want a key: an `[image]` or `[video]` slot below, or a chat provider whose host draws. `base_url` and `api_key` in a `chatgpt` slot are ignored, with a warning in the log.
 
 **The honest line**, printed on every login: *OpenAI's terms cover using a ChatGPT plan inside OpenAI's own Codex; other apps have had this access cut off before (OpenCode, January 2026). If it stops working, an API key does.*
 
-**The callback has to reach the runtime.** OpenAI sends the browser back to `http://localhost:1455/auth/callback`, so the browser must be on the machine the runtime runs on (or forward that port to it). When it is not (a runtime on a server, the console open on a laptop), the sign-in page still works; the browser then lands on an address that does not answer. Copy that whole address (`http://localhost:1455/auth/callback?code=…&state=…`) out of the address bar and give it to the runtime: the CLI asks for it when the port is busy or nothing arrives in time; with `--json` it reads one line from stdin; the web console's card has a box for it; the server takes `POST /api/chatgpt/callback {"url": "<the address>"}` while a login started from `/api/chatgpt/login` is waiting. A `state` that is not the pending login's is refused (400 `state_mismatch`) and nothing is exchanged. `wevvy chatgpt proxy` serves the sign-in as a loopback OpenAI-compatible endpoint (`GET /v1/models`, `POST /v1/chat/completions`, `GET /v1/usage`, a local bearer token) for other programs on the same machine; `--proxy` (or `[llm] proxy`) sends its upstream calls through a proxy.
+**The callback has to reach the runtime.** OpenAI sends the browser back to `http://localhost:1455/auth/callback`, so the browser must be on the machine the runtime runs on (or forward that port to it). When it is not (a runtime on a server, the console open on a laptop), the sign-in page still works; the browser then lands on an address that does not answer. Copy that whole address (`http://localhost:1455/auth/callback?code=…&state=…`) out of the address bar and give it to the runtime: the CLI asks for it when the port is busy or nothing arrives in time; with `--json` it reads one line from stdin; the web console's card has a box for it; the server takes `POST /api/chatgpt/callback {"url": "<the address>"}` while a login started from `/api/chatgpt/login` is waiting. A `state` that is not the pending login's is refused (400 `state_mismatch`) and nothing is exchanged. `ceis chatgpt proxy` serves the sign-in as a loopback OpenAI-compatible endpoint (`GET /v1/models`, `POST /v1/chat/completions`, `GET /v1/usage`, a local bearer token) for other programs on the same machine; `--proxy` (or `[llm] proxy`) sends its upstream calls through a proxy.
 
-**What is left of the plan.** OpenAI counts a plan's use in two windows (a few hours and a week) and says so in the response headers of every Codex call (`x-codex-primary-used-percent`, `…-window-minutes`, `…-reset-after-seconds`, the same for `secondary`) and on `GET https://chatgpt.com/backend-api/wham/usage`, the endpoint Codex CLI's `/status` reads. `wevvy chatgpt usage` prints both windows (`--json` for the raw `{label, plan, limits}`), the runtime serves them at `GET /api/chatgpt/usage` for the console, and the loopback proxy at `GET /v1/usage`; the runtime also keeps the headers of the last call (`CodexClient.limits`). Nothing is cached longer than a minute.
+**What is left of the plan.** OpenAI counts a plan's use in two windows (a few hours and a week) and says so in the response headers of every Codex call (`x-codex-primary-used-percent`, `…-window-minutes`, `…-reset-after-seconds`, the same for `secondary`) and on `GET https://chatgpt.com/backend-api/wham/usage`, the endpoint Codex CLI's `/status` reads. `ceis chatgpt usage` prints both windows (`--json` for the raw `{label, plan, limits}`), the runtime serves them at `GET /api/chatgpt/usage` for the console, and the loopback proxy at `GET /v1/usage`; the runtime also keeps the headers of the last call (`CodexClient.limits`). Nothing is cached longer than a minute.
 
 **When it fails.** A Codex call that cannot get through is one of a few sentences, never the socket's text: *chatgpt.com cannot be reached from this network* (DNS, connect, TLS, a timeout, or an HTML page where JSON was due: an interception page), *OpenAI does not serve this region* (HTTP 403 `unsupported_country_region_territory`), *The ChatGPT sign-in is no longer valid. Sign in again* (401), *The ChatGPT plan has nothing left for now* (a 429 that names a usage limit, with OpenAI's own words and `Retry-After` after it) and *Too many requests at once* (any other 429). The loopback proxy returns them with a machine code in `error.code` (`unreachable`, `region_blocked`, `not_signed_in`, `quota`, `rate_limited`, `upstream`) so a client can act on them; the phones show the same sentences as a card ([own-key.md](own-key.md#when-the-provider-cannot-be-reached)).
 
@@ -110,7 +110,7 @@ What it covers: chat and vision (the hands read screenshots). The Codex backend 
 
 | `tool_mode` | What happens |
 |---|---|
-| `auto` (default) | The API's function calling. If the endpoint *rejects* the `tools` field (Ollama for a model without a tool template ("does not support tools"), vLLM started without a tool parser), wevvy logs one warning and describes the tools in the prompt for the rest of the run. |
+| `auto` (default) | The API's function calling. If the endpoint *rejects* the `tools` field (Ollama for a model without a tool template ("does not support tools"), vLLM started without a tool parser), ceis logs one warning and describes the tools in the prompt for the rest of the run. |
 | `native` | Always the function-calling API; a rejection is an error. |
 | `prompt` | Tools are described in the system prompt and calls are parsed from `<tool_call>` blocks. The only mode that works with endpoints that silently *ignore* `tools` (no error, the model just never calls anything); some "agent app" gateways do this. |
 
@@ -129,7 +129,7 @@ Ollama serves an OpenAI-compatible API at `http://localhost:11434/v1`; models wi
 | `gemma3:4b` | prompt, via the `auto` fallback | 5/5 | Ollama rejects `tools` for it; emits ```` ```tool_call ```` fences, which the prompt parser accepts |
 | DeepSeek V4.1 Flash (hosted) | native | 5/5 | 1–4 s per task |
 
-Small models bend the protocol in predictable ways, and wevvy meets them halfway rather than failing the task: a reply that is a bare or fenced JSON object naming one of the tools (with an arguments object) counts as a tool call in every mode; JSON strings may contain real newlines; `files.write` turns a one-line text with two or more spelled-out `\n` into lines (code, which has real newlines, is never touched). A quoted JSON object with other keys stays text.
+Small models bend the protocol in predictable ways, and ceis meets them halfway rather than failing the task: a reply that is a bare or fenced JSON object naming one of the tools (with an arguments object) counts as a tool call in every mode; JSON strings may contain real newlines; `files.write` turns a one-line text with two or more spelled-out `\n` into lines (code, which has real newlines, is never touched). A quoted JSON object with other keys stays text.
 
 Set `max_tokens` to what the model can produce in one turn (4096 is fine for these) and keep `agent.max_context_messages` modest: a local 8B model with an 8k context window fills up fast once tool results start coming back.
 
@@ -137,7 +137,7 @@ Models that emit `<think>…</think>` inside the content are handled: the reason
 
 ## `[image]` and `[video]`
 
-Where the avatar studio's pictures and the avatar's clips come from when it is not the chat model's host. Both slots empty (the default) follows one order (the Models contract, 0.1.41): the chat provider's own picture model when it has one (the account's relay, Alibaba Cloud Bailian, and any catalogue provider with `image`: its `defaults.image`; `[llm] image_model` / `video_model` still name another), else the account's relay when you are signed in to wevvy Cloud, even while the chat model is elsewhere, else nothing. Clips the same way: the picture host when it speaks the video API, else the relay under the account key when signed in. Set a slot to draw somewhere else, or to draw at all when the chat model is DeepSeek, a ChatGPT plan or a local model and you are not signed in:
+Where the avatar studio's pictures and the avatar's clips come from when it is not the chat model's host. Both slots empty (the default) follows one order (the Models contract, 0.1.41): the chat provider's own picture model when it has one (the account's relay, Alibaba Cloud Bailian, and any catalogue provider with `image`: its `defaults.image`; `[llm] image_model` / `video_model` still name another), else the account's relay when you are signed in to ceis Cloud, even while the chat model is elsewhere, else nothing. Clips the same way: the picture host when it speaks the video API, else the relay under the account key when signed in. Set a slot to draw somewhere else, or to draw at all when the chat model is DeepSeek, a ChatGPT plan or a local model and you are not signed in:
 
 ```toml
 [image]
@@ -161,7 +161,7 @@ The app layer sets the same slots: `PUT /api/connections/image` and `PUT /api/co
 
 ```toml
 [agent]
-name                 = "wevvy"      # what the agent calls itself (the app's profile overrides this)
+name                 = "ceis"      # what the agent calls itself (the app's profile overrides this)
 max_steps            = 30              # tool calls per turn before it must wrap up
 # workspace          = "./workspace"   # the only directory the files tool can touch; default ./workspace if present here, else <data_dir>/workspace
 extra_roots          = []              # directories outside the workspace the files tool may read and write, e.g. ["~/Documents/notes"]; writable inside the sandbox too
@@ -193,7 +193,7 @@ The account-wide sync switch is in the app (*Data controls → Sync*); this is t
 base_url = "https://cloud.wevvy.in"   # a relay you run yourself goes here
 required = true
 sync = true
-models = true        # the account's models as a source; the console's "Use wevvy Cloud models"
+models = true        # the account's models as a source; the console's "Use ceis Cloud models"
 
 [hub]
 enabled = true
@@ -201,7 +201,7 @@ remote_control = true
 name = ""            # empty: the host name
 ```
 
-`[cloud]` is the relay this runtime signs in to ([cloud.md](cloud.md)): `base_url` is its public address (your own relay's, after [self-hosting.md](self-hosting.md)); `required = false` lets the first run finish without an account, for a runtime that uses no relay at all; `sync` is the default of the account-wide *Data controls → Sync* switch, and the person's choice, once made, is what counts; `models = false` (the console's *Use wevvy Cloud models* switch, kept in app-settings) takes the account's models out of the automatic order of the hands, pictures and clips and out of the providers' listing while the sign-in stays, so nothing spends the allowance but an explicit *Use wevvy Cloud this time*. The account key itself is `WEVVY_CLOUD_KEY` in the vault.
+`[cloud]` is the relay this runtime signs in to ([cloud.md](cloud.md)): `base_url` is its public address (your own relay's, after [self-hosting.md](self-hosting.md)); `required = false` lets the first run finish without an account, for a runtime that uses no relay at all; `sync` is the default of the account-wide *Data controls → Sync* switch, and the person's choice, once made, is what counts; `models = false` (the console's *Use ceis Cloud models* switch, kept in app-settings) takes the account's models out of the automatic order of the hands, pictures and clips and out of the providers' listing while the sign-in stays, so nothing spends the allowance but an explicit *Use ceis Cloud this time*. The account key itself is `CEIS_CLOUD_KEY` in the vault.
 
 `[hub]` is this computer as one of the account's devices ([hub.md](hub.md)): `enabled` joins the hub whenever the account is signed in; `remote_control = false` answers other devices with `info` and nothing else; `name` is what the other devices call this one (empty: the host name). `device_id` is per installation and written by the app.
 
@@ -234,7 +234,7 @@ How the pieces combine is described in [sentinel.md](sentinel.md).
 mode = "auto"                        # auto | bwrap | off
 ```
 
-On Linux with [bubblewrap](https://github.com/containers/bubblewrap) installed (`apt install bubblewrap`, `dnf install bubblewrap`), every `shell` and `python_execute` call runs in its own namespace: the workspace and `agent.extra_roots` are the only writable places, your home directory is not there, `/tmp` is private, and there is no network unless the call was assessed as needing it. `auto` uses it when it works here and says so in the log when it does not; `bwrap` insists (`wevvy doctor` fails otherwise); `off` runs commands unboxed, with the scrubbed environment only. `share_read_only` lists directories the box may read (a CLI you want the agent to use: `["~/.nvm"]` for node and lark-cli), `share` those a tool must also write (its login: `["~/.lark-cli", "~/.local/share/lark-cli"]`); a shared directory under your home is visible at the same place under the box's home too, so a tool that looks in `$HOME` finds it. Details and what changes for the Sentinel in [sentinel.md → The sandbox](sentinel.md#the-sandbox).
+On Linux with [bubblewrap](https://github.com/containers/bubblewrap) installed (`apt install bubblewrap`, `dnf install bubblewrap`), every `shell` and `python_execute` call runs in its own namespace: the workspace and `agent.extra_roots` are the only writable places, your home directory is not there, `/tmp` is private, and there is no network unless the call was assessed as needing it. `auto` uses it when it works here and says so in the log when it does not; `bwrap` insists (`ceis doctor` fails otherwise); `off` runs commands unboxed, with the scrubbed environment only. `share_read_only` lists directories the box may read (a CLI you want the agent to use: `["~/.nvm"]` for node and lark-cli), `share` those a tool must also write (its login: `["~/.lark-cli", "~/.local/share/lark-cli"]`); a shared directory under your home is visible at the same place under the box's home too, so a tool that looks in `$HOME` finds it. Details and what changes for the Sentinel in [sentinel.md → The sandbox](sentinel.md#the-sandbox).
 
 ## `[memory]`
 
@@ -250,7 +250,7 @@ embedding_api_key  = ""        # a key of its own, "{{vault:EMBEDDINGS_API_KEY}}
 
 Recall is by keyword (rare words weigh more, Chinese is matched by character pairs) and, with an embedding endpoint, by meaning too: every memory is embedded once (the vector is kept in `memory.db` next to a hash of the text, so a changed line is embedded again and a switch back to a model is free), the message is embedded per turn, and the memories closest in meaning are fused with the keyword ranking, so "写邮件给房东" recalls "the landlord is Bob Li" though they share no word. Any OpenAI-compatible `/embeddings` works: OpenAI (`text-embedding-3-small` is the default there and on most gateways), [Ollama](https://ollama.com) with an embedding model pulled (`ollama pull qwen3-embedding:0.6b`, the default on `:11434`, small, reads Chinese and English), OpenRouter (`openai/text-embedding-3-small`). DeepSeek has none, so with it point `embedding_base_url` somewhere that has (Ollama next to DeepSeek is the usual pairing) or leave recall by keyword.
 
-`auto` tries the endpoint once per start and falls back to keyword recall when the call fails, saying why in the log: one failed call, not one per turn; an endpoint that was unreachable is tried again after five minutes. `on` insists: recall still falls back, but the failure is a warning and `wevvy doctor` fails on it. `off` never embeds. `embedding_api_key` empty means the model's own key on its own endpoint; set from the app it is a `{{vault:EMBEDDINGS_API_KEY}}` reference. The gateway headers in `llm.extra_headers` go to the model's endpoint only, not to another one named here. *Connections → Recall by meaning* in the app sets all of this and tests it; `wevvy memory recall "…"` shows what would be recalled, with each memory's closeness.
+`auto` tries the endpoint once per start and falls back to keyword recall when the call fails, saying why in the log: one failed call, not one per turn; an endpoint that was unreachable is tried again after five minutes. `on` insists: recall still falls back, but the failure is a warning and `ceis doctor` fails on it. `off` never embeds. `embedding_api_key` empty means the model's own key on its own endpoint; set from the app it is a `{{vault:EMBEDDINGS_API_KEY}}` reference. The gateway headers in `llm.extra_headers` go to the model's endpoint only, not to another one named here. *Connections → Recall by meaning* in the app sets all of this and tests it; `ceis memory recall "…"` shows what would be recalled, with each memory's closeness.
 
 ## `[skills]`
 
@@ -261,7 +261,7 @@ dir      = ""                        # your skills; empty → <data_dir>/skills
 disabled = ["inbox-triage"]          # built-in ones to leave out of the model's list
 ```
 
-A skill is a folder with a `SKILL.md` (YAML front matter with `name` and `description`, then the steps in Markdown) in the [Agent Skills](https://agentskills.io) format, so skills written for other agents work here. wevvy reads one more key, `channel`: which rung of the [ladder](gui.md#the-ladder) the skill works on: `api` (an MCP server or connector), `cli`, `web` (a fetch), `browser`, `gui` (the phone's screen; `app-only` is accepted) or `mixed`. A `gui` skill is marked *on the phone's screen* in the agent's index, so it knows the job needs the phone before it starts; `metadata.channel` works too for skills that must stay strictly in the shared format. Eleven are built in (`weekly-review`, `trip-plan`, `inbox-triage`, `compare-options`, `meeting-prep`; `phone-messages` for the phone's screen; five for Chinese services that need no screen: `feishu` through lark-cli, `tencent-meeting` through tmeet, `amap` through the 高德 MCP server, `kuaidi100` through the 快递100 server, and `train-tickets`, which searches through the 12306 server and books on the phone only when told to; [services.md](services.md) says which have been run where); a folder in `dir` with the same name as a built-in replaces it. The model gets the index (name and description of every enabled skill) in its system prompt and reads a skill's steps with the `skills` tool when a request fits; `/name` at the start of a chat message runs one directly. Saving or removing a skill from chat is a sensitive call: it asks first, whatever the Sentinel mode. Skills switched off in the app are remembered in `app-settings.json`; the list here and that one are merged. Inside the [sandbox](sentinel.md#the-sandbox) a skill's folder (its scripts and reference files) is visible read-only. See [the app → Skills](app.md#skills) and `wevvy skills` in the [CLI](cli.md#skills).
+A skill is a folder with a `SKILL.md` (YAML front matter with `name` and `description`, then the steps in Markdown) in the [Agent Skills](https://agentskills.io) format, so skills written for other agents work here. ceis reads one more key, `channel`: which rung of the [ladder](gui.md#the-ladder) the skill works on: `api` (an MCP server or connector), `cli`, `web` (a fetch), `browser`, `gui` (the phone's screen; `app-only` is accepted) or `mixed`. A `gui` skill is marked *on the phone's screen* in the agent's index, so it knows the job needs the phone before it starts; `metadata.channel` works too for skills that must stay strictly in the shared format. Eleven are built in (`weekly-review`, `trip-plan`, `inbox-triage`, `compare-options`, `meeting-prep`; `phone-messages` for the phone's screen; five for Chinese services that need no screen: `feishu` through lark-cli, `tencent-meeting` through tmeet, `amap` through the 高德 MCP server, `kuaidi100` through the 快递100 server, and `train-tickets`, which searches through the 12306 server and books on the phone only when told to; [services.md](services.md) says which have been run where); a folder in `dir` with the same name as a built-in replaces it. The model gets the index (name and description of every enabled skill) in its system prompt and reads a skill's steps with the `skills` tool when a request fits; `/name` at the start of a chat message runs one directly. Saving or removing a skill from chat is a sensitive call: it asks first, whatever the Sentinel mode. Skills switched off in the app are remembered in `app-settings.json`; the list here and that one are merged. Inside the [sandbox](sentinel.md#the-sandbox) a skill's folder (its scripts and reference files) is visible read-only. See [the app → Skills](app.md#skills) and `ceis skills` in the [CLI](cli.md#skills).
 
 ## Connectors
 
@@ -280,7 +280,7 @@ password      = "{{vault:EMAIL_PASSWORD}}"
 scrub_secrets = true   # remove one-time codes and reset links before the model reads a mail
 ```
 
-Store the values with `wevvy vault set EMAIL_ADDRESS` and `wevvy vault set EMAIL_PASSWORD`. `read_emails` marks the conversation as tainted; `send_email` is in `always_ask_tools` by default.
+Store the values with `ceis vault set EMAIL_ADDRESS` and `ceis vault set EMAIL_PASSWORD`. `read_emails` marks the conversation as tainted; `send_email` is in `always_ask_tools` by default.
 
 ### Calendar
 
@@ -295,14 +295,14 @@ day_end         = "18:00"
 
 [[connectors.calendar.feeds]]
 name = "Work"
-url  = "{{vault:CALENDAR_WORK}}"   # the link is the secret: wevvy vault set CALENDAR_WORK
+url  = "{{vault:CALENDAR_WORK}}"   # the link is the secret: ceis vault set CALENDAR_WORK
 
 [[connectors.calendar.feeds]]
 name = "Family"
 url  = "~/family.ics"
 ```
 
-The `calendar` tool reads (agenda, search, free time) and *drafts*: an event it proposes is written as `calendar/<date>-<title>.ics` in the workspace, and the app shows it as a card with an *Add to calendar* button. It never writes to your calendar itself. Today's and tomorrow's events are in the system prompt; the Feed shows them under *Today*. `wevvy calendar add NAME URL` does the same as the Connections screen.
+The `calendar` tool reads (agenda, search, free time) and *drafts*: an event it proposes is written as `calendar/<date>-<title>.ics` in the workspace, and the app shows it as a card with an *Add to calendar* button. It never writes to your calendar itself. Today's and tomorrow's events are in the system prompt; the Feed shows them under *Today*. `ceis calendar add NAME URL` does the same as the Connections screen.
 
 ### Contacts
 
@@ -318,10 +318,10 @@ url  = "~/Downloads/contacts.vcf"
 
 [[connectors.contacts.sources]]
 name = "Nextcloud"
-url  = "{{vault:CONTACTS_NEXTCLOUD}}"   # a link, kept in the vault: wevvy vault set CONTACTS_NEXTCLOUD
+url  = "{{vault:CONTACTS_NEXTCLOUD}}"   # a link, kept in the vault: ceis vault set CONTACTS_NEXTCLOUD
 ```
 
-Besides the sources there is always *My contacts*, `<data_dir>/contacts.vcf`: the people the agent was told about in chat ("the landlord is Bob Li, bob@example.com") through `contacts` action=add, the only book it writes to, and the only one it can remove people from. The `contacts` tool searches by name, nickname, company, email or phone (every word must match, prefixes count, a character inside a Chinese name counts); a look-up is private data and taints the conversation. `wevvy contacts search | list | add | sources | add-source | remove-source` from the CLI.
+Besides the sources there is always *My contacts*, `<data_dir>/contacts.vcf`: the people the agent was told about in chat ("the landlord is Bob Li, bob@example.com") through `contacts` action=add, the only book it writes to, and the only one it can remove people from. The `contacts` tool searches by name, nickname, company, email or phone (every word must match, prefixes count, a character inside a Chinese name counts); a look-up is private data and taints the conversation. `ceis contacts search | list | add | sources | add-source | remove-source` from the CLI.
 
 ### Web search
 
@@ -330,14 +330,14 @@ Who answers `web_search`. DuckDuckGo needs nothing and is the default, but it is
 ```toml
 [connectors.search]
 provider = "duckduckgo"          # duckduckgo | brave | tavily | serply | you | searxng
-api_key  = "{{vault:SEARCH_API_KEY}}"   # brave / tavily / serply, and you if you have one: wevvy vault set SEARCH_API_KEY
+api_key  = "{{vault:SEARCH_API_KEY}}"   # brave / tavily / serply, and you if you have one: ceis vault set SEARCH_API_KEY
 base_url = ""                    # searxng: your instance, e.g. "http://127.0.0.1:8080"
 fallback = true                  # false: a failed search fails instead of going to DuckDuckGo
 ```
 
-You.com without a key goes to `api.you.com` and allows 100 searches a day per address, with no account; past that the search says so and DuckDuckGo answers once. With a key it goes to `ydc-index.io`, the keyed Search API with higher limits; the Sentinel shows whichever host the search really uses. Requests to You.com carry the user agent `youdotcom-integration/nano-muse-wevvy`, at the vendor's request, so they can tell wevvy's traffic apart; nothing else is sent, and no other provider gets it.
+You.com without a key goes to `api.you.com` and allows 100 searches a day per address, with no account; past that the search says so and DuckDuckGo answers once. With a key it goes to `ydc-index.io`, the keyed Search API with higher limits; the Sentinel shows whichever host the search really uses. Requests to You.com carry the user agent `youdotcom-integration/nano-muse-ceis`, at the vendor's request, so they can tell ceis's traffic apart; nothing else is sent, and no other provider gets it.
 
-Whichever is picked, a search that fails (a lapsed key, a rate limit, an instance that is down) is answered by DuckDuckGo instead, once, with a note on top of the results saying so, so the task goes on (the query then reaches DuckDuckGo's host as well as the one you chose; set `fallback = false` under `[connectors.search]` if that must not happen); `wevvy doctor` reports a provider that is missing what it needs. The `region` argument of the tool (`cn-zh`, `us-en`) is passed to every provider in its own terms. The provider's host is a destination you chose, so a search after private data was read does not need approval the way an unknown host would (see [taint tracking](sentinel.md#taint-tracking)); `web_fetch` of a result still does.
+Whichever is picked, a search that fails (a lapsed key, a rate limit, an instance that is down) is answered by DuckDuckGo instead, once, with a note on top of the results saying so, so the task goes on (the query then reaches DuckDuckGo's host as well as the one you chose; set `fallback = false` under `[connectors.search]` if that must not happen); `ceis doctor` reports a provider that is missing what it needs. The `region` argument of the tool (`cn-zh`, `us-en`) is passed to every provider in its own terms. The provider's host is a destination you chose, so a search after private data was read does not need approval the way an unknown host would (see [taint tracking](sentinel.md#taint-tracking)); `web_fetch` of a result still does.
 
 ## `[triggers]`
 
@@ -355,8 +355,8 @@ Mail triggers need the [email connector](#email); event triggers need a [calenda
 
 ```toml
 [browser]
-enabled    = true      # pip install "wevvy[browser]" && playwright install chromium
-backend    = "auto"    # auto | playwright | device — the phone's own WebView when a wevvy app is connected, Chromium otherwise
+enabled    = true      # pip install "ceis[browser]" && playwright install chromium
+backend    = "auto"    # auto | playwright | device — the phone's own WebView when a ceis app is connected, Chromium otherwise
 profile    = ""        # mobile | desktop | "" (mobile on the phone, desktop on a computer)
 headless   = true      # Playwright only
 timeout_ms = 30000
@@ -369,7 +369,7 @@ Logins made in Chromium live in `<workspace>/browser-profile/` and survive a res
 ```toml
 [hands]
 enabled         = false    # the switch is Devices → Hands on this computer in the app
-backend         = "auto"   # auto | desktop | pyautogui | xdotool (X11) — desktop: the desktop app's own hands (auto takes them when the app set WEVVY_OPERATOR_URL)
+backend         = "auto"   # auto | desktop | pyautogui | xdotool (X11) — desktop: the desktop app's own hands (auto takes them when the app set CEIS_OPERATOR_URL)
 mode            = "auto"   # auto | screen | window — window: one app's window on macOS, events to its process, your mouse untouched; auto = window on macOS once an app is named
 coords          = "pixels" # pixels | norm1000 — what the model's x, y mean: pixels of the picture it was shown (default), or a 0–1000 grid over it
 max_image_width = 1600
@@ -397,7 +397,7 @@ reconnect_grace_s = 30.0             # how long a running task waits for a phone
 sensitive_words  = ["确认支付", "立即付款", "转账", "提交订单", "发送", "删除", "pay now", "place order", "send", "delete"]  # a tap on these asks first; a shortened sample, the default has 22 words
 ```
 
-`base_url` and `api_key` fall back to `[llm]` when empty. An empty `model` follows one order (the Models contract, 0.1.41): with the relay as the chat model, the relay's hands model (`qwen3.8-27b` unless `/v1/models` names another), not the chat model (the chat default reads pictures, but the hands want the model trained to point at things on a screen); with an own provider the catalogue lists with `vision`, that provider's own hands model (`defaults.hands`, `qwen3.8-27b` on Bailian, `glm-4.6v` on Zhipu) on the chat key; with a provider that cannot see (a local server by its catalogue id or host) and an account signed in, the relay's hands model under the account key, the chat model staying where it is; else the chat model, as on a host the catalogue does not list. An explicit `model` always wins. A key is only needed when the operator's `base_url` is a different service. Traces of every phone task go to `<data_dir>/phone-traces/` (the last 200 are kept; `wevvy phone traces`).
+`base_url` and `api_key` fall back to `[llm]` when empty. An empty `model` follows one order (the Models contract, 0.1.41): with the relay as the chat model, the relay's hands model (`qwen3.8-27b` unless `/v1/models` names another), not the chat model (the chat default reads pictures, but the hands want the model trained to point at things on a screen); with an own provider the catalogue lists with `vision`, that provider's own hands model (`defaults.hands`, `qwen3.8-27b` on Bailian, `glm-4.6v` on Zhipu) on the chat key; with a provider that cannot see (a local server by its catalogue id or host) and an account signed in, the relay's hands model under the account key, the chat model staying where it is; else the chat model, as on a host the catalogue does not list. An explicit `model` always wins. A key is only needed when the operator's `base_url` is a different service. Traces of every phone task go to `<data_dir>/phone-traces/` (the last 200 are kept; `ceis phone traces`).
 
 The app layer sets this slot through `PUT /api/connections/gui`, which takes `provider` as `PUT /api/connections/llm` does: a protocol (`openai`, `openai_responses`), `chatgpt`, or a catalogue id such as `bailian`, which brings its endpoint along (`base_url` may stay empty); an id the catalogue lacks, or one whose protocol the runtime does not speak, is 400 with the choices. The answer (and `GET /api/connections` → `gui`) carries `provider` as set, `provider_id` (the catalogue entry a protocol plus URL stands for), `effective_model` and `effective_source` (`gui`, `chat` or `cloud`).
 
@@ -427,7 +427,7 @@ risk               = "sensitive"
 reads_private_data = false
 ```
 
-`tools` is optional and per tool name (without the `<server>__` prefix); anything not set falls back to the server's values. It is how the phone's own tools get their defaults: on a phone the app's capabilities appear as the server `device` without any configuration ([device.md](device.md)), with the per-tool table from `wevvy/runtime.py`.
+`tools` is optional and per tool name (without the `<server>__` prefix); anything not set falls back to the server's values. It is how the phone's own tools get their defaults: on a phone the app's capabilities appear as the server `device` without any configuration ([device.md](device.md)), with the per-tool table from `ceis/runtime.py`.
 
 A command that needs a key takes it through `env`, and the key itself lives in the vault: write `env = { AMAP_MAPS_API_KEY = "{{vault:AMAP_KEY}}" }` and the reference is resolved when the server is started, never written to disk or shown in the app. A server added from the app (the Connections page) works the same way without you doing anything: each `env` value you type is stored in the vault under `MCP_<SERVER>_<KEY>` (upper-cased, `amap` with `AMAP_MAPS_API_KEY` becomes `MCP_AMAP_AMAP_MAPS_API_KEY`) and `app-settings.json` keeps `{{vault:...}}`; removing the server removes those entries. A value typed as a reference already is kept as typed. A plain value in `config.toml` still works, and the Connections page marks the server so you can move it.
 
@@ -454,8 +454,8 @@ start_grace      = 4             # seconds the services may take before the app 
 not answer, `api.github.com`, for the latest release once a day (sooner on *Check now*; a check
 that failed, as when the runtime came up before its network, is tried again after an hour) and shows
 the version under *Settings → About* with a link to the release page; nothing is downloaded and
-nothing about the install is sent beyond the runtime's version in the request's `User-Agent`. `WEVVY_NO_UPDATE_CHECK=1` turns it off too, and a hosted
-web session (a runtime started with `WEVVY_CLOUD_KEY`) never checks; its operator updates it.
+nothing about the install is sent beyond the runtime's version in the request's `User-Agent`. `CEIS_NO_UPDATE_CHECK=1` turns it off too, and a hosted
+web session (a runtime started with `CEIS_CLOUD_KEY`) never checks; its operator updates it.
 
 These settings apply to the Python runtime. The Windows desktop shell checks separately
 after startup and every six hours. Its saved automatic download switch is on by default,
@@ -465,13 +465,13 @@ but metered or unknown networks wait for a manual download. See [desktop.md](des
 
 | Path | Contents |
 |---|---|
-| `~/.wevvy/` (`data_dir`) | everything below |
+| `~/.ceis/` (`data_dir`) | everything below |
 | `memory.db`, `goals.db` | SQLite |
-| `vault.enc`, `vault.key` | encrypted secrets and the key (or `WEVVY_VAULT_KEY`) |
+| `vault.enc`, `vault.key` | encrypted secrets and the key (or `CEIS_VAULT_KEY`) |
 | `audit.jsonl` | append-only audit log |
 | `approvals.json` | permissions you granted for 24 hours or always (tool + target, scope, expiry) |
 | `app-settings.json` | what was changed in the app's Connections screen, layered over `config.toml` (no secrets, only `{{vault:NAME}}` references) |
-| `chatgpt.json` | the ChatGPT sign-in's tokens (mode 0600; `wevvy chatgpt logout` removes it) |
+| `chatgpt.json` | the ChatGPT sign-in's tokens (mode 0600; `ceis chatgpt logout` removes it) |
 | `sessions/` | CLI conversation history |
 | `skills/<name>/SKILL.md` | your skills (the Agent Skills format); a name that matches a built-in replaces it |
 | `threads/`, `profile.json`, `ideas.json`, `server_token`, `logs/` | app state |

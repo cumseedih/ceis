@@ -652,7 +652,7 @@ class BrowserUseManager(
 
     suspend fun execute(input: BrowserActionInput): BrowserActionResult {
         val prevUrl = withContext(Dispatchers.Main) { webView.url }
-        val nmGate = nmGuard(input) // wevvy: secret fields refused, pay/send/delete taps approved first
+        val nmGate = nmGuard(input) // ceis: secret fields refused, pay/send/delete taps approved first
         nmGate.blocked?.let { return it }
         var result: BrowserActionResult = when (input.action) {
             BrowserAction.NAVIGATE -> navigate(input.url)
@@ -679,7 +679,7 @@ class BrowserUseManager(
             BrowserAction.WAIT_FOR_DOM_STABLE -> return waitForDomStable(input.timeoutMs)
             BrowserAction.NEW_TAB, BrowserAction.CLOSE_TAB, BrowserAction.LIST_TABS ->
                 return BrowserActionResult.error("Tab management actions must be routed through BrowserTabPool")
-            // wevvy: handled by the chat before the pool sees it
+            // ceis: handled by the chat before the pool sees it
             BrowserAction.HAND_OVER ->
                 return BrowserActionResult.error("hand_over is handled by the chat, not by a tab")
         }
@@ -703,7 +703,7 @@ class BrowserUseManager(
             }
         }
 
-        // wevvy: a remembered approval (or a payment that ran on one) is told to the model.
+        // ceis: a remembered approval (or a payment that ran on one) is told to the model.
         nmGate.notice?.let { if (result.success) result = result.copy(text = result.text + "\n" + it) }
         return result
     }
@@ -992,34 +992,34 @@ class BrowserUseManager(
         return file
     }
 
-    // wevvy: the guard's word on an action — [blocked] when it may not run, else an optional [notice] for the model.
+    // ceis: the guard's word on an action — [blocked] when it may not run, else an optional [notice] for the model.
     private data class NmGate(val blocked: BrowserActionResult? = null, val notice: String? = null)
 
-    // wevvy: what a click or type is about to touch, judged before it happens.
+    // ceis: what a click or type is about to touch, judged before it happens.
     private suspend fun nmGuard(input: BrowserActionInput): NmGate {
         if (input.action != BrowserAction.CLICK && input.action != BrowserAction.TYPE) return NmGate()
-        val guard = io.github.wevvy.guard.BrowserGuard
+        val guard = io.github.ceis.guard.BrowserGuard
         val described = runCatching {
             evaluateJavascript(guard.describeJs(input.selector, input.coordinateX, input.coordinateY))
         }.getOrNull() ?: return NmGate()
-        val target = io.github.wevvy.guard.BrowserGuard.Target.parse(described) ?: return NmGate()
+        val target = io.github.ceis.guard.BrowserGuard.Target.parse(described) ?: return NmGate()
         val verdict = if (input.action == BrowserAction.TYPE) guard.judgeType(target) else guard.judgeClick(target)
         return when (verdict) {
-            is io.github.wevvy.guard.BrowserGuard.Verdict.Proceed -> NmGate()
-            is io.github.wevvy.guard.BrowserGuard.Verdict.Refuse ->
+            is io.github.ceis.guard.BrowserGuard.Verdict.Proceed -> NmGate()
+            is io.github.ceis.guard.BrowserGuard.Verdict.Refuse ->
                 NmGate(blocked = BrowserActionResult.error(verdict.text).copy(pageURL = target.url.ifBlank { prevUrlOrNull() }))
-            is io.github.wevvy.guard.BrowserGuard.Verdict.Ask -> {
-                val outcome = io.github.wevvy.guard.RiskGate.check(
+            is io.github.ceis.guard.BrowserGuard.Verdict.Ask -> {
+                val outcome = io.github.ceis.guard.RiskGate.check(
                     sessionId = sessionIdProvider() ?: "",
-                    kind = io.github.wevvy.guard.GuardKind.BROWSER,
+                    kind = io.github.ceis.guard.GuardKind.BROWSER,
                     assessment = verdict.assessment,
                     preview = verdict.elementText,
                     pageUrl = target.url.ifBlank { null },
                     elementText = verdict.elementText,
                 )
                 when (outcome) {
-                    is io.github.wevvy.guard.GateOutcome.Allowed -> NmGate(notice = outcome.notice)
-                    is io.github.wevvy.guard.GateOutcome.Denied -> NmGate(blocked = BrowserActionResult.error(outcome.message))
+                    is io.github.ceis.guard.GateOutcome.Allowed -> NmGate(notice = outcome.notice)
+                    is io.github.ceis.guard.GateOutcome.Denied -> NmGate(blocked = BrowserActionResult.error(outcome.message))
                 }
             }
         }

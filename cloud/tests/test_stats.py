@@ -12,13 +12,13 @@ from fastapi.testclient import TestClient
 from test_accounts import auth, make
 from test_cloud import sign_up
 
-from wevvy_cloud.__main__ import main as cli_main
-from wevvy_cloud.api import create_app
-from wevvy_cloud.config import Settings
-from wevvy_cloud.db import Database, utc_day
-from wevvy_cloud.senders import LogSender
-from wevvy_cloud.service import Cloud
-from wevvy_cloud.stats import METRICS, api_group
+from ceis_cloud.__main__ import main as cli_main
+from ceis_cloud.api import create_app
+from ceis_cloud.config import Settings
+from ceis_cloud.db import Database, utc_day
+from ceis_cloud.senders import LogSender
+from ceis_cloud.service import Cloud
+from ceis_cloud.stats import METRICS, api_group
 
 ADMIN = {"X-Admin-Token": "admin"}
 CHAT = {"model": "qwen3.8-flash", "messages": [{"role": "user", "content": "hi"}]}

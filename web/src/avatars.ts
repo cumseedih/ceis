@@ -1,5 +1,5 @@
 /**
- * The agent's face. Muse gives its agent a plush doll; wevvy has its dragon — five stills,
+ * The agent's face. Muse gives its agent a plush doll; ceis has its dragon — five stills,
  * one per mood (public/avatars/dragon-*.webp) and four short clips that move them (idle,
  * working, waiting, happy — dragon-*.mp4, the same clips the Android app plays) — or a face the
  * person had drawn for them in the avatar studio (served from the runtime's files, stills and,

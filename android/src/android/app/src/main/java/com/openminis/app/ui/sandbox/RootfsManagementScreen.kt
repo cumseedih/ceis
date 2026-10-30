@@ -80,7 +80,7 @@ fun RootfsManagementScreen(
     val groupedBg = MaterialTheme.colorScheme.surfaceContainerLowest
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(stringResource(R.string.rootfs_management_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {

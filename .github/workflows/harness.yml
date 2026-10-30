@@ -1,8 +1,8 @@
-# wevvy on DeepSeek Harness: the bundle (harness/dsh-wevvy) as a package:
+# ceis on DeepSeek Harness: the bundle (harness/dsh-ceis) as a package:
 #
-#   dsh-wevvy-<v>.tgz            what `dsh plugin --profile desktop add <file>` installs
+#   dsh-ceis-<v>.tgz            what `dsh plugin --profile desktop add <file>` installs
 #                                   into a DeepSeek Harness Desktop someone already has
-#                                   (docs/harness.md, harness/README.md); wevvy Desktop
+#                                   (docs/harness.md, harness/README.md); ceis Desktop
 #                                   itself carries the same bundle (desktop-app.yml)
 #
 # A push or pull request that touches harness/ builds, typechecks and tests the bundle and the
@@ -11,7 +11,7 @@
 # release tag `v*` also packs the bundle and attaches the tarball and its checksum to the release of
 # the same name (the one scripts/release-apk.sh creates with the APK), retrying until it
 # exists. "Run workflow" with a release tag does the same for a release that already exists.
-# The bundle's version must be the tag's: the release recipe bumps harness/dsh-wevvy/package.json.
+# The bundle's version must be the tag's: the release recipe bumps harness/dsh-ceis/package.json.
 # The paths include the phones' copies of the catalogues and of the Ideas list: the tests
 # check that they match the desktop's (tests/fences.test.mjs, connectors-json.mjs --check).
 name: harness bundle
@@ -19,10 +19,10 @@ name: harness bundle
 on:
   push:
     branches: ["**"]
-    paths: ["harness/**", "scripts/connectors-json.mjs", "scripts/providers-json.mjs", "wevvy/llm/providers.json", "android/src/android/app/src/main/assets/wevvy/connectors.json", "android/src/android/app/src/main/assets/wevvy/providers.json", "android/src/android/app/src/main/assets/wevvy/ideas.*.json", "android/src/ios/Wevvy/Resources/connectors.json", "android/src/ios/Wevvy/Resources/providers.json", "android/src/ios/Wevvy/Resources/ideas.*.json", ".github/workflows/harness.yml"]
+    paths: ["harness/**", "scripts/connectors-json.mjs", "scripts/providers-json.mjs", "ceis/llm/providers.json", "android/src/android/app/src/main/assets/ceis/connectors.json", "android/src/android/app/src/main/assets/ceis/providers.json", "android/src/android/app/src/main/assets/ceis/ideas.*.json", "android/src/ios/Ceis/Resources/connectors.json", "android/src/ios/Ceis/Resources/providers.json", "android/src/ios/Ceis/Resources/ideas.*.json", ".github/workflows/harness.yml"]
     tags: ["v*"]
   pull_request:
-    paths: ["harness/**", "scripts/connectors-json.mjs", "scripts/providers-json.mjs", "wevvy/llm/providers.json", "android/src/android/app/src/main/assets/wevvy/connectors.json", "android/src/android/app/src/main/assets/wevvy/providers.json", "android/src/android/app/src/main/assets/wevvy/ideas.*.json", "android/src/ios/Wevvy/Resources/connectors.json", "android/src/ios/Wevvy/Resources/providers.json", "android/src/ios/Wevvy/Resources/ideas.*.json", ".github/workflows/harness.yml"]
+    paths: ["harness/**", "scripts/connectors-json.mjs", "scripts/providers-json.mjs", "ceis/llm/providers.json", "android/src/android/app/src/main/assets/ceis/connectors.json", "android/src/android/app/src/main/assets/ceis/providers.json", "android/src/android/app/src/main/assets/ceis/ideas.*.json", "android/src/ios/Ceis/Resources/connectors.json", "android/src/ios/Ceis/Resources/providers.json", "android/src/ios/Ceis/Resources/ideas.*.json", ".github/workflows/harness.yml"]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -65,13 +65,13 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('harness/dsh-wevvy/pnpm-lock.yaml') }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('harness/dsh-ceis/pnpm-lock.yaml') }}
           restore-keys: pnpm-store-${{ runner.os }}-
       - name: Install
-        working-directory: harness/dsh-wevvy
+        working-directory: harness/dsh-ceis
         run: pnpm install --frozen-lockfile
       - name: Build, typecheck, test
-        working-directory: harness/dsh-wevvy
+        working-directory: harness/dsh-ceis
         run: |
           pnpm build
           pnpm typecheck
@@ -100,13 +100,13 @@ jobs:
             exit 1
           fi
       - name: Pack
-        working-directory: harness/dsh-wevvy
+        working-directory: harness/dsh-ceis
         env:
           TAG: ${{ inputs.release_tag || (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || '' }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
           if [ -n "$TAG" ] && [ "v$VERSION" != "$TAG" ]; then
-            echo "harness/dsh-wevvy/package.json says $VERSION, the release is $TAG; bump it first" >&2
+            echo "harness/dsh-ceis/package.json says $VERSION, the release is $TAG; bump it first" >&2
             exit 1
           fi
           mkdir -p ../../packages
@@ -117,12 +117,12 @@ jobs:
         # the dsh it goes into is the one the bundle's peer dependencies name, the same
         # version harness/desktop/scripts/prepare-dsh.mjs stages
         run: |
-          DSH_VERSION=$(node -p "require('$GITHUB_WORKSPACE/harness/dsh-wevvy/package.json').peerDependencies['@deepseek-ai/dsh-agent']")
+          DSH_VERSION=$(node -p "require('$GITHUB_WORKSPACE/harness/dsh-ceis/package.json').peerDependencies['@deepseek-ai/dsh-agent']")
           mkdir -p /tmp/dsh && cd /tmp/dsh && npm init -y >/dev/null && npm install --no-audit --no-fund "@deepseek-ai/dsh@$DSH_VERSION" >/dev/null
           export DSH_HOME=/tmp/dsh-home
           ./node_modules/.bin/dsh --profile check --from-default-profile web --dump-config >/dev/null
-          ./node_modules/.bin/dsh plugin --profile check add "$GITHUB_WORKSPACE"/packages/dsh-wevvy-*.tgz
-          ./node_modules/.bin/dsh --profile check --dump-config | grep -c "patched by dsh-wevvy"
+          ./node_modules/.bin/dsh plugin --profile check add "$GITHUB_WORKSPACE"/packages/dsh-ceis-*.tgz
+          ./node_modules/.bin/dsh --profile check --dump-config | grep -c "patched by dsh-ceis"
       # the data-* hooks and class-name stems styles.ts dresses the harness's DOM through are
       # in this dsh (desktop-app.yml runs the same against the staged copy; here it runs on
       # every pull request)
@@ -160,10 +160,10 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('harness/dsh-wevvy/pnpm-lock.yaml') }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('harness/dsh-ceis/pnpm-lock.yaml') }}
           restore-keys: pnpm-store-${{ runner.os }}-
       - name: The bundle
-        working-directory: harness/dsh-wevvy
+        working-directory: harness/dsh-ceis
         shell: bash
         run: |
           pnpm install --frozen-lockfile

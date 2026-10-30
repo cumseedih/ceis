@@ -1,20 +1,20 @@
-# wevvy Desktop: the desktop built on DeepSeek Harness (harness/desktop, Electron), with
-# dsh and the wevvy bundle staged inside and the runtime for the hands bundled:
+# ceis Desktop: the desktop built on DeepSeek Harness (harness/desktop, Electron), with
+# dsh and the ceis bundle staged inside and the runtime for the hands bundled:
 #
-#   Windows  wevvy-Desktop-<v>-win-x64.exe        (NSIS installer)
+#   Windows  ceis-Desktop-<v>-win-x64.exe        (NSIS installer)
 #            + latest.yml and the .exe.blockmap      (what electron-updater reads: the
 #                                                     desktop's in-app update, from the
 #                                                     release or the download mirror)
-#   macOS    wevvy-Desktop-<v>-mac-arm64.dmg / -x64.dmg  (+ .zip)
-#   Linux    wevvy-Desktop-<v>-linux-x64.AppImage / .deb / .tar.gz
+#   macOS    ceis-Desktop-<v>-mac-arm64.dmg / -x64.dmg  (+ .zip)
+#   Linux    ceis-Desktop-<v>-linux-x64.AppImage / .deb / .tar.gz
 #
-# Each platform builds the bundle (harness/dsh-wevvy: pnpm build, test, pack), stages dsh
+# Each platform builds the bundle (harness/dsh-ceis: pnpm build, test, pack), stages dsh
 # next to it with npm (scripts/prepare-dsh.mjs, the platform's own native prebuilds), builds
 # the runtime (scripts/desktop-app/build-runtime.py --target harness/desktop/runtime, a
 # PyInstaller build), runs the shell's own tests (harness/desktop: npm test), wraps it all
 # with electron-builder, and then boots the unpacked app's harness once in Node mode (scripts/smoke.mjs) to see the Host
 # come up with the bundle's rows. On macOS the Swift helper that holds the hands' permissions
-# (harness/desktop/mac/computer-use/build.sh → "wevvy Computer Use.app") is built first and
+# (harness/desktop/mac/computer-use/build.sh → "ceis Computer Use.app") is built first and
 # electron-builder lays out the .app with it inside;
 # scripts/desktop-app/package-mac.sh ad-hoc signs it (or signs and notarizes with the Apple
 # secrets; docs/desktop.md says how they are made) and writes the zip and an APFS dmg.
@@ -109,7 +109,7 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('harness/dsh-wevvy/pnpm-lock.yaml') }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('harness/dsh-ceis/pnpm-lock.yaml') }}
           restore-keys: pnpm-store-${{ runner.os }}-
       - name: Linux packages the runtime and the installers need
         if: runner.os == 'Linux'
@@ -117,7 +117,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends xdotool libfuse2 rpm
       - name: The bundle
-        working-directory: harness/dsh-wevvy
+        working-directory: harness/dsh-ceis
         shell: bash
         run: |
           pnpm install --frozen-lockfile
@@ -127,7 +127,7 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           SHELL_VERSION=$(node -p "require('../desktop/package.json').version")
           if [ "$VERSION" != "$SHELL_VERSION" ]; then
-            echo "harness/dsh-wevvy is $VERSION, harness/desktop is $SHELL_VERSION; the release recipe bumps both" >&2
+            echo "harness/dsh-ceis is $VERSION, harness/desktop is $SHELL_VERSION; the release recipe bumps both" >&2
             exit 1
           fi
       - name: The harness, staged
@@ -171,11 +171,11 @@ jobs:
           npm run typecheck
           npm test
           npm run dist
-      - name: The helper that holds the hands' permissions (macOS, wevvy Computer Use.app, Swift)
+      - name: The helper that holds the hands' permissions (macOS, ceis Computer Use.app, Swift)
         if: runner.os == 'macOS'
         shell: bash
         # a universal bundle (arm64 + x86_64) under harness/desktop/mac/computer-use/build/,
-        # which electron-builder.yml copies into wevvy.app/Contents/Helpers
+        # which electron-builder.yml copies into ceis.app/Contents/Helpers
         run: harness/desktop/mac/computer-use/build.sh
       - name: The app (macOS, signed and notarized with the Apple secrets, ad-hoc without; zip and APFS dmg by hand)
         if: runner.os == 'macOS'
@@ -188,8 +188,8 @@ jobs:
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_KEY_P8: ${{ secrets.APP_STORE_CONNECT_KEY_P8 }}
           APP_DIR: harness/desktop
-          APP_NAME: wevvy
-          ARTIFACT: wevvy-Desktop
+          APP_NAME: ceis
+          ARTIFACT: ceis-Desktop
         run: |
           npm ci
           npm run typecheck
@@ -220,7 +220,7 @@ jobs:
           7z e -y -r -onsis-check dist/*.exe app-64.7z > /dev/null
           7z l nsis-check/app-64.7z > nsis-check/list.txt
           for mood in idle working waiting happy; do
-            grep -Eq "dsh-wevvy[/\\\\]assets[/\\\\]dragon-$mood\.mp4" nsis-check/list.txt || { echo "the installer's archive lacks dsh-wevvy/assets/dragon-$mood.mp4" >&2; exit 1; }
+            grep -Eq "dsh-ceis[/\\\\]assets[/\\\\]dragon-$mood\.mp4" nsis-check/list.txt || { echo "the installer's archive lacks dsh-ceis/assets/dragon-$mood.mp4" >&2; exit 1; }
           done
           echo "the installer's archive carries the four clips"
       # The update assets the release must carry (electron-builder.yml, win.publish: latest.yml,
@@ -240,7 +240,7 @@ jobs:
         run: ls -la dist | grep -Ev "^total|builder-" || true
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: wevvy-desktop-${{ matrix.label }}
+          name: ceis-desktop-${{ matrix.label }}
           path: |
             harness/desktop/dist/*.AppImage
             harness/desktop/dist/*.deb
@@ -270,7 +270,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          pattern: wevvy-desktop-*
+          pattern: ceis-desktop-*
           path: packages
           merge-multiple: true
       - name: Attach to the release

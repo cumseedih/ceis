@@ -13,7 +13,7 @@ import okhttp3.Response
 import org.json.JSONObject
 
 object AnthropicModelsApi {
-    private val client = OkHttpClient.Builder().proxyAuthenticator(io.github.wevvy.net.OwnProviderProxy.authenticator).build() // wevvy: Settings → Network, a proxy with a password
+    private val client = OkHttpClient.Builder().proxyAuthenticator(io.github.ceis.net.OwnProviderProxy.authenticator).build() // ceis: Settings → Network, a proxy with a password
 
     /**
      * Fetch models from Anthropic API.

@@ -13,10 +13,10 @@ import { useCloudConfig } from "./StarNudge";
 import { dollars } from "../money";
 
 /**
- * Signing in to wevvy Cloud: a code sent to an e-mail address (or a mainland phone number
+ * Signing in to ceis Cloud: a code sent to an e-mail address (or a mainland phone number
  * by SMS), or, once one is set, the account password. The same form everywhere it is
  * needed (first run, the gate, the account screen); the key lands in the vault on the
- * machine running wevvy.
+ * machine running ceis.
  *
  * A friend's invite code (``?invite=CODE`` on the page URL, remembered until used, or typed
  * into the optional field) travels with the code sign-in; it counts for a new account only.
@@ -279,7 +279,7 @@ export function SignIn({
                 : "mt-5 text-center text-headline-sm text-fg"
             }
           >
-            {phase === "code" ? t("Enter your sign-up code") : t("Welcome to Wevvy")}
+            {phase === "code" ? t("Enter your sign-up code") : t("Welcome to Ceis")}
           </h1>
         </div>
       )}

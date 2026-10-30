@@ -21,9 +21,9 @@ function scratch() {
 
 test("a fresh link is made and reported", () => {
   const dir = scratch();
-  const target = join(dir, "resources", "dsh-wevvy");
+  const target = join(dir, "resources", "dsh-ceis");
   mkdirSync(target, { recursive: true });
-  const link = join(dir, "node_modules", "dsh-wevvy");
+  const link = join(dir, "node_modules", "dsh-ceis");
   mkdirSync(join(dir, "node_modules"));
   assert.equal(relink(link, target), true);
   assert.equal(sameTarget(readlinkSync(link), target), true);
@@ -32,14 +32,14 @@ test("a fresh link is made and reported", () => {
 
 test("a dangling link from an earlier install is replaced", () => {
   const dir = scratch();
-  const old = join(dir, "Programs", "wevvy", "wevvy-desktop", "dsh-wevvy");
+  const old = join(dir, "Programs", "ceis", "ceis-desktop", "dsh-ceis");
   mkdirSync(old, { recursive: true });
-  const link = join(dir, "node_modules", "dsh-wevvy");
+  const link = join(dir, "node_modules", "dsh-ceis");
   mkdirSync(join(dir, "node_modules"));
   symlinkSync(old, link, process.platform === "win32" ? "junction" : "dir");
   rmSync(join(dir, "Programs"), { recursive: true, force: true }); // the old version is gone
   assert.equal(sameTarget(linkTarget(link), old), true, "the stale link is still there");
-  const target = join(dir, "Programs", "wevvy-desktop", "dsh-wevvy");
+  const target = join(dir, "Programs", "ceis-desktop", "dsh-ceis");
   mkdirSync(target, { recursive: true });
   assert.equal(relink(link, target), true);
   assert.equal(sameTarget(readlinkSync(link), target), true);
@@ -47,9 +47,9 @@ test("a dangling link from an earlier install is replaced", () => {
 
 test("a real directory in the link's place is removed, a missing one is fine", () => {
   const dir = scratch();
-  const target = join(dir, "resources", "dsh-wevvy");
+  const target = join(dir, "resources", "dsh-ceis");
   mkdirSync(target, { recursive: true });
-  const link = join(dir, "node_modules", "dsh-wevvy");
+  const link = join(dir, "node_modules", "dsh-ceis");
   mkdirSync(link, { recursive: true });
   writeFileSync(join(link, "index.js"), "");
   assert.equal(linkTarget(link), "(not a link)");

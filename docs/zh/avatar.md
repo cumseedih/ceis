@@ -1,14 +1,14 @@
 # 形象工作室
 
 智能体的脸默认是随附的小龙，直到你开口要换一张。手机上从 0.1.20 起，网页版和桌面版从 0.1.23 起
-经由运行时（`wevvy/avatar/studio.py`），形象工作室可以在聊天里按一句描述把新形象画出来：
+经由运行时（`ceis/avatar/studio.py`），形象工作室可以在聊天里按一句描述把新形象画出来：
 
 1. **开口。** 在聊天里说：「换个形象：一只戴圆眼镜的橘猫」、"new avatar: a robot owl"、
    "change your avatar to a small fox with a scarf"。或者走工作室页面（资料面板里形象上的那支笔
    → 「形象工坊…」，或者「设置」里的工作室磁贴），那是手机的页面：顶部是现在的脸和它是什么、一段
    描述、七个风格标签、「画四张」，然后走完下面这个列表剩下的步骤，只是聊天里没有卡片（进度通过
    socket 以 `{"kind": "studio", "current"}` 送来）。这一步不运行智能体。
-2. **先说费用。** 一张卡片说明要花多少：用账号的模型（wevvy Cloud）时，是中继算出的数字
+2. **先说费用。** 一张卡片说明要花多少：用账号的模型（ceis Cloud）时，是中继算出的数字
    （`GET /v1/estimate`），旁边是你额度里还剩多少（按 qwen-image-3.0 的价格，八张图大约 ¥1.5）；用自己的
    key 时，只给张数，按你服务商的价格算。「开始画」或「先不了」。
 3. **四张里挑一张。** 同一个主体画四次（经典配色、浅一些、深一些加一件小配饰、一个俏皮的版本），
@@ -41,7 +41,7 @@
 /api/avatar/moods` 把正在穿的脸的姿势和短视频重画一遍。结束的会话的候选图一天后清掉；脸留在工作区里，
 只要资料，或者你，还想要。
 
-有 wevvy Cloud 账号时，这张脸跟着你到每一台设备（[docs/cloud.md](cloud.md)）：静态图上传到中继
+有 ceis Cloud 账号时，这张脸跟着你到每一台设备（[docs/cloud.md](cloud.md)）：静态图上传到中继
 一次，其他设备从 `avatar/sync-<hash>/` 穿上它，描述和风格写在它们各自的 `face.json` 里；如果账号上
 的图片正是某台设备已经在穿的，那台设备保留自己画的那张脸，连短视频一起。
 
@@ -58,8 +58,8 @@
 H.264 视频；设备能播的话也收 HEVC（iOS 一直可以；桌面版要系统带解码器，预览放不出来的会在那里被拒绝；
 Android 目前只收 H.264）。更长、更大或别的格式会被拒绝，并用一句话说明限制；不裁剪、不转码，声音永远不播。
 
-视频留在选择它的那台设备上。它不上传到 wevvy Cloud，也不同步到你的其他设备，这一点和工作室形象的
-静态图不同；每台设备各选各的。Android 上它在 `minis-global/wevvy/avatar/own-clip.mp4`，第一帧
+视频留在选择它的那台设备上。它不上传到 ceis Cloud，也不同步到你的其他设备，这一点和工作室形象的
+静态图不同；每台设备各选各的。Android 上它在 `minis-global/ceis/avatar/own-clip.mp4`，第一帧
 在旁边的 `own-clip.png`，和当前登录账号的其他文件归在一起；iOS 上在应用的
-`Application Support/wevvy/avatar/own-clip.mp4`；桌面版在 `$DSH_HOME/wevvy/avatar/own-clip.mp4`。
+`Application Support/ceis/avatar/own-clip.mp4`；桌面版在 `$DSH_HOME/ceis/avatar/own-clip.mp4`。
 换一张工作室的脸或者退回内置形象，它都还在。

@@ -15,11 +15,11 @@ from fastapi import Request
 from fastapi.responses import StreamingResponse
 from test_cloud import PNG_1PX, fake_upstream, sign_up
 
-from wevvy_cloud.api import create_app
-from wevvy_cloud.config import DEFAULT_MODELS, ModelSpec, Settings
-from wevvy_cloud.db import Database
-from wevvy_cloud.senders import LogSender
-from wevvy_cloud.service import Cloud, Usage, estimate_tokens, usage_from_json
+from ceis_cloud.api import create_app
+from ceis_cloud.config import DEFAULT_MODELS, ModelSpec, Settings
+from ceis_cloud.db import Database
+from ceis_cloud.senders import LogSender
+from ceis_cloud.service import Cloud, Usage, estimate_tokens, usage_from_json
 
 ADMIN = {"X-Admin-Token": "admin"}
 # 2026-10-07T15:00:00Z is 23:00 in Beijing: inside DeepSeek's idle hours (22:00 to 8:00)
@@ -82,10 +82,10 @@ def test_price_table_is_the_providers():
     t2v = by_id("wan2.2-t2v-plus")
     assert t2v.price_second == 0.14 and dict(t2v.price_second_res) == {"1080P": 0.70}
     # the public shape carries every figure, so a client can show the price it pays
-    pub = ds.to_public()["wevvy"]["price_cny"]
+    pub = ds.to_public()["ceis"]["price_cny"]
     assert pub["per_m_input"] == 2.0 and pub["per_m_input_idle"] == 1.0 and pub["idle_hours"] == [22, 8]
     assert pub["per_m_cached_input"] == 0.2
-    assert by_id("wan2.2-i2v-flash").to_public()["wevvy"]["price_cny"]["per_second_res"] == {"720P": 0.20, "1080P": 0.48}
+    assert by_id("wan2.2-i2v-flash").to_public()["ceis"]["price_cny"]["per_second_res"] == {"720P": 0.20, "1080P": 0.48}
 
 
 def test_chat_cost_cached_tokens_and_idle_hours():

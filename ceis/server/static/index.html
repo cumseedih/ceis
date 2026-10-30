@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <script>
+      // light unless dark was chosen under Settings → Appearance (or "system"): applied
+      // before the first paint so a dark choice does not flash white
+      try {
+        var t = localStorage.getItem("ceis_theme") || "light";
+        if (t === "system") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = t;
+        if (t === "dark") document.querySelector('meta[name="theme-color"]').setAttribute("content", "#181819");
+      } catch (e) {}
+    </script>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ceis" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <title>ceis</title>
+    <script type="module" crossorigin src="/assets/index-F6IZsVlj.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/MuseHeader-C2JLzDFz.js">
+    <link rel="modulepreload" crossorigin href="/assets/Form-0kvqIJL0.js">
+    <link rel="modulepreload" crossorigin href="/assets/chevron-right-D3cgEXgG.js">
+    <link rel="modulepreload" crossorigin href="/assets/external-link-USXJH4TI.js">
+    <link rel="modulepreload" crossorigin href="/assets/refresh-cw-DVfT_GvU.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-D74ezlP_.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from wevvy.reminders import ReminderStore, parse_when
-from wevvy.schema import RiskLevel
-from wevvy.tools import Reminders
+from ceis.reminders import ReminderStore, parse_when
+from ceis.schema import RiskLevel
+from ceis.tools import Reminders
 
 
 def test_parse_when_reads_what_the_model_writes():

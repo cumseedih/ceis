@@ -32,26 +32,26 @@ sequenceDiagram
 
 | 区域 | 文件 | 说明 |
 |---|---|---|
-| 组合根 | `wevvy/app.py` | `WevvyApp` 把设置接到 LLM、工具、保险库、哨兵、记忆、目标、智能体上 |
-| 智能体循环 | `wevvy/agent/core.py` | 组装提示、裁剪上下文、卡住检测、会话持久化、收件箱 |
-| 提示 | `wevvy/prompts.py` | 系统提示、语言规则和文字系统检测、推进目标的提示 |
-| 哨兵 | `wevvy/sentinel/gate.py`、`policy.py`、`audit.py` | 守卫、决策顺序、审批、污点、保险库解析、脱敏、JSONL 审计 |
-| 保险库 | `wevvy/vault/vault.py` | Fernet 存储，`{{vault:NAME}}` 占位符 |
-| 工具基类 | `wevvy/tools/base.py` | `BaseTool`、`CallAssessment`、`ToolCollection`、`safe_execute` |
-| 内置工具 | `wevvy/tools/files.py`、`shell.py`、`web.py`、`email_tool.py`、`browser.py` + `browser_backends.py`（服务器上的 Playwright，或手机的 WebView，见 [browser.md](browser.md)）、`memory_tools.py`、`goal_tools.py`、`terminate.py` | |
-| MCP | `wevvy/tools/mcp_tools.py` | stdio / streamable HTTP / SSE 客户端，每个远端工具对应一个 `MCPTool`；按工具覆盖风险的设置在 `MCPServerSettings.tools` |
-| 在手机上 | `wevvy/runtime.py`、`wevvy/bridge/` | `device()` 读 `WEVVY_DEVICE*`；`DEVICE_TOOLS`（手机那些工具在哨兵里的默认值）和 `device_mcp_server()`（App 的 MCP 服务器作为 `device` 条目，工具名 `device__*`）；CLI 桥（`/api/bridge/*`，一次一条命令的令牌），背后是 `wevvy-device` / `wevvy-browser` / `wevvy-open`；见 [device.md](device.md)、[local-runtime.md](local-runtime.md) |
-| 手机 | `wevvy/phone/link.py`、`screen.py`、`operator.py`、`trace.py`、`wevvy/tools/phone.py` | 已连接的设备，以及经 App 的 WebSocket 走的请求/响应；屏幕是一张截图加一段说明文字；操作器循环（MemGUI 的 `mobile_use` 方言，坐标落在 999 网格上），用它自己的模型；JSONL 轨迹和它的 HTML 渲染；`phone_screen` / `phone_act` / `phone_task` 和它们在哨兵里的评估（见 [gui.md](gui.md)） |
-| LLM | `wevvy/llm/base.py`、`openai_chat.py`、`openai_responses.py`、`prompt_tools.py`、`factory.py`、`mock.py`；`catalogue.py` + `providers.json`、`chatgpt.py`、`codex.py`、`chatgpt_proxy.py` | `BaseLLM`、带 `<think>` 过滤的流式输出、重试、基于提示的工具调用、给测试用的 `MockLLM`；服务商目录（谁覆盖对话、视觉、图像、视频）；ChatGPT 登录（PKCE、令牌存储）以及 `provider = "chatgpt"` 和 `wevvy chatgpt proxy` 背后 Chat Completions ↔ Codex Responses 的转换 |
-| 记忆、目标 | `wevvy/memory/store.py`、`wevvy/memory/consolidate.py`、`wevvy/goals/store.py` | SQLite；注入记忆时按罕见词（IDF）排序，词按任何字母文字切分，中日韩按双字；整理计划器和它的检查，判不了的合并一律拒绝；带撤销的变更日志 |
-| App 服务器 | `wevvy/server/service.py`、`api.py`、`webui.py`、`events.py` | 线程和工作任务、REST + WebSocket、把回调变成事件的 `UI` 实现、时间线持久化 |
+| 组合根 | `ceis/app.py` | `CeisApp` 把设置接到 LLM、工具、保险库、哨兵、记忆、目标、智能体上 |
+| 智能体循环 | `ceis/agent/core.py` | 组装提示、裁剪上下文、卡住检测、会话持久化、收件箱 |
+| 提示 | `ceis/prompts.py` | 系统提示、语言规则和文字系统检测、推进目标的提示 |
+| 哨兵 | `ceis/sentinel/gate.py`、`policy.py`、`audit.py` | 守卫、决策顺序、审批、污点、保险库解析、脱敏、JSONL 审计 |
+| 保险库 | `ceis/vault/vault.py` | Fernet 存储，`{{vault:NAME}}` 占位符 |
+| 工具基类 | `ceis/tools/base.py` | `BaseTool`、`CallAssessment`、`ToolCollection`、`safe_execute` |
+| 内置工具 | `ceis/tools/files.py`、`shell.py`、`web.py`、`email_tool.py`、`browser.py` + `browser_backends.py`（服务器上的 Playwright，或手机的 WebView，见 [browser.md](browser.md)）、`memory_tools.py`、`goal_tools.py`、`terminate.py` | |
+| MCP | `ceis/tools/mcp_tools.py` | stdio / streamable HTTP / SSE 客户端，每个远端工具对应一个 `MCPTool`；按工具覆盖风险的设置在 `MCPServerSettings.tools` |
+| 在手机上 | `ceis/runtime.py`、`ceis/bridge/` | `device()` 读 `CEIS_DEVICE*`；`DEVICE_TOOLS`（手机那些工具在哨兵里的默认值）和 `device_mcp_server()`（App 的 MCP 服务器作为 `device` 条目，工具名 `device__*`）；CLI 桥（`/api/bridge/*`，一次一条命令的令牌），背后是 `ceis-device` / `ceis-browser` / `ceis-open`；见 [device.md](device.md)、[local-runtime.md](local-runtime.md) |
+| 手机 | `ceis/phone/link.py`、`screen.py`、`operator.py`、`trace.py`、`ceis/tools/phone.py` | 已连接的设备，以及经 App 的 WebSocket 走的请求/响应；屏幕是一张截图加一段说明文字；操作器循环（MemGUI 的 `mobile_use` 方言，坐标落在 999 网格上），用它自己的模型；JSONL 轨迹和它的 HTML 渲染；`phone_screen` / `phone_act` / `phone_task` 和它们在哨兵里的评估（见 [gui.md](gui.md)） |
+| LLM | `ceis/llm/base.py`、`openai_chat.py`、`openai_responses.py`、`prompt_tools.py`、`factory.py`、`mock.py`；`catalogue.py` + `providers.json`、`chatgpt.py`、`codex.py`、`chatgpt_proxy.py` | `BaseLLM`、带 `<think>` 过滤的流式输出、重试、基于提示的工具调用、给测试用的 `MockLLM`；服务商目录（谁覆盖对话、视觉、图像、视频）；ChatGPT 登录（PKCE、令牌存储）以及 `provider = "chatgpt"` 和 `ceis chatgpt proxy` 背后 Chat Completions ↔ Codex Responses 的转换 |
+| 记忆、目标 | `ceis/memory/store.py`、`ceis/memory/consolidate.py`、`ceis/goals/store.py` | SQLite；注入记忆时按罕见词（IDF）排序，词按任何字母文字切分，中日韩按双字；整理计划器和它的检查，判不了的合并一律拒绝；带撤销的变更日志 |
+| App 服务器 | `ceis/server/service.py`、`api.py`、`webui.py`、`events.py` | 线程和工作任务、REST + WebSocket、把回调变成事件的 `UI` 实现、时间线持久化 |
 | 前端 | `web/src/` | React + TypeScript + Tailwind；`store.tsx`（状态、WebSocket）、`screens/`（各个标签页）、`components/`（卡片、形象、Markdown） |
-| 终端 | `wevvy/console.py`、`wevvy/cli.py` | 基于 Rich 的控制台界面，审批就在行内；Typer 命令 |
-| 配置、结构 | `wevvy/config.py`、`wevvy/schema.py` | Pydantic 设置、消息和工具调用的模型 |
+| 终端 | `ceis/console.py`、`ceis/cli.py` | 基于 Rich 的控制台界面，审批就在行内；Typer 命令 |
+| 配置、结构 | `ceis/config.py`、`ceis/schema.py` | Pydantic 设置、消息和工具调用的模型 |
 
 ## `UI` 协议 {#the-ui-protocol}
 
-任何能把智能体展示给人的东西，都实现 `wevvy/ui.py::UI`：文字增量、助手消息、工具调用和结果、哨兵通知、`ask_approval()` 和 `ask_user()`。`ConsoleUI` 是终端；`WebUI` 把同样的回调变成时间线事件和 WebSocket 消息，并把审批放在 future 里等 App 回答。一个 Telegram 或桌面前端，就是这同一个协议的另一个实现，或者 HTTP API 的一个客户端。
+任何能把智能体展示给人的东西，都实现 `ceis/ui.py::UI`：文字增量、助手消息、工具调用和结果、哨兵通知、`ask_approval()` 和 `ask_user()`。`ConsoleUI` 是终端；`WebUI` 把同样的回调变成时间线事件和 WebSocket 消息，并把审批放在 future 里等 App 回答。一个 Telegram 或桌面前端，就是这同一个协议的另一个实现，或者 HTTP API 的一个客户端。
 
 ## App 里的线程 {#threads-in-the-app}
 
@@ -61,7 +61,7 @@ sequenceDiagram
 
 | 想加…… | 这样做 |
 |---|---|
-| 一个工具 | 在 `wevvy/tools/` 里继承 `BaseTool`，设好 `risk`，如果某次调用可能比默认更危险就覆盖 `assess()`，在 `app.py::_build_tools` 里注册，用 `MockLLM` 加一个测试 |
+| 一个工具 | 在 `ceis/tools/` 里继承 `BaseTool`，设好 `risk`，如果某次调用可能比默认更危险就覆盖 `assess()`，在 `app.py::_build_tools` 里注册，用 `MockLLM` 加一个测试 |
 | 一个连接器 | 优先用 MCP 服务器（`[[mcp.servers]]`）；只有协议装不进去时才写工具 |
 | 一个模型服务商 | 大多数端点 `openai` / `openai_responses` 已经覆盖；否则实现 `BaseLLM`，在 `llm/factory.py` 里注册 |
 | 一个前端 | 实现 `UI`，或者按 `docs/app.md` 驱动 HTTP/WebSocket API |
@@ -71,8 +71,8 @@ sequenceDiagram
 
 ```bash
 python -m pytest -q                 # unit tests with MockLLM, no network
-WEVVY_LIVE=1 python -m pytest -q -m live    # smoke test against your configured model
-ruff check wevvy tests && ruff format --check wevvy tests
+CEIS_LIVE=1 python -m pytest -q -m live    # smoke test against your configured model
+ruff check ceis tests && ruff format --check ceis tests
 cd web && npm run build             # type-checks and rebuilds the app
 ```
 

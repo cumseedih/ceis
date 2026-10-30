@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight // wevvy
+import androidx.compose.ui.text.font.FontWeight // ceis
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -40,17 +40,17 @@ private val TealSecondary = Color(0xFF4F5B6E)
 private val TealOnSecondary = Color(0xFFFFFFFF)
 private val TealSecondaryContainer = Color(0xFFDCE6F5)
 private val TealOnSecondaryContainer = Color(0xFF101C2E)
-private val TealTertiary = Color(0xFF0064D4) // wevvy: design tokens (link blue)
+private val TealTertiary = Color(0xFF0064D4) // ceis: design tokens (link blue)
 private val TealOnTertiary = Color(0xFFFFFFFF)
-private val TealTertiaryContainer = Color(0xFFE6EEF9) // wevvy: design tokens
-private val TealOnTertiaryContainer = Color(0xFF00408A) // wevvy: design tokens
-private val TealBackground = Color(0xFFFCFCFC) // wevvy: design tokens (page)
-private val TealOnBackground = Color(0xFF111112) // wevvy: design tokens (text)
-private val TealSurface = Color(0xFFFFFFFF) // wevvy: design tokens
-private val TealOnSurface = Color(0xFF111112) // wevvy: design tokens (text)
-private val TealSurfaceVariant = Color(0xFFFFFFFF) // wevvy: design tokens (cards stay white)
+private val TealTertiaryContainer = Color(0xFFE6EEF9) // ceis: design tokens
+private val TealOnTertiaryContainer = Color(0xFF00408A) // ceis: design tokens
+private val TealBackground = Color(0xFFFCFCFC) // ceis: design tokens (page)
+private val TealOnBackground = Color(0xFF111112) // ceis: design tokens (text)
+private val TealSurface = Color(0xFFFFFFFF) // ceis: design tokens
+private val TealOnSurface = Color(0xFF111112) // ceis: design tokens (text)
+private val TealSurfaceVariant = Color(0xFFFFFFFF) // ceis: design tokens (cards stay white)
 private val TealOnSurfaceVariant = Color(0xFF3C3C43)
-private val TealOutline = Color(0xFFE5E7EB) // wevvy: design tokens (border)
+private val TealOutline = Color(0xFFE5E7EB) // ceis: design tokens (border)
 
 private val TealDarkPrimary = Color(0xFF0064D4)
 private val TealDarkOnPrimary = Color(0xFF00224D)
@@ -73,10 +73,10 @@ private val TealDarkOutline = Color(0xFF8E8E93)
 // primary tint.
 // Light: page = #FCFCFC, card = white
 // Dark:  page = #000, card = #1C1C1E
-private val NeutralGroupedBg = Color(0xFFFCFCFC) // wevvy: design tokens
+private val NeutralGroupedBg = Color(0xFFFCFCFC) // ceis: design tokens
 private val NeutralGroupedCard = Color(0xFFFFFFFF)
 private val NeutralGroupedCardElevated = Color(0xFFF7F7FA)
-private val NeutralOutline = Color(0xFFE5E7EB) // wevvy: design tokens
+private val NeutralOutline = Color(0xFFE5E7EB) // ceis: design tokens
 
 private val NeutralDarkGroupedBg = Color(0xFF000000)
 private val NeutralDarkGroupedCard = Color(0xFF1C1C1E)
@@ -109,7 +109,7 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainerHighest = NeutralGroupedCardElevated,
     outline = NeutralOutline,
     outlineVariant = NeutralOutline,
-    error = Color(0xFFD92D20), // wevvy: design tokens
+    error = Color(0xFFD92D20), // ceis: design tokens
     onError = Color(0xFFFFFFFF),
 )
 
@@ -143,8 +143,8 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun minisFabColor(): Color = LocalChatPalette.current.fabAccent
 
-// App-wide shape system — the wevvy radius scale 0/4/8/16/24/full
-// (wevvy: was 12/12/20/24/28; full pill shapes are set per component)
+// App-wide shape system — the ceis radius scale 0/4/8/16/24/full
+// (ceis: was 12/12/20/24/28; full pill shapes are set per component)
 private val MinisShapes = Shapes(
     extraSmall = RoundedCornerShape(4.dp),    // DropdownMenu, Tooltip
     small = RoundedCornerShape(8.dp),         // Chip, TextField
@@ -175,7 +175,7 @@ fun MinisTheme(
 private fun TextStyle.scale(factor: Float): TextStyle =
     if (factor == 1f) this else copy(fontSize = fontSize * factor)
 
-// wevvy: wevvy's type ramp, on the system face (the brand font file was not
+// ceis: ceis's type ramp, on the system face (the brand font file was not
 // supplied, so the platform sans stays). Zero tracking throughout; the steps the
 // design file names map onto Material's slots, the rest keep Muse's scale.
 private fun museTypography(): Typography {
@@ -188,21 +188,21 @@ private fun museTypography(): Typography {
         displaySmall = base.displaySmall.muse(36, 44, FontWeight.SemiBold),
         headlineLarge = base.headlineLarge.muse(32, 40, FontWeight.SemiBold),
         headlineMedium = base.headlineMedium.muse(28, 36, FontWeight.SemiBold),
-        headlineSmall = base.headlineSmall.muse(25, 30, FontWeight.Medium), // wevvy: design tokens
+        headlineSmall = base.headlineSmall.muse(25, 30, FontWeight.Medium), // ceis: design tokens
         titleLarge = base.titleLarge.muse(22, 28, FontWeight.SemiBold),
         titleMedium = base.titleMedium.muse(17, 22, FontWeight.SemiBold),
         titleSmall = base.titleSmall.muse(15, 20, FontWeight.Medium),
-        bodyLarge = base.bodyLarge.muse(18, 26), // wevvy: design tokens
-        bodyMedium = base.bodyMedium.muse(16, 24), // wevvy: design tokens
-        bodySmall = base.bodySmall.muse(14, 20), // wevvy: design tokens
-        labelLarge = base.labelLarge.muse(14, 20, FontWeight.Medium), // wevvy: design tokens
-        labelMedium = base.labelMedium.muse(12, 16, FontWeight.Medium), // wevvy: design tokens
-        labelSmall = base.labelSmall.muse(12, 18), // wevvy: caption from the design tokens
+        bodyLarge = base.bodyLarge.muse(18, 26), // ceis: design tokens
+        bodyMedium = base.bodyMedium.muse(16, 24), // ceis: design tokens
+        bodySmall = base.bodySmall.muse(14, 20), // ceis: design tokens
+        labelLarge = base.labelLarge.muse(14, 20, FontWeight.Medium), // ceis: design tokens
+        labelMedium = base.labelMedium.muse(12, 16, FontWeight.Medium), // ceis: design tokens
+        labelSmall = base.labelSmall.muse(12, 18), // ceis: caption from the design tokens
     )
 }
 
 private fun scaledTypography(factor: Float): Typography {
-    val base = museTypography() // wevvy: was Material's default scale
+    val base = museTypography() // ceis: was Material's default scale
     return Typography(
         displayLarge = base.displayLarge.scale(factor),
         displayMedium = base.displayMedium.scale(factor),

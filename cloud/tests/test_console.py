@@ -9,7 +9,7 @@ from pathlib import Path
 
 from test_accounts import make
 
-CONSOLE = Path(__file__).resolve().parents[1] / "wevvy_cloud" / "console"
+CONSOLE = Path(__file__).resolve().parents[1] / "ceis_cloud" / "console"
 
 # what a signed-in person can get from the relay since 0.22 (service.py, api.py), by code
 CODES_0_22 = [

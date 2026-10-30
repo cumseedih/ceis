@@ -129,7 +129,7 @@ export function SettingsScreen() {
 
   const saved = identityOf(state.profile, "", AVATAR_COLORS[0]);
   const dirty = !!state.profile && (Object.keys(identity) as (keyof Identity)[]).some((k) => identity[k] !== saved[k]);
-  const name = state.profile?.name ?? "wevvy";
+  const name = state.profile?.name ?? "ceis";
   const developer = useDeveloperTools();
   const steps = useShowSteps();
   // One page on a wide window (the sections down the left, the way Muse's desktop settings
@@ -309,14 +309,14 @@ export function SettingsScreen() {
         {/* Notifications */}
         {show("notifications") && (
         <Section title={t("Notifications")} id="notifications" plain={!wide}>
-          {androidApp() ? <PhoneAppSettings name={state.profile?.name ?? "wevvy"} /> : <PushSettings name={state.profile?.name ?? "wevvy"} />}
+          {androidApp() ? <PhoneAppSettings name={state.profile?.name ?? "ceis"} /> : <PushSettings name={state.profile?.name ?? "ceis"} />}
         </Section>
         )}
 
         {/* Keep it running: only the Android app has anything to say here */}
         {keepRunningStatus() && show("keep-running") && (
           <Section title={t("Keep it running")} id="keep-running" plain={!wide}>
-            <KeepRunningSettings name={state.profile?.name ?? "wevvy"} />
+            <KeepRunningSettings name={state.profile?.name ?? "ceis"} />
           </Section>
         )}
 
@@ -400,7 +400,7 @@ export function SettingsScreen() {
           <div className="flex items-center gap-3">
             <label htmlFor={replyLangId} className="text-[13.5px] flex-1">
               {t("Reply language")}
-              <span className="block text-[12px] text-muted">{t("What {name} writes in", { name: state.profile?.name ?? "wevvy" })}</span>
+              <span className="block text-[12px] text-muted">{t("What {name} writes in", { name: state.profile?.name ?? "ceis" })}</span>
             </label>
             <select
               id={replyLangId}
@@ -454,7 +454,7 @@ export function SettingsScreen() {
                 </a>
                 {" · "}
                 <a href="https://github.com/nano-muse/nanoMuse/blob/main/docs/harness.md" target="_blank" rel="noreferrer" className="text-link underline-offset-2 hover:underline">
-                  {t("wevvy on DeepSeek Harness")}
+                  {t("ceis on DeepSeek Harness")}
                 </a>
               </div>
             </div>
@@ -530,9 +530,9 @@ function VersionRows({ installed, release, checking, onCheck }: { installed: str
   else latest = <>{t("Could not check")} · {checkNow}</>;
   return (
     <div className="rounded-2xl bg-surface-2/60 px-3.5 py-2.5 text-[13px]">
-      <div className="font-medium">{t("wevvy {version}", { version: installed })}</div>
+      <div className="font-medium">{t("ceis {version}", { version: installed })}</div>
       <div className="mt-0.5 text-muted">{latest}</div>
-      {!phone && release?.latest && release.newer && <div className="mt-1 text-[12px] text-muted">{t("To update: pip install -U wevvy, pull the new image, or use the desktop app's Update.")}</div>}
+      {!phone && release?.latest && release.newer && <div className="mt-1 text-[12px] text-muted">{t("To update: pip install -U ceis, pull the new image, or use the desktop app's Update.")}</div>}
       {!phone && release?.checked_at && <div className="mt-1 text-[12px] text-muted">{t("Checked {when}", { when: relativeTime(release.checked_at) })}</div>}
     </div>
   );
@@ -550,7 +550,7 @@ function SettingsHome({ release, onOpen }: { release: UpdateView | null; onOpen:
   const hub = state.hub;
   // what the configured providers cover (contract C11), from the runtime; null on an older one
   const providers = useProviders();
-  const name = state.profile?.name ?? "wevvy";
+  const name = state.profile?.name ?? "ceis";
   const themeSetting = useThemeSetting();
   const others = hub?.devices.filter((d) => !d.this && d.kind !== "web") ?? [];
   const computers = others.filter((d) => d.kind === "computer");
@@ -571,13 +571,13 @@ function SettingsHome({ release, onOpen }: { release: UpdateView | null; onOpen:
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[16px] font-medium leading-[21px]">{s?.llm.model || t("No model yet")}</span>
               <span className="mt-0.5 block truncate text-[12.5px] leading-4 text-muted">
-                {s ? (s.llm.cloud ? "wevvy Cloud" : s.llm.provider) : t("Add a provider and pick its models")}
+                {s ? (s.llm.cloud ? "ceis Cloud" : s.llm.provider) : t("Add a provider and pick its models")}
               </span>
             </span>
             <span className="text-[14px] font-medium text-accent">{t("Change")}</span>
           </button>
           <MuseDivider />
-          <MuseRow icon={<Cloud size={22} />} label="wevvy Cloud" value={hub?.account.signed_in ? hub.account.hint : t("Sign in")} onClick={() => setTab("account")} />
+          <MuseRow icon={<Cloud size={22} />} label="ceis Cloud" value={hub?.account.signed_in ? hub.account.hint : t("Sign in")} onClick={() => setTab("account")} />
           <MuseDivider />
           <MuseRow
             icon={<Clapperboard size={22} />}
@@ -650,13 +650,13 @@ function SettingsHome({ release, onOpen }: { release: UpdateView | null; onOpen:
 
         {/* about */}
         <MuseCard className="mb-3">
-          <MuseRow icon={<Info size={22} />} label={t("About wevvy")} value={release?.newer && release.latest ? t("{version} is out", { version: release.latest }) : undefined} onClick={() => onOpen("about")} />
+          <MuseRow icon={<Info size={22} />} label={t("About ceis")} value={release?.newer && release.latest ? t("{version} is out", { version: release.latest }) : undefined} onClick={() => onOpen("about")} />
           <MuseDivider />
           <MuseRow icon={<Hand size={22} />} label={t("Privacy policy")} onClick={() => window.open(PRIVACY_URL, "_blank", "noopener")} external />
           <MuseDivider />
           <MuseRow icon={<MessageSquareWarning size={22} />} label={t("Feedback")} onClick={() => window.open("https://github.com/nano-muse/nanoMuse/issues/new/choose", "_blank", "noopener")} external />
         </MuseCard>
-        <MuseCaption>wevvy {state.version}</MuseCaption>
+        <MuseCaption>ceis {state.version}</MuseCaption>
       </div>
     </div>
   );
@@ -679,7 +679,7 @@ function PhoneAppSettings({ name }: { name: string }) {
           setOn(v);
         }}
       />
-      <div className="text-[12.5px] text-muted">{t("wevvy for Android {version}", { version: phone.version() })}</div>
+      <div className="text-[12.5px] text-muted">{t("ceis for Android {version}", { version: phone.version() })}</div>
     </>
   );
 }

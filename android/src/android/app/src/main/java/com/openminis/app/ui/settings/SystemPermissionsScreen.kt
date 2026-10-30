@@ -109,7 +109,7 @@ fun SystemPermissionsScreen(onBack: () -> Unit) {
 
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(stringResource(R.string.system_permissions_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -131,7 +131,7 @@ fun SystemPermissionsScreen(onBack: () -> Unit) {
             ) {
                 SettingsRow(
                     icon = Icons.Outlined.Accessibility,
-                    iconColor = io.github.wevvy.ui.theme.WevvyColors.success,
+                    iconColor = io.github.ceis.ui.theme.CeisColors.success,
                     title = stringResource(R.string.system_permissions_a11y_row),
                     subtitle = if (a11yEnabled)
                         stringResource(R.string.system_permissions_a11y_enabled)
@@ -163,7 +163,7 @@ fun SystemPermissionsScreen(onBack: () -> Unit) {
                     if (shizukuReady) {
                         SettingsRow(
                             icon = Icons.Outlined.LockOpen,
-                            iconColor = io.github.wevvy.ui.theme.WevvyColors.success,
+                            iconColor = io.github.ceis.ui.theme.CeisColors.success,
                             title = stringResource(R.string.system_permissions_a11y_restricted_shizuku),
                             subtitle = when {
                                 unrestricting ->
@@ -221,7 +221,7 @@ fun SystemPermissionsScreen(onBack: () -> Unit) {
                 ) {
                     SettingsRow(
                         icon = Icons.Outlined.Build,
-                        iconColor = io.github.wevvy.ui.theme.WevvyColors.error,
+                        iconColor = io.github.ceis.ui.theme.CeisColors.error,
                         title = stringResource(
                             if (shizukuReady) R.string.a11y_repair_row_shizuku
                             else R.string.a11y_repair_row_manual

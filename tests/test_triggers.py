@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from wevvy.schema import RiskLevel
-from wevvy.tools import Triggers
-from wevvy.triggers import TriggerStore, matches
+from ceis.schema import RiskLevel
+from ceis.tools import Triggers
+from ceis.triggers import TriggerStore, matches
 
 
 def test_matches_needs_every_word_anywhere():
@@ -198,8 +198,8 @@ def _mail(sender: str, subject: str, body: str) -> bytes:
 
 
 async def test_mail_watcher_reads_new_messages_by_uid(monkeypatch: pytest.MonkeyPatch):
-    from wevvy.config import EmailSettings
-    from wevvy.triggers.mail import MailWatcher
+    from ceis.config import EmailSettings
+    from ceis.triggers.mail import MailWatcher
 
     messages = {
         40: _mail("Old <old@example.com>", "Before you connected", "not replayed"),

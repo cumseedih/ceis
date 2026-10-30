@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>wevvy hands</title>
+<title>ceis hands</title>
 <style>
   /* A transparent, click-through, always-on-top window over the whole display while the hands
      work — the phone's HandsStage, drawn for a desktop screen: a glow breathing along the four
@@ -196,7 +196,7 @@
       clearTimeout(markerTimer)
       markerTimer = setTimeout(() => mark.classList.add('fade'), MARKER_MS)
     }
-    if (window.wevvyGlow?.platform === 'linux') {
+    if (window.ceisGlow?.platform === 'linux') {
       root.classList.add('x11')
       let lastLeak = 0
       const leak = (e) => {
@@ -204,11 +204,11 @@
         const now = Date.now()
         if (e.type !== 'pointerdown' && e.type !== 'wheel' && now - lastLeak < 100) return
         lastLeak = now
-        window.wevvyGlow.leak(e.clientX, e.clientY, e.type)
+        window.ceisGlow.leak(e.clientX, e.clientY, e.type)
       }
       for (const type of ['pointerenter', 'pointermove', 'pointerdown', 'wheel']) document.getElementById('witness').addEventListener(type, leak, { passive: true })
     }
-    window.wevvyGlow?.onState((s) => {
+    window.ceisGlow?.onState((s) => {
       root.classList.toggle('on', Boolean(s.active))
       root.classList.toggle('held', Boolean(s.held))
       if (!s.active) { hideMarks(); return }

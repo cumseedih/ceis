@@ -11,10 +11,10 @@ import urllib.parse
 import httpx
 import pytest
 
-from wevvy_cloud import senders
-from wevvy_cloud.config import Settings
-from wevvy_cloud.identifiers import parse
-from wevvy_cloud.senders import AliyunSmsSender, BothSender, SendError, SmtpSender, make_sender
+from ceis_cloud import senders
+from ceis_cloud.config import Settings
+from ceis_cloud.identifiers import parse
+from ceis_cloud.senders import AliyunSmsSender, BothSender, SendError, SmtpSender, make_sender
 
 
 def aliyun_settings(**overrides) -> Settings:
@@ -102,7 +102,7 @@ def test_rejections_and_wrong_channels_are_send_errors_without_the_number(monkey
 
 
 def test_make_sender_both_routes_phones_to_sms_and_addresses_to_mail(monkeypatch):
-    s = aliyun_settings(sender="both", smtp_host="smtp.test", smtp_from="wevvy <no-reply@test>")
+    s = aliyun_settings(sender="both", smtp_host="smtp.test", smtp_from="ceis <no-reply@test>")
     both = make_sender(s)
     assert isinstance(both, BothSender) and isinstance(both.mail, SmtpSender) and isinstance(both.sms, AliyunSmsSender)
     fake = FakeGet({"Code": "OK"})
@@ -121,11 +121,11 @@ def test_the_code_mail_states_the_lifetime_in_whole_minutes_like_the_sms(monkeyp
     as zero. The mail is composed with the settings' figure, in English only."""
     sent = []
     monkeypatch.setattr(senders, "smtp_send", lambda s, msg: sent.append(msg))
-    mail = SmtpSender(aliyun_settings(sender="smtp", smtp_host="smtp.test", smtp_from="wevvy <no-reply@test>"))
+    mail = SmtpSender(aliyun_settings(sender="smtp", smtp_host="smtp.test", smtp_from="ceis <no-reply@test>"))
     mail.send(parse("dev-a@example.com"), "482913")
     body = sent[-1].get_body(("plain",)).get_content()
     assert "482913" in body and "expires in 10 minutes" in body and "分钟" not in body
-    short = SmtpSender(aliyun_settings(sender="smtp", smtp_host="smtp.test", smtp_from="wevvy <no-reply@test>", code_ttl_s=30))
+    short = SmtpSender(aliyun_settings(sender="smtp", smtp_host="smtp.test", smtp_from="ceis <no-reply@test>", code_ttl_s=30))
     short.send(parse("dev-a@example.com"), "482913")
     body = sent[-1].get_body(("plain",)).get_content()
     assert "expires in 1 minutes" in body and "expires in 0 minutes" not in body
@@ -147,7 +147,7 @@ def test_senders_say_up_front_whom_they_can_reach():
     assert not dypns.accepts(parse("dev-a@example.com"))
     dysms = AliyunSmsSender(aliyun_settings(aliyun_sms_api="dysms"))
     assert dysms.accepts(parse("+85212345678")) and not dysms.accepts(parse("dev-a@example.com"))
-    mail = SmtpSender(aliyun_settings(sender="smtp", smtp_host="smtp.test", smtp_from="wevvy <no-reply@test>"))
+    mail = SmtpSender(aliyun_settings(sender="smtp", smtp_host="smtp.test", smtp_from="ceis <no-reply@test>"))
     assert mail.accepts(parse("dev-a@example.com")) and not mail.accepts(parse("13800138000"))
     both = BothSender(mail, dypns)
     assert both.accepts(parse("13800138000")) and both.accepts(parse("dev-a@example.com"))
@@ -159,11 +159,11 @@ def test_a_number_the_sender_cannot_reach_is_a_400_before_any_code_exists(monkey
     not a 502 — and nothing is counted against it."""
     import asyncio
 
-    from wevvy_cloud.api import create_app
-    from wevvy_cloud.db import Database
-    from wevvy_cloud.service import Cloud
+    from ceis_cloud.api import create_app
+    from ceis_cloud.db import Database
+    from ceis_cloud.service import Cloud
 
-    s = aliyun_settings(sender="both", smtp_host="smtp.test", smtp_from="wevvy <no-reply@test>", public_base="http://cloud.test")
+    s = aliyun_settings(sender="both", smtp_host="smtp.test", smtp_from="ceis <no-reply@test>", public_base="http://cloud.test")
     calls = FakeGet({"Code": "OK"})
     monkeypatch.setattr(senders.httpx, "get", calls)
     cloud = Cloud(s, Database(":memory:"), make_sender(s))

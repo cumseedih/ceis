@@ -304,7 +304,7 @@ fun SoulSettingsScreen(onBack: () -> Unit) {
                 }
                 Column(modifier = Modifier.padding(start = 4.dp)) {
                     Text(
-                        text = name.ifBlank { "wevvy" },
+                        text = name.ifBlank { "ceis" },
                         fontSize = 17.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -365,7 +365,7 @@ fun SoulSettingsScreen(onBack: () -> Unit) {
                 Spacer(Modifier.height(6.dp))
                 val isOverLimit = bodyLimitCheck.isOverLimit
                 val warnColor: Color =
-                    if (isOverLimit) io.github.wevvy.ui.theme.WevvyColors.error
+                    if (isOverLimit) io.github.ceis.ui.theme.CeisColors.error
                     else MaterialTheme.colorScheme.onSurfaceVariant
                 val indicatorText: String = when (val c = bodyLimitCheck) {
                     is SoulBodyLimitCheck.Ok -> {

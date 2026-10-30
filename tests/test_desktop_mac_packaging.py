@@ -50,12 +50,12 @@ PackageTree = tuple[Path, dict[str, str], Path]
 def package_tree(tmp_path: Path) -> PackageTree:
     app_dir = tmp_path / "desktop"
     for folder in ("mac", "mac-arm64"):
-        app = app_dir / "dist" / folder / "wevvy.app"
-        runtime = app / "Contents/Resources/runtime/wevvy"
+        app = app_dir / "dist" / folder / "ceis.app"
+        runtime = app / "Contents/Resources/runtime/ceis"
         runtime.parent.mkdir(parents=True)
         runtime.write_bytes(b"fixture native executable")
         runtime.chmod(0o755)
-        (app / "Contents/Helpers/wevvy Computer Use.app").mkdir(parents=True)
+        (app / "Contents/Helpers/ceis Computer Use.app").mkdir(parents=True)
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
     cli = bin_dir / "fake-cli"
@@ -96,7 +96,7 @@ def test_only_the_requested_architecture_is_packaged(
     assert result.returncode == 0, result.stdout + result.stderr
     calls = [json.loads(line) for line in trace.read_text(encoding="utf-8").splitlines()]
     archive = next(call for call in calls if call["name"] == "ditto")
-    assert archive["args"][-2] == str(app_dir / "dist" / folder / "wevvy.app")
+    assert archive["args"][-2] == str(app_dir / "dist" / folder / "ceis.app")
 
 
 @pytest.mark.parametrize("stage", ["sign-inner", "verify-helper", "verify-app", "verify-dmg"])
@@ -115,7 +115,7 @@ def test_a_failed_signature_or_image_verification_stops_packaging(
 
 def test_executable_scripts_are_not_sent_to_codesign(package_tree: PackageTree) -> None:
     app_dir, env, trace = package_tree
-    script = app_dir / "dist/mac/wevvy.app/Contents/Resources/runtime/launcher.sh"
+    script = app_dir / "dist/mac/ceis.app/Contents/Resources/runtime/launcher.sh"
     script.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
     script.chmod(0o755)
     result = run_package(env)
@@ -126,8 +126,8 @@ def test_executable_scripts_are_not_sent_to_codesign(package_tree: PackageTree) 
 
 def test_a_single_bundle_named_after_the_executable_is_renamed(package_tree: PackageTree) -> None:
     app_dir, env, trace = package_tree
-    app = app_dir / "dist/mac/wevvy.app"
-    candidate = app.with_name("wevvy-desktop.app")
+    app = app_dir / "dist/mac/ceis.app"
+    candidate = app.with_name("ceis-desktop.app")
     app.rename(candidate)
     result = run_package(env)
     assert result.returncode == 0, result.stdout + result.stderr

@@ -7,7 +7,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from wevvy.coding.agents import _slug_to_path
+from ceis.coding.agents import _slug_to_path
 
 
 def test_unix_slugs_read_as_before() -> None:

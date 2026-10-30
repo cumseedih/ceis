@@ -10,9 +10,9 @@ from pathlib import Path
 
 import pytest
 
-from wevvy.schema import RiskLevel
-from wevvy.tools import Files
-from wevvy.tools import files as files_module
+from ceis.schema import RiskLevel
+from ceis.tools import Files
+from ceis.tools import files as files_module
 
 
 async def _setup(files: Files, path: str, content: str) -> Path:

@@ -3,9 +3,9 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "wevvy-cloud"
+name = "ceis-cloud"
 version = "0.26.0"
-description = "wevvy Cloud: sign up with a phone number or an e-mail address, get a key that works out of the box; an OpenAI-shaped relay with a token grant per account."
+description = "ceis Cloud: sign up with a phone number or an e-mail address, get a key that works out of the box; an OpenAI-shaped relay with a token grant per account."
 readme = "README.md"
 license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.11"
@@ -22,10 +22,10 @@ dependencies = [
 dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.5"]
 
 [project.scripts]
-wevvy-cloud = "wevvy_cloud.__main__:main"
+ceis-cloud = "ceis_cloud.__main__:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["wevvy_cloud"]
+packages = ["ceis_cloud"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

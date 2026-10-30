@@ -7,7 +7,7 @@ import type { CloudConfig } from "../types";
 export type { StarMoment } from "../nudges";
 
 /**
- * The star-on-GitHub asks are switched off for wevvy: the nudge system stays in the
+ * The star-on-GitHub asks are switched off for ceis: the nudge system stays in the
  * tree (the relay still publishes its policy, the ledger module is untouched) but no
  * ask is ever drawn. The names below keep the call sites compiling; each is a no-op.
  */

@@ -133,7 +133,7 @@ private fun DownloadRow(
             BrowserTabPool.DownloadState.DOWNLOADING ->
                 Icons.Default.Download to MaterialTheme.colorScheme.primary
             BrowserTabPool.DownloadState.COMPLETED ->
-                Icons.Default.CheckCircle to io.github.wevvy.ui.theme.WevvyColors.success
+                Icons.Default.CheckCircle to io.github.ceis.ui.theme.CeisColors.success
             BrowserTabPool.DownloadState.FAILED ->
                 Icons.Default.ErrorOutline to MaterialTheme.colorScheme.error
         }

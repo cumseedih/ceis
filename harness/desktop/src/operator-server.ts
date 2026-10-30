@@ -4,12 +4,12 @@ import { Operator, OperatorError, type OperatorAction, type ScreenshotRequest } 
 
 /**
  * The operator on loopback for the Python runtime this app starts. JSON both ways, a bearer
- * token made per launch (the runtime gets it in its environment as WEVVY_OPERATOR_TOKEN
- * next to WEVVY_OPERATOR_URL), a random port on 127.0.0.1, bodies capped at 2 MB. Three
+ * token made per launch (the runtime gets it in its environment as CEIS_OPERATOR_TOKEN
+ * next to CEIS_OPERATOR_URL), a random port on 127.0.0.1, bodies capped at 2 MB. Three
  * routes, and nothing a browser could use by accident (no CORS, no GET with effects):
  *
  *   GET  /info        → { available, reason, platform, display: { width, height, scaleFactor, logical }, helper? }
- *                     helper (macOS): { present, running, pid?, version?, capture?, reason } — "wevvy Computer Use"
+ *                     helper (macOS): { present, running, pid?, version?, capture?, reason } — "ceis Computer Use"
  *   POST /screenshot  { width?, height?, format?: "png"|"jpeg", quality?, max_pixels? }
  *                     → { base64, mime, width, height, screen: { width, height }, scaleFactor, display: { id, bounds } }
  *                     width×height is the picture asked for; without them the screen's size, capped at
@@ -22,7 +22,7 @@ import { Operator, OperatorError, type OperatorAction, type ScreenshotRequest } 
  *                     → { base64, mime, width, height, window: { id, x, y, width, height }, scale }
  *                     one window's own pixels and its frame in points; 404 when the window is gone
  *
- * Errors are 4xx/5xx with { error }. The contract is mirrored in wevvy/computer/operator.py.
+ * Errors are 4xx/5xx with { error }. The contract is mirrored in ceis/computer/operator.py.
  */
 
 const MAX_BODY = 2 * 1024 * 1024;

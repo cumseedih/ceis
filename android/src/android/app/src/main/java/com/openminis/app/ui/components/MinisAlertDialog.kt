@@ -56,7 +56,7 @@ fun MinisAlertDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
-            // wevvy: floating dialogs take a whisper of translucency
+            // ceis: floating dialogs take a whisper of translucency
             // (design.md: dialogs are in the glass layer; a dialog window
             // cannot blur the app behind it, so the tint carries it).
             color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),

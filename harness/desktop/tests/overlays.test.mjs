@@ -24,7 +24,7 @@ test("the glow breathes along the four edges; nothing flows round the rim", () =
   assert.doesNotMatch(glow, /@keyframes flow\b/);
   assert.doesNotMatch(glow, /background-position/);
   assert.doesNotMatch(glow, /class="face"/);
-  // the hues: the wevvy primary while working, amber while the hands wait for the person
+  // the hues: the ceis primary while working, amber while the hands wait for the person
   assert.match(glow, /--accent: #005ABF/);
   assert.match(glow, /\.held \{ --glow: rgba\(255,176,0/);
 });
@@ -43,7 +43,7 @@ test("the marker is the phone's: halo, ring, turning cyan arc, dot, the label pi
 });
 
 test("the capsule is the phone's pill: the face in a three-hue ring, four breathing bars, Step N, Stop and I'll take it; the cards under it", () => {
-  assert.match(capsule, /--accent: #005ABF/, 'the wevvy primary');
+  assert.match(capsule, /--accent: #005ABF/, 'the ceis primary');
   assert.match(capsule, /\.ring \{[^\n]*conic-gradient\(var\(--accent\), var\(--violet\), var\(--cyan\), var\(--accent\)\)[^\n]*animation: breathe 4\.8s ease-in-out infinite/);
   assert.match(capsule, /<span class="bars"><i><\/i><i><\/i><i><\/i><i><\/i><\/span>/);
   assert.match(capsule, /\.bars i \{[^\n]*animation: bar 4\.8s ease-in-out infinite/);

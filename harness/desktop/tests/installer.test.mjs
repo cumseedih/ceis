@@ -2,7 +2,7 @@
 // install. electron-builder's NSIS target keeps "pre-compressed" extensions (.mp4 among them by
 // default) out of the installer's archive and writes those files one by one instead, skipping
 // every node_modules folder as it goes, so the dragon's clips under
-// resources/dsh/node_modules/dsh-wevvy/assets/ were in neither place and the face above the
+// resources/dsh/node_modules/dsh-ceis/assets/ were in neither place and the face above the
 // chat stood still on Windows (1.0.0). The config turns the exception off; this keeps it off.
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
@@ -45,7 +45,7 @@ test("the Windows build writes the update metadata electron-updater reads", () =
 });
 
 test("the clips the installer must carry are in the bundle's assets", () => {
-  const assets = fileURLToPath(new URL("../dsh-wevvy/assets/", here));
+  const assets = fileURLToPath(new URL("../dsh-ceis/assets/", here));
   for (const mood of ["idle", "working", "waiting", "happy"]) {
     assert.ok(existsSync(join(assets, `dragon-${mood}.mp4`)), `dragon-${mood}.mp4`);
     assert.ok(existsSync(join(assets, `dragon-${mood}.webp`)), `dragon-${mood}.webp`);

@@ -26,7 +26,7 @@ class NodeHttpExecutor extends HttpExecutor {
 }
 
 export async function updateFeed(t, { current = "1.0.3", version = "1.0.4", slow = false, confirm = false, busy = [], realInstall = false } = {}) {
-  const root = mkdtempSync(join(tmpdir(), "wevvy-update-flow-"));
+  const root = mkdtempSync(join(tmpdir(), "ceis-update-flow-"));
   const bytes = Buffer.alloc(1024 * 128, 0x31);
   const digest = createHash("sha512").update(bytes).digest("base64");
   const seen = [];
@@ -40,7 +40,7 @@ export async function updateFeed(t, { current = "1.0.3", version = "1.0.4", slow
   let on = busy;
   const answers = { mirrorPackage: bytes, githubPackage: bytes, mirrorMetadata: version, githubMetadata: version,
     mirrorCheck: version, githubCheck: version, githubDigest: digest, stopError: false, installError: false };
-  const metadata = (v) => `version: ${v}\nfiles:\n  - url: wevvy-Desktop-${v}-win-x64.exe\n    sha512: ${digest}\n    size: ${bytes.length}\npath: wevvy-Desktop-${v}-win-x64.exe\nsha512: ${digest}\nreleaseDate: '2026-10-12T00:00:00.000Z'\n`;
+  const metadata = (v) => `version: ${v}\nfiles:\n  - url: ceis-Desktop-${v}-win-x64.exe\n    sha512: ${digest}\n    size: ${bytes.length}\npath: ceis-Desktop-${v}-win-x64.exe\nsha512: ${digest}\nreleaseDate: '2026-10-12T00:00:00.000Z'\n`;
   const server = http.createServer((req, res) => {
     const path = new URL(req.url, "http://feed").pathname;
     seen.push(path);
@@ -71,7 +71,7 @@ export async function updateFeed(t, { current = "1.0.3", version = "1.0.4", slow
     return typeof confirm === "function" ? confirm() : confirm;
   } }, finish: () => quits.push({ gateOpen: gate, busy: [...on] }), log: (line) => lines.push(line) });
   const createUpdater = (canQuit = () => true) => {
-    const app = { version: current, name: "wevvy-update-flow", isPackaged: true, appUpdateConfigPath: join(root, "app-update.yml"),
+    const app = { version: current, name: "ceis-update-flow", isPackaged: true, appUpdateConfigPath: join(root, "app-update.yml"),
       userDataPath: root, baseCachePath: root, whenReady: async () => undefined,
       quit: () => { if (!realInstall) throw new Error("real quit attempted"); quits.push({ gateOpen: gate, busy: [...on] }); }, relaunch: () => { throw new Error("real relaunch attempted"); },
       onQuit: () => { throw new Error("automatic quit installation enabled"); } };

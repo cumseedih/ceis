@@ -14,15 +14,15 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from wevvy.agent import MuseAgent
-from wevvy.agent.verify import verify_edits
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.schema import Function, LLMResponse, Role, ToolCall
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.tools import Terminate, ToolCollection
-from wevvy.tools.files import Files
-from wevvy.ui import HeadlessUI
+from ceis.agent import MuseAgent
+from ceis.agent.verify import verify_edits
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.schema import Function, LLMResponse, Role, ToolCall
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.tools import Terminate, ToolCollection
+from ceis.tools.files import Files
+from ceis.ui import HeadlessUI
 
 
 def tc(name: str, **args: Any) -> ToolCall:
@@ -178,7 +178,7 @@ async def test_verification_failure_does_not_block_termination(
     def _boom(edited: list[str], ws: Path | None) -> str:
         raise RuntimeError("boom")
 
-    monkeypatch.setattr("wevvy.agent.core.verify_edits", _boom)
+    monkeypatch.setattr("ceis.agent.core.verify_edits", _boom)
     script = [
         LLMResponse(
             tool_calls=[
@@ -224,7 +224,7 @@ def test_verify_edits_falls_back_when_git_fails(tmp_path, monkeypatch):  # type:
     def _fail(*args: Any, **kwargs: Any) -> Any:
         raise OSError("no git here")
 
-    monkeypatch.setattr("wevvy.agent.verify.subprocess.run", _fail)
+    monkeypatch.setattr("ceis.agent.verify.subprocess.run", _fail)
     report = verify_edits(["a.py"], workspace)
     assert "Git inspection failed" in report
     assert "a.py (2 lines)" in report

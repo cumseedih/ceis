@@ -64,7 +64,7 @@ fun SharedFolderDetailScreen(
 
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(stringResource(R.string.shared_folder_detail_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -169,7 +169,7 @@ private fun HeaderCard(folder: SharedFolderEntry) {
 @Composable
 private fun AccessBadge(writable: Boolean) {
     val (textRes, color) = if (writable) {
-        R.string.mount_badge_rw to io.github.wevvy.ui.theme.WevvyColors.success
+        R.string.mount_badge_rw to io.github.ceis.ui.theme.CeisColors.success
     } else {
         R.string.mount_badge_readonly to Color(0xFFFF9500)
     }

@@ -1,4 +1,4 @@
-"""The hands as an MCP server (`wevvy mcp`, wevvy/bridge/mcp_server.py): the tool
+"""The hands as an MCP server (`ceis mcp`, ceis/bridge/mcp_server.py): the tool
 listing another host sees, the gate that stands in for the Sentinel, the pictures in
 the result — and the server itself, driven over stdio by the SDK's client."""
 
@@ -12,7 +12,7 @@ from typing import Any
 import pytest
 
 from tests.test_computer import fake_screen, make_link  # noqa: F401  # the fixture
-from wevvy.bridge.mcp_server import (
+from ceis.bridge.mcp_server import (
     CONFIRMED,
     call,
     connector_tools,
@@ -22,8 +22,8 @@ from wevvy.bridge.mcp_server import (
     hands_tools,
     tool_listing,
 )
-from wevvy.config import Settings
-from wevvy.schema import ToolResult
+from ceis.config import Settings
+from ceis.schema import ToolResult
 
 pytestmark = pytest.mark.usefixtures("fake_screen")
 
@@ -81,7 +81,7 @@ def test_gate_asks_for_what_the_sentinel_would_ask(settings: Settings) -> None:
 def test_with_a_host_secret_only_the_hosts_ticket_confirms(
     settings: Settings, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from wevvy.bridge.mcp_server import CONFIRM_SECRET_ENV, REFUSED, ticket
+    from ceis.bridge.mcp_server import CONFIRM_SECRET_ENV, REFUSED, ticket
 
     screen, act = tools(settings)
     monkeypatch.setenv(CONFIRM_SECRET_ENV, "s3cret")
@@ -108,7 +108,7 @@ def test_with_a_host_secret_only_the_hosts_ticket_confirms(
 def test_the_plugins_ticket_with_the_step_words_confirms(
     settings: Settings, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """What harness/dsh-wevvy/src/cloud.ts `confirmTicket` signs after the person said
+    """What harness/dsh-ceis/src/cloud.ts `confirmTicket` signs after the person said
     yes on the permission card: every argument but `confirmed`, the `step` words included
     (the model writes them on each call). The server must take that ticket — 0.1.37
     checked one without `step` only, and every approved step came back "Not done"."""
@@ -116,8 +116,8 @@ def test_the_plugins_ticket_with_the_step_words_confirms(
     import hmac
     import json
 
-    from wevvy.bridge.mcp_server import CONFIRM_SECRET_ENV, ticket
-    from wevvy.schema import STEP_KEY
+    from ceis.bridge.mcp_server import CONFIRM_SECRET_ENV, ticket
+    from ceis.schema import STEP_KEY
 
     _screen, act = tools(settings)
     monkeypatch.setenv(CONFIRM_SECRET_ENV, "s3cret")
@@ -165,27 +165,27 @@ def test_content_blocks_skip_pictures_that_are_not_there(tmp_path: Path) -> None
 
 
 async def test_server_over_stdio(tmp_path: Path) -> None:
-    """`wevvy mcp` as another host runs it: the tools, a refused step, a look."""
+    """`ceis mcp` as another host runs it: the tools, a refused step, a look."""
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
 
     env = {
         **os.environ,
-        "WEVVY_WORKSPACE": str(tmp_path / "ws"),
-        "WEVVY_DATA_DIR": str(tmp_path / "data"),
-        "WEVVY_CONFIG": str(tmp_path / "none.toml"),
+        "CEIS_WORKSPACE": str(tmp_path / "ws"),
+        "CEIS_DATA_DIR": str(tmp_path / "data"),
+        "CEIS_CONFIG": str(tmp_path / "none.toml"),
     }
     params = StdioServerParameters(
         command=sys.executable,
         args=[
             "-c",
-            f"import sys; sys.argv=['wevvy','mcp']; sys.path.insert(0, {str(Path(__file__).resolve().parents[1])!r}); from wevvy.cli import app; app()",
+            f"import sys; sys.argv=['ceis','mcp']; sys.path.insert(0, {str(Path(__file__).resolve().parents[1])!r}); from ceis.cli import app; app()",
         ],
         env=env,
     )
     async with stdio_client(params) as (read, write), ClientSession(read, write) as session:
         init = await session.initialize()
-        assert "wevvy" in (init.instructions or "")
+        assert "ceis" in (init.instructions or "")
         listed = await session.list_tools()
         # the hands, plus the address book the default config keeps on
         assert sorted(t.name for t in listed.tools) == [
@@ -203,7 +203,7 @@ async def test_server_over_stdio(tmp_path: Path) -> None:
 
 
 def test_cli_has_the_command() -> None:
-    from wevvy.cli import app
+    from ceis.cli import app
 
     names = {getattr(c, "name", None) or c.callback.__name__ for c in app.registered_commands}  # type: ignore[union-attr]
     assert "mcp" in names

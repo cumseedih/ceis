@@ -99,7 +99,7 @@ fun MinisSkillsBrowserScreen(
             // would fight the WebView measure pass. Match the SettingsScaffold
             // bar styling (background colour + SemiBold title) so the visual
             // signature stays consistent with the rest of the settings stack.
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(stringResource(R.string.skills_browser_title), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = handleBack) {
@@ -222,12 +222,12 @@ fun MinisSkillsBrowserScreen(
                             Text(stringResource(R.string.skills_browser_hud_importing), color = Color.White, style = MaterialTheme.typography.labelLarge)
                         }
                         HudState.SUCCESS -> {
-                            Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = io.github.wevvy.ui.theme.WevvyColors.success, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = io.github.ceis.ui.theme.CeisColors.success, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(10.dp))
                             Text(hudMessage, color = Color.White, style = MaterialTheme.typography.labelLarge, maxLines = 1)
                         }
                         HudState.ERROR -> {
-                            Icon(Icons.Filled.Error, contentDescription = null, tint = io.github.wevvy.ui.theme.WevvyColors.error, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Filled.Error, contentDescription = null, tint = io.github.ceis.ui.theme.CeisColors.error, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(10.dp))
                             Text(hudMessage, color = Color.White, style = MaterialTheme.typography.labelLarge, maxLines = 2)
                         }

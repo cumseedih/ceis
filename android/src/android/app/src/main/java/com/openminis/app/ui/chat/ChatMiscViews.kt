@@ -671,7 +671,7 @@ private fun CompactSummarySheet(
                 Icon(
                     imageVector = if (copied) Icons.Default.Check else Icons.Default.ContentCopy,
                     contentDescription = "Copy",
-                    tint = if (copied) io.github.wevvy.ui.theme.WevvyColors.success else ChatColors.secondaryText,
+                    tint = if (copied) io.github.ceis.ui.theme.CeisColors.success else ChatColors.secondaryText,
                 )
             }
         },
@@ -882,8 +882,8 @@ internal fun rememberBrowserLiveSnapshot(
             value = next
         }
     }
-    // wevvy: remember the last live frame so the finished card keeps it.
-    snapshot?.let { io.github.wevvy.status.BrowserFrames.remember(block.id, it) }
+    // ceis: remember the last live frame so the finished card keeps it.
+    snapshot?.let { io.github.ceis.status.BrowserFrames.remember(block.id, it) }
     return snapshot
 }
 

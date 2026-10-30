@@ -1,4 +1,4 @@
-# wevvy Cloud without TLS: the relay alone, on a loopback port, codes in the log.
+# ceis Cloud without TLS: the relay alone, on a loopback port, codes in the log.
 #
 # An override for a home server, a LAN or a Tailscale network — and for testing.
 # Caddy stays out of the way (it is moved behind the `tls` profile), the relay
@@ -11,13 +11,13 @@
 #
 # To reach it from other machines, set RELAY_BIND=0.0.0.0 (or the Tailscale
 # address) and PUBLIC_BASE=http://<that address>:8787 in .env — the apps are
-# told PUBLIC_BASE as their server. WEVVY_ENV_FILE points at an .env kept
+# told PUBLIC_BASE as their server. CEIS_ENV_FILE points at an .env kept
 # somewhere else than ./.env.
 
 services:
   relay:
     env_file:
-      - path: ${WEVVY_ENV_FILE:-.env}
+      - path: ${CEIS_ENV_FILE:-.env}
         required: false
     ports:
       - "${RELAY_BIND:-127.0.0.1}:${RELAY_PORT:-8787}:8787"

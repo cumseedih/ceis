@@ -44,9 +44,9 @@ export function Chip({ active, onClick, children }: { active: boolean; onClick: 
 }
 
 /**
- * Who your wevvy is. Used on the first-run naming page and under Settings; the same
+ * Who your ceis is. Used on the first-run naming page and under Settings; the same
  * fields, the same limits as the server (`NAME_MAX`, `TAGLINE_MAX`, the tone and
- * communication vocabularies). An empty name falls back to "wevvy" on save.
+ * communication vocabularies). An empty name falls back to "ceis" on save.
  */
 export function IdentityForm({
   value,
@@ -82,7 +82,7 @@ export function IdentityForm({
               onChange={(e) => set({ name: e.target.value.slice(0, NAME_MAX) })}
               maxLength={NAME_MAX}
               className={cx(inputCls, "font-medium")}
-              placeholder="wevvy"
+              placeholder="ceis"
               aria-label={t("Name")}
               autoCapitalize="words"
             />
@@ -157,7 +157,7 @@ export function IdentityForm({
 /** The identity as the store has it, with defaults for a profile from before these fields. */
 export function identityOf(p: Partial<Profile> | null | undefined, fallbackAvatar: string, fallbackColor: string): Identity {
   return {
-    name: p?.name ?? "wevvy",
+    name: p?.name ?? "ceis",
     tagline: p?.tagline ?? "",
     avatar: p?.avatar ?? fallbackAvatar,
     emoji: p?.emoji ?? "✨",
@@ -171,5 +171,5 @@ export function identityOf(p: Partial<Profile> | null | undefined, fallbackAvata
 
 /** What to send: trimmed, the empty name back to the default. */
 export function identityBody(v: Identity): Identity {
-  return { ...v, name: v.name.trim() || "wevvy", tagline: v.tagline.trim(), style: v.style.trim(), user_name: v.user_name.trim() };
+  return { ...v, name: v.name.trim() || "ceis", tagline: v.tagline.trim(), style: v.style.trim(), user_name: v.user_name.trim() };
 }

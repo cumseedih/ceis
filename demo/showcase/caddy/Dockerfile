@@ -1,11 +1,11 @@
 # The public face of the showcase: Caddy with the Cloudflare DNS module (for the wildcard
 # certificate the per-session hostnames need), the Cloudflare IP-ranges module (so that behind
 # Cloudflare's proxy the visitor's address is still the visitor's), the built MobileGym with
-# the wevvy app installed and pointed at the gateway (as /phone.html), and the page around
+# the ceis app installed and pointed at the gateway (as /phone.html), and the page around
 # the phone (site/page/, with MobileGym's own gesture keys and State Builder) at /.
 #
-# Build context is the repository root (see docker-compose.yml), so the wevvy app module can
-# be copied straight from demo/mobilegym/apps/wevvy, and the page from demo/showcase/site.
+# Build context is the repository root (see docker-compose.yml), so the ceis app module can
+# be copied straight from demo/mobilegym/apps/ceis, and the page from demo/showcase/site.
 
 FROM node:22-bookworm-slim AS site
 ARG MOBILEGYM_REPO=https://github.com/Purewhiter/mobilegym.git
@@ -13,7 +13,7 @@ ARG MOBILEGYM_REPO=https://github.com/Purewhiter/mobilegym.git
 # so the phone the visitors get is the one the showcase was tested with and not whatever
 # MobileGym's main is on the day the image is built; a branch, tag or commit here overrides
 ARG MOBILEGYM_REF=
-ARG WEVVY_DEMO=/api/demo
+ARG CEIS_DEMO=/api/demo
 # where the phone's media (MobileGym's companion dataset: app images, launcher widgets, icon
 # themes) comes from: /cdn on this origin (the gateway serves ./data/mobilegym-data there), or
 # MobileGym's own CDN, https://cdn.mobilegym.dev, when the dataset is not downloaded
@@ -30,17 +30,17 @@ RUN ref="${MOBILEGYM_REF:-$(grep -v '^#' /src/mobilegym.ref | tr -d '[:space:]')
  && git -C mobilegym fetch -q --depth 1 origin "${ref}" \
  && git -C mobilegym checkout -q --detach FETCH_HEAD \
  && echo "MobileGym ${ref} is $(git -C mobilegym rev-parse HEAD)"
-COPY demo/mobilegym/apps/wevvy mobilegym/apps/wevvy
+COPY demo/mobilegym/apps/ceis mobilegym/apps/ceis
 # the showcase's one change to MobileGym's seed (张伟's 微信 message invites to a hike, for the
 # page's weather line); the build fails if upstream's sentence is no longer there as expected
 COPY demo/mobilegym/patch-seed.sh /src/patch-seed.sh
 RUN sh /src/patch-seed.sh /src/mobilegym
 WORKDIR /src/mobilegym
-# modern-screenshot renders the phone's screenshot in the tab (the wevvy module's only
+# modern-screenshot renders the phone's screenshot in the tab (the ceis module's only
 # extra dependency); --no-save keeps MobileGym's lockfile as upstream has it
 RUN npm ci --no-audit --no-fund \
  && npm install --no-save --no-audit --no-fund modern-screenshot@^4.7.0 \
- && VITE_WEVVY_DEMO="${WEVVY_DEMO}" VITE_CDN_BASE="${MOBILEGYM_CDN_BASE}" npm run build \
+ && VITE_CEIS_DEMO="${CEIS_DEMO}" VITE_CDN_BASE="${MOBILEGYM_CDN_BASE}" npm run build \
  && mv dist/index.html dist/phone.html
 # the page at /, with MobileGym's own chrome (gesture keys, State Builder, power) composed in
 COPY demo/showcase/site/page /src/site/page

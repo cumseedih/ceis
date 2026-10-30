@@ -8,8 +8,8 @@ bundled dragon until this is built.
 
 The agent's look is one profile field, `avatar`, synced per account through the relay
 (`PUT /v1/me/profile`, `GET /v1/me/profile`, hub `profile` frames with a `rev`). The
-runtime's `wevvy/hub/profile.py` (`ProfileSync`) and the phone's
-`io.github.wevvy.cloud.ProfileSync` implement the same three kinds:
+runtime's `ceis/hub/profile.py` (`ProfileSync`) and the phone's
+`io.github.ceis.cloud.ProfileSync` implement the same three kinds:
 
 - `dragon`: a built-in illustration id. Every client bundles the dragon stills
   (`web/public/avatars/`, the Android app's `avatar/`); nothing is synced.
@@ -21,7 +21,7 @@ runtime's `wevvy/hub/profile.py` (`ProfileSync`) and the phone's
   too, so other devices can redraw poses with their own image model.
 
 There is no kind that carries an arbitrary image supplied by the operator. Seeding
-`assets/brand/wevvy-mark.png` as the default would mean smuggling bytes through a
+`assets/brand/ceis-mark.png` as the default would mean smuggling bytes through a
 pipeline that only understands these three kinds, which is why it was left alone.
 
 ## Proposal: a fourth look kind, `image`
@@ -48,8 +48,8 @@ Follow the `face` kind's shape rather than inventing a parallel system.
    - Android: `ProfileSync` downloads the still beside the face stills and the
      avatar composables load it from disk; the in-app icon picker is untouched.
 5. **Default.** With the kind in place, the default look becomes
-   `("wevvy", "image")` with the brand mark's `image_id` seeded at build time from
-   `assets/brand/wevvy-mark.png`, converted to WebP once by the release script.
+   `("ceis", "image")` with the brand mark's `image_id` seeded at build time from
+   `assets/brand/ceis-mark.png`, converted to WebP once by the release script.
 
 ## Rollback
 

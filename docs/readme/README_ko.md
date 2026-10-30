@@ -25,25 +25,25 @@
   <a href="https://discord.gg/bkTySmm28X"><img src="https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
 </p>
 
-**wevvy는 당신의 모든 기기를 위한 오픈소스 개인 에이전트입니다.** 이름과 모습을 가진 하나의 에이전트로, Meta의 [Muse](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/)와 같은 종류입니다. 질문에 답하는 대신 직접 일을 하고, 앱을 닫아도 계속 일하고, 당신을 기억하며, 되돌릴 수 없는 일을 하기 전에는 멈춰서 묻습니다.
+**ceis는 당신의 모든 기기를 위한 오픈소스 개인 에이전트입니다.** 이름과 모습을 가진 하나의 에이전트로, Meta의 [Muse](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/)와 같은 종류입니다. 질문에 답하는 대신 직접 일을 하고, 앱을 닫아도 계속 일하고, 당신을 기억하며, 되돌릴 수 없는 일을 하기 전에는 멈춰서 묻습니다.
 
 
 > [!NOTE]
-> **wevvy는 계속 진화합니다**
+> **ceis는 계속 진화합니다**
 >
-> 개인 에이전트가 남의 클라우드 안에서만 자라서는 안 됩니다. 그래서 wevvy는 오픈소스이고 비용이 낮은 대안이 되려 합니다. 자기 기기에 설치하고, 모델은 직접 고르고, 릴레이도 직접 세울 수 있습니다. 전 세계의 개발자, 사용자와 함께 만들어서 모든 사람이 진짜 자기만의 개인 에이전트를 갖게 하고 싶습니다. [이슈](https://github.com/nano-muse/nanoMuse/issues/new/choose)를 열거나 [풀 리퀘스트](../../CONTRIBUTING.md)를 보내는 것, 어느 쪽이든 wevvy를 더 낫게 만드는 데 보탬이 됩니다.
+> 개인 에이전트가 남의 클라우드 안에서만 자라서는 안 됩니다. 그래서 ceis는 오픈소스이고 비용이 낮은 대안이 되려 합니다. 자기 기기에 설치하고, 모델은 직접 고르고, 릴레이도 직접 세울 수 있습니다. 전 세계의 개발자, 사용자와 함께 만들어서 모든 사람이 진짜 자기만의 개인 에이전트를 갖게 하고 싶습니다. [이슈](https://github.com/nano-muse/nanoMuse/issues/new/choose)를 열거나 [풀 리퀘스트](../../CONTRIBUTING.md)를 보내는 것, 어느 쪽이든 ceis를 더 낫게 만드는 데 보탬이 됩니다.
 
 https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
-<p align="center"><a href="https://wevvy.in/media/film/wevvy-film-en-web.mp4">English</a> · <a href="https://wevvy.in/media/film/wevvy-film-zh-web.mp4">中文</a> · <a href="https://wevvy.in/#film">wevvy.in</a></p>
+<p align="center"><a href="https://wevvy.in/media/film/ceis-film-en-web.mp4">English</a> · <a href="https://wevvy.in/media/film/ceis-film-zh-web.mp4">中文</a> · <a href="https://wevvy.in/#film">wevvy.in</a></p>
 
 ## 🗞️ 소식
 
 - `2026-10-13` ⭐ GitHub 스타 1000개를 넘었습니다. 첫 공개 후 18일 만이며, 그 사이 GitHub Trending의 Swift 목록에 나흘 동안 올랐습니다([Trendshift](https://trendshift.io/repositories/286894) 기록: 10월 7일 7위, 10월 10일 4위). 써 보신 분, 문제를 알려 주신 분, pull request를 보내 주신 분 모두 고맙습니다. 계속 이어갑니다: 며칠에 한 번씩 새 버전을 내고, 다음에 할 일은 [로드맵](../roadmap.md)에 적어 두었습니다.
 - `2026-10-09` 🚀 버전 [1.0.0 Keel](https://github.com/nano-muse/nanoMuse/releases/tag/v1.0.0)이 나왔습니다. 휴대폰과 데스크톱과 브라우저 모두를 위한 버전입니다; 이전 버전 위에 설치되어 데이터가 그대로 남고, 릴리스 노트에 모든 변경 사항이 적혀 있습니다.
 - `2026-10-08` 🤗 저희 논문이 [Hugging Face Daily Papers](https://huggingface.co/papers/2610.08699)에 올라 10월 8일 목록에서 3위를 차지했습니다; 질문과 의견은 논문 페이지에 남겨 주세요.
-- `2026-10-07` 📄 저희 논문이 [arXiv](https://arxiv.org/abs/2610.08699)에 공개되었습니다: 『wevvy: An Open-Source Personal Agent for Every Device You Own』, 저자 Guangyi Liu, Yong Liu, Jiangning Zhang(저장대학교); 인용 정보는 이 페이지 끝에 있습니다.
-- `2026-09-25` 🎉 wevvy를 GPL-3.0-or-later로 GitHub에 공개했습니다: OpenMinis 1.13을 바탕으로 한 Android 앱입니다; 릴레이, 데스크톱 앱, iPhone 앱이 그 뒤 며칠에 걸쳐 차례로 더해졌습니다.
+- `2026-10-07` 📄 저희 논문이 [arXiv](https://arxiv.org/abs/2610.08699)에 공개되었습니다: 『ceis: An Open-Source Personal Agent for Every Device You Own』, 저자 Guangyi Liu, Yong Liu, Jiangning Zhang(저장대학교); 인용 정보는 이 페이지 끝에 있습니다.
+- `2026-09-25` 🎉 ceis를 GPL-3.0-or-later로 GitHub에 공개했습니다: OpenMinis 1.13을 바탕으로 한 Android 앱입니다; 릴레이, 데스크톱 앱, iPhone 앱이 그 뒤 며칠에 걸쳐 차례로 더해졌습니다.
 
 모든 버전: [releases](https://github.com/nano-muse/nanoMuse/releases).
 
@@ -51,11 +51,11 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
 | | |
 |---|---|
-| **Android** 8.0 이상, arm64 | [wevvy-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-1.0.5-arm64.apk): 모든 버전이 같은 키로 서명되어 있어 덮어 설치하면 됩니다 |
+| **Android** 8.0 이상, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-1.0.5-arm64.apk): 모든 버전이 같은 키로 서명되어 있어 덮어 설치하면 됩니다 |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc): Apple의 베타 심사를 통과한 베타. 이 링크로 설치합니다 · [iOS](../ios.md) |
-| **macOS** 12 이상 | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-mac-x64.dmg). 공증되지 않음: 처음 한 번 우클릭 → 열기 |
-| **Windows** 10 이상 | [wevvy-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-win-x64.exe): 실행을 한 번 눌러 주세요 |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12 이상 | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). 공증되지 않음: 처음 한 번 우클릭 → 열기 |
+| **Windows** 10 이상 | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe): 실행을 한 번 눌러 주세요 |
+| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local`로 자신의 릴레이를, `docker compose up -d app`으로 자신의 서버에 웹 앱을. [직접 호스팅](../self-hosting.md) |
 
 모든 다운로드는 [GitHub 최신 릴리스](https://github.com/nano-muse/nanoMuse/releases/latest)에 있습니다. GitHub가 느린 곳이라면 같은 파일이 [wevvy.in/dl](https://wevvy.in/dl/)에 있습니다. 앱을 열고 이메일이나 중국 본토 휴대폰 번호로 로그인하면 에이전트가 쓸 모델이 준비됩니다. 휴대폰, 데스크톱, 웹은 하나의 계정을 공유하고 같은 대화를 보여 줍니다.
@@ -83,7 +83,7 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
 ## 어떻게 동작하나
 
-모든 기기가 자기 에이전트를 돌립니다. 휴대폰은 APK 안에서(proot 위의 Alpine Linux, 셸, 브라우저, MCP), 컴퓨터는 wevvy Desktop 안에서(DeepSeek Harness와 손을 위한 Python 런타임). 로그인하면 릴레이에서 만나 서로 부탁할 수 있습니다. 대화 텍스트는 릴레이를 지나지만, 파일과 스크린샷은 만들어진 기기에 남습니다.
+모든 기기가 자기 에이전트를 돌립니다. 휴대폰은 APK 안에서(proot 위의 Alpine Linux, 셸, 브라우저, MCP), 컴퓨터는 ceis Desktop 안에서(DeepSeek Harness와 손을 위한 Python 런타임). 로그인하면 릴레이에서 만나 서로 부탁할 수 있습니다. 대화 텍스트는 릴레이를 지나지만, 파일과 스크린샷은 만들어진 기기에 남습니다.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/nano-muse/nanoMuse/main/assets/brand/devices-loop.png" alt="Android, 데스크톱(Mac, Windows, Linux), iPhone과 iPad, 웹 앱이 하나의 계정을 둘러싼다: 릴레이가 기기를 로그인시키고 기기 사이에서 대화를 전달한다" width="92%">
@@ -93,7 +93,7 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
 ## Muse, OpenMinis와 비교
 
-| | Meta Muse | OpenMinis | wevvy |
+| | Meta Muse | OpenMinis | ceis |
 |---|---|---|---|
 | 에이전트가 도는 곳 | 사용자마다 클라우드 VM 하나 | 설치된 휴대폰 | 당신의 휴대폰, 컴퓨터, 또는 자신의 서버, 하나의 계정으로 |
 | API 없는 앱 | 닿지 않음. VM은 기기를 건드리지 않음 | Android의 접근성 CLI | 휴대폰과 컴퓨터 모두 화면을 손으로 씀: 스크린샷을 보고, API를 먼저 시도하고, 로그인은 당신이 맡음. iOS에서는 안 됨. 시스템이 허용하지 않음 |
@@ -141,11 +141,11 @@ VPS 한 대, 한 시간: [docs/self-hosting.md](../self-hosting.md). 세 가지 
 
 ## ⭐️ 인용
 
-wevvy가 도움이 되었다면 논문을 인용해 주세요.
+ceis가 도움이 되었다면 논문을 인용해 주세요.
 
 ```bibtex
-@misc{liu2026wevvyopensourcepersonalagent,
-      title={wevvy: An Open-Source Personal Agent for Every Device You Own}, 
+@misc{liu2026ceisopensourcepersonalagent,
+      title={ceis: An Open-Source Personal Agent for Every Device You Own}, 
       author={Guangyi Liu and Yong Liu and Jiangning Zhang},
       year={2026},
       eprint={2610.08699},
@@ -157,7 +157,7 @@ wevvy가 도움이 되었다면 논문을 인용해 주세요.
 
 ## 감사의 말
 
-wevvy는 다른 사람들이 만든 것 위에 세워졌습니다. 조건은 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)에.
+ceis는 다른 사람들이 만든 것 위에 세워졌습니다. 조건은 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)에.
 
 - [OpenMinis](https://github.com/OpenMinis/OpenMinis): 휴대폰 앱의 바탕이 된 온디바이스 에이전트. 샌드박스는 [proot](https://github.com/nano-muse/proot)와 [Alpine Linux](https://alpinelinux.org/).
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness): 데스크톱 앱이 플러그인으로 올라가 있는 에이전트 하네스.
@@ -166,13 +166,13 @@ wevvy는 다른 사람들이 만든 것 위에 세워졌습니다. 조건은 [TH
 
 ## 고지
 
-wevvy는 독립적인 커뮤니티 프로젝트로, Meta Platforms, Inc.와 관련이 없고 그 지지를 받지도 않습니다. Muse는 그들의 상표입니다. 용은 이 프로젝트의 것입니다.
+ceis는 독립적인 커뮤니티 프로젝트로, Meta Platforms, Inc.와 관련이 없고 그 지지를 받지도 않습니다. Muse는 그들의 상표입니다. 용은 이 프로젝트의 것입니다.
 
 ## 라이선스
 
 [GPL-3.0-or-later](../../LICENSE). 휴대폰 앱은 OpenMinis 1.13(GPL-3.0)을 바탕으로 2026-09-24부터 수정했습니다. [NOTICE](../../NOTICE) 참고. 그 이전 Python 계열 버전은 MIT였습니다(태그 `pre-openminis`).
 
 <p align="center">
-  <em>방문해 주셔서 감사합니다 ✨ wevvy.</em><br><br>
+  <em>방문해 주셔서 감사합니다 ✨ ceis.</em><br><br>
   <img src="https://hits.sh/github.com/nano-muse/nanoMuse.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
 </p>

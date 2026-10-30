@@ -25,25 +25,25 @@
   <a href="https://discord.gg/bkTySmm28X"><img src="https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
 </p>
 
-**wevvy — открытый персональный агент для всех ваших устройств.** Один агент со своим именем и обликом, того же рода, что [Muse](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/) от Meta: он делает дела, а не отвечает на вопросы, продолжает работать при закрытом приложении, помнит вас и останавливается спросить перед тем, что нельзя отменить.
+**ceis — открытый персональный агент для всех ваших устройств.** Один агент со своим именем и обликом, того же рода, что [Muse](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/) от Meta: он делает дела, а не отвечает на вопросы, продолжает работать при закрытом приложении, помнит вас и останавливается спросить перед тем, что нельзя отменить.
 
 
 > [!NOTE]
-> **wevvy продолжает развиваться**
+> **ceis продолжает развиваться**
 >
-> Персональный агент не должен жить только в чужом облаке, поэтому wevvy делает открытую и недорогую альтернативу: на ваших собственных устройствах, с моделью, которую выбираете вы, и с реле, которое можно поднять самому. Мы хотим строить его вместе с разработчиками и пользователями со всего мира, чтобы у каждого был по-настоящему свой персональный агент. Откройте [issue](https://github.com/nano-muse/nanoMuse/issues/new/choose) или пришлите [pull request](../../CONTRIBUTING.md); и то и другое помогает wevvy становиться лучше.
+> Персональный агент не должен жить только в чужом облаке, поэтому ceis делает открытую и недорогую альтернативу: на ваших собственных устройствах, с моделью, которую выбираете вы, и с реле, которое можно поднять самому. Мы хотим строить его вместе с разработчиками и пользователями со всего мира, чтобы у каждого был по-настоящему свой персональный агент. Откройте [issue](https://github.com/nano-muse/nanoMuse/issues/new/choose) или пришлите [pull request](../../CONTRIBUTING.md); и то и другое помогает ceis становиться лучше.
 
 https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
-<p align="center"><a href="https://wevvy.in/media/film/wevvy-film-en-web.mp4">English</a> · <a href="https://wevvy.in/media/film/wevvy-film-zh-web.mp4">中文</a> · <a href="https://wevvy.in/#film">wevvy.in</a></p>
+<p align="center"><a href="https://wevvy.in/media/film/ceis-film-en-web.mp4">English</a> · <a href="https://wevvy.in/media/film/ceis-film-zh-web.mp4">中文</a> · <a href="https://wevvy.in/#film">wevvy.in</a></p>
 
 ## 🗞️ Новости
 
 - `2026-10-13` ⭐ 1000 звёзд на GitHub, через восемнадцать дней после первого выпуска, и по пути четыре дня в списке Swift на GitHub Trending ([Trendshift](https://trendshift.io/repositories/286894): седьмое место 7 октября, четвёртое 10 октября). Спасибо за каждую попытку, каждое сообщение об ошибке и каждый pull request. Мы продолжаем: новая версия раз в несколько дней, а [дорожная карта](../roadmap.md) говорит, что дальше.
 - `2026-10-09` 🚀 Вышла версия [1.0.0 Keel](https://github.com/nano-muse/nanoMuse/releases/tag/v1.0.0), для телефона, компьютера и браузера; она ставится поверх предыдущей с сохранением ваших данных, а в заметках к выпуску перечислено каждое изменение.
 - `2026-10-08` 🤗 Наша статья попала в [Hugging Face Daily Papers](https://huggingface.co/papers/2610.08699) и заняла третье место в списке за 8 октября; вопросы и комментарии можно оставить на странице статьи.
-- `2026-10-07` 📄 Наша статья доступна на [arXiv](https://arxiv.org/abs/2610.08699): *wevvy: An Open-Source Personal Agent for Every Device You Own*, авторы Guangyi Liu, Yong Liu и Jiangning Zhang (Чжэцзянский университет); ссылка для цитирования в конце этой страницы.
-- `2026-09-25` 🎉 wevvy выпущен на GitHub под GPL-3.0-or-later: Android-приложение на основе OpenMinis 1.13; реле, настольное приложение и приложение для iPhone появились в следующие дни.
+- `2026-10-07` 📄 Наша статья доступна на [arXiv](https://arxiv.org/abs/2610.08699): *ceis: An Open-Source Personal Agent for Every Device You Own*, авторы Guangyi Liu, Yong Liu и Jiangning Zhang (Чжэцзянский университет); ссылка для цитирования в конце этой страницы.
+- `2026-09-25` 🎉 ceis выпущен на GitHub под GPL-3.0-or-later: Android-приложение на основе OpenMinis 1.13; реле, настольное приложение и приложение для iPhone появились в следующие дни.
 
 Все версии: [releases](https://github.com/nano-muse/nanoMuse/releases).
 
@@ -51,11 +51,11 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
 | | |
 |---|---|
-| **Android** 8.0+, arm64 | [wevvy-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-1.0.5-arm64.apk): все версии подписаны одним ключом и ставятся поверх предыдущей |
+| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-1.0.5-arm64.apk): все версии подписаны одним ключом и ставятся поверх предыдущей |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc): бета, прошедшая бета-проверку Apple; ссылка устанавливает её · [iOS](../ios.md) |
-| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-mac-x64.dmg). Без нотаризации: в первый раз правый клик → «Открыть» |
-| **Windows** 10+ | [wevvy-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-win-x64.exe): один раз нажмите «Выполнить в любом случае» |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/wevvy-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). Без нотаризации: в первый раз правый клик → «Открыть» |
+| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe): один раз нажмите «Выполнить в любом случае» |
+| **Linux** x64 | [AppImage](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/nanoMuse/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local` для своего реле; `docker compose up -d app` для веб-приложения на своём сервере; см. [самостоятельный хостинг](../self-hosting.md) |
 
 Все загрузки берутся из [последнего выпуска на GitHub](https://github.com/nano-muse/nanoMuse/releases/latest); те же файлы лежат на [wevvy.in/dl](https://wevvy.in/dl/), если GitHub у вас медленный. Откройте приложение, войдите по e-mail или по номеру телефона материкового Китая, и у агента есть модель, чтобы думать. Телефон, компьютер и веб делят один аккаунт и показывают одни и те же разговоры.
@@ -83,7 +83,7 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
 ## Как это устроено
 
-На каждом устройстве работает свой агент: на телефоне — внутри APK (Alpine Linux под proot, шелл, браузер, MCP), на компьютере — внутри wevvy Desktop (DeepSeek Harness плюс Python-рантайм для рук). После входа они встречаются на реле и могут просить друг друга о чём-то; текст разговоров идёт через реле, файлы и скриншоты остаются там, где были сделаны.
+На каждом устройстве работает свой агент: на телефоне — внутри APK (Alpine Linux под proot, шелл, браузер, MCP), на компьютере — внутри ceis Desktop (DeepSeek Harness плюс Python-рантайм для рук). После входа они встречаются на реле и могут просить друг друга о чём-то; текст разговоров идёт через реле, файлы и скриншоты остаются там, где были сделаны.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/nano-muse/nanoMuse/main/assets/brand/devices-loop.png" alt="Android, компьютер (Mac, Windows, Linux), iPhone и iPad и веб-приложение вокруг одного аккаунта: реле авторизует устройства в аккаунте и передаёт разговор между ними" width="92%">
@@ -93,7 +93,7 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
 ## В сравнении с Muse и OpenMinis
 
-| | Meta Muse | OpenMinis | wevvy |
+| | Meta Muse | OpenMinis | ceis |
 |---|---|---|---|
 | Где работает агент | Облачная VM на каждого пользователя | Телефон, на котором установлен | Ваш телефон, ваш компьютер или ваш сервер, один аккаунт на всё |
 | Приложения без API | Недоступны; VM не касается ваших устройств | CLI доступности на Android | Экран как рука и на телефоне, и на компьютере: скриншоты, сначала API, вход берёте на себя вы. Не на iOS, где система не позволяет |
@@ -141,11 +141,11 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
 ## ⭐️ Цитирование
 
-Если wevvy вам пригодился, пожалуйста, сошлитесь на статью.
+Если ceis вам пригодился, пожалуйста, сошлитесь на статью.
 
 ```bibtex
-@misc{liu2026wevvyopensourcepersonalagent,
-      title={wevvy: An Open-Source Personal Agent for Every Device You Own}, 
+@misc{liu2026ceisopensourcepersonalagent,
+      title={ceis: An Open-Source Personal Agent for Every Device You Own}, 
       author={Guangyi Liu and Yong Liu and Jiangning Zhang},
       year={2026},
       eprint={2610.08699},
@@ -157,7 +157,7 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
 ## Благодарности
 
-wevvy опирается на работу других людей; условия изложены в [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md).
+ceis опирается на работу других людей; условия изложены в [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md).
 
 - [OpenMinis](https://github.com/OpenMinis/OpenMinis): агент на устройстве, на котором построено приложение для телефона, с [proot](https://github.com/nano-muse/proot) и [Alpine Linux](https://alpinelinux.org/) для песочницы.
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness): агентный harness, плагином к которому является приложение для компьютера.
@@ -166,13 +166,13 @@ wevvy опирается на работу других людей; услови
 
 ## Отказ от ответственности
 
-wevvy — независимый проект сообщества, не связанный с Meta Platforms, Inc. и не поддерживаемый ею; Muse — их торговая марка. Дракон принадлежит проекту.
+ceis — независимый проект сообщества, не связанный с Meta Platforms, Inc. и не поддерживаемый ею; Muse — их торговая марка. Дракон принадлежит проекту.
 
 ## Лицензия
 
 [GPL-3.0-or-later](../../LICENSE). Приложение для телефона основано на OpenMinis 1.13 (GPL-3.0) и изменяется с 2026-09-24; см. [NOTICE](../../NOTICE). Более ранние версии линии Python были под MIT (тег `pre-openminis`).
 
 <p align="center">
-  <em>Спасибо, что заглянули ✨ wevvy.</em><br><br>
+  <em>Спасибо, что заглянули ✨ ceis.</em><br><br>
   <img src="https://hits.sh/github.com/nano-muse/nanoMuse.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
 </p>

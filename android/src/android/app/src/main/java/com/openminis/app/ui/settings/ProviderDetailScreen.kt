@@ -88,7 +88,7 @@ fun ProviderDetailScreen(
     onModelEntryClick: (String) -> Unit = {},
     onAddCustomModel: () -> Unit = {},
     onVoiceServiceClick: (String) -> Unit = {},
-    onKeyAdded: (String) -> Unit = {}, // wevvy: a key where there was none → the "Use it for" card
+    onKeyAdded: (String) -> Unit = {}, // ceis: a key where there was none → the "Use it for" card
 ) {
     val config by providerRepository.config.collectAsState()
     val instance = config.instances.find { it.id == instanceId }
@@ -209,7 +209,7 @@ fun ProviderDetailScreen(
                             keyVisible = false
                         },
                         onSave = {
-                            val nmFirstKey = storedKey.isBlank() && editKeyValue.isNotBlank() // wevvy
+                            val nmFirstKey = storedKey.isBlank() && editKeyValue.isNotBlank() // ceis
                             providerRepository.saveApiKey(instanceId, editKeyValue)
                             // [T-android-provider-apikey-save-stale] Reflect the
                             // just-saved value in UI state immediately rather than
@@ -219,7 +219,7 @@ fun ProviderDetailScreen(
                             isEditingKey = false
                             editKeyValue = ""
                             keyVisible = false
-                            if (nmFirstKey) onKeyAdded(instanceId) // wevvy
+                            if (nmFirstKey) onKeyAdded(instanceId) // ceis
                         },
                     )
                 }
@@ -244,8 +244,8 @@ fun ProviderDetailScreen(
 
         // ─── Custom Base URL ────────────────────────────────────────
         if (instance.providerType != ProviderType.openRouter) {
-            // wevvy: plain http:// only for addresses on the local network (io.github.wevvy.net.LanOnly)
-            val baseUrlProblem = io.github.wevvy.net.LanOnly.refusedHost(customBaseURL)?.let { stringResource(R.string.nm_lan_only_https, it) }
+            // ceis: plain http:// only for addresses on the local network (io.github.ceis.net.LanOnly)
+            val baseUrlProblem = io.github.ceis.net.LanOnly.refusedHost(customBaseURL)?.let { stringResource(R.string.nm_lan_only_https, it) }
             SettingsSection(header = stringResource(R.string.provider_detail_custom_api_base), footer = baseUrlProblem) {
                 // URL input row — tighter vertical padding to match T226's
                 // SectionTextField height shrink (~-20%).
@@ -325,7 +325,7 @@ fun ProviderDetailScreen(
                 // Save action — TextButton presentation so it reads as a list
                 // row rather than a floating filled button inside the card.
                 MinisSmallTextButton(
-                    enabled = baseUrlProblem == null, // wevvy: LanOnly
+                    enabled = baseUrlProblem == null, // ceis: LanOnly
                     onClick = {
                         providerRepository.updateInstance(
                             instance.copy(
@@ -488,29 +488,29 @@ fun ProviderDetailScreen(
 
         // ─── Status ─────────────────────────────────────────────────
         SettingsSection(header = stringResource(R.string.provider_detail_status)) {
-            // wevvy: the Cloud instance off is the same switch as Settings › Models (refused, with the
+            // ceis: the Cloud instance off is the same switch as Settings › Models (refused, with the
             // sentence, while nothing else could answer); a provider of the person's own off while new
             // chats answered through it moves the chat slot to the next source (ModelSlots.chatLeaves)
-            val nmCloud = io.github.wevvy.cloud.WevvyCloud.instance(exportContext)?.id == instanceId
+            val nmCloud = io.github.ceis.cloud.CeisCloud.instance(exportContext)?.id == instanceId
             var nmRefused by remember { mutableStateOf(false) }
             SettingsSwitchRow(
                 title = stringResource(R.string.provider_detail_enabled),
                 checked = isEnabled,
                 onCheckedChange = {
-                    if (nmCloud) { // wevvy: see above
-                        val done = io.github.wevvy.cloud.WevvyCloud.setModelsOn(exportContext, it)
+                    if (nmCloud) { // ceis: see above
+                        val done = io.github.ceis.cloud.CeisCloud.setModelsOn(exportContext, it)
                         nmRefused = !done
                         if (done) isEnabled = it
                     } else {
                         isEnabled = it
                         providerRepository.updateInstance(instance.copy(isEnabled = it))
                         AppLogger.info(TAG, "Set enabled=$it for ${instance.id}")
-                        if (!it) io.github.wevvy.models.ModelSlots.chatLeaves(exportContext, instance.id) // wevvy: see above
+                        if (!it) io.github.ceis.models.ModelSlots.chatLeaves(exportContext, instance.id) // ceis: see above
                     }
                 },
                 showDivider = false,
             )
-            if (nmRefused) { // wevvy: the refusal, under the switch
+            if (nmRefused) { // ceis: the refusal, under the switch
                 Text(
                     text = stringResource(R.string.nm_models_cloud_off_refused),
                     style = MaterialTheme.typography.bodySmall,
@@ -745,10 +745,10 @@ fun ProviderDetailScreen(
             Text(stringResource(R.string.provider_detail_add_custom_model))
         }
 
-        // wevvy: the Cloud instance is the account itself (io.github.wevvy.cloud.WevvyCloud);
+        // ceis: the Cloud instance is the account itself (io.github.ceis.cloud.CeisCloud);
         // deleting it here signed the phone out. It is switched off above instead, and signed out
-        // under Settings › wevvy Cloud.
-        if (io.github.wevvy.cloud.WevvyCloud.instance(exportContext)?.id == instanceId) {
+        // under Settings › ceis Cloud.
+        if (io.github.ceis.cloud.CeisCloud.instance(exportContext)?.id == instanceId) {
             Text(
                 text = stringResource(R.string.nm_cloud_provider_no_delete),
                 style = MaterialTheme.typography.bodySmall,
@@ -870,7 +870,7 @@ private fun OAuthCredentialBlock(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .size(8.dp)
-                    .background(io.github.wevvy.ui.theme.WevvyColors.success, CircleShape),
+                    .background(io.github.ceis.ui.theme.CeisColors.success, CircleShape),
             )
         } else {
             Spacer(modifier = Modifier.weight(1f))
@@ -955,8 +955,8 @@ private fun OAuthCredentialBlock(
         ) {
             Text(stringResource(R.string.provider_detail_sign_in))
         }
-        // wevvy: a proxy or VPN can swallow the localhost callback; after ten seconds the person can paste the address (#441).
-        io.github.wevvy.oauth.OAuthCallbackRescue(active = isAuthenticating, providerType = instance.providerType)
+        // ceis: a proxy or VPN can swallow the localhost callback; after ten seconds the person can paste the address (#441).
+        io.github.ceis.oauth.OAuthCallbackRescue(active = isAuthenticating, providerType = instance.providerType)
     }
 }
 
@@ -1151,7 +1151,7 @@ private fun ManualBearerTokenSection(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .size(8.dp)
-                    .background(io.github.wevvy.ui.theme.WevvyColors.success, CircleShape),
+                    .background(io.github.ceis.ui.theme.CeisColors.success, CircleShape),
             )
         }
         Row(modifier = Modifier.padding(top = 8.dp)) {

@@ -15,14 +15,14 @@ from fastapi.testclient import TestClient
 from openai import AsyncOpenAI
 from PIL import Image
 
-from wevvy.agent import Incoming, MuseAgent
-from wevvy.config import LLMSettings, Settings, apply_app_settings
-from wevvy.llm import MockLLM
-from wevvy.llm import openai_chat as chat_mod
-from wevvy.llm.openai_chat import OpenAIChatLLM
-from wevvy.llm.openai_responses import _to_input_items
-from wevvy.llm.prompt_tools import PromptToolAdapter
-from wevvy.llm.vision import (
+from ceis.agent import Incoming, MuseAgent
+from ceis.config import LLMSettings, Settings, apply_app_settings
+from ceis.llm import MockLLM
+from ceis.llm import openai_chat as chat_mod
+from ceis.llm.openai_chat import OpenAIChatLLM
+from ceis.llm.openai_responses import _to_input_items
+from ceis.llm.prompt_tools import PromptToolAdapter
+from ceis.llm.vision import (
     REMOVED_NOTE,
     content_parts,
     image_data_url,
@@ -30,12 +30,12 @@ from wevvy.llm.vision import (
     says_no_images,
     without_images,
 )
-from wevvy.schema import Attachment, LLMResponse, Message
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.server.api import create_app
-from wevvy.server.service import MuseService
-from wevvy.tools import Files, Terminate, ToolCollection
-from wevvy.ui import HeadlessUI
+from ceis.schema import Attachment, LLMResponse, Message
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.server.api import create_app
+from ceis.server.service import MuseService
+from ceis.tools import Files, Terminate, ToolCollection
+from ceis.ui import HeadlessUI
 
 
 def make_pdf(text: str) -> bytes:

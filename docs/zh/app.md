@@ -1,18 +1,18 @@
 # 应用
 
-> **Python 线的设计记录**（`wevvy/` + `web/`，标签 `pre-openminis`）：这里讲的是
-> `wevvy serve` 提供的网页版，今天它是桌面版的门面，也是在浏览器标签页里打开的
+> **Python 线的设计记录**（`ceis/` + `web/`，标签 `pre-openminis`）：这里讲的是
+> `ceis serve` 提供的网页版，今天它是桌面版的门面，也是在浏览器标签页里打开的
 > 运行时的门面（wevvy.in/web 本身是跑在一台模拟手机上的演示）。`android/` 里的手机 App 基于 OpenMinis，
 > 在 [android.md](android.md) 里讲；它第一次打开先是账号登录，然后才是模型。
 > 各处的面孔都是内置的**小龙**，或者在[形象工作室](avatar.md)里为你画的那一个。
 > 早期版本的小熊猫和毛绒玩偶已经没有了（配置里仍写着其中一个名字的，显示的也是小龙）。
 
-`wevvy serve` 跑一个常驻的智能体，并在同一个进程里把手机用的应用一起提供出来。应用是一个 React 单页应用，构建到 `wevvy/server/static/`，随 Python 包一起发布；服务端是 FastAPI，实时事件走一条 WebSocket。
+`ceis serve` 跑一个常驻的智能体，并在同一个进程里把手机用的应用一起提供出来。应用是一个 React 单页应用，构建到 `ceis/server/static/`，随 Python 包一起发布；服务端是 FastAPI，实时事件走一条 WebSocket。
 
 ```bash
-wevvy serve                      # http://127.0.0.1:8787, this machine only
-wevvy serve --host 0.0.0.0       # also reachable from your phone on the same network
-wevvy serve --port 9000 --no-qr
+ceis serve                      # http://127.0.0.1:8787, this machine only
+ceis serve --host 0.0.0.0       # also reachable from your phone on the same network
+ceis serve --port 9000 --no-qr
 ```
 
 <p align="center">
@@ -30,12 +30,12 @@ wevvy serve --port 9000 --no-qr
 2. 扫码。链接的片段里带着访问令牌（`#token=…`，浏览器从不把片段发给任何服务器）；应用把它存下来，再从地址栏里去掉。
 3. 在浏览器菜单里选「添加到主屏幕」。应用有 manifest 和图标，所以会像原生应用一样全屏打开。
 
-令牌只生成一次，存在 `<data_dir>/server_token`；想自己指定，设置 `server.token` 或 `WEVVY_SERVER_TOKEN`。在任何不完全由你掌控的网络上，保持 `server.auth = true`。要从你的网络之外访问它，把它放在你信得过的东西后面（Tailscale、带 TLS 的反向代理），而不是直接把端口开出去。
+令牌只生成一次，存在 `<data_dir>/server_token`；想自己指定，设置 `server.token` 或 `CEIS_SERVER_TOKEN`。在任何不完全由你掌控的网络上，保持 `server.auth = true`。要从你的网络之外访问它，把它放在你信得过的东西后面（Tailscale、带 TLS 的反向代理），而不是直接把端口开出去。
 
 ## 第一次打开 {#first-run}
 
 <p align="center">
-  <img src="../screenshots/web/onboarding.png" width="24%" alt="第一次打开：认识你的 wevvy">
+  <img src="../screenshots/web/onboarding.png" width="24%" alt="第一次打开：认识你的 ceis">
 </p>
 
 数据目录是全新的时候，应用打开的是设置流程，不是聊天。先用三句话说它是什么（替你做事；App 关了也继续干；要紧的地方先问你），再加一句：不用填表，有了模型之后它会在聊天里介绍自己，并问你希望怎么称呼你。然后是一张清单，做完一项打一个勾：
@@ -54,7 +54,7 @@ wevvy serve --port 9000 --no-qr
 
 *附件。* 「+」按钮（或者粘贴）可以附上照片和文件，每条消息最多十个，每个 25 MB（`server.max_upload_mb`），来源是相机、相册或者手机里的文件。选中就开始上传，显示成缩略图和可以去掉的小标签，一条消息也可以只有附件。每个文件都落到工作区的 `attachments/<date>/` 下（所以资源库里有它，任何工具都能用它），消息里会给智能体列出这些文件和它们是什么。模型接得住的时候，图片以图像形式发给模型：`llm.vision = auto` 会发，如果端点拒绝（DeepSeek 和大多数纯文本模型都会拒绝），从那以后就只发文字，并告诉你一次（图片仍然作为文件留着，智能体知道它的文件名，会说自己看不见它，而不是瞎猜）；`off` 从不发图片，`on` 坚持发。手机照片在编码前会缩到 1568 px，所以一张 10 MB 的照片花的钱和一张小图一样。PDF、电子表格和文档智能体用 `files` 读；PDF 的文字按页提取（扫描版 PDF 会说它没有文字层）。在聊天里，点图片或文件小标签就能打开。
 
-*浏览器视图。* 智能体用浏览器工具时，会出现一张浏览器卡片，显示它正在看的东西：每做一个动作之后页面的一张图、页面标题、它在哪儿、刚做了什么（「打开了 example.com」「点击了『Sign in』」）。运行期间卡片是 LIVE 的，之后留在聊天里。点一下看完整视图；「接管」把控制权交到你手上（点图片就在那个位置点击，往聚焦的输入框里打字，按回车，打开一个 URL），「交还」把页面还给智能体，它会被告知你做了什么，然后从那里接着干。登录就是这么发生的：智能体停在表单那儿问你，你登录，它继续。你输入的密码直接去网站，从不经过模型。画面帧只在当前会话期间留在服务器内存里（每个聊天最近十几帧）；重启之后旧卡片显示一个占位图。需要浏览器工具（`pip install "wevvy[browser]" && playwright install chromium`，或者 `-browser` 的 Docker 镜像），或者 Android 应用：只要它连着，它自己的 WebView 就是智能体的浏览器（卡片会说明是哪一种：`backend`）。在应用里，这种卡片上的「接管」滑上来的是真实页面的一层弹出面板，而不是页面的一张图；用手机的键盘和自动填充登录，点**完成**，智能体接着干。完整的故事，包括哪些东西没法在 WebView 里登录：[browser.md](browser.md)。
+*浏览器视图。* 智能体用浏览器工具时，会出现一张浏览器卡片，显示它正在看的东西：每做一个动作之后页面的一张图、页面标题、它在哪儿、刚做了什么（「打开了 example.com」「点击了『Sign in』」）。运行期间卡片是 LIVE 的，之后留在聊天里。点一下看完整视图；「接管」把控制权交到你手上（点图片就在那个位置点击，往聚焦的输入框里打字，按回车，打开一个 URL），「交还」把页面还给智能体，它会被告知你做了什么，然后从那里接着干。登录就是这么发生的：智能体停在表单那儿问你，你登录，它继续。你输入的密码直接去网站，从不经过模型。画面帧只在当前会话期间留在服务器内存里（每个聊天最近十几帧）；重启之后旧卡片显示一个占位图。需要浏览器工具（`pip install "ceis[browser]" && playwright install chromium`，或者 `-browser` 的 Docker 镜像），或者 Android 应用：只要它连着，它自己的 WebView 就是智能体的浏览器（卡片会说明是哪一种：`backend`）。在应用里，这种卡片上的「接管」滑上来的是真实页面的一层弹出面板，而不是页面的一张图；用手机的键盘和自动填充登录，点**完成**，智能体接着干。完整的故事，包括哪些东西没法在 WebView 里登录：[browser.md](browser.md)。
 
 **动态。** 两部分。顶上是*动态偏好*：告诉它你想读什么（「帮我跟进骑行和 Rust 的消息，每周一个菜谱」），每天一次，或者你点「写几条新的」的时候，智能体根据这些偏好、你的目标和它记得的事，为你写三条短文。每条都有「问问 {name}」，点了就围绕它开一段对话。下面是*你离开期间*：每一轮后台工作一条（它最后说的话，以及它做出的文件），任何聊天里还在等你的每一个审批或提问，今天的日历，还有一张*接下来*卡片，说下一轮什么时候跑、哪个目标排在前面。没看过的条目数显示在标签页上。
 
@@ -66,11 +66,11 @@ wevvy serve --port 9000 --no-qr
 
 - *目标日期。* 卡片上写「5 天后到期」/「原定 9 月 12 日到期」；后台那一轮挑活干的时候逾期的目标排在前面，智能体也会被告知它们逾期了。
 - *跟进。* 「每天 08:00」「工作日 07:30」「每周一 09:00」「每月 1 日」：到点智能体发一条短消息（这个目标是关于什么的，下一小步是什么，进展如何），不做别的。跟进在任何主动性档位下都会来（是你要的），但会等免打扰时段结束。*日程*视图列出接下来的几次。
-- *计划变更。* 智能体发现计划不再合适时，不会直接改；它会提出一套修订后的剩余步骤，并说明理由。提议显示成一张卡片，在目标页顶部和目标内部都有：「采用 wevvy 的计划」保留已完成的步骤、换掉其余的，「保留我的计划」什么都不动。两种选择都会在目标上留一条备注。
+- *计划变更。* 智能体发现计划不再合适时，不会直接改；它会提出一套修订后的剩余步骤，并说明理由。提议显示成一张卡片，在目标页顶部和目标内部都有：「采用 ceis 的计划」保留已完成的步骤、换掉其余的，「保留我的计划」什么都不动。两种选择都会在目标上留一条备注。
 
-**提醒和例程。** 在聊天里说一句（「六点提醒我给妈妈打电话」「每个工作日 07:30 给我一句话的天气」），或者在*日程*下面加一条。*提醒*是在你说的时间、在你设它的那个聊天里发一条短消息，别的什么都不做；*例程*是智能体在那个时间用它的工具做一件事（读收件箱、看一个页面、跑一个脚本），然后汇报。节奏用的是跟进那套写法：`daily 08:00`、`weekdays 07:30`、`weekly mon 09:00`、`monthly 1 09:00`。你说定的时间不受主动性档位和免打扰时段影响；聊天正忙时消息排在对话后面，不会被跳过。已触发的条目在*最近完成*下面留一周。终端里有同一张列表：`wevvy reminders list | add | cancel`。
+**提醒和例程。** 在聊天里说一句（「六点提醒我给妈妈打电话」「每个工作日 07:30 给我一句话的天气」），或者在*日程*下面加一条。*提醒*是在你说的时间、在你设它的那个聊天里发一条短消息，别的什么都不做；*例程*是智能体在那个时间用它的工具做一件事（读收件箱、看一个页面、跑一个脚本），然后汇报。节奏用的是跟进那套写法：`daily 08:00`、`weekdays 07:30`、`weekly mon 09:00`、`monthly 1 09:00`。你说定的时间不受主动性档位和免打扰时段影响；聊天正忙时消息排在对话后面，不会被跳过。已触发的条目在*最近完成*下面留一周。终端里有同一张列表：`ceis reminders list | add | cancel`。
 
-<a id="triggers"></a>**触发器：当某事发生时。** 提醒的另一半：由外界而不是时钟启动的工作。在聊天里说一句（「房东回信了就帮我总结一下，起草一封回复」「标题里带 *review* 的会议开始前半小时，整理一页简报」「我的部署脚本调用你的时候，检查一下网站是不是正常」），或者在*日程 → 当某事发生时*下面加一条。三种：**新邮件**（到了一封发件人或主题包含你给的每一个词的邮件；只要有这样的触发器存在，收件箱每五分钟看一次，连接邮箱从不回放旧邮件），**日程开始前**（标题或地点匹配的日历事件还有 *N* 分钟开始），**webhook**（一个带 key 的 URL；任何能发 HTTP 请求的东西（CI 任务、家庭自动化规则、带 `curl` 的 cron 行）向它 `POST`，请求体就是上下文）。每次触发，智能体都在设它的那个聊天里做事，面前摆着那封邮件、那个事件或那个请求，结果以「新邮件：…」「即将开始：…」或「Webhook：…」的形式落到动态里。同一件事从不触发两次（邮件按 UID、事件按开始时间），webhook 拒绝间隔不到十秒的投递，错的 key 看起来和错的 URL 一模一样。邮件和事件是你的私人数据：从那以后这段对话就带上污点标记，再往不在白名单里的主机发任何东西都需要一次审批，模型也被告知，把收到的东西当数据，绝不当指令。「现在运行」用一个样例事件触发一次，看看它会做什么；列表显示每条触发过几次、收件箱上次什么时候读的。终端里：`wevvy triggers list | add | cancel`。
+<a id="triggers"></a>**触发器：当某事发生时。** 提醒的另一半：由外界而不是时钟启动的工作。在聊天里说一句（「房东回信了就帮我总结一下，起草一封回复」「标题里带 *review* 的会议开始前半小时，整理一页简报」「我的部署脚本调用你的时候，检查一下网站是不是正常」），或者在*日程 → 当某事发生时*下面加一条。三种：**新邮件**（到了一封发件人或主题包含你给的每一个词的邮件；只要有这样的触发器存在，收件箱每五分钟看一次，连接邮箱从不回放旧邮件），**日程开始前**（标题或地点匹配的日历事件还有 *N* 分钟开始），**webhook**（一个带 key 的 URL；任何能发 HTTP 请求的东西（CI 任务、家庭自动化规则、带 `curl` 的 cron 行）向它 `POST`，请求体就是上下文）。每次触发，智能体都在设它的那个聊天里做事，面前摆着那封邮件、那个事件或那个请求，结果以「新邮件：…」「即将开始：…」或「Webhook：…」的形式落到动态里。同一件事从不触发两次（邮件按 UID、事件按开始时间），webhook 拒绝间隔不到十秒的投递，错的 key 看起来和错的 URL 一模一样。邮件和事件是你的私人数据：从那以后这段对话就带上污点标记，再往不在白名单里的主机发任何东西都需要一次审批，模型也被告知，把收到的东西当数据，绝不当指令。「现在运行」用一个样例事件触发一次，看看它会做什么；列表显示每条触发过几次、收件箱上次什么时候读的。终端里：`ceis triggers list | add | cancel`。
 
 **资源库。** 智能体工作区里的每一个文件，最新的在前，可以按类型筛（页面、文档、图片、数据、代码），可以搜索。文件在应用里就能打开：页面实时渲染，Markdown 排好版，CSV 变成表格，图片和 PDF 内嵌显示。智能体写的页面跑在一个沙箱化的、来源不透明（opaque origin）的 iframe 里（它读不到访问令牌，也调不了 API）；出于同样的原因，服务器给每个 HTML 文件都带上 `Content-Security-Policy: sandbox`。
 
@@ -80,9 +80,9 @@ wevvy serve --port 9000 --no-qr
 - *活动*：审计记录，每一次工具调用、判定和审批，包括被拒绝的。
 - *权限*：哨兵模式，以及你授予的每一条长期权限，每条都带一个撤销按钮。
 - *日程*：后台工作的开关、下一轮的时间、排队的目标和一个「现在运行」按钮、接下来的跟进、你的提醒和例程、你的触发器（*当某事发生时*），各自带「+ 添加」「现在运行」和取消；webhook 有一个复制 URL 的按钮。
-- *记忆*：智能体记住的关于你的一切，按类别分，加一个输入框。「忘掉」删除一条；智能体不会再看到它。每一轮对话，和消息相关的记忆会进入智能体的提示词：按关键词，以及（在*连接 → 按含义召回*下面设好向量（embedding）端点之后）按含义，所以「写邮件给房东」能带出「the landlord is Bob Li」，哪怕它们一个词都不重合。「整理」跑一遍智能体自己也会做的整理工作（每新增八行，或每周一次，除「关闭」外的任何主动性档位都做）：说同一件事的几行合成一行，变了的事实留新版本，从来不是关于你的事实的一次性请求被丢掉。模型提议；wevvy 检查合并后的那一行没有多出原本没有的词，拒绝丢掉任何你亲手写的，每遍最多拿掉存量的五分之一。*最近的改动*列出每一次合并、丢弃和更新，以及被替换掉的原文，每条都有「撤销」。改动了东西的一次整理，在动态里是一条。
+- *记忆*：智能体记住的关于你的一切，按类别分，加一个输入框。「忘掉」删除一条；智能体不会再看到它。每一轮对话，和消息相关的记忆会进入智能体的提示词：按关键词，以及（在*连接 → 按含义召回*下面设好向量（embedding）端点之后）按含义，所以「写邮件给房东」能带出「the landlord is Bob Li」，哪怕它们一个词都不重合。「整理」跑一遍智能体自己也会做的整理工作（每新增八行，或每周一次，除「关闭」外的任何主动性档位都做）：说同一件事的几行合成一行，变了的事实留新版本，从来不是关于你的事实的一次性请求被丢掉。模型提议；ceis 检查合并后的那一行没有多出原本没有的词，拒绝丢掉任何你亲手写的，每遍最多拿掉存量的五分之一。*最近的改动*列出每一次合并、丢弃和更新，以及被替换掉的原文，每条都有「撤销」。改动了东西的一次整理，在动态里是一条。
 - *技能*：一件事怎么做，写下来一次（每周回顾、旅行计划、收件箱分拣）。见下面的[技能](#skills)。
-- *连接*：智能体够得着什么，在手机上就能接上和拔掉。**模型**：服务商预设（阿里云百炼、OpenRouter、DeepSeek、OpenAI、Ollama、任何 OpenAI 兼容端点）、模型名、工具调用模式和 API key。每家服务商覆盖什么、ChatGPT 登录怎么回事，在 [web.md](web.md)；key 以 `LLM_API_KEY` 写进保险库，并当场换到每一个会话里；「测试」让模型回一个词。用 wevvy Cloud 账号时，聊天模型是 `deepseek-v4.1-flash`。**手的模型**、**生成图片**、**生成视频**：手机和桌面版在 设置 → 模型 里的另外三行，这里是聊天模型下面的几张卡片；每张打开时都是「自动」（对话模型所在的服务商能做这件事就用它，否则登录时用账号的模型），并写着「当前为 服务商 · 模型」。手把浏览器和电脑的截图发给一个看得见图像的模型：Cloud 上是 `qwen3.8-27b`；DeepSeek 家的，只有 id 带 `v4.1`、`vision` 或 `ocr` 的才行。**按含义召回**：记忆是否也按含义召回，走一个 OpenAI 兼容的 `/embeddings` 端点：*自动*（模型的端点有就用，没有就按关键词召回）、*开*、*关*；用模型自己的端点或者另一个（比如 DeepSeek 旁边放一个带 `qwen3-embedding:0.6b` 的 Ollama，因为 DeepSeek 没有向量端点；key 以 `EMBEDDINGS_API_KEY` 进保险库）；向量模型名，留空用端点的默认值。「测试」调一次向量接口，成功了就当场把每一条记忆建好索引；卡片上那一行写着已索引多少条。**网页搜索**：谁来回答 `web_search`：DuckDuckGo（不用设置，但是抓取来的，偶尔会被限流）、带 key 的 Brave Search、Tavily 或 Serply（保险库：`SEARCH_API_KEY`，附一个申请 key 的链接）、有没有 key 都行的 You.com（不带 key 每天 100 次），或者按 URL 填一个 SearXNG 实例；「测试」跑一次搜索，显示服务商、结果数和耗时。不管选的是谁，搜索失败都会退回 DuckDuckGo 并加一句说明。**邮件**：常见服务商的预设、地址和应用专用密码（保险库：`EMAIL_ADDRESS`、`EMAIL_PASSWORD`）、IMAP/SMTP 服务器；「连接」保存并登录两台服务器证明能用；「断开」删掉凭据和对应的工具。**日历**：加任何私密 `.ics` 链接（页面上写着 Google、Outlook、iCloud 和 Fastmail 各自把它藏在哪儿）或者一个文件路径；链接以 `CALENDAR_<NAME>` 进保险库，日历源当场读取并显示事件数；*空闲时间*用的工作时间；「重新读取」把每个源再抓一遍。今天的事件出现在动态的*今天*下面（今天过完就显示明天的），智能体的提示词里也能看到。智能体起草的事件打开是一张卡片，带「加入日历」。**通讯录**：上传从手机导出的 `.vcf`（Google 通讯录、iCloud、Outlook、手机自带的通讯录应用；页面上写着每家把导出藏在哪儿），或者给一个路径或链接（链接以 `CONTACTS_<NAME>` 进保险库）；每本通讯录显示有多少人；*我的联系人*是智能体从聊天里填起来的那一本；一个搜索框，按智能体查人的方式查人。**浏览器**：开 / 关，Playwright 没装时带安装提示。**MCP 服务器**：按命令（stdio）或 URL 添加一个服务器，选它的工具的风险等级，再移除；`config.toml` 里的服务器只读列出。**保险库**：每一个已存密钥的名字，添加或删除一个。离开服务器的永远只有名字。
+- *连接*：智能体够得着什么，在手机上就能接上和拔掉。**模型**：服务商预设（阿里云百炼、OpenRouter、DeepSeek、OpenAI、Ollama、任何 OpenAI 兼容端点）、模型名、工具调用模式和 API key。每家服务商覆盖什么、ChatGPT 登录怎么回事，在 [web.md](web.md)；key 以 `LLM_API_KEY` 写进保险库，并当场换到每一个会话里；「测试」让模型回一个词。用 ceis Cloud 账号时，聊天模型是 `deepseek-v4.1-flash`。**手的模型**、**生成图片**、**生成视频**：手机和桌面版在 设置 → 模型 里的另外三行，这里是聊天模型下面的几张卡片；每张打开时都是「自动」（对话模型所在的服务商能做这件事就用它，否则登录时用账号的模型），并写着「当前为 服务商 · 模型」。手把浏览器和电脑的截图发给一个看得见图像的模型：Cloud 上是 `qwen3.8-27b`；DeepSeek 家的，只有 id 带 `v4.1`、`vision` 或 `ocr` 的才行。**按含义召回**：记忆是否也按含义召回，走一个 OpenAI 兼容的 `/embeddings` 端点：*自动*（模型的端点有就用，没有就按关键词召回）、*开*、*关*；用模型自己的端点或者另一个（比如 DeepSeek 旁边放一个带 `qwen3-embedding:0.6b` 的 Ollama，因为 DeepSeek 没有向量端点；key 以 `EMBEDDINGS_API_KEY` 进保险库）；向量模型名，留空用端点的默认值。「测试」调一次向量接口，成功了就当场把每一条记忆建好索引；卡片上那一行写着已索引多少条。**网页搜索**：谁来回答 `web_search`：DuckDuckGo（不用设置，但是抓取来的，偶尔会被限流）、带 key 的 Brave Search、Tavily 或 Serply（保险库：`SEARCH_API_KEY`，附一个申请 key 的链接）、有没有 key 都行的 You.com（不带 key 每天 100 次），或者按 URL 填一个 SearXNG 实例；「测试」跑一次搜索，显示服务商、结果数和耗时。不管选的是谁，搜索失败都会退回 DuckDuckGo 并加一句说明。**邮件**：常见服务商的预设、地址和应用专用密码（保险库：`EMAIL_ADDRESS`、`EMAIL_PASSWORD`）、IMAP/SMTP 服务器；「连接」保存并登录两台服务器证明能用；「断开」删掉凭据和对应的工具。**日历**：加任何私密 `.ics` 链接（页面上写着 Google、Outlook、iCloud 和 Fastmail 各自把它藏在哪儿）或者一个文件路径；链接以 `CALENDAR_<NAME>` 进保险库，日历源当场读取并显示事件数；*空闲时间*用的工作时间；「重新读取」把每个源再抓一遍。今天的事件出现在动态的*今天*下面（今天过完就显示明天的），智能体的提示词里也能看到。智能体起草的事件打开是一张卡片，带「加入日历」。**通讯录**：上传从手机导出的 `.vcf`（Google 通讯录、iCloud、Outlook、手机自带的通讯录应用；页面上写着每家把导出藏在哪儿），或者给一个路径或链接（链接以 `CONTACTS_<NAME>` 进保险库）；每本通讯录显示有多少人；*我的联系人*是智能体从聊天里填起来的那一本；一个搜索框，按智能体查人的方式查人。**浏览器**：开 / 关，Playwright 没装时带安装提示。**MCP 服务器**：按命令（stdio）或 URL 添加一个服务器，选它的工具的风险等级，再移除；`config.toml` 里的服务器只读列出。**保险库**：每一个已存密钥的名字，添加或删除一个。离开服务器的永远只有名字。
 - *设置*：智能体的名字、形象、颜色和性格，它怎么称呼你；哨兵模式（平衡 = `ask`，谨慎 = `strict`，放手 = `auto`）以及命令是否在[沙箱](sentinel.md#the-sandbox)里跑；主动性（关闭 / 低 / 默认 / 高的档位、跟进间隔、免打扰时段；见[后台工作](#background-work)）；通知（见下文）；在 Android 应用上还有「保持运行」：电池、悬浮窗和闹钟权限、重启后自动启动、导出日志（[archive/android-python-line.md](../archive/android-python-line.md#keeping-it-running)）；「显示思考过程」；应用语言；回复语言；以及始终都在的两行版本信息：已安装的版本和最新的发布（「最新版 0.1.x，你已经在用了」/「0.1.x 已发布 · 更新」/「没能检查到最新版本 · 现在检查」；先查 `wevvy.in/dl/index.json`，再查 GitHub）。
 
 应用会说 English 和简体中文。*设置 → 应用语言*是设备级的设置（存在浏览器里，不在服务器上）：*自动*跟着浏览器的语言走，不然就自己选一个；日期和相对时间也跟着它。它和*回复语言*是两回事，后者是智能体用什么语言写。字符串放在 `web/src/i18n/`：英文原文就是 key，`zh-CN.ts` 是译文，应用里有哪条字符串没有译文，单元测试就会失败。
@@ -93,11 +93,11 @@ wevvy serve --port 9000 --no-qr
 
 模型在系统提示词里看到的是索引（每个启用技能的名字和描述），请求对得上就挑一个（「帮我规划在京都的一周」会去拿 `trip-plan`），开始之前用 `skills` 工具读完整的步骤。你也可以自己点名：在输入框里打 `/`，启用的技能就冒出来（`Tab` 补全第一个匹配）；`/trip-plan Kyoto, 5 days in November` 把这个技能的指令连同你的文字作为任务一起发出去。
 
-新技能有三条来路。在*技能 → 新建*里自己写（名字填好后出现一份模板）；粘贴一个链接（原始的 `SKILL.md`，或者 GitHub 的文件夹页或文件页），然后「获取」；或者在一件事办得顺利之后，告诉智能体「把这个存成技能」：它把自己做过的事写成步骤，并先问过你（`skills` 的 action=save 是一次敏感调用，所以即使在 `auto` 模式下也需要你审批，删除技能也一样）。把一个技能关掉，它就不进模型的列表；内置技能上的「复制一份改成你的」会在编辑器里以你的名义打开它。技能自带的脚本和参考文件在[沙箱](sentinel.md#the-sandbox)里以只读方式可见。终端里：`wevvy skills list | show | add | new | remove | enable | disable`。
+新技能有三条来路。在*技能 → 新建*里自己写（名字填好后出现一份模板）；粘贴一个链接（原始的 `SKILL.md`，或者 GitHub 的文件夹页或文件页），然后「获取」；或者在一件事办得顺利之后，告诉智能体「把这个存成技能」：它把自己做过的事写成步骤，并先问过你（`skills` 的 action=save 是一次敏感调用，所以即使在 `auto` 模式下也需要你审批，删除技能也一样）。把一个技能关掉，它就不进模型的列表；内置技能上的「复制一份改成你的」会在编辑器里以你的名义打开它。技能自带的脚本和参考文件在[沙箱](sentinel.md#the-sandbox)里以只读方式可见。终端里：`ceis skills list | show | add | new | remove | enable | disable`。
 
 ### 通知 {#notifications}
 
-*设置 → 通知 → 让 wevvy 通知这台设备。* 标准的 Web Push，走浏览器自己的推送服务，不需要在任何人那里开账号：服务器生成一次 VAPID 密钥对（`<data_dir>/push-vapid.json`），并保存你各台设备的订阅（`push-subscriptions.json`）。智能体需要你审批、问你问题、跑完一轮有东西要汇报的后台工作，或者某个目标到了跟进时间，你就会收到一条通知。安静的轮次和一步一步的叙述从不离开应用，应用在屏幕上时也什么都不显示：卡片已经在那儿了。点通知打开对应的聊天。手机上把应用放在主屏幕后，图标上的角标是等着你的卡片数。
+*设置 → 通知 → 让 ceis 通知这台设备。* 标准的 Web Push，走浏览器自己的推送服务，不需要在任何人那里开账号：服务器生成一次 VAPID 密钥对（`<data_dir>/push-vapid.json`），并保存你各台设备的订阅（`push-subscriptions.json`）。智能体需要你审批、问你问题、跑完一轮有东西要汇报的后台工作，或者某个目标到了跟进时间，你就会收到一条通知。安静的轮次和一步一步的叙述从不离开应用，应用在屏幕上时也什么都不显示：卡片已经在那儿了。点通知打开对应的聊天。手机上把应用放在主屏幕后，图标上的角标是等着你的卡片数。
 
 推送需要安全上下文：`https://` 或 `localhost`。在局域网里走明文 `http://` 时，应用的其余部分照常工作，开关会解释为什么这一项关着；TLS 的搭法见[部署](deployment.md#reaching-it-from-outside-your-network)。内嵌浏览器（嵌在别的应用里的那种）通常根本没有推送服务；用 Chrome、Edge、Firefox 或 Safari 16.4+（iOS 上只有主屏幕应用可以）。
 
@@ -105,7 +105,7 @@ wevvy serve --port 9000 --no-qr
 
 ### 带着东西打开应用 {#opening-the-app-on-something}
 
-页面接受几个查询参数，Android 应用在用，书签也可以用：`?thread=<id>` 打开一段对话，`?tab=goals`（feed、ideas、library、connections）打开一个标签页；`&draft=<text>` 把文字放进输入框但不发送；`&attach=<json>`（`POST /api/files/upload` 返回的 `{path, name, mime, size}` 的 JSON 列表）把已经在工作区里的文件加成附件小标签。它们只读一次，然后从地址栏里去掉。手机上的**分享 → wevvy** 就是这么做的：应用上传分享来的文件（`POST /api/files/upload`），开一个以主题或第一个文件命名的会话（`POST /api/threads`），然后带着文字作为草稿、文件作为附件打开它，等你说要拿它们做什么。在手机上，智能体还把手机自己的能力当工具用，工作区也会出现在「文件」应用里：[device.md](device.md)。
+页面接受几个查询参数，Android 应用在用，书签也可以用：`?thread=<id>` 打开一段对话，`?tab=goals`（feed、ideas、library、connections）打开一个标签页；`&draft=<text>` 把文字放进输入框但不发送；`&attach=<json>`（`POST /api/files/upload` 返回的 `{path, name, mime, size}` 的 JSON 列表）把已经在工作区里的文件加成附件小标签。它们只读一次，然后从地址栏里去掉。手机上的**分享 → ceis** 就是这么做的：应用上传分享来的文件（`POST /api/files/upload`），开一个以主题或第一个文件命名的会话（`POST /api/threads`），然后带着文字作为草稿、文件作为附件打开它，等你说要拿它们做什么。在手机上，智能体还把手机自己的能力当工具用，工作区也会出现在「文件」应用里：[device.md](device.md)。
 
 ## 后台工作 {#background-work}
 
@@ -118,7 +118,7 @@ wevvy serve --port 9000 --no-qr
 | 默认 | 每个间隔一轮 | 有实际进展或者有你会想知道的事的时候 |
 | 高 | 每 ½ 间隔一轮 | 总是，包括「仍在正轨上」 |
 
-每一轮，服务挑一个还有待办步骤的活跃目标，在主要聊天里以哨兵的 `auto` 模式跑它（明确的拒绝规则和危险调用警告仍然有效；这些会变成动态里的卡片），然后让模型自己判断结果值不值得打扰你。没什么可说的一轮，总结以 `[quiet]` 开头：聊天里显示一行灰字（「已检查*目标*：没有新进展」，点开可展开），动态里列成一行，不打任何角标。其余的就是你的 wevvy 发来的一条普通消息。
+每一轮，服务挑一个还有待办步骤的活跃目标，在主要聊天里以哨兵的 `auto` 模式跑它（明确的拒绝规则和危险调用警告仍然有效；这些会变成动态里的卡片），然后让模型自己判断结果值不值得打扰你。没什么可说的一轮，总结以 `[quiet]` 开头：聊天里显示一行灰字（「已检查*目标*：没有新进展」，点开可展开），动态里列成一行，不打任何角标。其余的就是你的 ceis 发来的一条普通消息。
 
 *免打扰时段*（「22:00–08:00」，服务器本地时间）会按住后台工作；落在这个窗口里的一轮等窗口结束再跑。*日程*视图和动态的*接下来*卡片显示档位、实际间隔和下一轮的时间，或者当前免打扰窗口什么时候结束。
 
@@ -136,7 +136,7 @@ wevvy serve --port 9000 --no-qr
 | PATCH / DELETE | `/api/threads/{id}` | 重命名 / 删除 |
 | POST | `/api/threads/{id}/clear` | 清空对话 |
 | GET | `/api/threads/{id}/events?limit=&before=` | 时间线事件 |
-| POST | `/api/threads/{id}/send` `{text, files?, language?, via?}` | 把一条消息排进队列；立即返回。`files`：下面那个上传接口返回的工作区路径，最多十个；有文件时文字可以为空。`language`（1.0.0 起）：客户端界面语言的 BCP-47 标签（`en`、`zh-CN`）；除非「回复语言」固定了一种，回复就用这种语言写。不带它时照旧按消息的文字书写系统判断。`via: "cloud"` 是「这次改用 wevvy Cloud」：这一个回合用账号的 key 在账号推荐的聊天模型上跑，下一回合回到配置的模型，`[llm]` 不动；用户气泡、回复和这一回合的失败提示都带 `model_used`。没有登录账号时回 `401 signed_out` |
+| POST | `/api/threads/{id}/send` `{text, files?, language?, via?}` | 把一条消息排进队列；立即返回。`files`：下面那个上传接口返回的工作区路径，最多十个；有文件时文字可以为空。`language`（1.0.0 起）：客户端界面语言的 BCP-47 标签（`en`、`zh-CN`）；除非「回复语言」固定了一种，回复就用这种语言写。不带它时照旧按消息的文字书写系统判断。`via: "cloud"` 是「这次改用 ceis Cloud」：这一个回合用账号的 key 在账号推荐的聊天模型上跑，下一回合回到配置的模型，`[llm]` 不动；用户气泡、回复和这一回合的失败提示都带 `model_used`。没有登录账号时回 `401 signed_out` |
 | POST | `/api/threads/{id}/stop` | 停掉那个聊天里正在跑的一轮：队列丢弃，那里待处理的审批和提问卡片过期，对话照常能用。没有东西在跑时返回 `{ok: false}` |
 | POST | `/api/files/upload?name=` （请求体：文件字节） | 一个要附上的文件：落到 `attachments/<date>/` 下，文件名是 `name` 的安全版本；返回给 `files` 用的 `{path, name, size, kind, mime}`。超过 `server.max_upload_mb` 返回 413 |
 | POST | `/api/approvals/{id}` `{approved, scope, reason}` | 回答一张卡片；`scope` 是这张卡片 `grant_options` 中的一个（`once`、`conversation`、`session`、`24h`、`always`；`task` 仍按 `conversation` 读） |
@@ -171,7 +171,7 @@ wevvy serve --port 9000 --no-qr
 | PUT | `/api/connections/llm` `{provider, model, base_url, tool_mode, api_key}` 或 `{endpoint, model, tool_mode}` | 换模型；`api_key` 给了 → 存进保险库，`""` → 不用 key，没给 → 不变。`endpoint` 指向列表里的一个接口，槽位借用它的地址和它自己的 key（按引用）。在每个会话里立即生效。地址里带 `user:pass@` 会被拒绝并返回 400（key 应写在 `api_key`）；`/api/llm/models`、`/api/connections/gui`、`/image`、`/video` 和接口列表同样如此 |
 | POST | `/api/connections/llm/test` | 和模型来一次简短往返：`{ok, reply, ms}` 或 `{ok: false, error}` |
 | POST | `/api/llm/models` `{preset, base_url, api_key}` 或 `{endpoint}` | 一个端点提供的模型：查它的 `/models`（然后 `/v1/models`），用给定的 key，没给就用保险库里的，返回 `{models, source: "live"}`；连不上时返回预设的内置目录，带 `source: "catalogue"` 和 `error`；对列表里的 `endpoint` 则返回随它保存的模型。请求带着 key 时只跟随同源的重定向（否则 `error: "redirect to another host"`）。什么都不保存 |
-| POST | `/api/connections/endpoints` `{label, base_url, api_key, models}` | 往列表里添加一个自定义 OpenAI 兼容接口（#294）：`label` 可选（不填就用主机名），`api_key` 可选（保险库：`ENDPOINT_<ID>_API_KEY`），`models` 是它提供的模型 id，逗号分隔，在它列不出模型时填（两者都没有时回 400 和一句话）。返回这个条目；wevvy Cloud 或目录预设的地址会被拒绝，列表里另一个接口已经在用的地址回 409 并说出是哪一个 |
+| POST | `/api/connections/endpoints` `{label, base_url, api_key, models}` | 往列表里添加一个自定义 OpenAI 兼容接口（#294）：`label` 可选（不填就用主机名），`api_key` 可选（保险库：`ENDPOINT_<ID>_API_KEY`），`models` 是它提供的模型 id，逗号分隔，在它列不出模型时填（两者都没有时回 400 和一句话）。返回这个条目；ceis Cloud 或目录预设的地址会被拒绝，列表里另一个接口已经在用的地址回 409 并说出是哪一个 |
 | PUT | `/api/connections/endpoints/{id}` `{label, base_url, api_key, models}` | 修改一个接口：新名字、新地址、新 key（`""` 删掉）或手填的模型；没给的字段不变。用到这个接口的每个槽位一起跟着变。id 不存在回 404，地址被另一个接口占用回 409 |
 | DELETE | `/api/connections/endpoints/{id}` | 移除一个接口和它在保险库里的 key；设在它上面的双手、图片或短片回到自动。对话模型正通过它回答时回 409 |
 | POST | `/api/connections/endpoints/{id}/models` | 重新向接口要一遍模型并保存：返回条目加 `source: "live"`，它没回答时是 `"kept"` 和 `error`，沿用已保存的列表 |
@@ -218,7 +218,7 @@ wevvy serve --port 9000 --no-qr
 | GET / PUT | `/api/sync/state` · `{enabled}` | 账号各设备之间同步的对话（[every-device.md](every-device.md#the-same-conversations-everywhere)）：`{enabled, available, paused, cursor, last_pull_at, last_push_at, error, relay}`；`available` 是「已登录且设置允许」，`paused` 在收到 401 后置上，直到下一次登录，`relay` 是中继自己的 `{enabled, cursor, counts{conversations, messages}, limits}`，问不到时为 `null`。`PUT {enabled: false}` 在这里关掉同步，并删掉中继为这个账号保存的内容（其他设备的开关会在它们下一次推送或拉取时跟着关，中继会以 `sync_off` 拒绝）；`PUT {enabled: true}` 重新打开，并把这里的聊天推上去。中继的拒绝会以它的状态码和代码原样返回（`409 sync_off`）。从 0.1.38 起，状态里还带 `side_chats`（这台设备的*同时同步旁聊*，默认关闭：只推送和拉取主要聊天）和 `working`（`[{thread, cid, device, device_name, at}]`：此刻正在回答的其他设备，来自 hub 的 `working` 帧，每条十分钟后丢弃）；`PUT {side_chats: true}` 把这台设备的旁聊发上去，并从头把账号的旁聊拉一次，`false` 则从此留在本地 |
 | POST | `/api/sync/delete` | 删掉中继上每一段已同步的对话，开关保持原样；返回状态 |
 | POST | `/api/sync/pull` | 现在就抓取并应用其他设备的改动：`{applied, …state}` |
-| GET | `/api/cloud` | 应用所显示的 wevvy Cloud 账号：`{base_url, signed_in, required, models, hint, channel, signed_in_at, has_password, account_id, member, any_model, region, is_model}`（[cloud.md](cloud.md)）。下面每条 `/api/cloud/*` 路由遇到中继拒绝时，都以中继的状态码、它的那句话作答，代码放在 `X-Wevvy-Code` 头里；没有登录账号时是 401 `bad_key` |
+| GET | `/api/cloud` | 应用所显示的 ceis Cloud 账号：`{base_url, signed_in, required, models, hint, channel, signed_in_at, has_password, account_id, member, any_model, region, is_model}`（[cloud.md](cloud.md)）。下面每条 `/api/cloud/*` 路由遇到中继拒绝时，都以中继的状态码、它的那句话作答，代码放在 `X-Ceis-Code` 头里；没有登录账号时是 401 `bad_key` |
 | GET | `/api/cloud/config` | 中继的公开数字（新账号的额度、邀请奖励、是否开放注册、要加星的仓库）；旧中继或没有中继时是 `{}` |
 | POST | `/api/cloud/code` `{identifier}` | 向一个邮箱地址或手机号发送登录验证码；`{ok}` |
 | POST | `/api/cloud/verify` `{identifier, code, invite?}` | 用验证码登录（首次注册可带邀请码）；回答中继的 `/v1/me`，顺带刷新提示策略 |
@@ -228,15 +228,15 @@ wevvy serve --port 9000 --no-qr
 | GET · DELETE | `/api/cloud/sessions` · `/api/cloud/sessions/{prefix}` | 账号在各设备上的登录 / 按列表显示的前缀撤销一个；两者都回答 `{sessions}` |
 | POST | `/api/cloud/sign-out` · `/api/cloud/sign-out-all` `{all}` | 退出这台设备 / 撤销其他所有设备的登录（`all: true` 时连这台一起，`{signed_out}` 加账号视图） |
 | GET | `/api/cloud/events?limit=` | 中继上这个账号的活动记录：`{events}`；`limit` 取 1 到 200，默认 50 |
-| POST | `/api/cloud/models` `{on}` | 「使用 wevvy Cloud 模型」：关掉后，账号的模型退出双手、图片和短片的自动顺序以及提供方列表；登录保留。聊天模型正在用账号时返回 409 `chat_on_cloud` |
+| POST | `/api/cloud/models` `{on}` | 「使用 ceis Cloud 模型」：关掉后，账号的模型退出双手、图片和短片的自动顺序以及提供方列表；登录保留。聊天模型正在用账号时返回 409 `chat_on_cloud` |
 | POST | `/api/cloud/use-as-model` `{model?}` | 让账号当聊天模型：不点名就用推荐模型，Cloud 的 key 来自保险库；同时把账号的模型重新打开。回答连接视图里的 `llm` |
-| POST · DELETE | `/api/cloud/contribute` `{on}` · `/api/cloud/samples` | 数据控制：「帮助改进 wevvy 的 AI 模型」开或关（只有开着时中继才保留聊天回合）/ 删除它保留的内容，`{deleted}` |
+| POST · DELETE | `/api/cloud/contribute` `{on}` · `/api/cloud/samples` | 数据控制：「帮助改进 ceis 的 AI 模型」开或关（只有开着时中继才保留聊天回合）/ 删除它保留的内容，`{deleted}` |
 | POST | `/api/cloud/delete` | 在中继上删除账号并在这里退出；回答账号视图 |
 | GET / PUT | `/api/hub` · `{enabled, remote_control, name}` | 这台设备在账号枢纽上的状态（[hub.md](hub.md)）：`{enabled, remote_control, state, detail, device{id, name, kind, actions}, devices[], account}` / 加入或离开、允许或拒绝远程控制、给这台设备改名（最多 60 个字符） |
 | POST | `/api/hub/join` · `/api/hub/leave` · `/api/hub/refresh` | 加入（没有登录账号时 401）/ 离开 / 再向中继要一次设备列表；各自回答枢纽视图 |
 | DELETE | `/api/hub/devices/{device_id}` | 忘掉账号下的一台设备；枢纽没连上时 502 |
 | POST | `/api/hub/ask` `{device, text?}` | 对着某台设备（按 id 或名字；没有就新建）的侧聊，带 `text` 时作为其中第一条消息，在那台设备上运行：`{thread, event}`；没有这台设备时 404 |
-| GET | `/api/bridge/tools` | 给代理运行的命令用，不是给应用用：`wevvy-device list` 打印的设备工具，`{ok, tools[{name, description}]}`。不走应用令牌；shell 工具签发的调用令牌放在 `X-Wevvy-Bridge` 头里（否则 401），与 `POST /api/bridge/{kind}` 相同（[local-runtime.md](local-runtime.md)） |
+| GET | `/api/bridge/tools` | 给代理运行的命令用，不是给应用用：`ceis-device list` 打印的设备工具，`{ok, tools[{name, description}]}`。不走应用令牌；shell 工具签发的调用令牌放在 `X-Ceis-Bridge` 头里（否则 401），与 `POST /api/bridge/{kind}` 相同（[local-runtime.md](local-runtime.md)） |
 | GET | `/api/browser/{thread}/frames/{id}.jpg` | 一帧浏览器画面（JPEG，当前会话期间留在内存里） |
 | POST | `/api/browser/{thread}/control` `{action: click(x,y as 0–1 fractions) · type(text) · key(key) · scroll(dy) · navigate(url) · look · handed_back}` | 你来开智能体的浏览器；`handed_back` 是 Android 应用在你关掉它的接管面板时发的（取一帧新画面，告知智能体）；浏览器没打开时返回 `409`（先打开一个 URL） |
 | GET | `/api/push` | `{available, public_key, subscriptions, devices[]}`：用来订阅的 VAPID 公钥 |
@@ -257,7 +257,7 @@ wevvy serve --port 9000 --no-qr
 | `stream_start` / `delta` / `stream_end` | 正在生成的助手回复；流出来的内容最后发现不是回复时（提示词模式的工具调用、安静的后台轮次），`stream_end` 带 `discard: true` |
 | `status` | idle / working / waiting，附一行简短说明 |
 | `thread`、`thread_cleared`、`thread_deleted` | 会话列表的变化 |
-| `firstrun` | `{firstrun}`；第一次对话往前走了一步（「开始」、模型的 `wevvy-naming` 代码块、选了名字、撤掉卡片）：和 `GET /api/firstrun` 同样的视图，不带 `intro`；聊天据此重画起名卡片。`hello` 的状态在 `firstrun` 下带着它 |
+| `firstrun` | `{firstrun}`；第一次对话往前走了一步（「开始」、模型的 `ceis-naming` 代码块、选了名字、撤掉卡片）：和 `GET /api/firstrun` 同样的视图，不带 `intro`；聊天据此重画起名卡片。`hello` 的状态在 `firstrun` 下带着它 |
 | `goals`、`memory`、`ideas`、`feed_posts`、`profile`、`settings`、`connections`、`skills`、`approvals_reset` | 给各标签页的刷新提示 |
 | `phone` | 一台手机连上或离开了：`/api/phone` 的视图 |
 | `schedule` | `next_wake_at` 变了（设了或触发了一条提醒、某个目标的节奏变了、免打扰时段结束了）：`{next_wake_at}`，没有到期事项时为 `null`。Android 运行时据此重设它的闹钟 |
@@ -273,7 +273,7 @@ wevvy serve --port 9000 --no-qr
 ```bash
 cd web && npm install
 npm run dev          # Vite on http://localhost:5173, proxied to the server on 8787
-npm run build        # writes wevvy/server/static/ — commit the result
+npm run build        # writes ceis/server/static/ — commit the result
 ```
 
 用开发服务器期间，在 `[server]` 里加上 `cors_origins = ["http://localhost:5173"]`。应用就是普通的 React + TypeScript + Tailwind，没有状态管理库；`web/src/store.tsx` 放着 reducer 和 WebSocket 客户端，`web/src/screens/` 每个标签页一个文件。

@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from wevvy.vault import CredentialVault
-from wevvy.vault.vault import VaultError
+from ceis.vault import CredentialVault
+from ceis.vault.vault import VaultError
 
 
 def test_vault_roundtrip(tmp_path: Path):

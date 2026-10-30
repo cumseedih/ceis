@@ -106,8 +106,8 @@ fun OffloadPermissionScreen(
             )
         }
 
-        // wevvy: the approvals the user chose to remember, revocable here.
-        io.github.wevvy.ui.guard.GrantsSection()
+        // ceis: the approvals the user chose to remember, revocable here.
+        io.github.ceis.ui.guard.GrantsSection()
 
         autoCategories.forEach { (category, tools) ->
             SettingsSection(header = stringResource(categoryHeaderRes(category))) {
@@ -128,7 +128,7 @@ fun OffloadPermissionScreen(
         // deeplink back to the OS settings page that fixes it.
         IntegrationSection(
             iconVector = Icons.Outlined.Accessibility,
-            iconTint = io.github.wevvy.ui.theme.WevvyColors.success,
+            iconTint = io.github.ceis.ui.theme.CeisColors.success,
             sectionHeaderRes = R.string.perm_section_a11y,
             sectionFooterRes = R.string.perm_a11y_section_footer,
             toolName = "a11y_cli",

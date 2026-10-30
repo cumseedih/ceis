@@ -6,7 +6,7 @@
  */
 import { useSyncExternalStore } from "react";
 
-const STORAGE_KEY = "wevvy_devtools";
+const STORAGE_KEY = "ceis_devtools";
 
 function load(): boolean {
   try {

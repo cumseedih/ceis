@@ -1,6 +1,6 @@
 # Trace: A business trip in one sentence — the train (case 1, the 12306 half)
 
-Recorded 2026-09-24 in the web app (`wevvy serve` on a Linux machine, sandbox on), model `qwen3.8-27b` through an OpenAI-compatible endpoint, Sentinel in `ask` mode. Every row below is an event of the chat's timeline as the app stores it (`<data_dir>/threads/<id>.json`); tool outputs are clipped, nothing is reordered.
+Recorded 2026-09-24 in the web app (`ceis serve` on a Linux machine, sandbox on), model `qwen3.8-27b` through an OpenAI-compatible endpoint, Sentinel in `ask` mode. Every row below is an event of the chat's timeline as the app stores it (`<data_dir>/threads/<id>.json`); tool outputs are clipped, nothing is reordered.
 
 | # | Event | Detail |
 |---|---|---|

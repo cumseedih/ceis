@@ -1,6 +1,6 @@
 # 展示站：中国人一天里要办的七件事
 
-wevvy 是一个智能体，有好几只手。它读写文件、搜网页、跑命令、开浏览器；调用 MCP 服务器和命令行工具；照技能办事；跑在手机上时，还会用手机自己的日历、剪贴板和闹钟；实在没别的办法了，才去动手机屏幕上的 App。[阶梯](gui.md#the-ladder)规定哪只手先上：技能、CLI 或 MCP 服务器；然后是带着用户登录态的 fetch；然后是应用内浏览器；最后才是屏幕。下面七个案例里，只有一个用到了屏幕。这正是要说明的。
+ceis 是一个智能体，有好几只手。它读写文件、搜网页、跑命令、开浏览器；调用 MCP 服务器和命令行工具；照技能办事；跑在手机上时，还会用手机自己的日历、剪贴板和闹钟；实在没别的办法了，才去动手机屏幕上的 App。[阶梯](gui.md#the-ladder)规定哪只手先上：技能、CLI 或 MCP 服务器；然后是带着用户登录态的 fetch；然后是应用内浏览器；最后才是屏幕。下面七个案例里，只有一个用到了屏幕。这正是要说明的。
 
 这里没有一处会花钱：每一次发送、下单或付款都会停下来等你审批，操作器从不填密码和验证码。这些案例背后是哪些服务、各自在哪里跑过：[services.md](services.md)。
 
@@ -122,6 +122,6 @@ wevvy 是一个智能体，有好几只手。它读写文件、搜网页、跑�
 
 ## 读懂留下的痕迹 {#reading-the-trail}
 
-每一步都是聊天里的一行（`12306__get-tickets(…)`、`shell: lark-cli calendar +agenda --as user`、`phone_act: tap "提交订单" at (318,742) in 美团`），每张审批卡片都说明将要做什么、为什么要问。形象下方的 `Activity` 保存着审计日志，记着每次调用走的通道；`Permissions` 显示已有的授权，手机步骤的授权永远只有*一次*。在你自己的服务器上，`wevvy phone traces` 列出每个手机任务，`wevvy phone trace <id> -o trace.html` 把其中一个渲染成页面，带操作器看到的每个屏幕和画在上面的每次点按（[gui.md → 轨迹](gui.md#traces)）。[`docs/traces/`](../traces/) 下的 Markdown 轨迹是同样的时间线，渲染成便于阅读的样子。
+每一步都是聊天里的一行（`12306__get-tickets(…)`、`shell: lark-cli calendar +agenda --as user`、`phone_act: tap "提交订单" at (318,742) in 美团`），每张审批卡片都说明将要做什么、为什么要问。形象下方的 `Activity` 保存着审计日志，记着每次调用走的通道；`Permissions` 显示已有的授权，手机步骤的授权永远只有*一次*。在你自己的服务器上，`ceis phone traces` 列出每个手机任务，`ceis phone trace <id> -o trace.html` 把其中一个渲染成页面，带操作器看到的每个屏幕和画在上面的每次点按（[gui.md → 轨迹](gui.md#traces)）。[`docs/traces/`](../traces/) 下的 Markdown 轨迹是同样的时间线，渲染成便于阅读的样子。
 
 十一个技能带着这些习惯：`feishu`、`tencent-meeting`、`amap`、`kuaidi100` 和 `train-tickets` 对应上面的服务，`phone-messages` 对应屏幕，`trip-plan`、`meeting-prep`、`inbox-triage`、`compare-options` 和 `weekly-review` 是智能体自己的活。App 里的 `Skills` 列着它们；你自己放一个同名文件夹就能替换掉一个。按 [Agent Skills](https://agentskills.io) 格式为其他智能体写的技能，原样放进 `<data_dir>/skills` 就能用，Larksuite 自己的 `lark-*` 技能也包括在内。

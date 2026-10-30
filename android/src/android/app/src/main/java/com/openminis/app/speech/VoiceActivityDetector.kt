@@ -8,7 +8,7 @@ import android.util.Log
 import io.codeconcept.realtimecutvadlibrary.VADCallback
 import io.codeconcept.realtimecutvadlibrary.VADWrapper
 import kotlinx.coroutines.CoroutineScope
-// wevvy: an allocated recorder must reach its finally even when dispatch is cancelled.
+// ceis: an allocated recorder must reach its finally even when dispatch is cancelled.
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -338,12 +338,12 @@ class VoiceActivityDetector(
         }
         recorder = rec
 
-        // wevvy: the worker owns this allocation even before it is dispatched.
+        // ceis: the worker owns this allocation even before it is dispatched.
         captureJob = launchCapture(rec)
         return null
     }
 
-    // wevvy: enter the cleanup owner even if cancellation wins before IO dispatch.
+    // ceis: enter the cleanup owner even if cancellation wins before IO dispatch.
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun launchCapture(rec: AudioRecord): Job =
         scope.launch(start = CoroutineStart.ATOMIC) {
@@ -362,7 +362,7 @@ class VoiceActivityDetector(
     }
 
     private fun captureLoop(rec: AudioRecord) {
-        // wevvy: release on startup failure, callback failure and pre-dispatch cancellation too.
+        // ceis: release on startup failure, callback failure and pre-dispatch cancellation too.
         try {
             if (!running.get() || cancelled.get()) return
             captureFrames(rec)
@@ -371,7 +371,7 @@ class VoiceActivityDetector(
         }
     }
 
-    // wevvy: stop may throw when startup failed; release must still be attempted.
+    // ceis: stop may throw when startup failed; release must still be attempted.
     private fun releaseRecorder(rec: AudioRecord) {
         runCatching { rec.stop() }
         rec.release()
@@ -519,7 +519,7 @@ class VoiceActivityDetector(
             }
         }
 
-        // wevvy: captureLoop owns recorder release for every exit path.
+        // ceis: captureLoop owns recorder release for every exit path.
     }
 
     /** iOS's noise-aware AGC, ported verbatim (`VoiceActivityDetector.swift:617-655`). */

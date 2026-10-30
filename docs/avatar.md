@@ -2,7 +2,7 @@
 
 The agent's face is the bundled dragon until you ask for another. On the phone since
 0.1.20 and, from 0.1.23, on the web app and the desktop through the runtime
-(`wevvy/avatar/studio.py`), the studio draws one from a description, in the chat:
+(`ceis/avatar/studio.py`), the studio draws one from a description, in the chat:
 
 1. **Ask.** In the chat: 「换个形象：一只戴圆眼镜的橘猫」, "new avatar: a robot owl",
    "change your avatar to a small fox with a scarf". Or on the studio screen (the pen on
@@ -10,7 +10,7 @@ The agent's face is the bundled dragon until you ask for another. On the phone s
    phone's page: the face at the top with what it is, a description, the seven style chips,
    *Draw four*, and the rest of this list without a card in the chat (the progress comes over
    the socket as `{"kind": "studio", "current"}`). The agent is not run for it.
-2. **The cost first.** A card says what it will take: with the account's model (wevvy
+2. **The cost first.** A card says what it will take: with the account's model (ceis
    Cloud), the relay's figure (`GET /v1/estimate`) next to what is left in your allowance
    (about ¥1.5 for the eight pictures at qwen-image-3.0's price); with a key of your own, the
    count, at your provider's prices. *Draw* or *Not now*.
@@ -54,7 +54,7 @@ use them), `POST /api/avatar/moods` draws the poses and clips of the worn face a
 of finished sessions are cleared after a day; faces stay in the workspace as long as the
 profile, or you, want them.
 
-With a wevvy Cloud account the face follows you to every device ([docs/cloud.md](cloud.md)):
+With a ceis Cloud account the face follows you to every device ([docs/cloud.md](cloud.md)):
 the stills go to the relay once, the other devices wear them from `avatar/sync-<hash>/`
 with the description and style in their `face.json`, and a device keeps the face it drew,
 clips and all, when the account's pictures are the ones it already wears.
@@ -77,10 +77,10 @@ desktop where the system has the decoder, and its preview refuses a clip it cann
 takes H.264 only today). A longer or larger clip, or another format, is refused with a sentence
 that states the limits; nothing is trimmed or re-encoded, and the sound is never played.
 
-The clip stays on the device that chose it. It is not uploaded to wevvy Cloud and does not
+The clip stays on the device that chose it. It is not uploaded to ceis Cloud and does not
 sync to your other devices, unlike the stills of a studio face; each device chooses its own.
-On Android it lives under `minis-global/wevvy/avatar/own-clip.mp4` with its first frame
+On Android it lives under `minis-global/ceis/avatar/own-clip.mp4` with its first frame
 beside it as `own-clip.png`, filed with the signed-in account's other files; on iOS under the
-app's `Application Support/wevvy/avatar/own-clip.mp4`; on the desktop under
-`$DSH_HOME/wevvy/avatar/own-clip.mp4`. It survives a new studio face and a reset to the
+app's `Application Support/ceis/avatar/own-clip.mp4`; on the desktop under
+`$DSH_HOME/ceis/avatar/own-clip.mp4`. It survives a new studio face and a reset to the
 built-in one.

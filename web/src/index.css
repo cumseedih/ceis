@@ -99,7 +99,7 @@
    system: light is the default everywhere, dark only when picked (src/theme.ts). */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* The palette is the wevvy design system: page #FCFCFC, surface #FFFFFF, hairline
+/* The palette is the ceis design system: page #FCFCFC, surface #FFFFFF, hairline
    #E5E7EB, text #111112. One blue does the work: primary #005ABF fills the strongest
    action (white text, 48px pill), link blue #0064D4 is for inline links, and the pale
    blue is primary at low alpha with primary text on it (the empty Continue, the

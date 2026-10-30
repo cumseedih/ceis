@@ -330,7 +330,7 @@ fun UnifiedModelPickerSheet(
                                     if (groupSelected) Icons.Default.CheckCircle
                                     else Icons.Default.RadioButtonUnchecked,
                                     contentDescription = null,
-                                    tint = if (groupSelected) io.github.wevvy.ui.theme.WevvyColors.success
+                                    tint = if (groupSelected) io.github.ceis.ui.theme.CeisColors.success
                                     else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
                                     modifier = Modifier.size(22.dp),
                                 )
@@ -492,10 +492,10 @@ fun UnifiedModelPickerSheet(
                                                 fontSize = 9.sp,
                                                 lineHeight = 11.sp,
                                                 fontWeight = FontWeight.Medium,
-                                                color = io.github.wevvy.ui.theme.WevvyColors.success,
+                                                color = io.github.ceis.ui.theme.CeisColors.success,
                                                 modifier = Modifier
                                                     .background(
-                                                        io.github.wevvy.ui.theme.WevvyColors.success.copy(alpha = 0.1f),
+                                                        io.github.ceis.ui.theme.CeisColors.success.copy(alpha = 0.1f),
                                                         RoundedCornerShape(50),
                                                     )
                                                     .padding(horizontal = 5.dp, vertical = 1.dp),
@@ -585,10 +585,10 @@ fun UnifiedModelPickerSheet(
                                             fontSize = 9.sp,
                                             lineHeight = 11.sp,
                                             fontWeight = FontWeight.Medium,
-                                            color = io.github.wevvy.ui.theme.WevvyColors.success,
+                                            color = io.github.ceis.ui.theme.CeisColors.success,
                                             modifier = Modifier
                                                 .background(
-                                                    io.github.wevvy.ui.theme.WevvyColors.success.copy(alpha = 0.1f),
+                                                    io.github.ceis.ui.theme.CeisColors.success.copy(alpha = 0.1f),
                                                     RoundedCornerShape(50),
                                                 )
                                                 .padding(horizontal = 5.dp, vertical = 1.dp),

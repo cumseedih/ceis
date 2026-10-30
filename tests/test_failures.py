@@ -1,11 +1,11 @@
-"""The sentence a failed run leaves in the chat (wevvy/server/failures.py)."""
+"""The sentence a failed run leaves in the chat (ceis/server/failures.py)."""
 
 from __future__ import annotations
 
 import httpx
 import openai
 
-from wevvy.server.failures import describe_failure, failure_notice
+from ceis.server.failures import describe_failure, failure_notice
 
 
 def _status_error(cls, status: int, body: dict):
@@ -67,7 +67,7 @@ def test_an_exhausted_allowance_carries_the_ways_on():
         "contribute_bonus_available": False,
         "contribute_bonus_cny": 0,
         "own_key_docs": "https://wevvy.in/own-key",
-        "type": "wevvy_cloud",
+        "type": "ceis_cloud",
     }
     exc = _status_error(openai.RateLimitError, 429, body)
     code, text = describe_failure(exc)
@@ -211,7 +211,7 @@ def test_timeline_writes_are_coalesced_on_a_loop_and_immediate_off_one(tmp_path)
     import asyncio
     import json
 
-    from wevvy.server.events import Timeline
+    from ceis.server.events import Timeline
 
     path = tmp_path / "t.json"
     off = Timeline("t", path)
@@ -240,21 +240,21 @@ def test_timeline_writes_are_coalesced_on_a_loop_and_immediate_off_one(tmp_path)
 
 # ----------------------------------------------------------------------------- update check
 def test_update_check_versions_and_opt_out(monkeypatch):
-    from wevvy.server import update
+    from ceis.server import update
 
     assert update.parse_version("v0.1.21") == (0, 1, 21)
     assert update.parse_version("0.2.0-rc1") == (0, 2, 0)
     assert update.parse_version("nightly") == ()
     assert update.newer_than("0.1.21", "0.1.20") and not update.newer_than("0.1.20", "0.1.20")
     assert not update.newer_than("nightly", "0.1.20")
-    monkeypatch.delenv("WEVVY_CLOUD_KEY", raising=False)
-    monkeypatch.delenv("WEVVY_NO_UPDATE_CHECK", raising=False)
+    monkeypatch.delenv("CEIS_CLOUD_KEY", raising=False)
+    monkeypatch.delenv("CEIS_NO_UPDATE_CHECK", raising=False)
     assert update.enabled(True) and not update.enabled(False)
-    monkeypatch.setenv("WEVVY_NO_UPDATE_CHECK", "1")
+    monkeypatch.setenv("CEIS_NO_UPDATE_CHECK", "1")
     assert not update.enabled(True)
-    monkeypatch.delenv("WEVVY_NO_UPDATE_CHECK")
+    monkeypatch.delenv("CEIS_NO_UPDATE_CHECK")
     monkeypatch.setenv(
-        "WEVVY_CLOUD_KEY", "nm_hosted"
+        "CEIS_CLOUD_KEY", "nm_hosted"
     )  # a hosted web session: the operator updates
     assert not update.enabled(True)
 
@@ -263,10 +263,10 @@ def test_update_check_caches_and_survives_failures(monkeypatch):
     import asyncio
     import time
 
-    from wevvy.server import update
+    from ceis.server import update
 
-    monkeypatch.delenv("WEVVY_CLOUD_KEY", raising=False)
-    monkeypatch.delenv("WEVVY_NO_UPDATE_CHECK", raising=False)
+    monkeypatch.delenv("CEIS_CLOUD_KEY", raising=False)
+    monkeypatch.delenv("CEIS_NO_UPDATE_CHECK", raising=False)
     calls = 0
     real_check = update.UpdateCheck._check
 

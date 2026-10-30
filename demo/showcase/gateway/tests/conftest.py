@@ -35,7 +35,7 @@ class FakeRunner:
     async def gateway_address(self) -> str | None:
         return "10.0.0.1"
 
-    # kept containers (wevvy Web): created once, then stopped and started by name
+    # kept containers (ceis Web): created once, then stopped and started by name
     @property
     def kept(self) -> dict[str, dict]:
         if not hasattr(self, "_kept"):
@@ -92,7 +92,7 @@ def make_settings(**over: Any) -> Settings:
         trusted_proxies=("127.0.0.1", "testclient"),
         site_dir="",
         cdn_dir="",
-        image="wevvy:test",
+        image="ceis:test",
         internal_url="",
         session_ttl_s=600,
         idle_ttl_s=120,
@@ -129,7 +129,7 @@ def make_settings(**over: Any) -> Settings:
         web_relay_internal_url="http://relay:8787",
         web_network="web-net",
         web_db=":memory:",
-        web_image="wevvy:web",
+        web_image="ceis:web",
         web_max_accounts=2,
         web_max_running=1,
         web_idle_stop_s=3600,
@@ -179,7 +179,7 @@ class Upstream:
         self.animate_busy = 0  # how many 429s the video endpoint answers first
 
     def relay(self, request: httpx.Request) -> httpx.Response:
-        """A little wevvy Cloud: any identifier gets the code 246810."""
+        """A little ceis Cloud: any identifier gets the code 246810."""
         data = json.loads(request.content or b"{}")
         ident = str(data.get("identifier", "")).lower()
         if request.url.path == "/v1/auth/code":

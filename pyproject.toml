@@ -3,13 +3,13 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "wevvy"
+name = "ceis"
 version = "1.0.5"
-description = "wevvy: an open-source personal agent for every device you own. This is its runtime: the agent, the Sentinel that decides what may run, the hands that work a phone or a computer, and the web app. Bring your own model."
+description = "ceis: an open-source personal agent for every device you own. This is its runtime: the agent, the Sentinel that decides what may run, the hands that work a phone or a computer, and the web app. Bring your own model."
 readme = "README.md"
 license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.11"
-authors = [{ name = "wevvy" }]
+authors = [{ name = "ceis" }]
 keywords = ["agent", "ai", "llm", "personal-assistant", "personal-agent", "muse", "meta-muse", "gui-agent", "mcp", "deepseek", "feishu", "amap"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -56,7 +56,7 @@ hands = [
     "Pillow>=10",
     "pyautogui>=0.9.54",
     "pyperclip>=1.8",
-    # macOS window mode (wevvy/computer/mac_window.py): one app's window, events to its process
+    # macOS window mode (ceis/computer/mac_window.py): one app's window, events to its process
     "pyobjc-framework-Quartz>=10; sys_platform == 'darwin'",
     "pyobjc-framework-ApplicationServices>=10; sys_platform == 'darwin'",
 ]
@@ -65,15 +65,15 @@ dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10", "httpx>=0
 feishu = ["lark-oapi>=1.5,<2"]
 dingtalk = ["dingtalk-stream>=0.24,<1"]
 wecom = ["wecom-aibot-sdk-python>=0.1.7,<0.2"]
-channels = ["wevvy[feishu,dingtalk,wecom]"]
-all = ["wevvy[browser,hands,dev,channels]"]
+channels = ["ceis[feishu,dingtalk,wecom]"]
+all = ["ceis[browser,hands,dev,channels]"]
 
 [project.scripts]
-wevvy = "wevvy.cli:app"
+ceis = "ceis.cli:app"
 # the CLI bridge: for commands the agent runs (docs/local-runtime.md)
-wevvy-device = "wevvy.bridge.cli:device_main"
-wevvy-browser = "wevvy.bridge.cli:browser_main"
-wevvy-open = "wevvy.bridge.cli:open_main"
+ceis-device = "ceis.bridge.cli:device_main"
+ceis-browser = "ceis.bridge.cli:browser_main"
+ceis-open = "ceis.bridge.cli:open_main"
 
 [project.urls]
 Homepage = "https://wevvy.in"
@@ -83,13 +83,13 @@ Issues = "https://github.com/nano-muse/nanoMuse/issues"
 Changelog = "https://github.com/nano-muse/nanoMuse/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
-packages = ["wevvy"]
+packages = ["ceis"]
 
 [tool.hatch.build.targets.wheel.force-include]
-"config/config.example.toml" = "wevvy/config.example.toml"
+"config/config.example.toml" = "ceis/config.example.toml"
 
 [tool.hatch.build.targets.sdist]
-include = ["wevvy", "config/config.example.toml", "README.md", "docs/readme", "LICENSE"]
+include = ["ceis", "config/config.example.toml", "README.md", "docs/readme", "LICENSE"]
 
 [tool.ruff]
 line-length = 100
@@ -101,7 +101,7 @@ ignore = ["E501", "B008", "UP042"]
 
 [tool.mypy]
 python_version = "3.11"
-files = ["wevvy"]
+files = ["ceis"]
 ignore_missing_imports = true
 check_untyped_defs = true
 warn_redundant_casts = true
@@ -112,4 +112,4 @@ warn_unused_ignores = false
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
-markers = ["live: tests that call a real LLM endpoint (set WEVVY_LIVE=1)"]
+markers = ["live: tests that call a real LLM endpoint (set CEIS_LIVE=1)"]

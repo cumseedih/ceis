@@ -15,13 +15,13 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy.config import Settings, apply_app_settings, load_app_settings
-from wevvy.llm import MockLLM
-from wevvy.server import connections as conn_module
-from wevvy.server import create_app
-from wevvy.server.endpoints import host_label, key_name, typed_model_ids
-from wevvy.server.service import MuseService
-from wevvy.vault.vault import CredentialVault
+from ceis.config import Settings, apply_app_settings, load_app_settings
+from ceis.llm import MockLLM
+from ceis.server import connections as conn_module
+from ceis.server import create_app
+from ceis.server.endpoints import host_label, key_name, typed_model_ids
+from ceis.server.service import MuseService
+from ceis.vault.vault import CredentialVault
 
 GATEWAY = "https://gateway.example/v1"
 SECOND = "https://second.example/v1"
@@ -87,7 +87,7 @@ def test_add_lists_the_models_and_keeps_the_key_in_the_vault(server, listed, set
     relay = client.post(
         "/api/connections/endpoints", json={"base_url": settings.cloud.base_url + "/v1"}
     )
-    assert relay.status_code == 400 and "wevvy Cloud" in relay.json()["detail"]
+    assert relay.status_code == 400 and "ceis Cloud" in relay.json()["detail"]
     added = client.post(
         "/api/connections/endpoints",
         json={"base_url": "gateway.example/v1", "api_key": "sk-gateway-1", "models": "my-typed"},

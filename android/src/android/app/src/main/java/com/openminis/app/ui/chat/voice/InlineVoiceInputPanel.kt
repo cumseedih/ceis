@@ -1272,7 +1272,7 @@ private fun VoiceEngineUnavailableNotice(
             }
             Spacer(modifier = Modifier.width(8.dp))
             NoticeActionButton(stringResource(R.string.voice_panel_no_engine_open_providers)) {
-                // wevvy: the app's own link goes to its own activity by name, not out through the system
+                // ceis: the app's own link goes to its own activity by name, not out through the system
                 com.openminis.app.ui.chat.ChatLinkResolver.dispatchDeepLink(ctx, "minis://settings/providers")
             }
         }

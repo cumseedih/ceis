@@ -16,7 +16,7 @@ import org.json.JSONObject
 
 object OpenAIModelsApi {
     private const val TAG = "OpenAIModelsApi"
-    private val client = OkHttpClient.Builder().proxyAuthenticator(io.github.wevvy.net.OwnProviderProxy.authenticator).build() // wevvy: Settings → Network, a proxy with a password
+    private val client = OkHttpClient.Builder().proxyAuthenticator(io.github.ceis.net.OwnProviderProxy.authenticator).build() // ceis: Settings → Network, a proxy with a password
     private val cache = ProviderModelsCache("openai")
 
     /**
@@ -28,7 +28,7 @@ object OpenAIModelsApi {
     // (`/v1/responses` requires the `reasoning` object on this auth path),
     // so set supportsReasoning = true up front. Without it the Thinking
     // pill in chat is disabled and the user can't pick low/medium/high.
-    // wevvy: GPT-6 series and live Codex OAuth models refresh (#475)
+    // ceis: GPT-6 series and live Codex OAuth models refresh (#475)
     private val builtInCodexOAuthModels: List<LLMModel> = listOf(
         LLMModel("gpt-6.1-sol", "GPT-6.1 Sol", "OpenAI", supportsReasoning = true),
         LLMModel("gpt-6-sol", "GPT-6 Sol", "OpenAI", supportsReasoning = true),
@@ -62,7 +62,7 @@ object OpenAIModelsApi {
         ModelsDevApi.enrichModels(it)
     } + codexImageModels
 
-    // wevvy: query https://chatgpt.com/backend-api/codex/models when an OAuth token is present (#475)
+    // ceis: query https://chatgpt.com/backend-api/codex/models when an OAuth token is present (#475)
     suspend fun fetchModelsOAuth(accessToken: String?, accountId: String? = null): List<LLMModel> = withContext(Dispatchers.IO) {
         val token = accessToken?.trim().orEmpty()
         if (token.isEmpty()) return@withContext fetchModelsOAuth()
@@ -89,7 +89,7 @@ object OpenAIModelsApi {
         ModelsDevApi.enrichModels(merged) + codexImageModels
     }
 
-    // wevvy: parse `{"models":[{"slug":"gpt-6.1-sol","display_name":"...","visibility":"list"}, ...]}`
+    // ceis: parse `{"models":[{"slug":"gpt-6.1-sol","display_name":"...","visibility":"list"}, ...]}`
     internal fun parseCodexModelsJson(body: String): List<LLMModel> = try {
         val rows = JSONObject(body).optJSONArray("models") ?: JSONArray()
         val out = mutableListOf<LLMModel>()
@@ -192,7 +192,7 @@ object OpenAIModelsApi {
                 // stays disabled.
                 val idLower = id.lowercase()
                 val knownReasoning = idLower.startsWith("gpt-5") ||
-                    idLower.startsWith("gpt-6") || // wevvy: GPT-6 series (#475)
+                    idLower.startsWith("gpt-6") || // ceis: GPT-6 series (#475)
                     idLower.startsWith("o1") ||
                     idLower.startsWith("o3") ||
                     idLower.startsWith("o4") ||

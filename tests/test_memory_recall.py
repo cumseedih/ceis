@@ -21,19 +21,19 @@ import pytest
 from fastapi.testclient import TestClient
 from openai import AsyncOpenAI
 
-from wevvy.agent import MuseAgent
-from wevvy.config import LLMSettings, MemorySettings, Settings, apply_app_settings
-from wevvy.llm import MockLLM
-from wevvy.memory import Embedder, MemoryIndex, MemoryStore
-from wevvy.memory import embeddings as emb_mod
-from wevvy.memory.embeddings import cosine, default_model, fuse, standouts
-from wevvy.memory.store import MemoryItem
-from wevvy.schema import LLMResponse
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.server.api import create_app
-from wevvy.server.service import MuseService
-from wevvy.tools import Recall, Terminate, ToolCollection
-from wevvy.ui import HeadlessUI
+from ceis.agent import MuseAgent
+from ceis.config import LLMSettings, MemorySettings, Settings, apply_app_settings
+from ceis.llm import MockLLM
+from ceis.memory import Embedder, MemoryIndex, MemoryStore
+from ceis.memory import embeddings as emb_mod
+from ceis.memory.embeddings import cosine, default_model, fuse, standouts
+from ceis.memory.store import MemoryItem
+from ceis.schema import LLMResponse
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.server.api import create_app
+from ceis.server.service import MuseService
+from ceis.tools import Recall, Terminate, ToolCollection
+from ceis.ui import HeadlessUI
 
 AXES = {
     0: ("flight", "fly", "seat", "window", "机票", "飞机", "tokyo", "trip"),
@@ -403,9 +403,9 @@ async def test_agent_survives_a_recall_error(settings: Settings, monkeypatch: py
 async def test_fact_stored_in_one_conversation_surfaces_unprompted_in_the_next(
     settings: Settings, fake: FakeEmbeddings
 ):
-    from wevvy.prompts import MEMORY_OPENING_NOTE
-    from wevvy.schema import Function, ToolCall
-    from wevvy.tools.memory_tools import Remember
+    from ceis.prompts import MEMORY_OPENING_NOTE
+    from ceis.schema import Function, ToolCall
+    from ceis.tools.memory_tools import Remember
 
     settings.memory.embedding_base_url = "http://127.0.0.1:11434/v1"
     settings.memory.max_inject = 3
@@ -560,12 +560,12 @@ def test_connections_embeddings(settings: Settings, fake: FakeEmbeddings):
 def test_embeddings_key_from_the_vault(settings: Settings):
     from rich.console import Console
 
-    from wevvy.app import WevvyApp
-    from wevvy.console import ConsoleUI
+    from ceis.app import CeisApp
+    from ceis.console import ConsoleUI
 
     settings.memory.embedding_base_url = "https://emb.example/v1"
     settings.memory.embedding_api_key = "{{vault:EMB}}"
-    app_ = WevvyApp(settings, ConsoleUI(Console()))
+    app_ = CeisApp(settings, ConsoleUI(Console()))
     assert app_.embedder is not None and app_.embedder.client.api_key == "EMPTY"  # not set yet
     app_.vault.set("EMB", "sk-real")
     app_.attach_embedder()
@@ -579,7 +579,7 @@ def test_embeddings_key_from_the_vault(settings: Settings):
 def test_cli_memory_recall(settings: Settings, tmp_path: Path, fake: FakeEmbeddings):
     from typer.testing import CliRunner
 
-    from wevvy.cli import app as cli_app
+    from ceis.cli import app as cli_app
 
     settings.memory.embedding_base_url = "http://127.0.0.1:11434/v1"
     seed(MemoryStore(settings.memory_db))

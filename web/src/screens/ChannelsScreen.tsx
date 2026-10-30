@@ -17,7 +17,7 @@ import { useStore } from "../store";
 import { cx } from "../util";
 
 /**
- * Chat apps — your wevvy inside Feishu, DingTalk, WeCom or Telegram
+ * Chat apps — your ceis inside Feishu, DingTalk, WeCom or Telegram
  * (docs/channels.md). One card per app: the switch, its credentials (secrets are written and
  * never shown again), who may talk to it, the chats that are paired and which of them get
  * what the Muse does on its own. Codes people were shown when they first wrote to the bot
@@ -298,7 +298,7 @@ function ChannelCard({
         )}
         {!c.sdk_available && (
           <div className="px-4 pb-3 text-[13px] leading-[18px] text-muted">
-            {t("Install on the computer running wevvy, then switch it on again:")}
+            {t("Install on the computer running ceis, then switch it on again:")}
             <code className="mt-1 block select-all rounded-lg bg-surface-2 px-2 py-1 text-[12.5px] text-fg">{c.install}</code>
           </div>
         )}
@@ -388,7 +388,7 @@ function ChannelCard({
                   </ol>
                   <p className="mt-2 text-muted">
                     {t("Then write to the bot from the app. The first message gets a pairing code; approve it here or run")}{" "}
-                    <code className="rounded bg-surface px-1">wevvy channels approve &lt;code&gt;</code>
+                    <code className="rounded bg-surface px-1">ceis channels approve &lt;code&gt;</code>
                   </p>
                   {c.console_url && (
                     <a href={c.console_url} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1 text-link underline-offset-2 hover:underline">

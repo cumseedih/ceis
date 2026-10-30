@@ -9,10 +9,10 @@ from zoneinfo import ZoneInfo
 import httpx
 import pytest
 
-from wevvy.calendar import CalendarFeeds, expand, make_ics, parse_ics
-from wevvy.calendar.ics import parse_duration, unescape, unfold
-from wevvy.config import CalendarFeedSettings, CalendarSettings
-from wevvy.tools import Calendar
+from ceis.calendar import CalendarFeeds, expand, make_ics, parse_ics
+from ceis.calendar.ics import parse_duration, unescape, unfold
+from ceis.config import CalendarFeedSettings, CalendarSettings
+from ceis.tools import Calendar
 
 TZ = ZoneInfo("Asia/Shanghai")
 

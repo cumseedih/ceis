@@ -5,9 +5,9 @@ from typing import Any
 import typer
 from typer.testing import CliRunner
 
-from wevvy import __version__
-from wevvy import config as config_module
-from wevvy.cli import app
+from ceis import __version__
+from ceis import config as config_module
+from ceis.cli import app
 
 runner = CliRunner()
 _ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
@@ -22,7 +22,7 @@ def test_version_flag_and_command_agree():
     for args in (["--version"], ["-V"], ["version"]):
         result = runner.invoke(app, args)
         assert result.exit_code == 0, result.output
-        assert plain(result.output).strip() == f"wevvy {__version__}"
+        assert plain(result.output).strip() == f"ceis {__version__}"
 
 
 def test_help_lists_the_version_flag():
@@ -32,14 +32,14 @@ def test_help_lists_the_version_flag():
 
 
 def test_doctor_reports_the_setup_without_calling_the_model(tmp_path, monkeypatch):
-    for var in ("DEEPSEEK_API_KEY", "OPENAI_API_KEY", "WEVVY_CONFIG"):
+    for var in ("DEEPSEEK_API_KEY", "OPENAI_API_KEY", "CEIS_CONFIG"):
         monkeypatch.delenv(var, raising=False)
     monkeypatch.chdir(tmp_path)  # no ./config/config.toml here…
-    monkeypatch.setattr(config_module, "DEFAULT_DATA_DIR", tmp_path / "home")  # …nor ~/.wevvy/
-    monkeypatch.setenv("WEVVY_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("WEVVY_WORKSPACE", str(tmp_path / "ws"))
-    monkeypatch.setenv("WEVVY_LLM_BASE_URL", "http://localhost:11434/v1")
-    monkeypatch.setenv("WEVVY_LLM_MODEL", "qwen3:8b")
+    monkeypatch.setattr(config_module, "DEFAULT_DATA_DIR", tmp_path / "home")  # …nor ~/.ceis/
+    monkeypatch.setenv("CEIS_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("CEIS_WORKSPACE", str(tmp_path / "ws"))
+    monkeypatch.setenv("CEIS_LLM_BASE_URL", "http://localhost:11434/v1")
+    monkeypatch.setenv("CEIS_LLM_MODEL", "qwen3:8b")
     (tmp_path / "ws").mkdir()
 
     # a local model needs no key: everything checks out
@@ -52,14 +52,14 @@ def test_doctor_reports_the_setup_without_calling_the_model(tmp_path, monkeypatc
     assert "web search: DuckDuckGo (no key needed)" in out
 
     # a search provider without what it needs is a problem, said plainly
-    monkeypatch.setenv("WEVVY_SEARCH_PROVIDER", "brave")
+    monkeypatch.setenv("CEIS_SEARCH_PROVIDER", "brave")
     out = plain(runner.invoke(app, ["doctor", "--no-model"]).output)
     assert "web search: Brave Search (no key) · searches fall back to DuckDuckGo" in out
     assert "connectors.search.provider = brave, but it is not configured" in out
-    monkeypatch.delenv("WEVVY_SEARCH_PROVIDER")
+    monkeypatch.delenv("CEIS_SEARCH_PROVIDER")
 
     # a hosted endpoint without a key is a problem worth exit code 1
-    monkeypatch.setenv("WEVVY_LLM_BASE_URL", "https://api.deepseek.com")
+    monkeypatch.setenv("CEIS_LLM_BASE_URL", "https://api.deepseek.com")
     result = runner.invoke(app, ["doctor", "--no-model"])
     out = plain(result.output)
     assert result.exit_code == 1, out
@@ -72,7 +72,7 @@ def test_doctor_reports_the_setup_without_calling_the_model(tmp_path, monkeypatc
 def test_config_path_follows_the_data_dir_variable(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(config_module, "DEFAULT_DATA_DIR", tmp_path / "home")
-    monkeypatch.setenv("WEVVY_DATA_DIR", str(tmp_path / "elsewhere"))
+    monkeypatch.setenv("CEIS_DATA_DIR", str(tmp_path / "elsewhere"))
     out = plain(runner.invoke(app, ["config", "path"]).output)
     # rich wraps a long path (the macOS runner's temp dir) at 80 columns; compare without
     unwrapped = re.sub(r"\s", "", out)
@@ -104,8 +104,8 @@ def test_every_option_has_a_help_text():
 
 def test_doctor_names_config_keys_nothing_reads(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("WEVVY_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("WEVVY_WORKSPACE", str(tmp_path / "ws"))
+    monkeypatch.setenv("CEIS_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("CEIS_WORKSPACE", str(tmp_path / "ws"))
     (tmp_path / "ws").mkdir()
     cfg = tmp_path / "config.toml"
     cfg.write_text(
@@ -119,12 +119,12 @@ def test_doctor_names_config_keys_nothing_reads(tmp_path, monkeypatch):
 
 
 def test_triggers_commands(tmp_path, monkeypatch):
-    for var in ("DEEPSEEK_API_KEY", "OPENAI_API_KEY", "WEVVY_CONFIG"):
+    for var in ("DEEPSEEK_API_KEY", "OPENAI_API_KEY", "CEIS_CONFIG"):
         monkeypatch.delenv(var, raising=False)
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(config_module, "DEFAULT_DATA_DIR", tmp_path / "home")
-    monkeypatch.setenv("WEVVY_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("WEVVY_WORKSPACE", str(tmp_path / "ws"))
+    monkeypatch.setenv("CEIS_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("CEIS_WORKSPACE", str(tmp_path / "ws"))
     (tmp_path / "ws").mkdir()
 
     assert "no triggers" in plain(runner.invoke(app, ["triggers", "list"]).output)
@@ -160,12 +160,12 @@ def test_triggers_commands(tmp_path, monkeypatch):
 
 
 def test_phone_trace_commands(tmp_path, monkeypatch):
-    for var in ("DEEPSEEK_API_KEY", "OPENAI_API_KEY", "WEVVY_CONFIG"):
+    for var in ("DEEPSEEK_API_KEY", "OPENAI_API_KEY", "CEIS_CONFIG"):
         monkeypatch.delenv(var, raising=False)
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(config_module, "DEFAULT_DATA_DIR", tmp_path / "home")
-    monkeypatch.setenv("WEVVY_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("WEVVY_WORKSPACE", str(tmp_path / "ws"))
+    monkeypatch.setenv("CEIS_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("CEIS_WORKSPACE", str(tmp_path / "ws"))
     (tmp_path / "ws").mkdir()
 
     assert "No phone traces yet" in plain(runner.invoke(app, ["phone", "traces"]).output)
@@ -221,9 +221,9 @@ def test_phone_trace_commands(tmp_path, monkeypatch):
 
 
 def test_config_show_masks_every_credential(tmp_path, monkeypatch):
-    from wevvy.cli import mask_secrets
+    from ceis.cli import mask_secrets
 
-    monkeypatch.setenv("WEVVY_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("CEIS_DATA_DIR", str(tmp_path / "data"))
     cfg = tmp_path / "config.toml"
     cfg.write_text(
         '[llm]\napi_key = "sk-chat-0123456789"\n'

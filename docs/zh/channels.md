@@ -1,14 +1,14 @@
 # 聊天入口
 
-把你的 wevvy 放进你已经在用的聊天软件：飞书 / Lark、钉钉、企业微信和 Telegram。在手机上给机器人发消息，回答的就是同一个 Muse：每个聊天对应一个对话，回复边生成边发回来，工具在跑时显示一行状态，审批用一个词或一个按钮回答。标了「推送到这里」的聊天还会收到 Muse 自己主动做的事：问候、提醒、后台任务的结果、它需要你回答的问题。
+把你的 ceis 放进你已经在用的聊天软件：飞书 / Lark、钉钉、企业微信和 Telegram。在手机上给机器人发消息，回答的就是同一个 Muse：每个聊天对应一个对话，回复边生成边发回来，工具在跑时显示一行状态，审批用一个词或一个按钮回答。标了「推送到这里」的聊天还会收到 Muse 自己主动做的事：问候、提醒、后台任务的结果、它需要你回答的问题。
 
 不需要公网地址。每家都提供一种由机器人从你的网络内部主动发起的长连接（Telegram 是长轮询），所以运行时放在路由器后面或一台笔记本上就够了。socket 的活由各家自己的 SDK 来干；它们是可选的额外依赖：
 
 ```sh
-pip install 'wevvy[feishu]'      # lark-oapi
-pip install 'wevvy[dingtalk]'    # dingtalk-stream
-pip install 'wevvy[wecom]'       # wecom-aibot-sdk-python
-pip install 'wevvy[channels]'    # all three; Telegram needs nothing extra
+pip install 'ceis[feishu]'      # lark-oapi
+pip install 'ceis[dingtalk]'    # dingtalk-stream
+pip install 'ceis[wecom]'       # wecom-aibot-sdk-python
+pip install 'ceis[channels]'    # all three; Telegram needs nothing extra
 ```
 
 Docker 镜像带全了这些。没装 SDK 时，应用会显示要安装的那行命令，开关保持不动。
@@ -16,7 +16,7 @@ Docker 镜像带全了这些。没装 SDK 时，应用会显示要安装的那�
 ## 在哪里找到它 {#where-to-find-it}
 
 * **应用**：设置 → 「聊天入口」。每个聊天软件一张卡片：开关、凭据、谁可以和它说话、已配对的聊天和各自的「推送到这里」开关、一个「发一条测试消息」按钮，还有设置步骤和指向厂商控制台的链接。
-* **终端**：`wevvy channels status | pending | approve <code> | deny <code> | login feishu [--lark] | test <name>`。`wevvy serve` 在跑时，这些命令走它的 API；否则它们直接改 `<data_dir>/channels/` 下的文件，服务器启动时（或按「重新加载」时）读入。
+* **终端**：`ceis channels status | pending | approve <code> | deny <code> | login feishu [--lark] | test <name>`。`ceis serve` 在跑时，这些命令走它的 API；否则它们直接改 `<data_dir>/channels/` 下的文件，服务器启动时（或按「重新加载」时）读入。
 * **API**：`GET /api/channels`、`PUT /api/channels/<name>`、`POST /api/channels/pairing/<code>/approve|deny`、`PUT|DELETE /api/channels/<name>/chats/<sender>`、`POST /api/channels/<name>/test`、`POST /api/channels/deliver {text}`、`POST /api/channels/reload`，飞书还有 `POST /api/channels/feishu/login` + `GET /api/channels/feishu/login/<device_code>`。
 * **config.toml**：手工搭的服务器也可以写一张 `[channels.<name>]` 表：
 
@@ -36,7 +36,7 @@ Docker 镜像带全了这些。没装 SDK 时，应用会显示要安装的那�
 
 ### 飞书 / Lark {#feishu-lark}
 
-简便的办法：在应用里按「扫码创建机器人」（或运行 `wevvy channels login feishu`，国际版加 `--lark`），用飞书扫码，确认，完成；App ID 和 Secret 已经保存，这个入口随即打开。这是飞书自己为个人智能体提供的扫码建应用流程；它创建出来的应用已经带上机器人能力和长连接事件。
+简便的办法：在应用里按「扫码创建机器人」（或运行 `ceis channels login feishu`，国际版加 `--lark`），用飞书扫码，确认，完成；App ID 和 Secret 已经保存，这个入口随即打开。这是飞书自己为个人智能体提供的扫码建应用流程；它创建出来的应用已经带上机器人能力和长连接事件。
 
 手动的话，到 <https://open.feishu.cn/app>（Lark：<https://open.larksuite.com/app>）：
 
@@ -82,7 +82,7 @@ socket 主机（`openws.work.weixin.qq.com`）已加进运行时进程的 `NO_PR
 
 找到机器人的人都能给它发消息；Muse 只回答你放进来的人。
 
-* 陌生人的第一条私聊只会得到一个**配对码**（六位字母和数字，不含 0/O/1/I，十分钟有效），别的什么都没有；这条消息不会到 Muse。在 设置 → 聊天入口 里通过这个码，或者运行 `wevvy channels approve <code>`。对方会收到通知，此后的消息就通了。
+* 陌生人的第一条私聊只会得到一个**配对码**（六位字母和数字，不含 0/O/1/I，十分钟有效），别的什么都没有；这条消息不会到 Muse。在 设置 → 聊天入口 里通过这个码，或者运行 `ceis channels approve <code>`。对方会收到通知，此后的消息就通了。
 * **免配对的 ID**（`allow_from`）：不需要配对码的厂商用户 id。单独一个 `*` 放行所有人，只适合别人都找不到的机器人。
 * **群**：群里的陌生人被静静忽略（群里不发配对码）。已配对的人在群里的消息，机器人被 @ 时才回答（`group_policy = "mention"`），或者每条都回（`"open"`）。群本身是一个独立的对话；每一行都带着发送者的名字。
 * 在应用里**移除**一个已配对的聊天（或从 `pairing.json` 里删掉）；对方的下一条消息会收到新的配对码。
@@ -119,7 +119,7 @@ socket 主机（`openws.work.weixin.qq.com`）已加进运行时进程的 `NO_PR
 
 | 你看到的 | 意思 |
 |---|---|
-| **未安装** | 运行 wevvy 的机器上缺 SDK：运行显示的那行（`pip install 'wevvy[feishu]'`），再把这个入口重新打开 |
+| **未安装** | 运行 ceis 的机器上缺 SDK：运行显示的那行（`pip install 'ceis[feishu]'`），再把这个入口重新打开 |
 | **还缺设置** | 有必填项是空的；卡片会写明是哪一项 |
 | **出错**，后面是厂商的原话 | 凭据被拒，或连不上厂商；改好后关掉再开，或再按一次「保存」 |
 | 机器人在群里不回答 | 群策略是 *mention* 而机器人没被 @；或者发送者没有配对（群里从不显示配对码） |
@@ -128,7 +128,7 @@ socket 主机（`openws.work.weixin.qq.com`）已加进运行时进程的 `NO_PR
 | 钉钉连上了但收不到东西 | 机器人的接收模式不是 *Stream*，或者版本没有发布 |
 | 企业微信：代理后面连接出错 | socket 绕开了 `HTTPS_PROXY`；主机必须能直连 |
 | Telegram：`Conflict: terminated by other getUpdates request` | 同一个 token 在两处轮询（另一个运行时，或一个 webhook）；只留一个 |
-| 配对码一直来 | 十分钟内通过一个；`wevvy channels pending` 列出全部 |
-| `wevvy channels …` 说服务器拒绝了 token | config.toml 里的 `server.token` 和正在跑的服务器的不一致；或者用同一个 `--config` 运行它 |
+| 配对码一直来 | 十分钟内通过一个；`ceis channels pending` 列出全部 |
+| `ceis channels …` 说服务器拒绝了 token | config.toml 里的 `server.token` 和正在跑的服务器的不一致；或者用同一个 `--config` 运行它 |
 
-`wevvy channels status --json` 输出的和应用看到的是同一份。
+`ceis channels status --json` 输出的和应用看到的是同一份。

@@ -4,8 +4,8 @@ A container's model lives at ``http://gateway/llm/<id>/main`` and speaks the Ope
 API there (``POST …/images/generations`` and ``…/images/edits``) when it is told an image
 model's name — the gateway tells it ``IMAGE_MODEL``. Those two calls land here rather than
 on the chat lane's upstream: Alibaba Cloud Model Studio draws on its own multimodal endpoint,
-not an OpenAI-shaped one, so the request is translated the way wevvy Cloud's relay does it
-(``cloud/wevvy_cloud/api.py``) and the picture comes back inline as ``b64_json``. A new
+not an OpenAI-shaped one, so the request is translated the way ceis Cloud's relay does it
+(``cloud/ceis_cloud/api.py``) and the picture comes back inline as ``b64_json``. A new
 face is eight pictures (four candidates, four more poses of the chosen one); a session may
 have ``IMAGE_PER_SESSION`` of them and the showcase ``DAILY_IMAGES`` a day, counted apart
 from the chat budget so a long chat and a new look do not get in each other's way.

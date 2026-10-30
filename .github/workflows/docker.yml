@@ -43,7 +43,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
-          images: ghcr.io/${{ github.repository_owner }}/wevvy
+          images: ghcr.io/${{ github.repository_owner }}/ceis
           # lower-case is required by GHCR; the owner is nano-muse
           flavor: latest=false
           tags: |
@@ -53,8 +53,8 @@ jobs:
             type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, '-') }}
           # what the image holds, in pyproject.toml's words (the hands are not in it)
           labels: |
-            org.opencontainers.image.title=wevvy
-            org.opencontainers.image.description=wevvy, an open-source personal agent for every device you own: the runtime in a container, with the agent, the Sentinel that decides what may run, and the web app. Bring your own model.
+            org.opencontainers.image.title=ceis
+            org.opencontainers.image.description=ceis, an open-source personal agent for every device you own: the runtime in a container, with the agent, the Sentinel that decides what may run, and the web app. Bring your own model.
             org.opencontainers.image.licenses=GPL-3.0-or-later
 
       - name: Build and push
@@ -76,7 +76,7 @@ jobs:
         id: meta_browser
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
-          images: ghcr.io/${{ github.repository_owner }}/wevvy
+          images: ghcr.io/${{ github.repository_owner }}/ceis
           flavor: |
             latest=false
             suffix=-browser
@@ -86,8 +86,8 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, '-') }}
           labels: |
-            org.opencontainers.image.title=wevvy (with browser)
-            org.opencontainers.image.description=wevvy with Chromium bundled for the browser tool.
+            org.opencontainers.image.title=ceis (with browser)
+            org.opencontainers.image.description=ceis with Chromium bundled for the browser tool.
             org.opencontainers.image.licenses=GPL-3.0-or-later
 
       - name: Build and push (browser)

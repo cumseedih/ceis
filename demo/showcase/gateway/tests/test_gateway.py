@@ -42,13 +42,13 @@ async def test_a_visitor_gets_a_private_muse(world):
         name = f"nm-{sess['id']}"
         env = runner.running[name]
         # the container's model lives behind this gateway, with a key of its own
-        assert env["WEVVY_LLM_BASE_URL"] == f"http://10.0.0.1:8000/llm/{sess['id']}/main"
-        assert env["WEVVY_GUI_BASE_URL"] == f"http://10.0.0.1:8000/llm/{sess['id']}/gui"
-        assert env["WEVVY_LLM_API_KEY"] != settings.main.api_key
-        assert env["WEVVY_SERVER_TOKEN"] == sess["token"]
-        assert env["WEVVY_GUI_ENABLED"] == "1"
+        assert env["CEIS_LLM_BASE_URL"] == f"http://10.0.0.1:8000/llm/{sess['id']}/main"
+        assert env["CEIS_GUI_BASE_URL"] == f"http://10.0.0.1:8000/llm/{sess['id']}/gui"
+        assert env["CEIS_LLM_API_KEY"] != settings.main.api_key
+        assert env["CEIS_SERVER_TOKEN"] == sess["token"]
+        assert env["CEIS_GUI_ENABLED"] == "1"
         # no account to sign in to: the web app opens on the chat, not the Cloud sign-in
-        assert env["WEVVY_CLOUD_REQUIRED"] == "0"
+        assert env["CEIS_CLOUD_REQUIRED"] == "0"
         # the phone's traffic on the session host reaches the container
         host = sess["server_url"].split("//")[1]
         r = await c.get("/api/state?token=x", headers={"host": host})
@@ -249,7 +249,7 @@ async def test_model_calls_are_metered(world):
         c = await client_for(app)
         sess = body(await c.post("/api/demo/session", json={}))
         env = runner.running[f"nm-{sess['id']}"]
-        key = env["WEVVY_LLM_API_KEY"]
+        key = env["CEIS_LLM_API_KEY"]
         path = f"/llm/{sess['id']}/main/chat/completions"
         # wrong key
         r = await c.post(path, json={"model": "x"}, headers={"authorization": "Bearer nope"})
@@ -326,10 +326,10 @@ async def test_bring_your_own_key(world):
         sess = body(r)
         assert sess["byok"] is True and sess["quota"]["requests"] is None
         env = runner.running[f"nm-{sess['id']}"]
-        assert env["WEVVY_LLM_MODEL"] == "m" and env["WEVVY_GUI_MODEL"] == "m"
+        assert env["CEIS_LLM_MODEL"] == "m" and env["CEIS_GUI_MODEL"] == "m"
         # the visitor's key never reaches the container
         assert "sk-visitor-1" not in env.values()
-        key = env["WEVVY_LLM_API_KEY"]
+        key = env["CEIS_LLM_API_KEY"]
         for _ in range(5):  # no budget of ours applies
             r = await c.post(
                 f"/llm/{sess['id']}/main/chat/completions",
@@ -405,7 +405,7 @@ def test_usage_parsing():
 
 
 def test_which_deepseek_models_see():
-    # the rule shared by every client (contract C4, wevvy/llm/vision.py): DeepSeek is
+    # the rule shared by every client (contract C4, ceis/llm/vision.py): DeepSeek is
     # text-only before v4.1, except the Flash line, which V4.1 Flash serves under its older
     # names too; anything whose id says vision or ocr sees
     assert text_only("deepseek-v4-pro")
@@ -481,9 +481,9 @@ def test_a_visitors_own_provider_gets_its_own_gui_lane():
         byok=Provider("https://openrouter.ai/api/v1", "sk-or", "deepseek/deepseek-v4.1-flash"),
     )
     env = manager._env_for(sess)
-    assert env["WEVVY_LLM_MODEL"] == "deepseek/deepseek-v4.1-flash"
-    assert env["WEVVY_GUI_MODEL"] == "qwen/qwen3.8-27b"
-    assert "WEVVY_LLM_VISION" not in env  # v4.1 sees
+    assert env["CEIS_LLM_MODEL"] == "deepseek/deepseek-v4.1-flash"
+    assert env["CEIS_GUI_MODEL"] == "qwen/qwen3.8-27b"
+    assert "CEIS_LLM_VISION" not in env  # v4.1 sees
     assert manager.llm_lane(sess, "k", "gui").model == "qwen/qwen3.8-27b"
     assert manager.llm_lane(sess, "k", "main").model == "deepseek/deepseek-v4.1-flash"
 
@@ -504,10 +504,10 @@ def test_a_text_only_chat_model_is_kept_away_from_the_screenshots():
         container="nm-abc",
     )
     env = SessionManager(blind, runner, http=client)._env_for(sess)
-    assert env["WEVVY_LLM_VISION"] == "off"
-    assert env["WEVVY_GUI_MODEL"] == "gui-model"  # the operator lane still looks
+    assert env["CEIS_LLM_VISION"] == "off"
+    assert env["CEIS_GUI_MODEL"] == "gui-model"  # the operator lane still looks
     sighted = make_settings(main=Lane("openai", "qwen3.5-plus", "https://m.example", "sk"))
-    assert "WEVVY_LLM_VISION" not in SessionManager(sighted, runner, http=client)._env_for(sess)
+    assert "CEIS_LLM_VISION" not in SessionManager(sighted, runner, http=client)._env_for(sess)
     # DeepSeek V4.1 Flash reads pictures: the default chat model keeps its eyes
     flash = make_settings(main=Lane("openai", "deepseek-v4.1-flash", "https://m.example", "sk"))
-    assert "WEVVY_LLM_VISION" not in SessionManager(flash, runner, http=client)._env_for(sess)
+    assert "CEIS_LLM_VISION" not in SessionManager(flash, runner, http=client)._env_for(sess)

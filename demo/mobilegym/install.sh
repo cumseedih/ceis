@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Install the wevvy app into a MobileGym checkout.
+# Install the ceis app into a MobileGym checkout.
 #
 #   demo/mobilegym/install.sh /path/to/mobilegym
 #
@@ -19,12 +19,12 @@ if [ ! -f "$target/os/createAppStore.ts" ] || [ ! -d "$target/apps" ]; then
   exit 1
 fi
 
-rm -rf "$target/apps/wevvy"
-cp -R "$here/apps/wevvy" "$target/apps/wevvy"
-echo "installed apps/wevvy into $target"
+rm -rf "$target/apps/ceis"
+cp -R "$here/apps/ceis" "$target/apps/ceis"
+echo "installed apps/ceis into $target"
 # the module's one dependency beyond MobileGym's own: it renders the phone's screenshot in the
 # tab. --no-save leaves the checkout's package.json and lockfile untouched.
 if [ -d "$target/node_modules" ] && [ ! -d "$target/node_modules/modern-screenshot" ]; then
   (cd "$target" && npm install --no-save --no-audit --no-fund modern-screenshot@^4.7.0)
 fi
-echo "next: (cd $target && npm install && npm install --no-save modern-screenshot && npm run dev), then open the wevvy app on the phone."
+echo "next: (cd $target && npm install && npm install --no-save modern-screenshot && npm run dev), then open the ceis app on the phone."

@@ -9,7 +9,7 @@ import { MuseSwitchRow } from "./MuseList";
 import { SignIn } from "./SignIn";
 
 /**
- * wevvy Cloud: the free account that gives every device of yours one place to meet
+ * ceis Cloud: the free account that gives every device of yours one place to meet
  * (the hub) and a model to start with (the relay). The sign-in is the one form the whole
  * app uses (`SignIn`: a code or the password, the invite code, the SMS note); the key lands
  * in the vault on this machine.
@@ -63,7 +63,7 @@ export function CloudCard({
   };
 
   const signOut = async () => {
-    if (!window.confirm(t("Sign out of wevvy Cloud on this device? The hub and the Cloud model stop working here until you sign in again."))) return;
+    if (!window.confirm(t("Sign out of ceis Cloud on this device? The hub and the Cloud model stop working here until you sign in again."))) return;
     setBusy("out");
     try {
       await api.cloudSignOut();
@@ -85,7 +85,7 @@ export function CloudCard({
   return (
     <Card
       icon={<Cloud size={20} />}
-      title={t("wevvy Cloud")}
+      title={t("ceis Cloud")}
       summary={summary}
       status={status}
       open={open}
@@ -97,12 +97,12 @@ export function CloudCard({
             {t("Signed in as {hint}. Your devices meet here; the Cloud model comes with a free allowance.", { hint: account?.hint ?? "" })}
           </p>
           <div className="-mx-4 border-y border-border/60">
-            <MuseSwitchRow label={t("Use wevvy Cloud models")} checked={modelsOn} disabled={busy !== null} onChange={(v) => void setModels(v)} />
+            <MuseSwitchRow label={t("Use ceis Cloud models")} checked={modelsOn} disabled={busy !== null} onChange={(v) => void setModels(v)} />
           </div>
           <p className="text-[12.5px] text-muted leading-relaxed">
             {modelsOn
-              ? t("wevvy Cloud is one of the sources for the chat, the hands, pictures and clips; what runs on it comes off your allowance.")
-              : t("Off: nothing runs on wevvy Cloud unless you choose it yourself. You stay signed in for sync and your devices.")}
+              ? t("ceis Cloud is one of the sources for the chat, the hands, pictures and clips; what runs on it comes off your allowance.")
+              : t("Off: nothing runs on ceis Cloud unless you choose it yourself. You stay signed in for sync and your devices.")}
           </p>
           <div className="flex flex-wrap gap-2">
             {!account?.is_model && (
@@ -121,7 +121,7 @@ export function CloudCard({
           useAsModel={useAsModel}
           autoFocus={false}
           onSignedIn={() => {
-            toast(t("Signed in to wevvy Cloud."));
+            toast(t("Signed in to ceis Cloud."));
             onChange();
           }}
         />

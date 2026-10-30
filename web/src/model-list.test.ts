@@ -39,8 +39,8 @@ describe("the model picker's folded groups and search", () => {
   });
 
   it("keeps the Cloud group's recommended model first, the current choice after it", () => {
-    const cloud = { key: "wevvy_cloud", label: "wevvy Cloud", rows: [{ id: "q-rec", name: "Qwen", recommended: true }, ...rows("q", 12)] };
-    const [shown] = layoutGroups([cloud], { current: { group: "wevvy_cloud", id: "q-9" } });
+    const cloud = { key: "ceis_cloud", label: "ceis Cloud", rows: [{ id: "q-rec", name: "Qwen", recommended: true }, ...rows("q", 12)] };
+    const [shown] = layoutGroups([cloud], { current: { group: "ceis_cloud", id: "q-9" } });
     expect(ids(shown.rows).slice(0, 3)).toEqual(["q-rec", "q-9", "q-1"]);
     expect(shown.more).toBe(5);
   });
@@ -77,7 +77,7 @@ describe("the model picker's folded groups and search", () => {
 
   it("shows every match in every group while a query is present, hides groups without one, and folds again when cleared", () => {
     const groups = [
-      { key: "cloud", label: "wevvy Cloud", rows: [{ id: "qwen-vl", name: "Qwen VL", recommended: true }, { id: "glm-4.6v", name: "GLM 4.6V" }] },
+      { key: "cloud", label: "ceis Cloud", rows: [{ id: "qwen-vl", name: "Qwen VL", recommended: true }, { id: "glm-4.6v", name: "GLM 4.6V" }] },
       { key: "openrouter", label: "OpenRouter", rows: [...rows("qwen", 20), ...rows("gpt", 5)] },
       { key: "zhipu", label: "Zhipu GLM", rows: rows("glm", 3) },
     ];

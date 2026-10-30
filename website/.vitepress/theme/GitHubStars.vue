@@ -59,7 +59,7 @@ onMounted(() => {
     :href="REPO"
     target="_blank"
     rel="noopener"
-    :aria-label="lang.startsWith('zh') ? 'wevvy 的 GitHub 仓库' : 'wevvy on GitHub'"
+    :aria-label="lang.startsWith('zh') ? 'ceis 的 GitHub 仓库' : 'ceis on GitHub'"
   >
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
       <path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z" />

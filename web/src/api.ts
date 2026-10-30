@@ -54,7 +54,7 @@ import type {
 import { signedParams } from "./ticket";
 import { readStorage, writeStorage } from "./util";
 
-const TOKEN_KEY = "wevvy_token";
+const TOKEN_KEY = "ceis_token";
 
 export class AuthError extends Error {
   constructor() {
@@ -137,7 +137,7 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
     res = await fetch(path, { ...init, headers });
   } catch {
     // the browser's "Failed to fetch": the runtime is down or the network is
-    throw new Error("Cannot reach your wevvy right now.");
+    throw new Error("Cannot reach your ceis right now.");
   }
   if (res.status === 401) throw new AuthError();
   if (!res.ok) {
@@ -161,20 +161,20 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
 export function failureDetail(status: number, data: unknown): string {
   const detail = data && typeof data === "object" ? (data as { detail?: unknown }).detail : undefined;
   if (typeof detail === "string" && detail.trim()) return detail;
-  return status >= 500 ? "Your wevvy hit a problem; try again in a moment." : "Your wevvy could not do that.";
+  return status >= 500 ? "Your ceis hit a problem; try again in a moment." : "Your ceis could not do that.";
 }
 
 const json = (body: unknown): RequestInit => ({ method: "POST", body: JSON.stringify(body) });
 
 export const api = {
   state: () => request<StateSnapshot>("/api/state"),
-  // ---- wevvy Cloud (the account) and the hub (the other devices)
+  // ---- ceis Cloud (the account) and the hub (the other devices)
   cloud: () => request<CloudAccount>("/api/cloud"),
   cloudCode: (identifier: string) => request<{ ok: boolean }>("/api/cloud/code", json({ identifier })),
   cloudVerify: (identifier: string, code: string, invite = "") =>
     request<CloudAccount>("/api/cloud/verify", json(invite ? { identifier, code, invite } : { identifier, code })),
   cloudSignOut: () => request<CloudAccount>("/api/cloud/sign-out", json({})),
-  /** *Use wevvy Cloud models*: the account's models as a source, on or off; `409 chat_on_cloud` while the chat model is the account's */
+  /** *Use ceis Cloud models*: the account's models as a source, on or off; `409 chat_on_cloud` while the chat model is the account's */
   cloudModels: (on: boolean) => request<CloudAccount>("/api/cloud/models", json({ on })),
   cloudLogin: (identifier: string, password: string) => request<CloudAccount>("/api/cloud/login", json({ identifier, password })),
   /** set or change the password; "" with the current one removes it */
@@ -255,7 +255,7 @@ export const api = {
       `/api/threads/${thread}/events?limit=${limit}${before ? `&before=${encodeURIComponent(before)}` : ""}`,
     ),
   /** `language` is the locale of this console's screens; the reply is written in it. `via: "cloud"` is
-   * *Use wevvy Cloud this time*: this one turn on the account's model (401 `signed_out` when signed out). */
+   * *Use ceis Cloud this time*: this one turn on the account's model (401 `signed_out` when signed out). */
   send: (thread: string, text: string, files: string[] = [], language = "", via = "") =>
     request<{ event: TimelineEvent; thread: ThreadMeta }>(`/api/threads/${thread}/send`, json(via ? { text, files, language, via } : { text, files, language })),
   /** A file to attach: the bytes as the body, the name in the query. */
@@ -336,7 +336,7 @@ export const api = {
    * and returns the page to open; `status` is polled until it is done; `logout` deletes the
    * token store. The routes follow the shared brief; the runtime's CONTRACT-chatgpt.md
    * fixes the CLI and `/api/providers` — a runtime without these routes answers 404, and
-   * the card then names the CLI (`wevvy chatgpt login`).
+   * the card then names the CLI (`ceis chatgpt login`).
    */
   chatgptLogin: () => request<ChatGptLogin>("/api/chatgpt/login", json({})),
   chatgptStatus: () => request<ChatGptStatus>("/api/chatgpt/status"),
@@ -353,7 +353,7 @@ export const api = {
       models: string[];
       image_models?: string[];
       video_models?: string[];
-      // wevvy Cloud, relay 0.10: the chat models on the menu and the other usable ones under
+      // ceis Cloud, relay 0.10: the chat models on the menu and the other usable ones under
       // the operator's key (a member's list), likewise for pictures / clips; which chat models read pictures
       menu?: string[];
       catalog?: string[];

@@ -87,16 +87,16 @@ jobs:
             -derivedDataPath build/DerivedData \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY= DEVELOPMENT_TEAM= \
             -skipPackagePluginValidation -skipMacroValidation \
-            2>&1 | tee build/xcodebuild.log | grep -E "error:|/Wevvy/.*warning:|BUILD|Compiling|Linking" || true
+            2>&1 | tee build/xcodebuild.log | grep -E "error:|/Ceis/.*warning:|BUILD|Compiling|Linking" || true
           grep -q "\*\* BUILD SUCCEEDED \*\*" build/xcodebuild.log
 
-      # docs/ios.md: the device build must finish with zero warnings in Wevvy/. Upstream's
+      # docs/ios.md: the device build must finish with zero warnings in Ceis/. Upstream's
       # files are theirs; ours are held to the bar here, so a warning cannot sit on main unnoticed.
-      - name: Zero warnings in Wevvy/
+      - name: Zero warnings in Ceis/
         working-directory: android/src/ios
         run: |
-          if grep -E "/Wevvy/[^:]+:[0-9]+:[0-9]+: warning:" build/xcodebuild.log | sort -u | tee build/wevvy-warnings.txt | grep -q .; then
-            echo "::error::warnings in Wevvy/ (see above)"
+          if grep -E "/Ceis/[^:]+:[0-9]+:[0-9]+: warning:" build/xcodebuild.log | sort -u | tee build/ceis-warnings.txt | grep -q .; then
+            echo "::error::warnings in Ceis/ (see above)"
             exit 1
           fi
 

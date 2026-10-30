@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Start the harness the way the app does — the Electron binary in Node mode, the staged dsh,
-// a throwaway home with the wevvy profile — and check that (1) the composed configuration
+// a throwaway home with the ceis profile — and check that (1) the composed configuration
 // carries the bundle's patches and (2) the Host comes up and answers. No display is needed,
 // so this runs on every CI platform after packaging.
 //
@@ -32,7 +32,7 @@ if (args.includes("--app") && appArg) {
     electron = join(macos, readdirSync(macos)[0]);
     dshDir = join(bundle, "Contents", "Resources", "dsh");
   } else {
-    const exe = readdirSync(unpacked).find((f) => (process.platform === "win32" ? f.endsWith(".exe") && !/uninstall/i.test(f) : f === "wevvy-desktop"));
+    const exe = readdirSync(unpacked).find((f) => (process.platform === "win32" ? f.endsWith(".exe") && !/uninstall/i.test(f) : f === "ceis-desktop"));
     if (!exe) throw new Error(`no executable under ${unpacked}`);
     electron = join(unpacked, exe);
     dshDir = join(unpacked, "resources", "dsh");
@@ -48,16 +48,16 @@ const bin = join(dshDir, "node_modules", "@deepseek-ai", "dsh", "lib", "bin.js")
 if (!existsSync(bin)) throw new Error(`no staged dsh at ${bin} — run scripts/prepare-dsh.mjs`);
 
 // the profile, as src/main.ts writes it
-const home = mkdtempSync(join(tmpdir(), "wevvy-desktop-smoke-"));
-const profile = join(home, "profiles", "wevvy");
+const home = mkdtempSync(join(tmpdir(), "ceis-desktop-smoke-"));
+const profile = join(home, "profiles", "ceis");
 mkdirSync(join(profile, "node_modules"), { recursive: true });
 writeFileSync(
   join(profile, "package.json"),
-  `${JSON.stringify({ name: "dsh-profile-wevvy", private: true, dependencies: { "dsh-wevvy": "*" }, dsh: { profile: { bundles: ["@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "@deepseek-ai/dsh-experimental-schedule-bundle", "dsh-wevvy"] } } }, null, 2)}\n`,
+  `${JSON.stringify({ name: "dsh-profile-ceis", private: true, dependencies: { "dsh-ceis": "*" }, dsh: { profile: { bundles: ["@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "@deepseek-ai/dsh-experimental-schedule-bundle", "dsh-ceis"] } } }, null, 2)}\n`,
 );
 writeFileSync(join(profile, "cordis.yml"), "[]\n");
 writeFileSync(join(profile, "cordis.patch.yml"), "[]\n");
-symlinkSync(join(dshDir, "node_modules", "dsh-wevvy"), join(profile, "node_modules", "dsh-wevvy"), process.platform === "win32" ? "junction" : "dir");
+symlinkSync(join(dshDir, "node_modules", "dsh-ceis"), join(profile, "node_modules", "dsh-ceis"), process.platform === "win32" ? "junction" : "dir");
 
 const env = { ...process.env, ELECTRON_RUN_AS_NODE: "1", DSH_HOME: home, ELECTRON_NO_ATTACH_CONSOLE: "1" };
 const redact = (s) => s.replace(/token=\S+/g, "token=…");
@@ -66,15 +66,15 @@ const cleanup = () => rmSync(home, { recursive: true, force: true });
 console.log(`electron: ${electron}\ndsh: ${dshDir}\nhome: ${home}`);
 
 // 1. the composed configuration
-const dump = spawnSync(electron, ["--expose-internals", bin, "--profile", "wevvy", "--dump-config"], { env, encoding: "utf8", timeout: 180_000 });
-const patched = (dump.stdout.match(/patched by dsh-wevvy/g) ?? []).length;
+const dump = spawnSync(electron, ["--expose-internals", bin, "--profile", "ceis", "--dump-config"], { env, encoding: "utf8", timeout: 180_000 });
+const patched = (dump.stdout.match(/patched by dsh-ceis/g) ?? []).length;
 if (dump.status !== 0 || patched < 3) {
   console.error(dump.stdout.slice(-2000));
   console.error(dump.stderr.slice(-4000));
   cleanup();
   throw new Error(`--dump-config: exit ${dump.status}, ${patched} rows patched by the bundle`);
 }
-console.log(`dump-config: ${patched} rows patched by dsh-wevvy`);
+console.log(`dump-config: ${patched} rows patched by dsh-ceis`);
 
 // 2. the Host
 const port = await new Promise((resolvePort, reject) => {
@@ -85,7 +85,7 @@ const port = await new Promise((resolvePort, reject) => {
     srv.close(() => resolvePort(p));
   });
 });
-const child = spawn(electron, ["--expose-internals", bin, "wevvy", "--no-open", "--port", String(port)], { env, stdio: ["ignore", "pipe", "pipe"] });
+const child = spawn(electron, ["--expose-internals", bin, "ceis", "--no-open", "--port", String(port)], { env, stdio: ["ignore", "pipe", "pipe"] });
 let out = "";
 let err = "";
 child.stdout.setEncoding("utf8");
@@ -126,8 +126,8 @@ console.log(`GET / → ${noToken}; with the token → ${withToken}`);
 const cookie = (entry.headers.getSetCookie?.() ?? []).map((c) => c.split(";")[0]).join("; ");
 const origin = new URL(url).origin;
 const ours = {};
-for (const route of ["/wevvy/cloud/status", "/wevvy/rooms/state"]) {
-  const res = await fetch(origin + route, { headers: { cookie, "x-wevvy": "1", "sec-fetch-site": "same-origin" } });
+for (const route of ["/ceis/cloud/status", "/ceis/rooms/state"]) {
+  const res = await fetch(origin + route, { headers: { cookie, "x-ceis": "1", "sec-fetch-site": "same-origin" } });
   ours[route] = res.status;
   if (res.status === 200) {
     const body = await res.json().catch(() => ({}));
@@ -141,21 +141,21 @@ else child.kill("SIGTERM");
 await new Promise((r) => setTimeout(r, 1500));
 cleanup();
 if (noToken !== 401 || withToken >= 400) throw new Error("the Host did not answer as dsh's web app does");
-if (Object.values(ours).some((status) => status !== 200)) throw new Error("the wevvy routes did not answer: the cloud or rooms row did not come up");
+if (Object.values(ours).some((status) => status !== 200)) throw new Error("the ceis routes did not answer: the cloud or rooms row did not come up");
 if (warnings > 0) {
   console.error(redact(out));
   throw new Error("some entries did not activate");
 }
-console.log("ok: the harness boots with the wevvy bundle");
+console.log("ok: the harness boots with the ceis bundle");
 
 // 4. opt-in: the operator — the app as an app this time (not Node mode), with the check flag
 // src/main.ts answers: it starts the operator server alone, asks it for /info and a small
 // /screenshot through HTTP, writes the answers and quits. Shows libnut's addon loaded from
 // where the build put it (asarUnpack) and that the display is readable.
 if (args.includes("--operator")) {
-  const file = join(tmpdir(), `wevvy-operator-check-${process.pid}.json`);
+  const file = join(tmpdir(), `ceis-operator-check-${process.pid}.json`);
   const appArgs = args.includes("--app") && appArg ? [] : [appDir];
-  const userData = mkdtempSync(join(tmpdir(), "wevvy-desktop-operator-"));
+  const userData = mkdtempSync(join(tmpdir(), "ceis-desktop-operator-"));
   const run = spawnSync(electron, [...appArgs, `--user-data-dir=${userData}`, `--operator-check=${file}`], { env: { ...process.env, ELECTRON_NO_ATTACH_CONSOLE: "1" }, encoding: "utf8", timeout: 120_000 });
   rmSync(userData, { recursive: true, force: true });
   if (!existsSync(file)) {

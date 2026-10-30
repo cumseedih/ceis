@@ -71,8 +71,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, AlarmOffloadManager.CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setLargeIcon(io.github.wevvy.identity.WevvyIdentity.face(context)) // wevvy: the agent is the sender
-            .setContentTitle(io.github.wevvy.identity.WevvyIdentity.name(context)) // wevvy: the agent set this alarm
+            .setLargeIcon(io.github.ceis.identity.CeisIdentity.face(context)) // ceis: the agent is the sender
+            .setContentTitle(io.github.ceis.identity.CeisIdentity.name(context)) // ceis: the agent set this alarm
             .setContentText(label)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)

@@ -1,4 +1,4 @@
-# Mac 实机检查任务 — wevvy Desktop 0.1.37
+# Mac 实机检查任务 — ceis Desktop 0.1.37
 
 这份文档是给在一台 Mac 上运行的 Cursor（或任何编码代理）看的。把它整个粘贴给代理，它就有了
 全部上下文：仓库是什么、怎么在 Mac 上构建桌面端、要检查哪几件事、每件事的预期、代码在哪、
@@ -13,10 +13,10 @@
 ## 0. 背景
 
 - 仓库 https://github.com/nano-muse/nanoMuse （GPL-3.0-or-later）。桌面端在 `harness/`：
-  `harness/dsh-wevvy` 是跑在 DeepSeek Harness（dsh）里的 wevvy 插件包，`harness/desktop`
+  `harness/dsh-ceis` 是跑在 DeepSeek Harness（dsh）里的 ceis 插件包，`harness/desktop`
   是 Electron 外壳（`src/main.ts` 主进程、`src/operator.ts` 操作器、`src/mac-permissions.ts`
-  权限模块、`src/preload.ts`、`resources/*.html`），`wevvy/` 是 Python 运行时（电脑端的「双手」，
-  `wevvy/computer/`），由外壳作为子进程拉起。
+  权限模块、`src/preload.ts`、`resources/*.html`），`ceis/` 是 Python 运行时（电脑端的「双手」，
+  `ceis/computer/`），由外壳作为子进程拉起。
 - 文档：`docs/desktop.md`（新增「macOS permissions」「Linux notes」两节）、`docs/gui.md`
   （「one path」一段）、`docs/desktop-muse.md`、`CONTRIBUTING.md`。`CHANGELOG.md` 顶部
   `## [Unreleased]` 记录未发布改动。
@@ -27,16 +27,16 @@
      （`CGRequestScreenCaptureAccess` / `AXIsProcessTrustedWithOptions` 带提示），并打开一次
      「屏幕录制」面板。权限页的「请求」按钮也走原生调用，不再用 1×1 的 `desktopCapturer` 探测；
      状态来自 TCC（`getAuthStatus`），不是 Electron 的 `systemPreferences` 猜测。
-  2. **截图只有一条路。** 应用在的时候（`WEVVY_OPERATOR_URL` 已设置）运行时永远不回退到
+  2. **截图只有一条路。** 应用在的时候（`CEIS_OPERATOR_URL` 已设置）运行时永远不回退到
      `mss` / `screencapture` / `pyautogui`：操作器给图，或者把操作器的理由作为错误返回
-     （`wevvy/computer/link.py` `_capture_screen`、`hands.py` `pick_backend`、
+     （`ceis/computer/link.py` `_capture_screen`、`hands.py` `pick_backend`、
      `operator.py` `operator_owns_the_screen`）。
   3. **黑图检测。** `operator.ts` 的 `capture()`：`desktopCapturer.getSources` 被拒（Electron ≥ 32 没
      权限时直接 reject）或 libnut 抓到的整张图全黑（采样每通道 < 8）→ `OperatorError(…, 403)`，
-     文案 *macOS: switch on wevvy Desktop under System Settings → Privacy & Security → Screen
+     文案 *macOS: switch on ceis Desktop under System Settings → Privacy & Security → Screen
      Recording, then quit and reopen the app.*，不再把黑图当截图返回。
   4. **重启走 quit。** `relaunchNow()` 改为 `app.relaunch(); app.quit()`，`before-quit` 会先停掉
-     host 和操作器服务器；原先的 `app.exit(0)` 跳过了它们，留下没权限的旧 `wevvy mcp`。
+     host 和操作器服务器；原先的 `app.exit(0)` 跳过了它们，留下没权限的旧 `ceis mcp`。
   5. **Chromium 开关。** 启动前（仅 darwin）
      `app.commandLine.appendSwitch('disable-features', 'ThumbnailCapturerMac:capture_mode/sc_screenshot_manager,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma')`
      ——electron/electron#44504，ScreenCaptureKit 缩略图不确定地丢帧。
@@ -54,17 +54,17 @@ xcode-select --install 2>/dev/null || true          # 命令行工具（git、co
 brew install node@22 pnpm python@3.12 cliclick
 export PATH="/opt/homebrew/opt/node@22/bin:$PATH"    # Intel Mac 是 /usr/local/opt/node@22/bin
 node -v   # v22.x
-git clone https://github.com/nano-muse/nanoMuse.git && cd wevvy
+git clone https://github.com/nano-muse/nanoMuse.git && cd ceis
 git checkout -b mac-check-0.1.37
 ```
 
 ## 2. 构建并运行
 
 ```bash
-cd harness/dsh-wevvy && pnpm install --frozen-lockfile && pnpm build && pnpm typecheck && pnpm test
+cd harness/dsh-ceis && pnpm install --frozen-lockfile && pnpm build && pnpm typecheck && pnpm test
 cd ../desktop && node scripts/prepare-dsh.mjs
 cd ../.. && python3.12 -m venv .venv && .venv/bin/pip install -e ".[hands]"
-export WEVVY_PY="$PWD/.venv/bin/wevvy"
+export CEIS_PY="$PWD/.venv/bin/ceis"
 cd harness/desktop && npm ci && npm run typecheck
 ```
 
@@ -83,17 +83,17 @@ cd harness/desktop && npm ci && npm run typecheck
 - **打包态**（本任务单的所有权限项都用它）：
   ```bash
   npm run dist:dir && ../../scripts/desktop-app/package-mac.sh arm64     # Intel 用 x64
-  open dist/mac-arm64/wevvy.app                                        # 或 dist/mac/
+  open dist/mac-arm64/ceis.app                                        # 或 dist/mac/
   ```
-  bundle id `io.github.wevvy.desktop`。重测首次授权：
-  `tccutil reset ScreenCapture io.github.wevvy.desktop; tccutil reset Accessibility io.github.wevvy.desktop`。
-- 数据目录 `~/.wevvy/desktop`（日志 `desktop.log`）。从头开始：`mv ~/.wevvy/desktop ~/.wevvy/desktop.bak`。
+  bundle id `io.github.ceis.desktop`。重测首次授权：
+  `tccutil reset ScreenCapture io.github.ceis.desktop; tccutil reset Accessibility io.github.ceis.desktop`。
+- 数据目录 `~/.ceis/desktop`（日志 `desktop.log`）。从头开始：`mv ~/.ceis/desktop ~/.ceis/desktop.bak`。
 
 ## 3. 检查清单（每项都要做，记录证据）
 
 ### A. 原生模块进了包并能加载
 
-- `dist/mac-arm64/wevvy.app/Contents/Resources/app.asar.unpacked/node_modules/@computer-use/` 下应有
+- `dist/mac-arm64/ceis.app/Contents/Resources/app.asar.unpacked/node_modules/@computer-use/` 下应有
   `libnut-darwin/build/Release/libnut.node`、`node-mac-permissions/build/Release/permissions.node`、
   `mac-screen-capture-permissions/build/Release/screencapturepermissions.node`（`asarUnpack` 覆盖
   `**/node_modules/@computer-use/**`）。
@@ -106,9 +106,9 @@ cd harness/desktop && npm ci && npm run typecheck
 
 ### B. 启动时的权限提示（点 1）
 
-- 做法：`tccutil reset` 两项后，`open dist/mac-arm64/wevvy.app`。
+- 做法：`tccutil reset` 两项后，`open dist/mac-arm64/ceis.app`。
 - 预期：窗口起来的同时（不等 boot 完），系统弹出「屏幕录制」请求和「辅助功能」请求各一次，
-  两项都归在 **wevvy Desktop** 名下，并且「系统设置 → 隐私与安全性 → 屏幕录制」面板被打开一次。
+  两项都归在 **ceis Desktop** 名下，并且「系统设置 → 隐私与安全性 → 屏幕录制」面板被打开一次。
   再次启动（权限仍未授予）：面板再开一次、系统对话框**不**再弹（macOS 只提示一次，之后只能去面板开）。
   两项都已授予时：什么都不弹、什么都不开，日志只有那一行 `permissions: …`。
 - 带 `--operator-check=/tmp/op.json` 或 `--screenshot=/tmp/x.png` 启动时，不应有任何提示。
@@ -117,20 +117,20 @@ cd harness/desktop && npm ci && npm run typecheck
   `getAuthStatus`）。点「请求」：屏幕录制走 `askForScreenCaptureAccess()` 再开面板；辅助功能走
   `askForAccessibilityAccess()`，未授予时开面板。
 - 代码：`main.ts` 搜 `ensureMacPermissionsAtLaunch`、`requestScreenRecording`、`requestAccessibility`、
-  `wevvy:permissions:request`。
+  `ceis:permissions:request`。
 
 ### C. 没有屏幕录制时：一条路、一句话（点 2、3）
 
-- 做法：屏幕录制未授予（辅助功能可授予也可不授予），打开应用，对 wevvy 说「截图看看屏幕上有什么」，
+- 做法：屏幕录制未授予（辅助功能可授予也可不授予），打开应用，对 ceis 说「截图看看屏幕上有什么」，
   或直接调工具 `computer_screen`。
 - 预期：
-  1. 聊天里工具失败，错误文案含 *macOS: switch on wevvy Desktop under System Settings →
+  1. 聊天里工具失败，错误文案含 *macOS: switch on ceis Desktop under System Settings →
      Privacy & Security → Screen Recording, then quit and reopen the app.*，**不是**一张黑图，也**不是**
      mss / screencapture 的报错；
-  2. 系统**没有**为 `wevvy`（运行时进程）弹第二次屏幕录制提示，「屏幕录制」面板里也没有多出
-     Python / wevvy 这样的条目；
+  2. 系统**没有**为 `ceis`（运行时进程）弹第二次屏幕录制提示，「屏幕录制」面板里也没有多出
+     Python / ceis 这样的条目；
   3. `desktop.log` 有 `operator server: POST /screenshot: 403 …` 一行（操作器拒绝截图）；
-  4. 运行时侧：`wevvy mcp` 的 `[hands]` 状态 `available:false`，`reason` 就是那句文案
+  4. 运行时侧：`ceis mcp` 的 `[hands]` 状态 `available:false`，`reason` 就是那句文案
      （`describe_availability` → `pick_backend` 在 darwin + 操作器变量存在时不再尝试 pyautogui）。
 - 直接验证操作器（token 取法见 0.1.36 任务单 F 节）：`POST /screenshot` 应返回 `403 {"error": "no screenshot: …Screen Recording…"}`。
   想分辨是哪一条分支触发的：日志里 `desktopCapturer failed:` 表示 getSources 被拒；没有这行而返回 403，
@@ -139,24 +139,24 @@ cd harness/desktop && npm ci && npm run typecheck
   ——应当**正常返回图片**，不该报 403；采样阈值是每通道 < 8，纯黑壁纸 + 深色窗口边框一般有像素 ≥ 8。若误报，
   把一张触发误报的图（缩小后）贴进报告并提高/改良 `BLACK_LEVEL` 的判定。
 - 代码：`harness/desktop/src/operator.ts`（`capture`、`isBlackImage`、`SCREEN_PERMISSION_TEXT`）、
-  `operator-server.ts`、`wevvy/computer/link.py`、`hands.py`、`operator.py`、测试
+  `operator-server.ts`、`ceis/computer/link.py`、`hands.py`、`operator.py`、测试
   `tests/test_computer_operator.py`（`test_mac_*`）。
 
 ### D. 授予后的重启（点 4）
 
-- 做法：应用运行中，去「屏幕录制」面板打开 wevvy Desktop。
+- 做法：应用运行中，去「屏幕录制」面板打开 ceis Desktop。
 - 预期：弹一次「屏幕录制已允许，重新启动后生效 / Screen Recording is on; it takes effect after a
   restart」，按「立即重启」：
   1. `desktop.log` 里先有 `host exited: code=…`（旧 host 被 `before-quit` 停掉），然后新进程的
-     `wevvy Desktop 0.1.37 starting`；
-  2. 重启后 `pgrep -fl "wevvy mcp"` 只有**一个**（新的）；重启前记下旧的 PID，确认它没了；
+     `ceis Desktop 0.1.37 starting`；
+  2. 重启后 `pgrep -fl "ceis mcp"` 只有**一个**（新的）；重启前记下旧的 PID，确认它没了；
   3. 重启后截图正常，`permissions: … screen=granted (native)`。
 - 对话框只弹一次，「稍后」之后不再弹。
 - 代码：`main.ts` 搜 `relaunchNow`、`watchScreenGrant`、`before-quit`。
 
 ### E. Chromium 开关（点 5）
 
-- `ps -o command= -p $(pgrep -f "wevvy.app/Contents/MacOS" | head -1)` 的参数里**不会**显示
+- `ps -o command= -p $(pgrep -f "ceis.app/Contents/MacOS" | head -1)` 的参数里**不会**显示
   `appendSwitch` 加的开关（它作用于内部命令行）；用 `--remote-debugging-port=9333` 启动后在 CDP 执行
   `Runtime.evaluate` 不行（是主进程），改为在 `desktop.log` 没有现成记录时，临时在 `main.ts` 的
   `whenReady` 后加一行 `log(app.commandLine.getSwitchValue("disable-features"))` 验证值等于
@@ -168,7 +168,7 @@ cd harness/desktop && npm ci && npm run typecheck
 
 ### F. 签名脚本（点 6）
 
-- ad-hoc：`codesign --verify --deep --strict dist/mac-arm64/wevvy.app` 应 `signature ok`；
+- ad-hoc：`codesign --verify --deep --strict dist/mac-arm64/ceis.app` 应 `signature ok`；
   `codesign -dv --verbose=2 ".../app.asar.unpacked/node_modules/@computer-use/node-mac-permissions/build/Release/permissions.node"`
   应显示 ad-hoc 的新签名（0.1.37 起内层循环是 `for inner in runtime dsh app.asar.unpacked`）；
   若仍是 npm 发布时的签名或无签名，说明 `find … -name '*.node'` 那一遍漏了它，修脚本。
@@ -184,12 +184,12 @@ cd harness/desktop && npm ci && npm run typecheck
 
 ## 4. 修复与提交
 
-- 直接在本分支修。外壳 `harness/desktop/src/`，运行时 `wevvy/`。不要改版本号。
+- 直接在本分支修。外壳 `harness/desktop/src/`，运行时 `ceis/`。不要改版本号。
 - 跑检查：`cd harness/desktop && npm run typecheck && node scripts/smoke.mjs --app dist/mac-arm64 --operator`；
-  动了 Python 就 `.venv/bin/ruff check wevvy tests && .venv/bin/mypy wevvy && .venv/bin/pytest tests -q`。
+  动了 Python 就 `.venv/bin/ruff check ceis tests && .venv/bin/mypy ceis && .venv/bin/pytest tests -q`。
 - `CHANGELOG.md` 的 `## [Unreleased]` 下按平台小节（Desktop / Runtime）写一句话，过去式。
 - 提交：`git add -A && git commit -s -m "fix(desktop): <一句话>"`；推送 `git push -u origin mac-check-0.1.37`；
-  `gh pr create --base main --title "Mac check 0.1.37: <摘要>" --body-file <报告文件>`。不要把 `~/.wevvy`、
+  `gh pr create --base main --title "Mac check 0.1.37: <摘要>" --body-file <报告文件>`。不要把 `~/.ceis`、
   密钥、带 token 的日志放进提交。
 
 ## 5. 报告格式

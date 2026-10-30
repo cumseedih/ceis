@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from wevvy import certs
+from ceis import certs
 
 
 def test_an_empty_store_is_pointed_at_certifi(

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- wevvy: strings added on top of upstream; kept in their own file so an
+<!-- ceis: strings added on top of upstream; kept in their own file so an
      upstream pull never touches them. Anything missing here falls back to English. -->
 <resources>
     <string name="nm_about_build">このビルド</string>
@@ -7,7 +7,7 @@
     <string name="nm_about_upstream">OpenMinis 1.13 をベースにしています</string>
     <string name="nm_about_upstream_detail">GPL-3.0 · 2026-09-24 以降に改変 · ソースは GitHub にあります</string>
     <string name="nm_about_trademark">Meta とは関係ありません</string>
-    <string name="nm_about_trademark_detail">Muse は Meta Platforms, Inc. の商標です。wevvy は独立した自由ソフトウェアのプロジェクトです。</string>
+    <string name="nm_about_trademark_detail">Muse は Meta Platforms, Inc. の商標です。ceis は独立した自由ソフトウェアのプロジェクトです。</string>
 
     <!-- Chat header -->
     <string name="nm_avatar_content_description">あなたのエージェントです。タップして名前、アイコン、スタイルを変更できます。</string>
@@ -22,26 +22,26 @@
     <string name="nm_star_action">GitHub でスターを付ける</string>
     <string name="nm_star_later">今はしない</string>
     <string name="nm_star_done">もうスターしました</string>
-    <string name="nm_star_signed_in">ようこそ。wevvy は無料でオープンソース、非営利のプロジェクトです：使う人すべてのためのパーソナルエージェントです。もし価値を感じていただけたら、GitHub のスターが次の人がこれを見つける手がかりになります。</string>
+    <string name="nm_star_signed_in">ようこそ。ceis は無料でオープンソース、非営利のプロジェクトです：使う人すべてのためのパーソナルエージェントです。もし価値を感じていただけたら、GitHub のスターが次の人がこれを見つける手がかりになります。</string>
     <plurals name="nm_star_tasks">
-        <item quantity="other">%1$d 件のタスクが完了しました。wevvy が役に立っているなら、GitHub のスターが次の人がこれを見つける助けになります。</item>
+        <item quantity="other">%1$d 件のタスクが完了しました。ceis が役に立っているなら、GitHub のスターが次の人がこれを見つける助けになります。</item>
     </plurals>
-    <string name="nm_star_days_used_week">wevvy と過ごして 1 週間。毎日の中に居場所ができたなら、GitHub のスターが次の人がこれを見つける助けになります。</string>
-    <string name="nm_star_days_used_month">wevvy と過ごして 1 か月。日課の一部になったなら、GitHub のスターが試す価値があることをほかの人に伝えます。</string>
+    <string name="nm_star_days_used_week">ceis と過ごして 1 週間。毎日の中に居場所ができたなら、GitHub のスターが次の人がこれを見つける助けになります。</string>
+    <string name="nm_star_days_used_month">ceis と過ごして 1 か月。日課の一部になったなら、GitHub のスターが試す価値があることをほかの人に伝えます。</string>
     <plurals name="nm_star_days_used">
-        <item quantity="other">wevvy と過ごして %1$d 日。毎日の中に居場所ができたなら、GitHub のスターが次の人がこれを見つける助けになります。</item>
+        <item quantity="other">ceis と過ごして %1$d 日。毎日の中に居場所ができたなら、GitHub のスターが次の人がこれを見つける助けになります。</item>
     </plurals>
-    <string name="nm_star_goal_done">目標を達成しました。wevvy がその助けになったなら、GitHub のスターで作っている人たちに伝わります。</string>
-    <string name="nm_star_new_look">新しい顔ができました。wevvy の進む方向が気に入ったら、GitHub のスターがより多くの人に届く助けになります。</string>
-    <string name="nm_star_exhausted">無料枠を使い切りました。ここまで使っていただきありがとうございます。wevvy にその価値があると思えたら、GitHub のスターが次の人の目に留まる助けになります。</string>
+    <string name="nm_star_goal_done">目標を達成しました。ceis がその助けになったなら、GitHub のスターで作っている人たちに伝わります。</string>
+    <string name="nm_star_new_look">新しい顔ができました。ceis の進む方向が気に入ったら、GitHub のスターがより多くの人に届く助けになります。</string>
+    <string name="nm_star_exhausted">無料枠を使い切りました。ここまで使っていただきありがとうございます。ceis にその価値があると思えたら、GitHub のスターが次の人の目に留まる助けになります。</string>
     <string name="nm_chat_menu_rename">チャット名を変更</string>
 
     <!-- Foreground-service notification title while no tool is running -->
     <string name="nm_notif_working">%1$s が作業中です</string>
 
-    <!-- First conversation: the scripted opening (see io.github.wevvy.onboarding) -->
-    <string name="nm_intro_hello">こんにちは、wevvy です。あなたのスマートフォンの中に住んでいるアシスタントです。いくつかの用事を代わりに引き受けます。</string>
-    <string name="nm_intro_how_i_work">私の働き方について少し:\n\n- 自分のコンピューター（Linux のサンドボックスとブラウザー）を持っているので、コマンドの実行、ウェブサイトを開くこと、フォームの入力ができます。\n- マウントしてもらったファイルや写真を読んで整理し、リマインダーや予定されたタスクを引き受けます。\n- 重要な操作の前には、必ず先にあなたに確認します。\n- すべてはこの端末上で動きます。メッセージは設定したモデルに送られます。wevvy Cloud にサインインしていると、この会話はほかの端末にも同期されます。データ管理でオフにできます。</string>
+    <!-- First conversation: the scripted opening (see io.github.ceis.onboarding) -->
+    <string name="nm_intro_hello">こんにちは、ceis です。あなたのスマートフォンの中に住んでいるアシスタントです。いくつかの用事を代わりに引き受けます。</string>
+    <string name="nm_intro_how_i_work">私の働き方について少し:\n\n- 自分のコンピューター（Linux のサンドボックスとブラウザー）を持っているので、コマンドの実行、ウェブサイトを開くこと、フォームの入力ができます。\n- マウントしてもらったファイルや写真を読んで整理し、リマインダーや予定されたタスクを引き受けます。\n- 重要な操作の前には、必ず先にあなたに確認します。\n- すべてはこの端末上で動きます。メッセージは設定したモデルに送られます。ceis Cloud にサインインしていると、この会話はほかの端末にも同期されます。データ管理でオフにできます。</string>
     <string name="nm_intro_ask_name">始める前に、あなたのことを何とお呼びすればいいですか？</string>
 
     <!-- First conversation: the name chooser -->
@@ -193,7 +193,7 @@
     <string name="nm_risk_class_outbound">送信</string>
     <string name="nm_risk_class_money">支払い</string>
     <string name="nm_risk_class_install">インストール</string>
-    <string name="nm_grants_header">wevvy が記憶した承認</string>
+    <string name="nm_grants_header">ceis が記憶した承認</string>
     <string name="nm_grants_empty">まだ記憶した承認はありません</string>
     <string name="nm_grants_revoke">取り消す</string>
     <string name="nm_grants_revoke_confirm">この承認を取り消しますか？次に同じ操作が出てきたときは、改めて確認されます。</string>
@@ -201,7 +201,7 @@
     <string name="nm_risk_remember_money_note">画面ロックで確認します。以後、この 1 つのアプリまたはサイトでの支払いはカードなしで実行されます。設定 → 権限の先頭に表示され、いつでも取り消せます。</string>
     <string name="nm_risk_remember_money_needs_lock">支払いを記憶するには、まず画面ロックを設定してください（設定 → セキュリティ）。記憶する際にそれで確認します。</string>
     <string name="nm_risk_lock_title">本人確認</string>
-    <string name="nm_risk_lock_subtitle">wevvy は %1$s での支払いの承認を記憶し、確認せずに実行します。</string>
+    <string name="nm_risk_lock_subtitle">ceis は %1$s での支払いの承認を記憶し、確認せずに実行します。</string>
     <string name="nm_risk_remembered_toast">記憶しました · 取り消すには設定 → 権限へ</string>
     <string name="nm_risk_tier_highest">確認なしで実行 · 支払い</string>
     <string name="nm_risk_tier_confirm">カードから記憶 · 削除と送信</string>
@@ -272,7 +272,7 @@
     <string name="nm_sysfiles_open_memory">メモリを開く</string>
     <string name="nm_sysfiles_footer">これらはエージェントのファイルです: 自分が何者か、あなたについて知っていること、覚えていること、あなたのために書くもの、そしていつ目を覚ますか。端末のストレージにあり、エージェントは自分のシェルから /var/minis/memory 以下を読み書きします。ここで何でも編集できます。</string>
     <string name="nm_sysfile_about_lead">このファイルについて。</string>
-    <string name="nm_sysfile_about_soul">これはエージェントのペルソナです: すべての会話で守ろうとする価値観と習慣、名前、答え方のスタイル。wevvy に付属するテンプレートから始まり、エージェントが時間とともに手を入れることがあり、そのときは知らせます。いつでも編集できます。この注記はファイルの一部ではありません。</string>
+    <string name="nm_sysfile_about_soul">これはエージェントのペルソナです: すべての会話で守ろうとする価値観と習慣、名前、答え方のスタイル。ceis に付属するテンプレートから始まり、エージェントが時間とともに手を入れることがあり、そのときは知らせます。いつでも編集できます。この注記はファイルの一部ではありません。</string>
     <string name="nm_sysfile_about_user">エージェントがあなたについての作業メモとして持つファイルです: 名前、呼ばれ方の好み、タイムゾーン、そして役に立つために必要な文脈：今取り組んでいることなど。会話から少しずつ書き足し、毎回の会話の始めに読みます。エージェントの現時点の理解を映すものなので、不完全だったり古かったりすることがあります。ここで何でも編集でき、エージェントは書かれたことに従います。この注記はファイルの一部ではありません。</string>
     <string name="nm_sysfile_about_memory">エージェントが会話をまたいで持ち続ける長期的なメモです：覚えておく価値のあることをエージェント自身の言葉で、それにほかのアシスタントから取り込んだものを加えたもの。日々の日記はメモリフォルダの隣にあります。メモリがオンのときは毎回の会話の始めに読まれます。この注記はファイルの一部ではありません。</string>
     <string name="nm_sysfile_about_feed">フィードの方向を決める一段落です: もっと読みたいこと、省くこと、投稿の長さ。毎日のフィードルーティンが書く前に読みます。この注記はファイルの一部ではありません。</string>
@@ -349,11 +349,11 @@
     <string name="nm_avatar_pick_body">いつでもさらに 4 枚描けます。描くまでは今の候補が残ります。</string>
     <string name="nm_avatar_use_this">これにする</string>
     <string name="nm_avatar_use_this_hint">次に、表情（作業中、待機中、完了、おっと）をこの画像からバックグラウンドで描きます。</string>
-    <string name="nm_avatar_footer">画像は端末の minis-global/wevvy/avatar に保存されます。顔 1 つにつきプロバイダから 5 枚の画像を使います: 選んだ 1 枚と 4 つの表情です。</string>
+    <string name="nm_avatar_footer">画像は端末の minis-global/ceis/avatar に保存されます。顔 1 つにつきプロバイダから 5 枚の画像を使います: 選んだ 1 枚と 4 つの表情です。</string>
     <string name="nm_own_clip_title">自分の動画</string>
     <string name="nm_own_clip_body">自分の短い動画が待機中の顔として再生され、他の状態でも同じ動画が使われます。H.264 の MP4 または MOV、最長 15 秒、最大 30 MB。無音でループ再生されます。</string>
     <string name="nm_own_clip_on">自分の動画が有効で、すべての状態で再生されます。静止画が使われる場所では描かれた画像がそのまま使われます。「標準の顔」で取り除けます。</string>
-    <string name="nm_own_clip_local">動画はこの端末にだけ保存されます。wevvy Cloud にアップロードされず、他の端末にも同期されません。</string>
+    <string name="nm_own_clip_local">動画はこの端末にだけ保存されます。ceis Cloud にアップロードされず、他の端末にも同期されません。</string>
     <string name="nm_own_clip_choose">動画を選ぶ</string>
     <string name="nm_own_clip_replace">動画を差し替える</string>
     <string name="nm_own_clip_default">標準の顔</string>
@@ -371,7 +371,7 @@
     <string name="nm_a11y_own_clip_preview">自分の動画のプレビュー</string>
 
     <!-- First run (Muse-style welcome; the steps are OpenMinis' provider and model screens) -->
-    <string name="nm_setup_title">wevvy へようこそ</string>
+    <string name="nm_setup_title">ceis へようこそ</string>
     <string name="nm_setup_step_models">モデルを選ぶ</string>
     <string name="nm_setup_step_models_sub">プロバイダが提供するモデルを一覧にします。最大 3 つ選べます</string>
     <string name="nm_setup_step_start">%1$s に会う</string>
@@ -387,7 +387,7 @@
     <string name="nm_settings_no_model">モデルがまだありません</string>
     <string name="nm_settings_no_model_sub">プロバイダを追加してモデルを選んでください</string>
     <string name="nm_settings_change_model">変更</string>
-    <string name="nm_settings_version">wevvy %1$s (%2$d)</string>
+    <string name="nm_settings_version">ceis %1$s (%2$d)</string>
     <string name="nm_version_title">バージョン</string>
     <string name="nm_version_checking">最新リリースを確認しています…</string>
     <string name="nm_version_have">最新の %1$s、お使いのものです</string>
@@ -467,7 +467,7 @@
     <string name="nm_avatar_share_title">アバターを共有する</string>
     <string name="nm_avatar_share_subtitle">カードを選んでください。システムの共有シートから送られます。</string>
     <string name="nm_avatar_share_system">共有</string>
-    <string name="nm_avatar_share_bubble">こんにちは、%1$s です。パーソナル AI エージェントです。wevvy をどうぞ：オープンソースで、スマートフォンの上で動きます。</string>
+    <string name="nm_avatar_share_bubble">こんにちは、%1$s です。パーソナル AI エージェントです。ceis をどうぞ：オープンソースで、スマートフォンの上で動きます。</string>
     <string name="nm_avatar_share_tagline">あなたのパーソナル AI エージェント、オープンソース · github.com/nano-muse/nanoMuse</string>
 
     <!-- 0.1.10 · Motion -->
@@ -519,7 +519,7 @@
     <string name="nm_hands_section_needs">必要なもの</string>
     <string name="nm_hands_needs_footer">ユーザー補助サービスがスクリーンショットを撮り、ジェスチャーを行います。画面の内容は読み取りません。他のアプリの上に重ねて表示する権限はカプセルのためです。</string>
     <string name="nm_hands_need_a11y">ユーザー補助サービス</string>
-    <string name="nm_hands_need_a11y_fix">ユーザー補助の設定の「インストール済みアプリ」で wevvy をオンにしてください</string>
+    <string name="nm_hands_need_a11y_fix">ユーザー補助の設定の「インストール済みアプリ」で ceis をオンにしてください</string>
     <string name="nm_hands_need_overlay">他のアプリの上に重ねて表示</string>
     <string name="nm_hands_need_overlay_fix">停止ボタン付きのカプセルを表示できるよう許可してください</string>
     <string name="nm_hands_need_model">画像を見られるモデル</string>
@@ -536,7 +536,7 @@
     <string name="nm_hands_why_default">自分のキーでのハンズの既定</string>
     <string name="nm_hands_why_chat">選んだチャットモデル</string>
     <string name="nm_hands_why_group">既定グループで最初に画面を見られるもの</string>
-    <string name="nm_hands_why_menu">wevvy Cloud の画面モデル</string>
+    <string name="nm_hands_why_menu">ceis Cloud の画面モデル</string>
     <string name="nm_hands_why_vision_group">ビジョングループ</string>
     <string name="nm_hands_why_any">有効なモデルのうち画面を見られる唯一のもの</string>
     <string name="nm_hands_section_rules">ふるまい</string>
@@ -557,7 +557,7 @@
     <string name="nm_hands_protected_screen">この画面は保護されていて読み取れません。この部分はご自身で済ませてから、「続ける」をタップしてください。</string>
     <string name="nm_hands_secret_field">パスワードまたはコードの入力欄です：ご自身で入力してから、「続ける」をタップしてください。</string>
     <string name="nm_hands_approval_title">承認を待っています</string>
-    <string name="nm_hands_approval_detail">「%1$s」をタップ：wevvy で確認してください（画面ロックを求められます）。</string>
+    <string name="nm_hands_approval_detail">「%1$s」をタップ：ceis で確認してください（画面ロックを求められます）。</string>
     <string name="nm_hands_approval_here">「%1$s」をタップしますか？</string>
     <string name="nm_hands_allow_once">許可</string>
     <string name="nm_hands_deny">拒否</string>
@@ -588,10 +588,10 @@
     <!-- Reach (0.1.13): the phone drives your computer -->
     <string name="nm_pc_title">コンピューター</string>
     <string name="nm_pc_none_short">なし</string>
-    <string name="nm_pc_intro">ここで言えば、コンピューターで実行されます: コマンド、ファイル、そのブラウザーのページ、画面の確認、あるいはそこにある wevvy へのタスク全体。スマートフォンがコンピューターを動かし、その逆はありません。承認はすべてまずここで決まります。</string>
-    <string name="nm_pc_hub_title">簡単な方法: 同じアカウントで wevvy Desktop</string>
-    <string name="nm_pc_hub_body">コンピューターに wevvy Desktop をインストールし、この端末のアカウントでサインインしてください。数秒でアカウント → デバイスに表示されます。</string>
-    <string name="nm_pc_hub_download">wevvy Desktop を入手</string>
+    <string name="nm_pc_intro">ここで言えば、コンピューターで実行されます: コマンド、ファイル、そのブラウザーのページ、画面の確認、あるいはそこにある ceis へのタスク全体。スマートフォンがコンピューターを動かし、その逆はありません。承認はすべてまずここで決まります。</string>
+    <string name="nm_pc_hub_title">簡単な方法: 同じアカウントで ceis Desktop</string>
+    <string name="nm_pc_hub_body">コンピューターに ceis Desktop をインストールし、この端末のアカウントでサインインしてください。数秒でアカウント → デバイスに表示されます。</string>
+    <string name="nm_pc_hub_download">ceis Desktop を入手</string>
     <string name="nm_pc_hub_account">アカウントとデバイス</string>
     <string name="nm_pc_section_paired">このアカウントのコンピューター</string>
     <string name="nm_pc_none">コンピューターはまだありません</string>
@@ -600,11 +600,11 @@
     <string name="nm_pc_last_seen">最終確認 %1$s</string>
     <string name="nm_pc_offline">オフライン</string>
     <string name="nm_pc_online">オンライン</string>
-    <string name="nm_pc_account_none">この端末はまだ wevvy Cloud にサインインしていません。まずここでサインインし、次にコンピューターで同じアカウントを使ってください。</string>
+    <string name="nm_pc_account_none">この端末はまだ ceis Cloud にサインインしていません。まずここでサインインし、次にコンピューターで同じアカウントを使ってください。</string>
     <string name="nm_pc_account_hint">この端末は %1$s としてサインインしています。コンピューターも同じアカウントでサインインする必要があります。</string>
     <string name="nm_pc_checking">確認中…</string>
     <string name="nm_pc_answering">%1$s が応答しました</string>
-    <string name="nm_pc_not_answering">%1$s が応答しません。そちらで wevvy Desktop はまだ動いていますか？</string>
+    <string name="nm_pc_not_answering">%1$s が応答しません。そちらで ceis Desktop はまだ動いていますか？</string>
 
     <!-- the approval card -->
     <string name="nm_risk_desc_on_computer">この端末ではなく、コンピューター「%1$s」で実行されます。</string>
@@ -617,16 +617,16 @@
     <string name="nm_risk_class_remote">リモート操作</string>
     <string name="nm_hub_remote_reason">%1$s はこの端末を操作できます</string>
 
-    <!-- wevvy Cloud: sign in with a phone/e-mail code for a starter allowance -->
+    <!-- ceis Cloud: sign in with a phone/e-mail code for a starter allowance -->
     <string name="nm_setup_own_key">自分の API キーがあります</string>
 
-    <!-- wevvy: the first-run pages -->
+    <!-- ceis: the first-run pages -->
     <string name="nm_welcome_tagline">あなたのすべてのデバイスのための、オープンソースのパーソナルエージェント。</string>
     <string name="nm_welcome_email">サインイン（無料）</string>
     <string name="nm_welcome_fine_print">1 つのアカウントでデバイスがつながり、無料のモデル利用も付いてきます。料金はかかりません。自分の API キーはすぐあとで追加できます。</string>
     <string name="nm_setup_source_title">どのモデルが答えますか？</string>
     <string name="nm_setup_source_sub">アカウントにはすでにモデルが付いています。自分の API キーも追加でき、いつでも切り替えられます。</string>
-    <string name="nm_setup_source_cloud">wevvy Cloud のモデルを使う</string>
+    <string name="nm_setup_source_cloud">ceis Cloud のモデルを使う</string>
     <string name="nm_setup_source_cloud_sub">チャットは DeepSeek、ハンズは Qwen。開発者が負担する無料枠がアカウントごとに付きます。設定は不要です。</string>
     <string name="nm_setup_source_own_sub">OpenAI、Anthropic、DeepSeek、百煉、その他の OpenAI 互換エンドポイント。キーはこの端末に残ります。</string>
     <string name="nm_setup_source_fine_print">両者は競合しません: Cloud のモデルはそのまま使え、モデルグループごとに選べます。</string>
@@ -639,15 +639,15 @@
     <string name="nm_welcome_feat_hands">ハンズ: スマートフォンを使います</string>
     <string name="nm_welcome_feat_hands_sub">列車の予約、食事の注文、アプリ内での調べもの。あなたは見守り、いつでも止められます</string>
     <string name="nm_welcome_feat_reach">リーチ: ここからコンピューターへ</string>
-    <string name="nm_welcome_feat_reach_sub">Mac、Windows、Linux のマシンに wevvy Desktop を入れて同じアカウントでサインインすれば、スマートフォンから仕事を任せられます</string>
-    <string name="nm_welcome_notice">wevvy は非営利のオープンソースコミュニティプロジェクトです：ずっと無料です。モデルには開発者が負担する無料枠が付き、その後は自分のキーを使います。何も売りません。リレーが保持するものはプライバシーポリシーに書かれ、設定 → データ管理はあなたのものです。</string>
+    <string name="nm_welcome_feat_reach_sub">Mac、Windows、Linux のマシンに ceis Desktop を入れて同じアカウントでサインインすれば、スマートフォンから仕事を任せられます</string>
+    <string name="nm_welcome_notice">ceis は非営利のオープンソースコミュニティプロジェクトです：ずっと無料です。モデルには開発者が負担する無料枠が付き、その後は自分のキーを使います。何も売りません。リレーが保持するものはプライバシーポリシーに書かれ、設定 → データ管理はあなたのものです。</string>
     <string name="nm_welcome_hands_title">スマートフォンを使わせる</string>
     <string name="nm_welcome_hands_sub">2 つの権限で、アプリを開き、タップし、入力を代わりに行えます。各ステップと停止ボタンの付いたカプセルが画面に残ります。ログイン、パスワード、コードは常にあなたのものです。</string>
     <string name="nm_welcome_hands_turn_on">オンにする</string>
     <string name="nm_welcome_skip">今はスキップ</string>
     <string name="nm_welcome_hands_fine_print">これらがなくてもほかの機能はすべて使えます。必要になったら設定 → ハンズにあります。</string>
     <string name="nm_welcome_meet_fine_print">取り消せない操作（削除、送信、支払い）の前には、立ち止まってまずあなたに確認します。</string>
-    <string name="nm_cloud_signin_title">wevvy Cloud で始める</string>
+    <string name="nm_cloud_signin_title">ceis Cloud で始める</string>
     <string name="nm_cloud_signin_subtitle">スマートフォンかメールにコードを送ります。パスワードを設定済みならそれでも。</string>
     <string name="nm_cloud_mode_code">コードで</string>
     <string name="nm_cloud_mode_password">パスワードで</string>
@@ -672,7 +672,7 @@
     <string name="nm_cloud_server_https">自分のネットワークの外にあるサーバーには https を使ってください。プライベートアドレス（10.x、192.168.x、172.16-31.x、localhost、.local や .ts.net の名前）なら http でかまいません。</string>
     <string name="nm_lan_only_https">暗号化なしの http:// は自分のネットワーク内のアドレス（10.x、172.16-31.x、192.168.x、.local 名）にだけ使えます。%1$s には https:// を使ってください。</string>
     <string name="nm_cloud_server_unreachable">%1$s からリレーの応答がありません。アドレスと、リレーが動いているかを確認してください。</string>
-    <string name="nm_cloud_server_default">wevvy Cloud に戻す</string>
+    <string name="nm_cloud_server_default">ceis Cloud に戻す</string>
     <string name="nm_cloud_server_row">サーバー</string>
     <string name="nm_cloud_server_change">変更</string>
     <string name="nm_cloud_server_change_confirm">この端末のキーは今のサーバーのものです。まずここでサインアウトし、サインイン画面から別のサーバーにサインインしてください。</string>
@@ -693,11 +693,11 @@
     <string name="nm_cloud_used_today_open">今日 %1$s</string>
     <string name="nm_cloud_refresh">残高を更新</string>
     <string name="nm_cloud_refreshing">更新中…</string>
-    <string name="nm_cloud_how_it_works">wevvy Cloud はこのアプリでは普通のプロバイダの 1 つです: そのモデルはプロバイダに一覧され、モデルグループで自分のものと混ぜて使えます。</string>
+    <string name="nm_cloud_how_it_works">ceis Cloud はこのアプリでは普通のプロバイダの 1 つです: そのモデルはプロバイダに一覧され、モデルグループで自分のものと混ぜて使えます。</string>
     <string name="nm_cloud_open_provider">プロバイダ設定</string>
     <string name="nm_cloud_sign_out">サインアウト</string>
     <string name="nm_cloud_sign_out_sub">この端末のキーは失効し、Cloud プロバイダは削除されます。無料枠はアカウントに残ります。</string>
-    <string name="nm_cloud_sign_out_confirm">wevvy Cloud プロバイダとそのモデルがこの端末から削除されます。</string>
+    <string name="nm_cloud_sign_out_confirm">ceis Cloud プロバイダとそのモデルがこの端末から削除されます。</string>
     <string name="nm_cloud_row_remaining">残り %1$s</string>
     <string name="nm_cloud_row_sign_in">サインイン</string>
     <string name="nm_cloud_err_bad_identifier">メールアドレスの形式ではないようです。</string>
@@ -715,7 +715,7 @@
     <string name="nm_cloud_err_allowance_abroad">無料枠を使い切りました。友だちを招待する（お互いに +$%1$s）か、設定 → プロバイダで自分のキーを追加してください。OpenRouter が手早い方法です: 1 つのアカウント、1 つのキー、従量課金。</string>
     <string name="nm_cloud_warn_line">無料枠が残りわずかです: $%2$s 中 $%1$s が残っています。友だちを招待する（お互いに +$%3$s）か、自分のキーを追加してください、どちらもアカウントにあります。</string>
     <string name="nm_cloud_err_rate_limited">一度に多くのリクエストが集中しています。少しお待ちください。</string>
-    <string name="nm_cloud_err_unreachable">wevvy Cloud に接続できません。接続を確認してください。</string>
+    <string name="nm_cloud_err_unreachable">ceis Cloud に接続できません。接続を確認してください。</string>
     <string name="nm_cloud_err_generic">問題が起きました。</string>
     <string name="nm_cloud_err_bad_credentials">メールアドレスまたはパスワードが違います。</string>
     <string name="nm_cloud_err_no_password">このアカウントにはまだパスワードがありません。コードでサインインしてから、アカウントで設定してください。</string>
@@ -731,10 +731,10 @@
     <string name="nm_cloud_err_content_rejected">モデル提供元のコンテンツ審査がこのリクエストを通しませんでした。言い方を変えてみてください。続くようなら新しいチャットを始めてください。問題とされた言葉は会話のもっと前にあることもあります。</string>
     <string name="nm_cloud_err_provider_busy">モデル提供元が混み合っています。少ししてからもう一度お試しください。</string>
     <string name="nm_cloud_err_provider_busy_wait">モデル提供元が混み合っています。%1$s 後にもう一度お試しください。</string>
-    <string name="nm_cloud_err_model_not_offered">wevvy Cloud ではそのモデルの提供を終了しました。設定 → wevvy Cloud で別のモデルを選んでください。</string>
-    <string name="nm_cloud_err_relay_down">wevvy Cloud から応答がありませんでした。少ししてからもう一度お試しください。</string>
-    <string name="nm_cloud_err_allowance_paused">このリレーでは無料枠を一時停止しているだけで、使い切ったわけではありません。設定 → wevvy Cloud で自分のキーを追加するか、すでに契約しているプランでサインインしてください。サインイン、デバイス、残りの枠はそのまま残ります。</string>
-    <string name="nm_cloud_err_service_paused">wevvy Cloud は運営者により一時停止中です。サインインとデータは保持されます。後でもう一度お試しください。</string>
+    <string name="nm_cloud_err_model_not_offered">ceis Cloud ではそのモデルの提供を終了しました。設定 → ceis Cloud で別のモデルを選んでください。</string>
+    <string name="nm_cloud_err_relay_down">ceis Cloud から応答がありませんでした。少ししてからもう一度お試しください。</string>
+    <string name="nm_cloud_err_allowance_paused">このリレーでは無料枠を一時停止しているだけで、使い切ったわけではありません。設定 → ceis Cloud で自分のキーを追加するか、すでに契約しているプランでサインインしてください。サインイン、デバイス、残りの枠はそのまま残ります。</string>
+    <string name="nm_cloud_err_service_paused">ceis Cloud は運営者により一時停止中です。サインインとデータは保持されます。後でもう一度お試しください。</string>
     <string name="nm_cloud_err_sync_paused">このリレーでは会話の同期を一時停止しています。保存済みの内容は残り、各デバイスは単独で動き続けます。</string>
     <string name="nm_cloud_err_hub_paused">このリレーではデバイス間の連携を一時停止しています。各デバイスは単独で動き続けます。</string>
     <string name="nm_refusal_relay_says">リレーからの説明: %1$s</string>
@@ -745,7 +745,7 @@
     <!-- 0.1.20: the account page -->
     <string name="nm_cloud_since">%1$s から</string>
     <string name="nm_cloud_account_id">アカウント %1$s…</string>
-    <string name="nm_cloud_tag">Your wevvy tag: %1$s</string>
+    <string name="nm_cloud_tag">Your ceis tag: %1$s</string>
     <string name="nm_cloud_password_set">設定済み</string>
     <string name="nm_cloud_password_unset">未設定</string>
     <string name="nm_cloud_password_title_set">パスワードを設定</string>
@@ -779,7 +779,7 @@
     <string name="nm_cloud_invite_share">リンクを共有</string>
     <string name="nm_cloud_invite_copy">コピー</string>
     <string name="nm_cloud_invite_copied">コピーしました</string>
-    <string name="nm_cloud_invite_share_text">一緒に wevvy を試しませんか：完全オープンソースのパーソナルエージェントで、無料で使えます。私のコード %1$s で登録してください: %2$s</string>
+    <string name="nm_cloud_invite_share_text">一緒に ceis を試しませんか：完全オープンソースのパーソナルエージェントで、無料で使えます。私のコード %1$s で登録してください: %2$s</string>
     <string name="nm_cloud_invite_count">%1$d 人の友だちが参加</string>
     <string name="nm_cloud_invite_earned">招待で $%1$s 追加</string>
     <string name="nm_cloud_invite_have">招待コードをお持ちですか？</string>
@@ -820,8 +820,8 @@
     <string name="nm_cloud_ev_contribute_deleted">データ管理: 保持していた会話を削除しました</string>
     <string name="nm_cloud_ev_contribute_default">データ管理: 新規アカウントではオン</string>
     <string name="nm_data_title">データ管理</string>
-    <string name="nm_data_improve">wevvy の AI モデルの改善に協力する</string>
-    <string name="nm_data_why">オンの間、wevvy Cloud のモデルとのチャットのテキスト（あなたが書いたこと、モデルの答え、モデルが呼ぶことにしたツール）がリレーに保持され、コミュニティ自身のオープンモデルの学習に使われます。メモリや SOUL（システムプロンプト）、ツールが返した内容、画像は含まれず、あなたが誰かと結び付けられることもありません。自分の API キーがリレーを通ることはありません。</string>
+    <string name="nm_data_improve">ceis の AI モデルの改善に協力する</string>
+    <string name="nm_data_why">オンの間、ceis Cloud のモデルとのチャットのテキスト（あなたが書いたこと、モデルの答え、モデルが呼ぶことにしたツール）がリレーに保持され、コミュニティ自身のオープンモデルの学習に使われます。メモリや SOUL（システムプロンプト）、ツールが返した内容、画像は含まれず、あなたが誰かと結び付けられることもありません。自分の API キーがリレーを通ることはありません。</string>
     <string name="nm_data_default_on">新規アカウントではオンで始まります。</string>
     <string name="nm_data_default_off">新規アカウントではオフで始まります。</string>
     <string name="nm_data_kept">これまでに %1$d ターンを保持。</string>
@@ -831,7 +831,7 @@
     <string name="nm_data_delete_sub">スイッチのオン・オフにかかわらず、このアカウントから保持したすべてのターンを削除します。スイッチをオフにしても、ここで削除するまで保持済みのものは残ります。</string>
     <string name="nm_data_delete_confirm">保持している会話がサーバーから削除されます。元に戻せません。</string>
     <string name="nm_data_deleted">%1$d ターンを削除しました。</string>
-    <string name="nm_data_sign_in">使うには wevvy Cloud にサインインしてください。</string>
+    <string name="nm_data_sign_in">使うには ceis Cloud にサインインしてください。</string>
     <string name="nm_data_privacy">プライバシーポリシー</string>
     <string name="nm_data_status_on">オン</string>
     <string name="nm_data_status_off">オフ</string>
@@ -879,7 +879,7 @@
     <!-- 0.1.20: the coding agents on the account's computers -->
     <string name="nm_coding_title">コーディングエージェント</string>
     <string name="nm_coding_intro">コンピューター上の Cursor、Codex、Claude Code: それらのセッション、最後の返信、そしてどれかへのメッセージをここから。それらのものがスマートフォンにコピーされることはありません。</string>
-    <string name="nm_coding_no_computer">コーディングエージェントのあるコンピューターがオンラインではありません。Cursor、Codex、Claude Code がインストールされているコンピューターで、このアカウントでサインインして wevvy を実行してください。</string>
+    <string name="nm_coding_no_computer">コーディングエージェントのあるコンピューターがオンラインではありません。Cursor、Codex、Claude Code がインストールされているコンピューターで、このアカウントでサインインして ceis を実行してください。</string>
     <string name="nm_coding_account_hint">この端末は %1$s としてサインインしています。コンピューターも同じアカウントを使う必要があります。</string>
     <string name="nm_coding_refresh">更新</string>
     <string name="nm_coding_all">すべて</string>
@@ -903,7 +903,7 @@
     <string name="nm_coding_fresh_hint">%1$s との新しい会話です。最初のメッセージでコンピューター上で始まります。</string>
     <string name="nm_coding_no_transcript">このセッションにはまだ読めるものがありません。</string>
 
-    <!-- wevvy: money on the account page, and the community notice -->
+    <!-- ceis: money on the account page, and the community notice -->
     <string name="nm_cloud_spend_member">メンバー · 上限なし</string>
     <string name="nm_cloud_spent_total">累計 $%1$s を使用、開発者が負担</string>
     <string name="nm_cloud_allowance_used">使用 $%1$s</string>
@@ -913,13 +913,13 @@
     <string name="nm_cloud_tokens_line">累計 %1$s トークン · 今日 %2$s</string>
     <string name="nm_cloud_notice_title">無料、オープンソース、非営利</string>
     <string name="nm_cloud_notice_closing">バグを見つけた、機能がほしい、パッチがある？GitHub のリポジトリへどうぞ。</string>
-    <string name="nm_cloud_notice">wevvy は非営利のオープンソースコミュニティプロジェクトです：ずっと無料です。モデルには開発者が負担する無料枠が付き、その後は自分のキーを使います。何も売りません。リレーが保持するものはプライバシーポリシーに書かれ、設定 → データ管理はあなたのものです。アカウントはいつでも削除できます。</string>
+    <string name="nm_cloud_notice">ceis は非営利のオープンソースコミュニティプロジェクトです：ずっと無料です。モデルには開発者が負担する無料枠が付き、その後は自分のキーを使います。何も売りません。リレーが保持するものはプライバシーポリシーに書かれ、設定 → データ管理はあなたのものです。アカウントはいつでも削除できます。</string>
 
-    <!-- wevvy: devices on the hub -->
+    <!-- ceis: devices on the hub -->
     <string name="nm_hub_channel">デバイスからのメッセージ</string>
     <string name="nm_hub_service_channel">デバイスと接続中</string>
-    <string name="nm_hub_service_title">wevvy · デバイスから到達可能</string>
-    <string name="nm_hub_service_connecting">wevvy Cloud に接続しています…</string>
+    <string name="nm_hub_service_title">ceis · デバイスから到達可能</string>
+    <string name="nm_hub_service_connecting">ceis Cloud に接続しています…</string>
     <string name="nm_hub_service_alone">今はほかにオンラインのデバイスがありません</string>
     <plurals name="nm_hub_service_devices">
         <item quantity="other">%d 台のデバイスがオンライン</item>
@@ -939,7 +939,7 @@
     <string name="nm_devices_connected">接続済み</string>
     <string name="nm_devices_connecting">接続中…</string>
     <string name="nm_devices_off">オフ</string>
-    <string name="nm_devices_none">ほかのデバイスはまだありません。コンピューターに wevvy Desktop をインストールして同じアカウントでサインインすると、数秒でここに表示されます。</string>
+    <string name="nm_devices_none">ほかのデバイスはまだありません。コンピューターに ceis Desktop をインストールして同じアカウントでサインインすると、数秒でここに表示されます。</string>
     <string name="nm_devices_online">オンライン</string>
     <string name="nm_devices_offline">オフライン</string>
     <string name="nm_devices_web">ウェブコンソール</string>
@@ -958,7 +958,7 @@
     <string name="nm_hub_err_not_controllable">そのデバイスには用事を頼めません。</string>
     <string name="nm_hub_err_unknown_agent">そのコーディングエージェントはコンピューターにありません。</string>
     <string name="nm_hub_err_no_session">そのセッションはもうコンピューターにありません。</string>
-    <string name="nm_hub_err_unknown_action">コンピューターの wevvy が古く、この操作を知りません。</string>
+    <string name="nm_hub_err_unknown_action">コンピューターの ceis が古く、この操作を知りません。</string>
     <string name="nm_hub_err_bad_key">リレーでサインアウトされました。もう一度サインインしてください。</string>
     <string name="nm_hub_err_generic">コンピューターで実行できませんでした。</string>
     <string name="nm_devices_refused">リレーに拒否されました。もう一度サインインしてください</string>
@@ -977,7 +977,7 @@
     <string name="nm_connectors_sign_in">サインイン</string>
     <string name="nm_connectors_disconnect">接続を解除</string>
     <string name="nm_connectors_docs">このサーバーについてのベンダーのページ</string>
-    <string name="nm_connectors_how_oauth">ブラウザーで %1$s のアカウントにサインインします。wevvy が自分でサービスに登録するので、入力するものはありません。トークンはこの端末に残ります。</string>
+    <string name="nm_connectors_how_oauth">ブラウザーで %1$s のアカウントにサインインします。ceis が自分でサービスに登録するので、入力するものはありません。トークンはこの端末に残ります。</string>
     <string name="nm_connectors_how_key">サービスからのキーが必要です: %1$s。この端末の MCP 項目にだけ保存されます。</string>
     <string name="nm_connectors_how_none">誰でも使えます。サインインは不要です。</string>
     <string name="nm_connectors_how_auto">サーバーに何が必要かをまず確認します: 不要、サインイン、またはキー。</string>
@@ -1021,13 +1021,13 @@
 
     <!-- Conversation sync between the account's devices (contract C7) -->
     <string name="nm_sync_title">デバイス間で会話を同期</string>
-    <string name="nm_sync_caption">チャットのテキストを wevvy Cloud に保持し、すべてのデバイスで同じ会話を表示します。ファイルと画像は作られたデバイスに残ります。</string>
+    <string name="nm_sync_caption">チャットのテキストを ceis Cloud に保持し、すべてのデバイスで同じ会話を表示します。ファイルと画像は作られたデバイスに残ります。</string>
     <string name="nm_sync_sign_in">同期するにはサインイン</string>
     <string name="nm_sync_on_toast">オンにしました。この端末の会話を送信しています。</string>
     <string name="nm_sync_off_toast">オフにしました。保持されていたものは削除されました。</string>
     <string name="nm_sync_delete">同期した会話を削除</string>
-    <string name="nm_sync_delete_sub">会話のテキストを wevvy Cloud から削除します。各デバイスはすでに持っているものを保持し、同期はオンのままです。</string>
-    <string name="nm_sync_delete_confirm">wevvy Cloud に保持されている会話が削除されます。デバイス上のチャットはそのまま残ります。</string>
+    <string name="nm_sync_delete_sub">会話のテキストを ceis Cloud から削除します。各デバイスはすでに持っているものを保持し、同期はオンのままです。</string>
+    <string name="nm_sync_delete_confirm">ceis Cloud に保持されている会話が削除されます。デバイス上のチャットはそのまま残ります。</string>
     <string name="nm_sync_deleted">同期した会話を削除しました。</string>
     <string name="nm_sync_from">%1$s から</string>
     <string name="nm_sync_attachment_note">[添付 %1$s、作られたデバイスに残ります]</string>
@@ -1040,7 +1040,7 @@
     <string name="nm_devices_ask_hint">オンラインのデバイスをタップすると、チャットからそのデバイスに書けます: メッセージは @ とその名前で始まり、そのデバイスが作業します。</string>
     <string name="nm_reach_the_provider">プロバイダー</string>
     <string name="nm_reach_unreachable_title">このネットワークから %1$s に到達できません</string>
-    <string name="nm_reach_unreachable_body">%1$s から応答がありませんでした。この電話からプロバイダーまでの経路の問題で、wevvy 自身のサーバーは関係ありません。</string>
+    <string name="nm_reach_unreachable_body">%1$s から応答がありませんでした。この電話からプロバイダーまでの経路の問題で、ceis 自身のサーバーは関係ありません。</string>
     <string name="nm_reach_region_title">OpenAI はこの地域でサービスを提供していません</string>
     <string name="nm_reach_region_body">リクエストは OpenAI に届きましたが、この接続の発信元ではサービスを提供していないとの応答でした。</string>
     <string name="nm_reach_signed_out_title">ChatGPT のサインインが無効になりました</string>
@@ -1083,7 +1083,7 @@
     <string name="nm_network_test_fail">プロキシ経由で %1$s に到達できませんでした：%2$s</string>
     <string name="nm_network_test_status">HTTP %1$d</string>
     <string name="nm_network_invalid">ホストと 1〜65535 のポートを入力してください。</string>
-    <string name="nm_network_proxy_caption">自分のキーで追加したプロバイダーと ChatGPT プランへのリクエストだけがプロキシを通ります。wevvy Cloud、あなたのコンピューター、ローカルネットワークは通りません。この電話にだけ保存されます。</string>
+    <string name="nm_network_proxy_caption">自分のキーで追加したプロバイダーと ChatGPT プランへのリクエストだけがプロキシを通ります。ceis Cloud、あなたのコンピューター、ローカルネットワークは通りません。この電話にだけ保存されます。</string>
     <string name="nm_network_hosts_caption">プロキシを通るホスト：%1$s</string>
     <string name="nm_ways_title_day">今日の分の無料枠を使い切りました。</string>
     <string name="nm_ways_day_sub">日付が変わると戻ります。下の方法は今すぐ使えます。</string>
@@ -1094,7 +1094,7 @@
     <string name="nm_ways_devices">デバイス</string>
     <!-- 0.1.41 Choice: Settings → Models, the "Use it for" card, one turn on the Cloud -->
     <string name="nm_models_title">モデル</string>
-    <string name="nm_models_intro">どのモデルが何を担当するか。各行を開くと選択画面になり、wevvy Cloud と追加したプロバイダーが、合うモデルとともに並びます。</string>
+    <string name="nm_models_intro">どのモデルが何を担当するか。各行を開くと選択画面になり、ceis Cloud と追加したプロバイダーが、合うモデルとともに並びます。</string>
     <string name="nm_models_chat_title">チャット</string>
     <string name="nm_models_chat_sub">あなたと話すモデル。</string>
     <string name="nm_models_hands_title">画面の操作</string>
@@ -1106,20 +1106,20 @@
     <string name="nm_models_chat_applies">メインチャットと新しいチャットに適用されます。サイドチャットは各自のモデルを保ちます。</string>
     <string name="nm_models_media_more">画像と動画のその他のオプション</string>
     <string name="nm_models_media_more_sub">モデル名を入力する、各モデルがないと何が止まるかを見る、キーで使える動画モデルを再確認する。</string>
-    <string name="nm_models_cloud_switch">wevvy Cloud のモデルを使う</string>
-    <string name="nm_models_cloud_on_sub">wevvy Cloud は下の各行の提供元のひとつで、そこで動いた分は利用枠から差し引かれます。</string>
-    <string name="nm_models_cloud_off_sub">オフにすると「今回は wevvy Cloud を使う」をタップしない限り、wevvy Cloud では何も動きません。同期と端末のためにサインインは保たれます。</string>
-    <string name="nm_models_cloud_off_refused">先に自分のプロバイダーを追加してください。wevvy Cloud をオフにすると、ほかに答えられるものがありません。</string>
+    <string name="nm_models_cloud_switch">ceis Cloud のモデルを使う</string>
+    <string name="nm_models_cloud_on_sub">ceis Cloud は下の各行の提供元のひとつで、そこで動いた分は利用枠から差し引かれます。</string>
+    <string name="nm_models_cloud_off_sub">オフにすると「今回は ceis Cloud を使う」をタップしない限り、ceis Cloud では何も動きません。同期と端末のためにサインインは保たれます。</string>
+    <string name="nm_models_cloud_off_refused">先に自分のプロバイダーを追加してください。ceis Cloud をオフにすると、ほかに答えられるものがありません。</string>
     <string name="nm_chat_no_model">いま答えられるモデルがありません。設定 › モデルで一つ選んでください。</string>
-    <string name="nm_cloud_provider_no_delete">このプロバイダーは wevvy Cloud のアカウントそのものです。モデルを使わないようにするには上のスイッチをオフにし、サインアウトするには「設定 › wevvy Cloud」を開いてください。</string>
+    <string name="nm_cloud_provider_no_delete">このプロバイダーは ceis Cloud のアカウントそのものです。モデルを使わないようにするには上のスイッチをオフにし、サインアウトするには「設定 › ceis Cloud」を開いてください。</string>
     <string name="nm_welcome_own_key">自分の API キーを使う</string>
     <string name="nm_useit_title">何に使うか</string>
-    <string name="nm_useit_body">このキーに任せることを選んでください。残りは引き続き wevvy Cloud が担当します。</string>
+    <string name="nm_useit_body">このキーに任せることを選んでください。残りは引き続き ceis Cloud が担当します。</string>
     <string name="nm_useit_body_signed_out">このキーに任せることを選んでください。</string>
     <string name="nm_useit_use">使う</string>
     <string name="nm_useit_not_now">今はしない</string>
     <string name="nm_useit_footnote">設定 › モデル からいつでも変更できます。</string>
-    <string name="nm_retry_on_cloud">今回は wevvy Cloud を使う</string>
+    <string name="nm_retry_on_cloud">今回は ceis Cloud を使う</string>
     <string name="nm_hands_why_chat_provider">チャットのプロバイダーでのハンズの既定</string>
     <string name="nm_models_auto">自動</string>
     <string name="nm_models_auto_currently">現在は %1$s</string>
@@ -1154,7 +1154,7 @@
     <string name="nm_font_scale_medium">中</string>
     <string name="nm_font_scale_large">大きい</string>
     <string name="nm_font_scale_extra_large">とても大きい</string>
-    <!-- wevvy: the 17-entry settings menu -->
+    <!-- ceis: the 17-entry settings menu -->
     <string name="nm_settings_wallet">ウォレット</string>
     <string name="nm_settings_credentials">安全な認証情報ストア</string>
     <string name="nm_settings_credentials_sub">独自のプロバイダー用に保存されたAPIキー</string>
@@ -1164,24 +1164,24 @@
     <string name="nm_settings_applock">アプリロック</string>
     <string name="nm_settings_default_assistant">既定のアシスタント</string>
     <string name="nm_settings_home_screen">ホーム画面に追加</string>
-    <!-- wevvy: App lock + Add to home screen pages -->
+    <!-- ceis: App lock + Add to home screen pages -->
     <string name="nm_applock_title">App lock</string>
-    <string name="nm_applock_intro">Lock wevvy behind your phone’s own screen lock.</string>
+    <string name="nm_applock_intro">Lock ceis behind your phone’s own screen lock.</string>
     <string name="nm_applock_toggle">App lock</string>
     <string name="nm_applock_on">On</string>
     <string name="nm_applock_off">Off</string>
-    <string name="nm_applock_detail">wevvy asks for your fingerprint, face, PIN, pattern or password when it starts, and again when it has been in the background for more than a minute.</string>
+    <string name="nm_applock_detail">ceis asks for your fingerprint, face, PIN, pattern or password when it starts, and again when it has been in the background for more than a minute.</string>
     <string name="nm_applock_no_lock">This phone has no screen lock set, so App lock cannot work. Add one in your phone’s settings first.</string>
-    <string name="nm_applock_unlock_title">Unlock wevvy</string>
+    <string name="nm_applock_unlock_title">Unlock ceis</string>
     <string name="nm_applock_unlock_subtitle">Confirm it is you to continue.</string>
-    <string name="nm_applock_locked">wevvy is locked</string>
+    <string name="nm_applock_locked">ceis is locked</string>
     <string name="nm_applock_unlock">Unlock</string>
     <string name="nm_applock_failed">That did not work. Try again.</string>
     <string name="nm_homescreen_title">Add to home screen</string>
-    <string name="nm_homescreen_intro">Add a wevvy shortcut to your home screen to open the app with one tap.</string>
+    <string name="nm_homescreen_intro">Add a ceis shortcut to your home screen to open the app with one tap.</string>
     <string name="nm_homescreen_button">Add to home screen</string>
-    <string name="nm_homescreen_unsupported">This launcher does not support pinned shortcuts, so wevvy cannot add one here.</string>
-    <string name="nm_homescreen_requested">wevvy asked your launcher to add the shortcut.</string>
+    <string name="nm_homescreen_unsupported">This launcher does not support pinned shortcuts, so ceis cannot add one here.</string>
+    <string name="nm_homescreen_requested">ceis asked your launcher to add the shortcut.</string>
     <string name="nm_homescreen_failed">The request failed. Try again.</string>
     <string name="nm_settings_redeem">紹介コードを使う</string>
     <string name="nm_redeem_intro">Have a friend’s code? Link it to your account below. Codes are eight letters and digits, and one account can link one code.</string>
@@ -1202,7 +1202,7 @@
     <string name="nm_settings_legal">法的情報</string>
     <string name="nm_settings_your_account">あなたのアカウント</string>
     <string name="nm_settings_data_hub">データコントロール</string>
-    <string name="nm_settings_about_wevvy">wevvyについて</string>
+    <string name="nm_settings_about_ceis">ceisについて</string>
     <string name="nm_status_missing">アプリではまだ利用できません</string>
     <string name="nm_status_messaging_body">メッセージングチャネルはアプリではまだ利用できません。設定にはサーバー側のチャネル連携が必要で、このアプリにはまだ接続されていません。</string>
     <string name="nm_updates_installed">インストール済み</string>
@@ -1212,7 +1212,7 @@
     <string name="nm_updates_up_to_date">最新の状態です</string>
     <string name="nm_updates_download">更新をダウンロード</string>
     <string name="nm_settings_report">問題を報告</string>
-    <!-- wevvy: parity for the sign-in strings -->
+    <!-- ceis: parity for the sign-in strings -->
     <string name="nm_cloud_code_sent">%1$sにコードを送信しました。到着まで約1分かかることがあります。受信トレイにない場合は、迷惑メールやソーシャルフォルダを確認してください。</string>
     <string name="nm_cloud_code_title">登録コードを入力</string>
     <string name="nm_cloud_confirm">確認</string>
@@ -1220,7 +1220,7 @@
     <string name="nm_cloud_identifier_pill">携帯番号またはメール</string>
     <string name="nm_cloud_sms_note">携帯番号を使用すると、SMS通知が届くことがあります。</string>
     <string name="nm_cloud_use_password">代わりにパスワードを使う</string>
-    <string name="nm_cloud_welcome_title">Wevvyへようこそ</string>
+    <string name="nm_cloud_welcome_title">Ceisへようこそ</string>
     <string name="nm_connectors_search">コネクターを検索</string>
     <string name="nm_connectors_tab_available">利用可能</string>
     <string name="nm_connectors_tab_connected">接続済み</string>

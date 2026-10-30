@@ -188,7 +188,7 @@ If chips, pills, or badges are needed, they should mirror the button language bu
 - Don't use tight line spacing or cramped layouts; the system depends on airiness.
 - Don't add decorative gradients, glows, or heavy shadows.
 - Don't over-round cards or inputs; reserve full rounding for interactive pills only.
-## Liquid Glass material (Wevvy addendum, 2026-10-23)
+## Liquid Glass material (Ceis addendum, 2026-10-23)
 
 Liquid Glass is the material layer of this system, specified from Apple's own
 documentation (the Liquid Glass technology overview, the Human Interface
@@ -197,7 +197,7 @@ Glass to custom views; research notes in the project workspace). It is a
 dynamic material, not a blur: it bends light at its edges, reflects the colour
 and light of surrounding content, and reacts to touch in real time.
 
-Where it applies in Wevvy: the functional layer, meaning every element that
+Where it applies in Ceis: the functional layer, meaning every element that
 floats above content or carries a control. The prompt box (composer), the
 floating tab bar, header controls and the persona chip, bottom sheets and
 menus, approval, continue and hand-over cards, the model picker, dialogs, and
@@ -264,15 +264,15 @@ Two deliberate exceptions to the rules above, both required by the template:
 
 - The sent bubble's blue gradient overrides the "no decorative gradients"
   rule in Do's and Don'ts. It is the template's own treatment, not a
-  decoration added by Wevvy, and it applies to sent bubbles only.
+  decoration added by Ceis, and it applies to sent bubbles only.
 - The composer capsule overrides the input component spec (44dp height,
   `rounded.sm`). The composer keeps its capsule form and height, as it did
   under the previous design system.
 
 ## Brand mark
 
-- Official transparent mark: `assets/brand/wevvy-mark.png`.
-- Official white app tile: `assets/brand/wevvy-icon-512.png`.
+- Official transparent mark: `assets/brand/ceis-mark.png`.
+- Official white app tile: `assets/brand/ceis-icon-512.png`.
 - Preserve the supplied mark's geometry, proportions, and colour (#0754E0).
   Do not redraw, stretch, recolour, or substitute it. The mark's blue is a
   brand colour, distinct from the interface primary token above.
@@ -287,9 +287,9 @@ Two deliberate exceptions to the rules above, both required by the template:
 - One utility colour is carried over from the previous system because this
   file does not define it: success green #1F9D55, used only for small status
   confirmations (a finished step, a saved item), never as an accent.
-- Android consumes these tokens through `WevvyTokens.kt` and the Material
+- Android consumes these tokens through `CeisTokens.kt` and the Material
   theme; the web app through `web/src/theme.ts` and its CSS variables; the
   relay console through its CSS variables. A token change lands in design.md
   first, then in each platform layer.
-- This file supersedes the previous Wevvy design system (primary #005ABF,
+- This file supersedes the previous Ceis design system (primary #005ABF,
   ink #111112, optimisticAI scale, spacing 6/14/32/56/120) as of 2026-10-23.

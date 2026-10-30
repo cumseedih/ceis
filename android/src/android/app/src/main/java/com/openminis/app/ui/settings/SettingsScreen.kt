@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openminis.app.R
-import io.github.wevvy.cloud.WevvyCloud
+import io.github.ceis.cloud.CeisCloud
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,19 +55,19 @@ fun SettingsScreen(
     onHelpClick: () -> Unit,
     onAppUpdatesClick: () -> Unit,
     onLegalInfoClick: () -> Unit,
-    onUpgradeClick: () -> Unit = {}, // wevvy: the usage card's Upgrade; the account page shows the real ways to get more allowance
+    onUpgradeClick: () -> Unit = {}, // ceis: the usage card's Upgrade; the account page shows the real ways to get more allowance
 ) {
     val context = LocalContext.current
-    // wevvy: the 17-entry main settings menu. Every entry opens a real page, a hub of the
+    // ceis: the 17-entry main settings menu. Every entry opens a real page, a hub of the
     // mapped existing screens, or an honest not-available page, never a placeholder.
     // Cards: [1-6], [7-11], [12] alone, [13-17]. Dividers sit only between rows inside a
     // card, never above the first or below the last row. The measured row geometry
     // (64dp rows, 26dp visible glyphs, 61dp inset dividers, thin 7x11dp chevrons) is untouched.
     Scaffold(
-        containerColor = io.github.wevvy.ui.home.MuseTones.fill,
+        containerColor = io.github.ceis.ui.home.MuseTones.fill,
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar(
-                // wevvy: 26sp, bumped after the user's on-device review said the
+            io.github.ceis.ui.muse.MuseTopAppBar(
+                // ceis: 26sp, bumped after the user's on-device review said the
                 // calibrated 24sp still read small (the reference's title cap is 19px).
                 titleSize = 26.sp,
                 title = { Text(stringResource(R.string.settings_title)) },
@@ -90,145 +90,145 @@ fun SettingsScreen(
         ) {
             Spacer(Modifier.height(8.dp))
 
-            // wevvy: the allowance card, above the Connectors card like the reference's
+            // ceis: the allowance card, above the Connectors card like the reference's
             // plan card. Built only from real account fields; absent when signed out,
             // following the account footer's precedent.
-            val usageAccount = WevvyCloud.account(context)
-            if (usageAccount != null && WevvyCloud.isSignedIn(context)) {
+            val usageAccount = CeisCloud.account(context)
+            if (usageAccount != null && CeisCloud.isSignedIn(context)) {
                 SettingsUsageCard(account = usageAccount, onUpgradeClick = onUpgradeClick)
-                io.github.wevvy.ui.muse.MuseGap(16.dp)
+                io.github.ceis.ui.muse.MuseGap(16.dp)
             }
 
-            // wevvy: card 1: entries 1-6.
-            io.github.wevvy.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
+            // ceis: card 1: entries 1-6.
+            io.github.ceis.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
                 SettingsEntry(
                     title = stringResource(R.string.nm_connectors_title),
-                    iconRes = R.drawable.nm_settings_connectors, // wevvy: connected nodes for the connectors
+                    iconRes = R.drawable.nm_settings_connectors, // ceis: connected nodes for the connectors
                     onClick = onConnectorsClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
-                // wevvy: Wallet is the real cloud account balance, never a hardcoded figure.
-                val cloudAccount = WevvyCloud.account(context)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                // ceis: Wallet is the real cloud account balance, never a hardcoded figure.
+                val cloudAccount = CeisCloud.account(context)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_wallet),
                     iconRes = R.drawable.nm_settings_wallet,
                     value = when {
-                        cloudAccount == null || !WevvyCloud.isSignedIn(context) -> null
-                        cloudAccount.pricesInMoney && cloudAccount.limited -> "$" + io.github.wevvy.ui.cloud.money(cloudAccount.toUsd(cloudAccount.leftCny))
+                        cloudAccount == null || !CeisCloud.isSignedIn(context) -> null
+                        cloudAccount.pricesInMoney && cloudAccount.limited -> "$" + io.github.ceis.ui.cloud.money(cloudAccount.toUsd(cloudAccount.leftCny))
                         else -> null
                     },
                     onClick = onWalletClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
-                // wevvy: the secure store is the app's own-key credential workflows (the provider add/view/edit/delete screens where the keys are kept)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                // ceis: the secure store is the app's own-key credential workflows (the provider add/view/edit/delete screens where the keys are kept)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_credentials),
-                    iconRes = R.drawable.nm_settings_secure_credentials_store, // wevvy: a key for the credentials store
+                    iconRes = R.drawable.nm_settings_secure_credentials_store, // ceis: a key for the credentials store
                     onClick = onCredentialsClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.settings_section_permissions),
-                    iconRes = R.drawable.nm_settings_permissions, // wevvy: shield-with-check for permissions
+                    iconRes = R.drawable.nm_settings_permissions, // ceis: shield-with-check for permissions
                     onClick = onPermissionsClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_messaging),
                     iconRes = R.drawable.nm_settings_messaging_channels,
                     onClick = onMessagingClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_devices),
                     iconRes = R.drawable.nm_settings_devices,
                     onClick = onDevicesClick,
                 )
             }
-            io.github.wevvy.ui.muse.MuseGap(16.dp)
+            io.github.ceis.ui.muse.MuseGap(16.dp)
 
-            // wevvy: card 2: entries 7-11.
-            io.github.wevvy.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
+            // ceis: card 2: entries 7-11.
+            io.github.ceis.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_notifications),
                     iconRes = R.drawable.nm_settings_notifications,
                     onClick = onNotificationsClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.settings_section_appearance),
                     iconRes = R.drawable.nm_settings_appearance,
                     onClick = onAppearanceClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_applock),
-                    iconRes = R.drawable.nm_settings_app_lock, // wevvy: house silhouette closest to the reference's app-lock glyph
-                    value = stringResource(if (io.github.wevvy.guard.AppLock.enabled(context)) R.string.nm_applock_on else R.string.nm_applock_off),
+                    iconRes = R.drawable.nm_settings_app_lock, // ceis: house silhouette closest to the reference's app-lock glyph
+                    value = stringResource(if (io.github.ceis.guard.AppLock.enabled(context)) R.string.nm_applock_on else R.string.nm_applock_off),
                     onClick = onAppLockClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_default_assistant),
                     iconRes = R.drawable.nm_settings_default_assistant,
                     onClick = onDefaultAssistantClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_home_screen),
                     iconRes = R.drawable.nm_settings_add_to_home_screen,
                     onClick = onHomeScreenClick,
                 )
             }
-            io.github.wevvy.ui.muse.MuseGap(16.dp)
+            io.github.ceis.ui.muse.MuseGap(16.dp)
 
-            // wevvy: card 3: entry 12 alone.
-            io.github.wevvy.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
+            // ceis: card 3: entry 12 alone.
+            io.github.ceis.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_redeem),
                     iconRes = R.drawable.nm_settings_redeem_referral_code,
                     onClick = onRedeemClick,
                 )
             }
-            io.github.wevvy.ui.muse.MuseGap(16.dp)
+            io.github.ceis.ui.muse.MuseGap(16.dp)
 
-            // wevvy: card 4: entries 13-17 in one card of five.
-            io.github.wevvy.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
+            // ceis: card 4: entries 13-17 in one card of five.
+            io.github.ceis.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
                 SettingsEntry(
                     title = stringResource(R.string.nm_data_title),
                     iconRes = R.drawable.nm_settings_data_controls,
                     onClick = onDataControlsClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_report),
                     iconRes = R.drawable.nm_settings_report_an_issue,
                     onClick = onReportIssueClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_help),
                     iconRes = R.drawable.nm_settings_help_and_support,
                     onClick = onHelpClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_updates),
                     iconRes = R.drawable.nm_settings_app_updates,
                     onClick = onAppUpdatesClick,
                 )
-                io.github.wevvy.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
+                io.github.ceis.ui.muse.MuseRowDivider(inset = 61.dp, color = SettingsDivider)
                 SettingsEntry(
                     title = stringResource(R.string.nm_settings_legal),
-                    iconRes = R.drawable.nm_settings_legal_info, // wevvy: shield-with-checkmark for legal info
+                    iconRes = R.drawable.nm_settings_legal_info, // ceis: shield-with-checkmark for legal info
                     onClick = onLegalInfoClick,
                 )
             }
 
-            // wevvy: the account footer, in the reference's separation: the real signed-in
+            // ceis: the account footer, in the reference's separation: the real signed-in
             // account's tag as presentation only. Nothing is invented; when signed out the
             // footer is simply absent.
-            val accountTag = WevvyCloud.account(context)?.takeIf { WevvyCloud.isSignedIn(context) }?.tag
+            val accountTag = CeisCloud.account(context)?.takeIf { CeisCloud.isSignedIn(context) }?.tag
             if (accountTag != null) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
@@ -261,24 +261,24 @@ private fun SettingsEntry(
     value: String? = null,
     onClick: () -> Unit,
 ) {
-    // wevvy: the supplied Settings icon set, drawn as-is. onSurface tint keeps the
+    // ceis: the supplied Settings icon set, drawn as-is. onSurface tint keeps the
     // single-colour glyphs legible in both themes, exactly like the previous vectors.
-    // wevvy: phone-calibrated geometry (1.5 px/dp at the 720px screenshot scale):
+    // ceis: phone-calibrated geometry (1.5 px/dp at the 720px screenshot scale):
     // 64dp rows, 20dp icon slot, 22/16dp asymmetric padding, 19dp gutter, 61dp
     // divider inset, 22/18sp text, 7x11dp chevron. The glyph draws centered in the
     // slot at its own visible size (see settingsGlyphSize); the slot keeps the label
     // column aligned across rows.
-    io.github.wevvy.ui.muse.MuseRow(
+    io.github.ceis.ui.muse.MuseRow(
         rowHeight = 64.dp, horizontalPadding = 16.dp, verticalPadding = 0.dp,
         startPadding = 22.dp, endPadding = 16.dp,
         iconSize = 20.dp, iconGlyphSize = settingsGlyphSize(iconRes), gutter = 19.dp, thinChevron = true,
-        chevronSpec = io.github.wevvy.ui.muse.SettingsChevronSpec,
+        chevronSpec = io.github.ceis.ui.muse.SettingsChevronSpec,
         labelSize = 22.sp, valueSize = 18.sp,
         title = title, iconPainter = painterResource(id = iconRes), value = value, onClick = onClick,
     )
 }
 
-// wevvy: the supplied PNGs carry transparent padding, so a fixed box renders a smaller
+// ceis: the supplied PNGs carry transparent padding, so a fixed box renders a smaller
 // glyph. Each size below is 26dp of visible glyph (the user's call after on-device
 // review; his spec range was 26-30dp) divided by the icon's own alpha content fraction,
 // measured from the PNGs; the PNGs are unmodified.
@@ -312,10 +312,10 @@ private fun settingsGlyphSize(@DrawableRes iconRes: Int): androidx.compose.ui.un
  */
 @Composable
 private fun SettingsUsageCard(
-    account: WevvyCloud.Account,
+    account: CeisCloud.Account,
     onUpgradeClick: () -> Unit,
 ) {
-    // wevvy: section 1, the pool. Money-priced relays measure it in dollars, older
+    // ceis: section 1, the pool. Money-priced relays measure it in dollars, older
     // token relays in tokens; an unlimited account has no pool to show.
     val money = account.pricesInMoney
     val tokenLimited = !money && account.granted > 0
@@ -335,7 +335,7 @@ private fun SettingsUsageCard(
     } else {
         stringResource(R.string.nm_settings_allowance_no_ceiling)
     }
-    // wevvy: section 2, today's share. The relay enforces it in tokens and reports it
+    // ceis: section 2, today's share. The relay enforces it in tokens and reports it
     // whether or not the pool is money-priced; members have no daily cap.
     val showToday = account.dailyCap > 0 && !account.unlimited
     val todayFraction = if (showToday) {
@@ -343,7 +343,7 @@ private fun SettingsUsageCard(
     } else 0f
     val todayLeft = (account.dailyCap - account.usedToday).coerceAtLeast(0)
 
-    io.github.wevvy.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
+    io.github.ceis.ui.muse.MuseCard(inset = 16.dp, radius = 20.dp) {
         Column(Modifier.padding(horizontal = 16.dp)) {
             Spacer(Modifier.height(16.dp))
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -400,12 +400,12 @@ private fun SettingsUsageCard(
                 UsageBar(fraction = todayFraction)
             }
             Spacer(Modifier.height(18.dp))
-            io.github.wevvy.ui.muse.MuseRowDivider(inset = 0.dp, color = SettingsDivider)
+            io.github.ceis.ui.muse.MuseRowDivider(inset = 0.dp, color = SettingsDivider)
             Spacer(Modifier.height(12.dp))
             Text(
                 text = stringResource(R.string.nm_settings_upgrade),
                 fontSize = 16.sp,
-                color = io.github.wevvy.ui.home.MuseTones.action,
+                color = io.github.ceis.ui.home.MuseTones.action,
                 modifier = Modifier.clickable(onClick = onUpgradeClick),
             )
             Spacer(Modifier.height(16.dp))
@@ -413,7 +413,7 @@ private fun SettingsUsageCard(
     }
 }
 
-// wevvy: card tokens measured against the Muse reference (720px, 1.5 px/dp):
+// ceis: card tokens measured against the Muse reference (720px, 1.5 px/dp):
 // 9px bar = 6dp, fully rounded; track #E7E7E7, fill #0463D1 (we keep our brand
 // #005ABF); title ~13sp Medium, small text ~10-12sp, hairline divider directly
 // above the left-aligned Upgrade text action, 16dp card padding.
@@ -425,23 +425,23 @@ private fun UsageBar(fraction: Float) {
             .fillMaxWidth()
             .height(6.dp)
             .clip(androidx.compose.foundation.shape.RoundedCornerShape(6.dp))
-            .background(io.github.wevvy.ui.theme.WevvyColors.border),
+            .background(io.github.ceis.ui.theme.CeisColors.border),
     ) {
         androidx.compose.foundation.layout.Box(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(fraction.coerceIn(0f, 1f))
-                .background(io.github.wevvy.ui.theme.WevvyColors.primary),
+                .background(io.github.ceis.ui.theme.CeisColors.primary),
         )
     }
 }
 
-// wevvy: the Settings page's measured geometry against the Muse reference, calibrated
+// ceis: the Settings page's measured geometry against the Muse reference, calibrated
 // on the user's phone (1.5 px/dp at the 720px screenshot scale): 64dp rows, 20dp glyphs,
 // 16dp card inset, 20dp radius, 16dp gaps, 22/16dp row padding, 19dp gutter, 61dp divider
 // inset, 26sp title, 22/18sp row text, 7x11dp chevron. Keep in sync with MuseChrome's
 // pixel-fit params.
-private val SettingsDivider = io.github.wevvy.ui.theme.WevvyColors.border
+private val SettingsDivider = io.github.ceis.ui.theme.CeisColors.border
 
 /**
  * Build the GitHub Issues "new bug report" URL with the body pre-filled
@@ -460,7 +460,7 @@ private val SettingsDivider = io.github.wevvy.ui.theme.WevvyColors.border
  * Details (fenced code block), Expected Behavior, and Additional
  * Information.
  */
-// wevvy: the repository uses an issue form (app_bug_report.yml), which
+// ceis: the repository uses an issue form (app_bug_report.yml), which
 // takes its fields as query parameters; `body` is ignored by forms.
 fun buildBugReportUrl(): String {
     val osVersion = android.os.Build.VERSION.RELEASE
@@ -486,7 +486,7 @@ fun buildBugReportUrl(): String {
         |-------|-------|
         | Platform | Android |
         | OS Version | Android $osVersion (API $sdkInt) |
-        | wevvy Version | $versionName (build $versionCode) |
+        | ceis Version | $versionName (build $versionCode) |
         | Device Model | $manufacturer $model |
 
         ## 🔁 Steps to Reproduce
@@ -515,7 +515,7 @@ fun buildBugReportUrl(): String {
     // since URLEncoder turns spaces into '+' which GitHub also accepts but
     // the spec calls for the literal "[Bug] " form.
     val title = java.net.URLEncoder.encode("[Bug] ", "UTF-8")
-    // wevvy: the repository uses an issue form (app_bug_report.yml), which
+    // ceis: the repository uses an issue form (app_bug_report.yml), which
     // takes its fields as query parameters; `body` is ignored by forms.
     val version = java.net.URLEncoder.encode("$versionName ($versionCode)", "UTF-8")
     val device = java.net.URLEncoder.encode("Android $osVersion (API $sdkInt), $manufacturer $model", "UTF-8")

@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from wevvy_cloud import providers as pv
+from ceis_cloud import providers as pv
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = "https://wevvy.in/own-key"
@@ -15,7 +15,7 @@ DOCS = "https://wevvy.in/own-key"
 def test_catalogue_copy_is_the_runtimes():
     """`node scripts/providers-json.mjs` writes the relay's copy; it must be byte-identical
     to the source of truth (CI runs `--check`, this test says the same from Python)."""
-    source = ROOT / "wevvy" / "llm" / "providers.json"
+    source = ROOT / "ceis" / "llm" / "providers.json"
     if not source.exists():  # the relay installed on its own, without the monorepo
         return
     assert pv.CATALOGUE.read_bytes() == source.read_bytes()

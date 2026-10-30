@@ -31,7 +31,7 @@ describe("the model slots (the Models contract)", () => {
   });
 
   it("writes a row's value as provider · model", () => {
-    expect(slotValue(slot({ effective_provider: CLOUD_ID, effective_model: "qwen-image-3.0", effective_source: "cloud" }), "en")).toBe("wevvy Cloud");
+    expect(slotValue(slot({ effective_provider: CLOUD_ID, effective_model: "qwen-image-3.0", effective_source: "cloud" }), "en")).toBe("ceis Cloud");
     expect(slotValue(slot({ effective_provider: "zhipu", effective_model: "glm-image" }), "en")).toBe("Zhipu GLM · glm-image");
     expect(slotValue(slot({ effective_provider: "custom", effective_model: "flux-2", base_url: "https://images.example.com/v1" }), "en")).toBe(
       "images.example.com · flux-2",
@@ -68,9 +68,9 @@ describe("the model slots (the Models contract)", () => {
     expect(handsValue({ ...gui, effective_model: "qwen3.8-27b", effective_source: "chat" }, bailian, "en")).toBe("Alibaba Cloud Bailian · qwen3.8-27b");
     // the account's, while the chat model is elsewhere or is the relay
     const deepseek = { provider: "openai", base_url: "https://api.deepseek.com", cloud: false };
-    expect(handsValue({ ...gui, effective_model: "qwen3.8-27b", effective_source: "cloud" }, deepseek, "en")).toBe("wevvy Cloud");
+    expect(handsValue({ ...gui, effective_model: "qwen3.8-27b", effective_source: "cloud" }, deepseek, "en")).toBe("ceis Cloud");
     expect(handsValue({ ...gui, effective_model: "qwen3.8-27b", effective_source: "cloud" }, { provider: "openai", base_url: "https://relay.example/v1", cloud: true }, "en")).toBe(
-      "wevvy Cloud",
+      "ceis Cloud",
     );
     // a model picked by hand: on the chat endpoint, on a catalogue provider of its own, on an unlisted host
     expect(handsValue({ ...gui, effective_model: "glm-4.6v", effective_source: "gui" }, { provider: "zhipu", base_url: "", cloud: false }, "en")).toBe("Zhipu GLM · glm-4.6v");

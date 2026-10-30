@@ -1,11 +1,11 @@
-"""One call to wevvy Cloud's relay, the way the gateway makes them.
+"""One call to ceis Cloud's relay, the way the gateway makes them.
 
 Shared by the kept Muses (accounts.py) and the visitors' sign-in (visitors.py): the
 visitor's address goes along as ``X-Forwarded-For`` — and, when given, the browser string as
 ``User-Agent`` — so the relay's own rate limits and records see the person and not the
 gateway, and the relay's refusals come back with their own code and message, for the page to
 show in the visitor's language. For the header to arrive as sent, the gateway must reach the
-relay directly (``WEB_RELAY_URL=http://wevvy-relay:8787`` on the shared Docker network):
+relay directly (``WEB_RELAY_URL=http://ceis-relay:8787`` on the shared Docker network):
 Caddy in front of the public name replaces ``X-Forwarded-For`` from a client it does not
 trust with that client's own address, and the relay would see the gateway.
 """
@@ -42,14 +42,14 @@ async def relay_request(
         r = await http.request(method, f"{base_url}{path}", json=body, headers=headers)
     except httpx.HTTPError as exc:
         raise Refused(
-            502, "relay_unreachable", "wevvy Cloud is not reachable right now."
+            502, "relay_unreachable", "ceis Cloud is not reachable right now."
         ) from exc
     if r.status_code >= 400:
         code, message = error_fields(r)
         raise RelayError(
             r.status_code if r.status_code < 500 else 502,
             code or "relay_error",
-            message or "wevvy Cloud refused the request.",
+            message or "ceis Cloud refused the request.",
         )
     if r.status_code == 204 or not r.content:
         return {}

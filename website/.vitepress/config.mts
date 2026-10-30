@@ -1,4 +1,4 @@
-// The wevvy docs site: VitePress over ../docs. Nothing is copied — the pages under
+// The ceis docs site: VitePress over ../docs. Nothing is copied — the pages under
 // docs/ are the source, and this file only says how they are arranged and where the
 // links that leave docs/ go.
 //
@@ -6,7 +6,7 @@
 //   npm run docs:build    # .vitepress/dist, also the dead-link check
 //   DOCS_BASE=/docs/ npm run docs:build   # for wevvy.in/docs/
 //
-// DOCS_BASE defaults to /wevvy/docs/ — the project pages at nano-muse.github.io keep
+// DOCS_BASE defaults to /ceis/docs/ — the project pages at nano-muse.github.io keep
 // site/index.html (the redirect to wevvy.in) and site/legacy.html at the root, and the
 // docs sit beside them under /docs/.
 import { posix } from 'node:path'
@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, type DefaultTheme } from 'vitepress'
 
 const REPO = 'https://github.com/nano-muse/nanoMuse'
-const base = process.env.DOCS_BASE ?? '/wevvy/docs/'
+const base = process.env.DOCS_BASE ?? '/ceis/docs/'
 
 // Directories under docs/ that are not pages of the site: task briefs and traces are
 // working notes, the archive is the Python line's record, the release notes and the
@@ -28,10 +28,10 @@ const notPages = ['release-notes-template.md', 'launch-checklist.md', 'calls.md'
 // with the same file names. A page link (`android.md`) stays inside the reader's language;
 // everything else — images, the archive, the repository — is shared and lives one level up
 // from docs/zh/, which is why the Chinese pages write `../screenshots/x.png` and
-// `../../wevvy/config.py`.
+// `../../ceis/config.py`.
 const localeDirs = ['zh/']
 
-/** `../wevvy/config.py` from docs/cloud.md → a GitHub URL; a docs page stays a docs link. */
+/** `../ceis/config.py` from docs/cloud.md → a GitHub URL; a docs page stays a docs link. */
 function githubFor(href: string, fromPage: string): string | undefined {
   if (/^([a-z]+:|\/\/|#)/i.test(href)) return undefined // absolute, mailto:, anchors
   const [path, rest = ''] = href.split(/(?=[#?])/, 2)
@@ -99,10 +99,10 @@ const useIt: DefaultTheme.SidebarItem[] = [
 ]
 
 const runIt: DefaultTheme.SidebarItem[] = [
-  { text: 'Run wevvy yourself', link: '/self-hosting' },
+  { text: 'Run ceis yourself', link: '/self-hosting' },
   { text: 'The runtime in Docker', link: '/deployment' },
   { text: 'Configuration', link: '/configuration' },
-  { text: 'wevvy Cloud, the relay', link: '/cloud' },
+  { text: 'ceis Cloud, the relay', link: '/cloud' },
 ]
 
 const understandIt: DefaultTheme.SidebarItem[] = [
@@ -112,7 +112,7 @@ const understandIt: DefaultTheme.SidebarItem[] = [
   { text: 'What stays on a phone, and whose it is', link: '/sync' },
   { text: 'The hub', link: '/hub' },
   { text: 'Design: how it looks, and why', link: '/design' },
-  { text: 'wevvy on DeepSeek Harness', link: '/harness' },
+  { text: 'ceis on DeepSeek Harness', link: '/harness' },
   { text: 'The phone’s own capabilities', link: '/device' },
   { text: 'The app, as designed', link: '/app' },
   { text: 'The local runtime on the phone', link: '/local-runtime' },
@@ -157,10 +157,10 @@ const zhUseIt: DefaultTheme.SidebarItem[] = [
 ]
 
 const zhRunIt: DefaultTheme.SidebarItem[] = [
-  { text: '自己运行 wevvy', link: '/zh/self-hosting' },
+  { text: '自己运行 ceis', link: '/zh/self-hosting' },
   { text: 'Docker 里的运行时', link: '/zh/deployment' },
   { text: '配置', link: '/zh/configuration' },
-  { text: 'wevvy Cloud：中继', link: '/zh/cloud' },
+  { text: 'ceis Cloud：中继', link: '/zh/cloud' },
 ]
 
 const zhUnderstandIt: DefaultTheme.SidebarItem[] = [
@@ -170,7 +170,7 @@ const zhUnderstandIt: DefaultTheme.SidebarItem[] = [
   { text: '什么留在手机上，归谁', link: '/zh/sync' },
   { text: 'hub：设备互联', link: '/zh/hub' },
   { text: '设计：长什么样，为什么', link: '/zh/design' },
-  { text: 'DeepSeek Harness 上的 wevvy', link: '/zh/harness' },
+  { text: 'DeepSeek Harness 上的 ceis', link: '/zh/harness' },
   { text: '手机自身的能力', link: '/zh/device' },
   { text: '手机 App 的设计', link: '/zh/app' },
   { text: '手机上的本地运行时', link: '/zh/local-runtime' },
@@ -188,7 +188,7 @@ const zhContribute: DefaultTheme.SidebarItem[] = [
 ]
 
 export default defineConfig({
-  title: 'wevvy',
+  title: 'ceis',
   description: 'An open-source personal agent for every device you own.',
   lang: 'en',
   base,
@@ -204,11 +204,11 @@ export default defineConfig({
       label: 'English',
       lang: 'en',
       themeConfig: {
-        siteTitle: 'wevvy docs',
+        siteTitle: 'ceis docs',
         // Home and Try it are the project site and the demo, the same two the homepage's bar has.
         nav: [
           { text: 'Home', link: 'https://wevvy.in/' },
-          { text: 'Try it', link: 'https://demo.wevvy.dev/' },
+          { text: 'Try it', link: 'https://demo.ceis.dev/' },
           { text: 'Get started', link: '/android' },
           { text: 'Run it yourself', link: '/self-hosting' },
           { text: 'Roadmap', link: '/roadmap' },
@@ -223,8 +223,8 @@ export default defineConfig({
         outline: { level: [2, 3], label: 'On this page' },
         editLink: { pattern: `${REPO}/edit/main/docs/:path`, text: 'Edit this page on GitHub' },
         footer: {
-          message: 'GPL-3.0-or-later. wevvy is an independent community project, not affiliated with Meta.',
-          copyright: 'The wevvy contributors',
+          message: 'GPL-3.0-or-later. ceis is an independent community project, not affiliated with Meta.',
+          copyright: 'The ceis contributors',
         },
         langMenuLabel: 'Change language',
       },
@@ -233,13 +233,13 @@ export default defineConfig({
       label: '简体中文',
       lang: 'zh-Hans',
       link: '/zh/',
-      title: 'wevvy',
+      title: 'ceis',
       description: '开源的个人智能体，面向你的每一台设备。',
       themeConfig: {
-        siteTitle: 'wevvy 文档',
+        siteTitle: 'ceis 文档',
         nav: [
           { text: '首页', link: 'https://wevvy.in/' },
-          { text: '试一试', link: 'https://demo.wevvy.dev/' },
+          { text: '试一试', link: 'https://demo.ceis.dev/' },
           { text: '上手', link: '/zh/android' },
           { text: '自己部署', link: '/zh/self-hosting' },
           { text: '路线图', link: '/zh/roadmap' },
@@ -270,8 +270,8 @@ export default defineConfig({
           code: '404',
         },
         footer: {
-          message: 'GPL-3.0-or-later。wevvy 是独立的社区项目，与 Meta 无关。',
-          copyright: 'wevvy 贡献者',
+          message: 'GPL-3.0-or-later。ceis 是独立的社区项目，与 Meta 无关。',
+          copyright: 'ceis 贡献者',
         },
       },
     },
@@ -284,7 +284,7 @@ export default defineConfig({
     resolve: { alias: [{ find: /^vue(\/.*)?$/, replacement: `${fileURLToPath(new URL('../node_modules/vue', import.meta.url))}$1` }] },
   },
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: `${base}wevvy-icon.png` }],
+    ['link', { rel: 'icon', type: 'image/png', href: `${base}ceis-icon.png` }],
   ],
   // Internal links are checked at build time. The link_open rule below turns every link that
   // leaves docs/ into a GitHub URL, so nothing should remain here; add a pattern only for a
@@ -332,7 +332,7 @@ export default defineConfig({
   // What both languages share. GitHub is not in socialLinks: the nav shows it with the
   // star count instead (theme/GitHubStars.vue, the `nav-bar-content-after` slot).
   themeConfig: {
-    logo: '/wevvy-icon.png',
+    logo: '/ceis-icon.png',
     socialLinks: [
       { icon: 'discord', link: 'https://discord.gg/bkTySmm28X' },
     ],

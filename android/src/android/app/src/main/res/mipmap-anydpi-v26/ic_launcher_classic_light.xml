@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- wevvy: generated from assets/brand/wevvy-icon-512.png + wevvy-mark.png (PIL). -->
+<!-- ceis: generated from assets/brand/ceis-icon-512.png + ceis-mark.png (PIL). -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_bg_force_light" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground_wevvy" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground_ceis" />
     <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
 </adaptive-icon>

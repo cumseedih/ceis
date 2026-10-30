@@ -11,10 +11,10 @@ free pool work is [cloud.md](cloud.md); a relay of your own is [self-hosting.md]
 
 Install the app ([android.md](android.md), [ios.md](ios.md)). The first screen is the
 account: a phone number or an e-mail address and a code, or a password once you have set
-one. That single sign-in sets up the wevvy Cloud provider, the four rows of *Settings →
+one. That single sign-in sets up the ceis Cloud provider, the four rows of *Settings →
 Models* and the connection to the other devices.
 
-*Settings → wevvy Cloud → Devices* is where the phone's side lives: *Reachable from your
+*Settings → ceis Cloud → Devices* is where the phone's side lives: *Reachable from your
 devices* keeps the phone connected so the others can ask it for things (a quiet
 notification shows while it is on); *Let other devices operate this phone* decides whether
 they may run a shell command, read files, take a screenshot or hand over a task here, and
@@ -27,7 +27,7 @@ shell, files and the screen are not available on iOS.
 
 ## 2. The computer
 
-Install wevvy Desktop from the [latest release](https://github.com/nano-muse/nanoMuse/releases/latest)
+Install ceis Desktop from the [latest release](https://github.com/nano-muse/nanoMuse/releases/latest)
 ([desktop.md](desktop.md): one installer per platform, the runtime for the hands inside)
 and sign in with the same account. Within seconds the computer is in the phone's Devices
 list and the phone in the desktop's *Devices* page in the rail. Name the computer in
@@ -37,7 +37,7 @@ The computer asks before another device operates it: a card on its screen, *once
 *always for that device*. *Remote control without asking* in *Settings → Devices* turns the
 card off for every device of the account.
 
-A computer that runs only the Python runtime (`wevvy serve`, with its web app signed in
+A computer that runs only the Python runtime (`ceis serve`, with its web app signed in
 to the same account) joins the same way ([app.md](app.md), [cli.md](cli.md)).
 
 ## 3. The web console
@@ -79,7 +79,7 @@ each one's *Settings → Models* is its own.
 ## 7. Your own relay
 
 [self-hosting.md](self-hosting.md) runs the same relay on a small VPS. The phones take its
-address under *Use a different server* on the sign-in screen; wevvy Desktop takes it in
+address under *Use a different server* on the sign-in screen; ceis Desktop takes it in
 the desktop profile's `cordis.patch.yml`; the console is whatever relay serves it at `/app/`.
 Every device of one account must point at the same relay, since the devices and the
 conversations live there.

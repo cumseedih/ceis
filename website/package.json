@@ -1,10 +1,10 @@
 {
-  "name": "wevvy-docs",
+  "name": "ceis-docs",
   "private": true,
   "version": "0.0.0",
   "license": "GPL-3.0-or-later",
   "type": "module",
-  "description": "The wevvy docs site: VitePress over ../docs",
+  "description": "The ceis docs site: VitePress over ../docs",
   "scripts": {
     "docs:dev": "vitepress dev --host 127.0.0.1 --port 5173",
     "docs:build": "vitepress build",

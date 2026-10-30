@@ -18,9 +18,9 @@ Linux 上的代理（**L**）负责其余一切并统一发布；你负责 **只
 
 ## 0. 项目、现状、分工
 
-**wevvy** 是一个开源（GPL-3.0-or-later）的个人 agent：手机 app（Android 和 iOS，基于上游
-OpenMinis 子树 `android/`）、桌面 app（`harness/dsh-wevvy/` 是 DeepSeek Harness 插件，
-`harness/desktop/` 是 Electron 壳，壳里带 Python 运行时给「手」用）、Python 运行时 `wevvy/`、
+**ceis** 是一个开源（GPL-3.0-or-later）的个人 agent：手机 app（Android 和 iOS，基于上游
+OpenMinis 子树 `android/`）、桌面 app（`harness/dsh-ceis/` 是 DeepSeek Harness 插件，
+`harness/desktop/` 是 Electron 壳，壳里带 Python 运行时给「手」用）、Python 运行时 `ceis/`、
 Web 控制台 `web/`、中继 `cloud/`（登录、模型、hub、会话同步）。先读 [AGENTS.md](../../AGENTS.md)
 （目录、命令、约定，130 行），再读 [docs/ios.md](../ios.md)（整页，尤其 *The composer (0.1.38)*
 和 *Building on a Mac*）。
@@ -31,7 +31,7 @@ Web 控制台 `web/`、中继 `cloud/`（登录、模型、hub、会话同步）
   TestFlight **build 10 = 0.1.39**，已处理完（内部测试员可装；公测链接等 Apple 审核）。
 - 上一个 Mac 会话（也叫 M）在 0.1.39 里交付并被合并了三个 PR：#95 Mac 的 Computer Use 助手
   （dmg 的 quarantine 标记导致助手被 App Translocation 启动、权限留不住），#96 iOS 引导后闪退
-  （`AIChatView.body` 修饰符链过长，Swift 运行时类型解码爆栈；修法是 `WevvyChatModifiers.swift`
+  （`AIChatView.body` 修饰符链过长，Swift 运行时类型解码爆栈；修法是 `CeisChatModifiers.swift`
   里的两个合并修饰符 + 把输入栏整体装进 `AnyView`），#97 iOS 账号隔离（契约 C10）。它们的分支已删。
   **#96 和 #97 当时都没能在真机上跑**（Mac 磁盘不够，没把 iOS 的原生依赖编出来；靠 CI 的编译检查
   合并的）。维护者用 build 10 测了：**不崩了**，但「**输入的消息框还是显示不出来**」。
@@ -46,12 +46,12 @@ Web 控制台 `web/`、中继 `cloud/`（登录、模型、hub、会话同步）
 
 **仓库约定里和你最相关的几条**（全文在 AGENTS.md）：
 
-- `android/` 是上游子树，要保持可拉取：新代码放新文件（`android/src/ios/Wevvy/*.swift`），
-  改上游文件时每处带一行 `// wevvy:` 注释，一处一改；不改 Xcode 工程结构、不改沙盒路径；
+- `android/` 是上游子树，要保持可拉取：新代码放新文件（`android/src/ios/Ceis/*.swift`），
+  改上游文件时每处带一行 `// ceis:` 注释，一处一改；不改 Xcode 工程结构、不改沙盒路径；
   品牌替换只走 `scripts/rebrand.py`（跑完必须输出 `clean`）。
 - 用户可见的字符串先英文、再简体中文、再 `Localizable.xcstrings` 已有的全部 locale；语气平实，
   无感叹号、无营销词；不照抄 Meta 的界面文案。
-- iOS 16 目标：用 `.nmOnChange(of:)`，不用双参数 `onChange`；类型名全局唯一；`Wevvy/` 下在
+- iOS 16 目标：用 `.nmOnChange(of:)`，不用双参数 `onChange`；类型名全局唯一；`Ceis/` 下在
   device build 里**零 warning**（CI 把 warning 当失败）。
 - 文档随代码：改了人能看到的行为就同时改 `docs/ios.md`，并在 `CHANGELOG.md` *Unreleased* 加一条。
 - 提交用 Conventional Commits（`fix(ios): …`）并带 DCO 签名（`git commit -s`，用这台 Mac 上的 git
@@ -69,9 +69,9 @@ iPadOS 26.7.1**，上面装着 TestFlight build 10。是否有 iPhone，问维�
 
 ```bash
 # 1) 找到或建立 clone（上一个会话大概率已经 clone 过；路径不详）
-mdfind "kMDItemFSName == 'wevvy'" -onlyin ~ 2>/dev/null | head; ls -d ~/wevvy ~/code/wevvy ~/src/wevvy 2>/dev/null
+mdfind "kMDItemFSName == 'ceis'" -onlyin ~ 2>/dev/null | head; ls -d ~/ceis ~/code/ceis ~/src/ceis 2>/dev/null
 # 有：cd <clone> && git fetch origin && git checkout main && git pull --ff-only && git submodule update --init
-# 没有：git clone --recurse-submodules https://github.com/nano-muse/nanoMuse.git && cd wevvy
+# 没有：git clone --recurse-submodules https://github.com/nano-muse/nanoMuse.git && cd ceis
 git log --oneline -1          # 应是 9740986d 或更新
 
 # 2) 腾磁盘：原生依赖 + 一次 Debug 构建要十几 GB
@@ -87,7 +87,7 @@ cp -n src/ios/Configs/ProviderCustomization.xcconfig.example src/ios/Configs/Pro
 # 4) 真机 Debug 构建（原生库只有 device 版，模拟器链接不上）
 # Xcode 里打开 src/ios/Minis.xcodeproj，scheme Minis，Signing & Capabilities 选维护者的 team（工程里 DEVELOPMENT_TEAM 为空；
 # 需要维护者在 Xcode 登录 Apple ID——免费 provisioning 也行），iPad 用 USB 连上并「信任」。
-# 命令行编译检查（CI 同款，Wevvy/ 下零 warning）：
+# 命令行编译检查（CI 同款，Ceis/ 下零 warning）：
 cd src/ios && xcodebuild build -project Minis.xcodeproj -scheme Minis -configuration Debug -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO
 ```
 
@@ -112,10 +112,10 @@ cd src/ios && xcodebuild build -project Minis.xcodeproj -scheme Minis -configura
 
 | 版本 | 维护者的话 | 当时的判断与改动 |
 |---|---|---|
-| 0.1.36 | 输入框要像 Muse | 做了 Muse 的胶囊 `Wevvy/WevvyComposer.swift`（`WevvyComposerPill`），字段仍是上游的 `PastableTextView`（UIViewRepresentable） |
-| 0.1.37 | 「键盘经常丢掉，用户看不到键盘」 | 认为是上游已知的「composer host 不再布局、零子视图」（上游自己在 `AIChatView.swift` ~1395–1455 的 `[InputBarHealth]` 注释里写了真机上看到 `FloatingBarHostingView nkids=0`）。加了 `WevvyComposerWatch.swift`：探针报告栈是否在窗口里、多高，不对就 `rebuildTick` 重建 |
-| 0.1.38 | 「输入框还是会掉」，是走完第一次对话的起名卡片之后 | 认为 UIKit host 是祸根：字段换成 SwiftUI 的 `TextField(axis: .vertical)`（`WevvyComposerField.swift`）；加 **fail-safe**：聊天出现 / 消息发出 / 一轮结束后一秒，若探针没附着、host 高度 0 或输入条从没报过高度，就把同一个栈改挂到 `.safeAreaInset(edge: .bottom)`。**build 9 一进聊天就崩（#96），这版的输入框从未在真机上被看见。** |
-| 0.1.39 | （本任务）「还是显示不出来」 | #96 把 overlay 和 fail-safe 合成一个 `WevvyComposerHost`（`WevvyChatModifiers.swift`），栈装进 `AnyView`。行为上和 0.1.38 等价。 |
+| 0.1.36 | 输入框要像 Muse | 做了 Muse 的胶囊 `Ceis/CeisComposer.swift`（`CeisComposerPill`），字段仍是上游的 `PastableTextView`（UIViewRepresentable） |
+| 0.1.37 | 「键盘经常丢掉，用户看不到键盘」 | 认为是上游已知的「composer host 不再布局、零子视图」（上游自己在 `AIChatView.swift` ~1395–1455 的 `[InputBarHealth]` 注释里写了真机上看到 `FloatingBarHostingView nkids=0`）。加了 `CeisComposerWatch.swift`：探针报告栈是否在窗口里、多高，不对就 `rebuildTick` 重建 |
+| 0.1.38 | 「输入框还是会掉」，是走完第一次对话的起名卡片之后 | 认为 UIKit host 是祸根：字段换成 SwiftUI 的 `TextField(axis: .vertical)`（`CeisComposerField.swift`）；加 **fail-safe**：聊天出现 / 消息发出 / 一轮结束后一秒，若探针没附着、host 高度 0 或输入条从没报过高度，就把同一个栈改挂到 `.safeAreaInset(edge: .bottom)`。**build 9 一进聊天就崩（#96），这版的输入框从未在真机上被看见。** |
+| 0.1.39 | （本任务）「还是显示不出来」 | #96 把 overlay 和 fail-safe 合成一个 `CeisComposerHost`（`CeisChatModifiers.swift`），栈装进 `AnyView`。行为上和 0.1.38 等价。 |
 
 要点：**0.1.37 时输入框至少一开始是在的**（维护者能做完第一次对话和起名，之后才掉）。之后动过
 这一块的只有两处——0.1.38 的字段替换 + fail-safe，#96 的 host 合并 + `AnyView`——**两处都没在真机上
@@ -126,23 +126,23 @@ L 在 Linux 上把壳和胶囊的代码从头读了一遍，没找到能让胶�
 
 ## 3. 代码在哪
 
-- 聊天界面 `Views/Chat/AIChatView.swift`（上游文件，6500 行，我们的改动都带 `// wevvy:`）：
-  - `body`（~498 行）：`ZStack { messagesArea.safeAreaInset(edge: .top){…}.modifier(WevvyComposerHost(failSafe:stack:)) …; kernelBootOverlay }`。
-  - `nmComposerStack` / `nmComposerTree`（~3499 行）：`ZStack(alignment: .bottom) { VStack { WevvyChatCardsHost; floatingToolPreview; inputBar }.background(WevvyComposerProbe).id(rebuildTick); inputPopupOverlay }`。
-  - `inputBar`（~3778 行）：`nmPill` 为真时走 `nmPillRows` → `WevvyComposerPill { nmPillField }`；外面 `ComposerSurface(pill:)` 是灰色胶囊；`.onGeometryChange` 给 `inputBarHeight`（消息列表的底部内边距）和 `nmComposer.geometry(height:)`。
-  - `nmPill`（~3487 行）`= WevvyShellPrefs.shell`；`nmListInset` / `nmListFloating`（~3491 行）在 fail-safe 路径上为 0。
+- 聊天界面 `Views/Chat/AIChatView.swift`（上游文件，6500 行，我们的改动都带 `// ceis:`）：
+  - `body`（~498 行）：`ZStack { messagesArea.safeAreaInset(edge: .top){…}.modifier(CeisComposerHost(failSafe:stack:)) …; kernelBootOverlay }`。
+  - `nmComposerStack` / `nmComposerTree`（~3499 行）：`ZStack(alignment: .bottom) { VStack { CeisChatCardsHost; floatingToolPreview; inputBar }.background(CeisComposerProbe).id(rebuildTick); inputPopupOverlay }`。
+  - `inputBar`（~3778 行）：`nmPill` 为真时走 `nmPillRows` → `CeisComposerPill { nmPillField }`；外面 `ComposerSurface(pill:)` 是灰色胶囊；`.onGeometryChange` 给 `inputBarHeight`（消息列表的底部内边距）和 `nmComposer.geometry(height:)`。
+  - `nmPill`（~3487 行）`= CeisShellPrefs.shell`；`nmListInset` / `nmListFloating`（~3491 行）在 fail-safe 路径上为 0。
   - `onAppear`（~1198 行）`nmComposer.visible = true; expect("the chat appeared")`；`onDisappear`（~1319 行）。
   - `messagesArea`（~2629 行）：`CollectionViewMessageListV3`——消息列表是 **UIKit 的 UICollectionView**（UIViewRepresentable），输入栏是它的 SwiftUI overlay。上游 2026-08 看到的 `FloatingBarHostingView nkids=0` 就是这个 overlay 的宿主。
-- 我们的文件 `Wevvy/`：`WevvyComposer.swift`（胶囊）、`WevvyComposerField.swift`（字段）、
-  `WevvyComposerWatch.swift`（看门狗 + fail-safe + 探针 `WevvyComposerProbeView`）、
-  `WevvyChatModifiers.swift`（`WevvyComposerHost`：`content.overlay(alignment: .bottom){ if !failSafe { stack } }.safeAreaInset(edge: .bottom){ if failSafe { stack } }`；`WevvyChatHooks`）、
-  `WevvyChatCards.swift`（起名卡片等虚拟卡片，在输入条上方同一个栈里）、`WevvyFirstRun.swift`。
-- 壳 `Wevvy/WevvyShell.swift`：`WevvyHomeView`（~333 行）= `ZStack { chatLayer … }.safeAreaInset(edge: .bottom) { WevvyBottomBar }`（底栏 56 pt，`.background(.bar)`；键盘弹出或语音面板打开时底栏隐藏，`WevvyKeyboardWatcher`）；`chatLayer`（~541 行）= `NavigationStack { AIChatView(...).id(id) }.safeAreaInset(edge: .top) { Muse 头部 }.toolbar(.hidden, for: .navigationBar)`。旁聊由 `navigationDestination` push 出来、带系统导航栏。
-- 开关：设置 → 外观 → **Muse home**（`WevvyAppearance.swift`，`@AppStorage("wevvy.shell.enabled")`）。壳和胶囊由**同一个开关**决定。
-- 日志：我们的 `Logger(subsystem: "io.github.wevvy.app", category: "nm.composer")`；上游的 `AppLogger(category: "InputBarLayout")` 同一个 subsystem。
+- 我们的文件 `Ceis/`：`CeisComposer.swift`（胶囊）、`CeisComposerField.swift`（字段）、
+  `CeisComposerWatch.swift`（看门狗 + fail-safe + 探针 `CeisComposerProbeView`）、
+  `CeisChatModifiers.swift`（`CeisComposerHost`：`content.overlay(alignment: .bottom){ if !failSafe { stack } }.safeAreaInset(edge: .bottom){ if failSafe { stack } }`；`CeisChatHooks`）、
+  `CeisChatCards.swift`（起名卡片等虚拟卡片，在输入条上方同一个栈里）、`CeisFirstRun.swift`。
+- 壳 `Ceis/CeisShell.swift`：`CeisHomeView`（~333 行）= `ZStack { chatLayer … }.safeAreaInset(edge: .bottom) { CeisBottomBar }`（底栏 56 pt，`.background(.bar)`；键盘弹出或语音面板打开时底栏隐藏，`CeisKeyboardWatcher`）；`chatLayer`（~541 行）= `NavigationStack { AIChatView(...).id(id) }.safeAreaInset(edge: .top) { Muse 头部 }.toolbar(.hidden, for: .navigationBar)`。旁聊由 `navigationDestination` push 出来、带系统导航栏。
+- 开关：设置 → 外观 → **Muse home**（`CeisAppearance.swift`，`@AppStorage("ceis.shell.enabled")`）。壳和胶囊由**同一个开关**决定。
+- 日志：我们的 `Logger(subsystem: "io.github.ceis.app", category: "nm.composer")`；上游的 `AppLogger(category: "InputBarLayout")` 同一个 subsystem。
 - 文档：[docs/ios.md](../ios.md) *The composer (0.1.38)* 一段写的是 0.1.38 的假设，修完改成真相。
-  `MinisTests/WevvyRound6Tests.swift` 守着 `AIChatView.body` 的类型深度和大小上限——**不要再往
-  `AIChatView.body` 上加链接**，新行为进 `WevvyChatHooks` / `WevvyComposerHost` 或第三个 modifier。
+  `MinisTests/CeisRound6Tests.swift` 守着 `AIChatView.body` 的类型深度和大小上限——**不要再往
+  `AIChatView.body` 上加链接**，新行为进 `CeisChatHooks` / `CeisComposerHost` 或第三个 modifier。
 
 ## 4. 先拿证据
 
@@ -151,7 +151,7 @@ L 在 Linux 上把壳和胶囊的代码从头读了一遍，没找到能让胶�
 iPad USB 连 Mac，**用它上面已经装着的 TestFlight build 10**：
 
 1. **Console.app** 选这台 iPad，Action 菜单勾上 *Include Info Messages* 和 *Include Debug Messages*，
-   过滤 `subsystem:io.github.wevvy.app`；或者终端 `idevicesyslog | grep -E "nm\.composer|InputBarLayout|InputBarHealth"`。
+   过滤 `subsystem:io.github.ceis.app`；或者终端 `idevicesyslog | grep -E "nm\.composer|InputBarLayout|InputBarHealth"`。
    然后在 iPad 上：杀掉 app → 打开 → 进主聊天 → 等 5 秒 → 切到 Feed 再切回 → 切后台再回来。要看的行：
    - `composer fail-safe: no composer one second after …（attached= hostH= frameH=）`、
      `composer fail-safe: still no composer …`、`composer self-heal: rebuilding …`——**fail-safe 触发了**
@@ -163,7 +163,7 @@ iPad USB 连 Mac，**用它上面已经装着的 TestFlight build 10**：
 3. **抽屉 → 新聊天**（旁聊，push 出来的）：里面**有没有胶囊**？有 → 问题在主聊天那条路径（壳的头部 /
    底栏 inset / `.toolbar(.hidden)`）；没有 → 胶囊或 host 自己的事。
 4. **关壳、打开同一个主对话**：设置 → 外观 → Muse home 关 → 在上游布局的会话列表里找到那个带 Xiaomi
-   气泡的主对话打开。输入条在 → 不是会话的问题；不在 → 是这个同步来的对话本身（看 `WevvySync`
+   气泡的主对话打开。输入条在 → 不是会话的问题；不在 → 是这个同步来的对话本身（看 `CeisSync`
    给它的消息加了什么）。
 5. 让维护者（或你，如果有 iPhone）在 **iPhone** 上进主聊天截一张——两张图都是 iPad 的。
 
@@ -176,19 +176,19 @@ iPad USB 连 Mac，**用它上面已经装着的 TestFlight build 10**：
 走完引导（登录验证码由维护者输）→ 进主聊天，每步截图，记下**输入框第一次看不见是在哪一步**。
 
 输入框看不见的那一刻，Xcode → Debug → **View Debugging → Capture View Hierarchy**。两个现成的锚点：
-栈的背景里有一个真正的 UIKit 视图 **`WevvyComposerProbeView`**（按类名搜）；胶囊的字段是 SwiftUI
+栈的背景里有一个真正的 UIKit 视图 **`CeisComposerProbeView`**（按类名搜）；胶囊的字段是 SwiftUI
 的 `TextField`，在 UIKit 层级里是 `UITextField` 的子类。四种情况只会是其一，修法完全不同：
 
 | 看到的 | 意味着 | 修的方向 |
 |---|---|---|
 | **a.** 胶囊在层级里、尺寸正常，但 frame 在窗口之外或在底栏/键盘后面 | 安全区 / inset 几何问题（壳的 `safeAreaInset` 底栏、`AIChatView` 的 `.ignoresSafeArea(.keyboard, …)`、iPadOS 26 的键盘安全区变化） | 改壳或 host 的几何，不动看门狗 |
 | **b.** 胶囊在层级里但高度 0 / 宽度 0 | `TextField(axis: .vertical)` 在这个 iOS 上在 `HStack(alignment: .bottom)` 里给了零尺寸，或 `lineLimit(1...6)` + `.frame(minHeight:)` 的组合不对 | 字段给固定最小高度 / 换 `TextEditor` / 回上游的 representable 只做显示 |
-| **c.** 装胶囊的 hosting view 在，但**没有子视图**（上游 2026-08 的那种） | SwiftUI 把这段子树渲染成空：`WevvyComposerHost` 两条 `if` 都没渲染，或 overlay 的宿主没重建 | 看 fail-safe 为什么没救：`failSafe` 是否已为真而 `safeAreaInset` 路径也空；考虑把 `safeAreaInset` 做成唯一路径 |
+| **c.** 装胶囊的 hosting view 在，但**没有子视图**（上游 2026-08 的那种） | SwiftUI 把这段子树渲染成空：`CeisComposerHost` 两条 `if` 都没渲染，或 overlay 的宿主没重建 | 看 fail-safe 为什么没救：`failSafe` 是否已为真而 `safeAreaInset` 路径也空；考虑把 `safeAreaInset` 做成唯一路径 |
 | **d.** 胶囊压根不在层级里 | `inputBar` 没被构建：`nmPill` 分支、`vm` 状态、`.id(rebuildTick)` 正在重建中 | 顺着 `nmComposerTree` 的条件查 |
 
 顺手记下：胶囊 hosting view 的 `alpha`、`isHidden`、`clipsToBounds`、frame；它上面有没有一层全屏透明
-视图（`WevvyDrawer` 的 overlay、`kernelBootOverlay`、`SessionLockGateOverlay`）；
-`WevvyComposerProbeView` 的 frame 和 `window.bounds` 的关系（`maxY` 超过窗口高度减 56 就是在底栏后面）。
+视图（`CeisDrawer` 的 overlay、`kernelBootOverlay`、`SessionLockGateOverlay`）；
+`CeisComposerProbeView` 的 frame 和 `window.bounds` 的关系（`maxY` 超过窗口高度减 56 就是在底栏后面）。
 
 Debug 构建还带着上游的调试服务（`Debug/DebugServer.swift`，端口 8321，仅 DEBUG）：`iproxy 8321 8321`
 后 `curl http://127.0.0.1:8321/skill` 是协议说明和示例客户端，`/pair`（`"plain": true`，只接受
@@ -199,23 +199,23 @@ Xcode 的 View Debugger 够用就不必折腾它。
 ### 4.3 第三个对照（只改本地，不提交）
 
 **壳开、胶囊关**：把 `AIChatView.swift` 里 `private var nmPill: Bool` 临时改成 `false`，Debug 装上再进
-主聊天。上游的输入条在壳里显示 → 问题在 `nmPillRows` / `WevvyComposerPill` / `WevvyComposerField`
-（b）；还是不显示 → 问题在 host（`WevvyComposerHost` 的 overlay / inset）或壳（a / c / d）。
+主聊天。上游的输入条在壳里显示 → 问题在 `nmPillRows` / `CeisComposerPill` / `CeisComposerField`
+（b）；还是不显示 → 问题在 host（`CeisComposerHost` 的 overlay / inset）或壳（a / c / d）。
 
 ## 5. 修
 
 证据到手再动手。几条硬约束：
 
-- 新代码放 `Wevvy/*.swift`；上游文件里每处改动一行 `// wevvy:`，一处一改；不加链接到
-  `AIChatView.body`（`WevvyRound6Tests` 会挡）。
-- 以**用户看得见**为准，不以探针为准：如果结论是 a 或 b，`WevvyComposerWatch` 的 fail-safe 根本
+- 新代码放 `Ceis/*.swift`；上游文件里每处改动一行 `// ceis:`，一处一改；不加链接到
+  `AIChatView.body`（`CeisRound6Tests` 会挡）。
+- 以**用户看得见**为准，不以探针为准：如果结论是 a 或 b，`CeisComposerWatch` 的 fail-safe 根本
   不会触发，别指望它；被证明打偏的看门狗代码可以删，连 `docs/ios.md` 一起改成真相，不要留一段写错的
   历史在文档里。
 - 如果结论是 c，把 `safeAreaInset` 做成唯一 host 是可选项：消息列表不再从胶囊下面穿过（Android 的
   ChatScreen 也不穿），`inputBarHeight` 那套内边距可以保留但 `nmListInset` 恒为 0。先在真机上确认这条
   路径本身能显示再决定。
 - 新字符串先英文、再简体中文、再 `Localizable.xcstrings` 已有的全部 locale；语气平实，无感叹号。
-- iOS 16 目标：`.nmOnChange(of:)`。`Wevvy/` 下零 warning。`scripts/rebrand.py` 跑完输出 `clean`。
+- iOS 16 目标：`.nmOnChange(of:)`。`Ceis/` 下零 warning。`scripts/rebrand.py` 跑完输出 `clean`。
 - 文档随代码：`docs/ios.md` 的 composer 一段改成真实根因；`CHANGELOG.md` `## [Unreleased]` 下加
   `### iOS` 小节和一条（过去时、具体、面向用户）。
 
@@ -224,12 +224,12 @@ Xcode 的 View Debugger 够用就不必折腾它。
 在 iPad（和 iPhone，如果有）上，**Debug 和 Release 两种配置**各走一遍：进主聊天、输入、发送、模型回问
 名字时起名卡片出现在输入条上方、选名字卡片消失、再发一条、切后台再回来、打开抽屉里的旁聊再返回主聊天、
 切到 Feed 再切回 Chat、横竖屏、键盘弹出收起——输入框在每一步都在、能点出键盘、能发出去；三遍。能加回归
-测试就加到 `MinisTests/`（照 `WevvyRound6Tests.swift` 的样子，真机跑）。
+测试就加到 `MinisTests/`（照 `CeisRound6Tests.swift` 的样子，真机跑）。
 
 ```bash
 cd android/src/ios
 xcodebuild build -project Minis.xcodeproj -scheme Minis -configuration Debug \
-  -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO     # Wevvy/ 下零 warning
+  -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO     # Ceis/ 下零 warning
 cd ../../.. && .venv/bin/python scripts/rebrand.py                  # 没有 .venv 就 uv venv && uv pip install -e ".[dev]"
 gh workflow run "iOS · build check" --repo nano-muse/nanoMuse --ref mac/ios-composer-0140
 ```
@@ -237,15 +237,15 @@ gh workflow run "iOS · build check" --repo nano-muse/nanoMuse --ref mac/ios-com
 ## 7. 顺手的两项验收（证据收集完、等构建的时候做；只报告，发现问题另开 `mac/*` 分支）
 
 1. **Mac 桌面端 0.1.39 的权限助手**（#95 的真机验收，当时只在源码构建上验过）：下载
-   `https://github.com/nano-muse/nanoMuse/releases/download/v0.1.39/wevvy-Desktop-0.1.39-mac-arm64.dmg`，
-   拖进「应用程序」，先 `tccutil reset ScreenCapture io.github.wevvy.desktop.computer-use` 和
-   `tccutil reset Accessibility io.github.wevvy.desktop.computer-use`，打开 app（Gatekeeper 说无法验证
+   `https://github.com/nano-muse/nanoMuse/releases/download/v0.1.39/ceis-Desktop-0.1.39-mac-arm64.dmg`，
+   拖进「应用程序」，先 `tccutil reset ScreenCapture io.github.ceis.desktop.computer-use` 和
+   `tccutil reset Accessibility io.github.ceis.desktop.computer-use`，打开 app（Gatekeeper 说无法验证
    → 系统设置 → 隐私与安全性 → 仍要打开），Settings → Computer use 按它的指引走：两个面板里出现的是不是
-   **wevvy Computer Use** 那一行、授权后测试截图是不是真实屏幕、`~/.wevvy/desktop/desktop.log` 里
+   **ceis Computer Use** 那一行、授权后测试截图是不是真实屏幕、`~/.ceis/desktop/desktop.log` 里
    `helper:` 行有没有 `clearQuarantine`/translocation 的报错、退出再打开授权还在不在、一个真实任务
-   （「打开计算器，算 12×34」）跑不跑得通。数据目录 `~/.wevvy/desktop` 是维护者正在用的：想从头来，
-   先 `mv ~/.wevvy/desktop ~/.wevvy/desktop.bak`（告诉维护者，完了可以 mv 回去），然后用 Finder 或
-   `open -a wevvy` 启动——不要从终端直接跑 `Contents/MacOS/wevvy`，那样权限会记在 Terminal 名下，
+   （「打开计算器，算 12×34」）跑不跑得通。数据目录 `~/.ceis/desktop` 是维护者正在用的：想从头来，
+   先 `mv ~/.ceis/desktop ~/.ceis/desktop.bak`（告诉维护者，完了可以 mv 回去），然后用 Finder 或
+   `open -a ceis` 启动——不要从终端直接跑 `Contents/MacOS/ceis`，那样权限会记在 Terminal 名下，
    测的就不是用户看到的流程了。
 2. **iPad 上 build 10 的账号隔离**（#97）：A 登录 → 聊两句 → 退出 → B 登录：列表里没有 A 的会话；
    切回 A，A 的回来。需要维护者的两个账号和验证码；没有第二个账号就跳过并注明。
@@ -264,13 +264,13 @@ L 这边同时在做：拿到你的 PR 后合并、发 0.1.40、TestFlight build
 
 | 事项 | 在哪 |
 |---|---|
-| iOS 工程 | `android/src/ios/Minis.xcodeproj`，scheme `Minis`，我们的代码在 `Wevvy/`，测试在 `MinisTests/`，字符串 `Localizable.xcstrings` |
+| iOS 工程 | `android/src/ios/Minis.xcodeproj`，scheme `Minis`，我们的代码在 `Ceis/`，测试在 `MinisTests/`，字符串 `Localizable.xcstrings` |
 | 原生依赖 | `android/deps/{build_lame,build_ffmpeg,build_ish,prepare_alpine_rootfs,build_rclone_ios}.sh`（[docs/ios.md](../ios.md)、[android/BUILDING.md](../../android/BUILDING.md)） |
-| 输入框 | `Wevvy/WevvyComposer*.swift`、`Wevvy/WevvyChatModifiers.swift`、`Views/Chat/AIChatView.swift`（`inputBar`、`nmComposerTree`、`nmPill*`） |
-| 壳 | `Wevvy/WevvyShell.swift`（`WevvyHomeView`、`chatLayer`、`WevvyBottomBar`） |
-| 日志 | Console.app，`subsystem:io.github.wevvy.app`（`nm.composer`、`InputBarLayout`）；`idevicesyslog` |
+| 输入框 | `Ceis/CeisComposer*.swift`、`Ceis/CeisChatModifiers.swift`、`Views/Chat/AIChatView.swift`（`inputBar`、`nmComposerTree`、`nmPill*`） |
+| 壳 | `Ceis/CeisShell.swift`（`CeisHomeView`、`chatLayer`、`CeisBottomBar`） |
+| 日志 | Console.app，`subsystem:io.github.ceis.app`（`nm.composer`、`InputBarLayout`）；`idevicesyslog` |
 | 调试服务（DEBUG） | `Debug/DebugServer.swift`，端口 8321，`iproxy 8321 8321` |
-| 上游改动标记 | `// wevvy:`；品牌替换 `python scripts/rebrand.py`（必须输出 `clean`） |
-| Mac 桌面端 | `harness/desktop/mac/computer-use/`、`harness/desktop/src/{mac-helper,mac-permissions}.ts`；数据目录 `~/.wevvy/desktop`（`desktop.log`） |
+| 上游改动标记 | `// ceis:`；品牌替换 `python scripts/rebrand.py`（必须输出 `clean`） |
+| Mac 桌面端 | `harness/desktop/mac/computer-use/`、`harness/desktop/src/{mac-helper,mac-permissions}.ts`；数据目录 `~/.ceis/desktop`（`desktop.log`） |
 | 已发布的安装包 | `https://github.com/nano-muse/nanoMuse/releases/tag/v0.1.39`；TestFlight build 10 = 0.1.39 |
 | 上一轮的任务单（背景） | [mac-work-0.1.39.md](mac-work-0.1.39.md)、[mac-check-0.1.37.md](mac-check-0.1.37.md) |

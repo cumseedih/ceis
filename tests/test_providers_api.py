@@ -18,11 +18,11 @@ from fastapi.testclient import TestClient
 
 from tests.test_chatgpt import TOKEN_URL, jwt, token
 from tests.test_server import wait_for
-from wevvy.config import MediaSettings, Settings
-from wevvy.llm import MockLLM
-from wevvy.llm.chatgpt import LoginFlow, TokenStore
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
+from ceis.config import MediaSettings, Settings
+from ceis.llm import MockLLM
+from ceis.llm.chatgpt import LoginFlow, TokenStore
+from ceis.server import create_app
+from ceis.server.service import MuseService
 
 
 def _make(settings: Settings) -> tuple[TestClient, MuseService]:
@@ -88,7 +88,7 @@ def test_providers_signed_out_with_the_default_model(server):
     view = client.get("/api/providers").json()
     assert view["region"] == ""
     ids = [p["id"] for p in view["providers"]]
-    assert len(ids) == 21 and "wevvy_cloud" not in ids
+    assert len(ids) == 21 and "ceis_cloud" not in ids
     # DeepSeek is the default chat model, by its host; the hands follow the chat model
     assert view["configured"]["chat"]["provider"] == "deepseek"
     assert view["configured"]["chat"]["protocol"] == "openai"

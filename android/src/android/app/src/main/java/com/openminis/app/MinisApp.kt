@@ -423,9 +423,9 @@ class MinisApp : Application(), ImageLoaderFactory {
         database = AppDatabase.getInstance(this)
         chatRepository = ChatRepository(database.chatDao())
         providerRepository = ProviderRepository(this)
-        // wevvy: Settings → Network — the proxy for own providers and the ChatGPT plan is
+        // ceis: Settings → Network — the proxy for own providers and the ChatGPT plan is
         // the process's proxy selector, so it must be in place before the first OkHttp client.
-        io.github.wevvy.net.OwnProviderProxy.install(this, providerRepository.config)
+        io.github.ceis.net.OwnProviderProxy.install(this, providerRepository.config)
         envVarRepository = EnvVarRepository(this)
         // [T-android-safemode-lateinit-crash-147] SkillRepository parses
         // third-party content (skills imported from external hubs), which
@@ -435,7 +435,7 @@ class MinisApp : Application(), ImageLoaderFactory {
         // breaks the Application and produces the GH#147 crash loop.
         skillRepository = SkillRepository(this)
         mcpRepository = MCPRepository(this)
-        io.github.wevvy.connectors.Connectors.refreshStaleAsync(this) // wevvy: connectors' OAuth tokens near their end → refreshed, headers rewritten
+        io.github.ceis.connectors.Connectors.refreshStaleAsync(this) // ceis: connectors' OAuth tokens near their end → refreshed, headers rewritten
         memoryRepository = MemoryRepository(java.io.File(filesDir, "minis-global/memory"))
         webAppShortcutRepository = WebAppShortcutRepository(database.webAppShortcutDao())
 
@@ -549,14 +549,14 @@ class MinisApp : Application(), ImageLoaderFactory {
         // T323: UI-layer automation backed by MinisAccessibilityService.
         NativeOffloadServer.register("android-a11y-cli", AccessibilityOffloadHandler(this))
         NativeOffloadServer.register("minis-model-use", ModelUseOffloadHandler(this, providerRepository))
-        // wevvy: wevvy-media — pictures and clips through the user's image / video models.
-        NativeOffloadServer.register("wevvy-media", io.github.wevvy.media.MediaOffloadHandler(this))
-        // wevvy: wevvy-hands — the phone's screen as a hand (screenshot → screen model → gesture).
-        NativeOffloadServer.register("wevvy-hands", io.github.wevvy.hands.HandsOffloadHandler(this))
-        // wevvy: wevvy-pc — the phone drives the user's other devices (shell, files, browser, screen, tasks).
-        NativeOffloadServer.register("wevvy-pc", io.github.wevvy.reach.ReachOffloadHandler(this))
-        // wevvy: join the hub, so the user's other devices can reach this phone and it can reach them.
-        io.github.wevvy.hub.Hub.autoStart(this)
+        // ceis: ceis-media — pictures and clips through the user's image / video models.
+        NativeOffloadServer.register("ceis-media", io.github.ceis.media.MediaOffloadHandler(this))
+        // ceis: ceis-hands — the phone's screen as a hand (screenshot → screen model → gesture).
+        NativeOffloadServer.register("ceis-hands", io.github.ceis.hands.HandsOffloadHandler(this))
+        // ceis: ceis-pc — the phone drives the user's other devices (shell, files, browser, screen, tasks).
+        NativeOffloadServer.register("ceis-pc", io.github.ceis.reach.ReachOffloadHandler(this))
+        // ceis: join the hub, so the user's other devices can reach this phone and it can reach them.
+        io.github.ceis.hub.Hub.autoStart(this)
         // T-config: minis-config — agent-facing settings management
         // (read/write registered ConfigFields with audit + revert).
         // Mirrors iOS `config_offload_register()` in ISHKernel.m.
@@ -656,18 +656,18 @@ class MinisApp : Application(), ImageLoaderFactory {
         com.openminis.app.config.confirm.ConfigConfirmationGate.cancelNotification = {
             configConfirmNotifier.cancel(it)
         }
-        // wevvy: remembered approvals + the approval gate's background notification.
-        io.github.wevvy.guard.Grants.init(this)
-        io.github.wevvy.feed.FeedFlow.init(this) // wevvy
-        io.github.wevvy.chat.RoutineWakes.init(this) // wevvy: which chat rows a routine sent
-        io.github.wevvy.avatar.AvatarStore.init(this) // wevvy: the user's own face, if any
-        io.github.wevvy.cloud.ProfileSync.init(this) // wevvy: the name and face the account's devices share
-        io.github.wevvy.account.AccountData.init(this) // wevvy: whose chat is whose (contract C12)
-        io.github.wevvy.sync.ConversationSync.init(this) // wevvy: the conversations, the same on every device
-        io.github.wevvy.avatar.AvatarStudio.init(this) // wevvy: the feed's files and its built-in routine
-        val nmRiskNotifier = io.github.wevvy.guard.RiskApprovalNotifier(this, ::isAppForeground)
-        io.github.wevvy.guard.RiskGate.backgroundNotifier = { nmRiskNotifier.notifyIfBackgrounded(it) }
-        io.github.wevvy.guard.RiskGate.cancelNotification = { nmRiskNotifier.cancel(it) }
+        // ceis: remembered approvals + the approval gate's background notification.
+        io.github.ceis.guard.Grants.init(this)
+        io.github.ceis.feed.FeedFlow.init(this) // ceis
+        io.github.ceis.chat.RoutineWakes.init(this) // ceis: which chat rows a routine sent
+        io.github.ceis.avatar.AvatarStore.init(this) // ceis: the user's own face, if any
+        io.github.ceis.cloud.ProfileSync.init(this) // ceis: the name and face the account's devices share
+        io.github.ceis.account.AccountData.init(this) // ceis: whose chat is whose (contract C12)
+        io.github.ceis.sync.ConversationSync.init(this) // ceis: the conversations, the same on every device
+        io.github.ceis.avatar.AvatarStudio.init(this) // ceis: the feed's files and its built-in routine
+        val nmRiskNotifier = io.github.ceis.guard.RiskApprovalNotifier(this, ::isAppForeground)
+        io.github.ceis.guard.RiskGate.backgroundNotifier = { nmRiskNotifier.notifyIfBackgrounded(it) }
+        io.github.ceis.guard.RiskGate.cancelNotification = { nmRiskNotifier.cancel(it) }
 
         // Track foreground state via ActivityLifecycleCallbacks. Counting
         // started/stopped balances out around configuration changes (the
@@ -733,7 +733,7 @@ class MinisApp : Application(), ImageLoaderFactory {
                     // while a config-confirm dialog may still be showing — nudge
                     // them so they can come back before the 120s timeout.
                     com.openminis.app.config.confirm.ConfigConfirmationGate.notifyPending()
-                    io.github.wevvy.guard.RiskGate.notifyPending() // wevvy
+                    io.github.ceis.guard.RiskGate.notifyPending() // ceis
                 }
             }
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}

@@ -1,5 +1,5 @@
 """A vendor that wants one id per conversation (OpenCode Go's ``x-opencode-session``) gets it,
-with wevvy's own user agent; every other vendor gets neither."""
+with ceis's own user agent; every other vendor gets neither."""
 
 from __future__ import annotations
 
@@ -11,13 +11,13 @@ import httpx
 import pytest
 from openai import AsyncOpenAI
 
-from wevvy import __version__
-from wevvy.config import LLMSettings, Settings
-from wevvy.llm import openai_chat as chat_mod
-from wevvy.llm import openai_responses as responses_mod
-from wevvy.llm import session
-from wevvy.llm.factory import create_llm, session_header
-from wevvy.schema import LLMResponse, Message
+from ceis import __version__
+from ceis.config import LLMSettings, Settings
+from ceis.llm import openai_chat as chat_mod
+from ceis.llm import openai_responses as responses_mod
+from ceis.llm import session
+from ceis.llm.factory import create_llm, session_header
+from ceis.schema import LLMResponse, Message
 
 GO = "https://opencode.ai/zen/go/v1"
 
@@ -93,7 +93,7 @@ def slot(**kw: Any) -> LLMSettings:
     return LLMSettings(**{**base, **kw})
 
 
-async def test_go_calls_carry_the_conversation_and_name_wevvy(wire: Wire):
+async def test_go_calls_carry_the_conversation_and_name_ceis(wire: Wire):
     llm = create_llm(slot(provider="opencode-go", base_url=None))
     with session.conversation("thread-1"):
         await llm.ask([Message.user("hi")])
@@ -102,7 +102,7 @@ async def test_go_calls_carry_the_conversation_and_name_wevvy(wire: Wire):
         await llm.ask([Message.user("another chat")])
     assert str(wire.requests[0].url) == f"{GO}/chat/completions"
     assert wire.headers("x-opencode-session") == ["thread-1", "thread-1", "thread-2"]
-    assert wire.headers("user-agent") == [f"wevvy/{__version__}"] * 3
+    assert wire.headers("user-agent") == [f"ceis/{__version__}"] * 3
 
 
 async def test_a_call_outside_a_conversation_carries_the_clients_own_stable_id(wire: Wire):
@@ -135,7 +135,7 @@ async def test_other_vendors_get_neither_header(wire: Wire):
         with session.conversation("t"):
             await llm.ask([Message.user("hi")])
     assert wire.headers("x-opencode-session") == [None, None, None]
-    assert not any((ua or "").startswith("wevvy/") for ua in wire.headers("user-agent"))
+    assert not any((ua or "").startswith("ceis/") for ua in wire.headers("user-agent"))
 
 
 async def test_a_user_agent_the_person_set_stands(wire: Wire):
@@ -159,11 +159,11 @@ def test_an_id_that_is_no_header_value_is_sent_as_a_stable_uuid():
 
 
 async def test_the_agent_loop_names_its_conversation_for_every_call(settings: Settings):
-    from wevvy.agent import MuseAgent
-    from wevvy.llm import MockLLM
-    from wevvy.sentinel import AuditLog, Sentinel
-    from wevvy.tools import Terminate, ToolCollection
-    from wevvy.ui import HeadlessUI
+    from ceis.agent import MuseAgent
+    from ceis.llm import MockLLM
+    from ceis.sentinel import AuditLog, Sentinel
+    from ceis.tools import Terminate, ToolCollection
+    from ceis.ui import HeadlessUI
 
     seen: list[str | None] = []
 

@@ -50,7 +50,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map // wevvy
+import kotlinx.coroutines.flow.map // ceis
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -134,9 +134,9 @@ import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material.icons.filled.Terminal
-import androidx.compose.material.icons.outlined.Tune // wevvy
+import androidx.compose.material.icons.outlined.Tune // ceis
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreHoriz // wevvy
+import androidx.compose.material.icons.filled.MoreHoriz // ceis
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
@@ -287,12 +287,12 @@ import com.openminis.app.data.repository.MemoryRepository
 import com.openminis.app.data.repository.ProviderRepository
 import com.openminis.app.ui.browser.BrowserSheet
 import com.openminis.app.ui.theme.ChatColors
-import io.github.wevvy.ui.glass.liquidGlass // wevvy: Liquid Glass composer material (design.md addendum)
+import io.github.ceis.ui.glass.liquidGlass // ceis: Liquid Glass composer material (design.md addendum)
 import com.openminis.app.ui.components.MinisTextButton
 
 // iOS ChatColors equivalent
-internal val ToolCheckColor = io.github.wevvy.ui.theme.WevvyColors.success // iOS .green
-internal val ToolErrorColor = io.github.wevvy.ui.theme.WevvyColors.error // iOS .red
+internal val ToolCheckColor = io.github.ceis.ui.theme.CeisColors.success // iOS .green
+internal val ToolErrorColor = io.github.ceis.ui.theme.CeisColors.error // iOS .red
 internal val ToolCancelColor = Color(0xFFFFCC00) // iOS .yellow
 // Memory tool accent — matches iOS `.pink` on SF Symbols.
 internal val ToolMemoryAccent = Color(0xFFFF2D55)
@@ -491,7 +491,7 @@ fun ChatScreen(
     skillRepository: com.openminis.app.data.repository.SkillRepository? = null,
     mcpRepository: com.openminis.app.data.repository.MCPRepository? = null,
     onBack: () -> Unit,
-    // wevvy: template header back on the main chat opens the Messages list.
+    // ceis: template header back on the main chat opens the Messages list.
     onOpenMessages: () -> Unit = {},
     /**
      * [T-android-tablet-split] True when this chat is rendered as the DETAIL
@@ -535,13 +535,13 @@ fun ChatScreen(
      *  management screen — wired to the "Edit" button on the model picker's
      *  Model Groups section header. */
     onModelGroupsClick: () -> Unit = {},
-    // wevvy: non-null when this chat is a tab of the home shell — hamburger
+    // ceis: non-null when this chat is a tab of the home shell — hamburger
     // instead of back, round kebab, big-face header on the main chat.
-    nmHome: io.github.wevvy.ui.chat.NmHomeChrome? = null,
-    // wevvy: height of the floating pill bar overlaying the bottom. The
+    nmHome: io.github.ceis.ui.chat.NmHomeChrome? = null,
+    // ceis: height of the floating pill bar overlaying the bottom. The
     // composer sits above it; the message list slides behind it for the blur.
     nmBottomOverlay: androidx.compose.ui.unit.Dp = 0.dp,
-    // wevvy: the home shell's blur source, sampled by the composer pill's
+    // ceis: the home shell's blur source, sampled by the composer pill's
     // Liquid Glass (design.md, Liquid Glass addendum). Null outside the
     // shell: the pill then uses its flat near-opaque fallback.
     nmHazeState: dev.chrisbanes.haze.HazeState? = null,
@@ -576,22 +576,22 @@ fun ChatScreen(
     val messages by viewModel.uiMessages.collectAsState()
     val hasOlderMessages by viewModel.hasOlderMessages.collectAsState()
     val isStreaming by viewModel.isStreaming.collectAsState()
-    // wevvy: the screen stays on while the agent drives the browser or another app's screen.
-    io.github.wevvy.status.KeepAwake.Effect(isStreaming)
+    // ceis: the screen stays on while the agent drives the browser or another app's screen.
+    io.github.ceis.status.KeepAwake.Effect(isStreaming)
     val canResume by viewModel.canResume.collectAsState()
-    // wevvy: the rows the account's other devices wrote — never this phone's turn to resume (C9)
-    val nmRemoteRows by io.github.wevvy.sync.ConversationSync.remoteRows.collectAsState()
-    val nmContinueAsk by viewModel.nmContinueAsk.collectAsState() // wevvy: "continue?" card replaces the banner while shown
-    // wevvy: Muse's header carries only the name; the model rows under it are a
+    // ceis: the rows the account's other devices wrote — never this phone's turn to resume (C9)
+    val nmRemoteRows by io.github.ceis.sync.ConversationSync.remoteRows.collectAsState()
+    val nmContinueAsk by viewModel.nmContinueAsk.collectAsState() // ceis: "continue?" card replaces the banner while shown
+    // ceis: Muse's header carries only the name; the model rows under it are a
     // Setting (Appearance → Home), off by default on the main chat of the home shell.
-    val nmHeaderModelShown by io.github.wevvy.ui.chat.rememberHeaderModelShown()
+    val nmHeaderModelShown by io.github.ceis.ui.chat.rememberHeaderModelShown()
     val nmHideModelRows = nmHome != null && nmHome.isMainChat && !nmHeaderModelShown
-    val nmAvatarSize by io.github.wevvy.ui.avatar.rememberAvatarSize() // wevvy: Settings → Appearance → Avatar size
-    // wevvy: the agent's steps (tool pills, reasoning, the bar over the
+    val nmAvatarSize by io.github.ceis.ui.avatar.rememberAvatarSize() // ceis: Settings → Appearance → Avatar size
+    // ceis: the agent's steps (tool pills, reasoning, the bar over the
     // composer) are a Setting (Appearance → Conversation), off by default;
     // the status line under the face carries what it is doing instead.
-    val nmShowSteps by io.github.wevvy.ui.chat.rememberShowSteps()
-    // wevvy: for that status line — true while the reply's own words are
+    val nmShowSteps by io.github.ceis.ui.chat.rememberShowSteps()
+    // ceis: for that status line — true while the reply's own words are
     // arriving; mapped and de-duplicated here so the per-token stream never
     // recomposes the screen for it.
     val nmReplying by remember(viewModel) {
@@ -599,14 +599,14 @@ fun ChatScreen(
             stream.values.any { d -> !d.isAwaitingModelResponse && d.toolBlocks.lastOrNull()?.let { it.kind == "text" && it.content.isNotEmpty() } == true }
         }.distinctUntilChanged()
     }.collectAsState(initial = false)
-    // wevvy: …and the request it is on, for the moments between steps.
+    // ceis: …and the request it is on, for the moments between steps.
     val nmRequestBrief = remember(messages) {
-        io.github.wevvy.ui.header.requestBrief(messages.lastOrNull { it.role == "user" }?.content)
+        io.github.ceis.ui.header.requestBrief(messages.lastOrNull { it.role == "user" }?.content)
     }
-    // wevvy: after a finished task, one card under the reply asking for a star when the
+    // ceis: after a finished task, one card under the reply asking for a star when the
     // relay's policy says this is a moment for it (StarPrompt / Nudges: a few counts, a
     // cooldown, a lifetime cap, and never again after the person went).
-    var nmStarNudge by remember { mutableStateOf<io.github.wevvy.community.StarPrompt.Ask?>(null) }
+    var nmStarNudge by remember { mutableStateOf<io.github.ceis.community.StarPrompt.Ask?>(null) }
     var nmSawRun by remember { mutableStateOf(false) }
     LaunchedEffect(isStreaming) {
         if (isStreaming) { nmSawRun = true; return@LaunchedEffect }
@@ -621,21 +621,21 @@ fun ChatScreen(
         val replied = last.role == "assistant" && last.error.isNullOrBlank() &&
             (last.content.isNotBlank() || last.toolBlocks.any { it.kind == "text" && it.content.isNotBlank() })
         if (!replied) return@LaunchedEffect
-        val ask = io.github.wevvy.community.StarPrompt.taskAsk(context, io.github.wevvy.community.StarPrompt.countTask(context))
+        val ask = io.github.ceis.community.StarPrompt.taskAsk(context, io.github.ceis.community.StarPrompt.countTask(context))
             ?: return@LaunchedEffect
-        io.github.wevvy.community.StarPrompt.markShown(context, ask)
+        io.github.ceis.community.StarPrompt.markShown(context, ask)
         nmStarNudge = ask
     }
-    // wevvy: the asks that arrive away from any screen (the 7th / 30th day the app was
+    // ceis: the asks that arrive away from any screen (the 7th / 30th day the app was
     // opened) show here, in the main chat, when the agent is not mid-reply.
     if (nmHome != null && nmHome.isMainChat) {
-        val nmPendingAsk by io.github.wevvy.community.StarPrompt.pending.collectAsState()
+        val nmPendingAsk by io.github.ceis.community.StarPrompt.pending.collectAsState()
         LaunchedEffect(nmPendingAsk, isStreaming) {
             val ask = nmPendingAsk ?: return@LaunchedEffect
-            if (ask.moment != io.github.wevvy.community.StarPrompt.Moment.DAYS_USED || isStreaming || nmStarNudge != null) return@LaunchedEffect
-            io.github.wevvy.community.StarPrompt.clearPending(ask)
-            if (!io.github.wevvy.community.StarPrompt.due(context, ask)) return@LaunchedEffect
-            io.github.wevvy.community.StarPrompt.markShown(context, ask)
+            if (ask.moment != io.github.ceis.community.StarPrompt.Moment.DAYS_USED || isStreaming || nmStarNudge != null) return@LaunchedEffect
+            io.github.ceis.community.StarPrompt.clearPending(ask)
+            if (!io.github.ceis.community.StarPrompt.due(context, ask)) return@LaunchedEffect
+            io.github.ceis.community.StarPrompt.markShown(context, ask)
             nmStarNudge = ask
         }
     }
@@ -1087,7 +1087,7 @@ fun ChatScreen(
         // [T-android-overlay-hide-camera] Suppress the floating bg-overlay
         // BEFORE handing off to the system camera. The camera Activity
         // takes foreground, which by #451's rule would otherwise satisfy
-        // "wevvy backgrounded → show overlay" and the capsule would draw
+        // "ceis backgrounded → show overlay" and the capsule would draw
         // on top of the viewfinder. Cleared in the ActivityResult callback.
         com.openminis.app.service.SessionActivityTracker.setCameraSuppressActive(true)
         runCatching { cameraLauncher.launch(intent) }
@@ -1203,7 +1203,7 @@ fun ChatScreen(
             "ScrollSrc",
             "scrollToItem src=$source idx=$idx off=$off canBwd=${listState.canScrollBackward} firstIdx=${listState.firstVisibleItemIndex} firstOff=${listState.firstVisibleItemScrollOffset} inProgress=${listState.isScrollInProgress}",
         )
-        // wevvy: contentPadding clears the measured footer. Offset zero
+        // ceis: contentPadding clears the measured footer. Offset zero
         // pins the latest row above it; another overlay offset would count it twice.
         runCatching { listState.scrollToItem(idx, off) }
         Unit
@@ -1759,7 +1759,7 @@ fun ChatScreen(
         viewModel.endSlashSessionForSend()
         viewModel.setInputText("")
         releaseComposerAfterSend()
-        viewModel.nmMarkPersonTurn() // wevvy: the person started this turn (StarPrompt counts those)
+        viewModel.nmMarkPersonTurn() // ceis: the person started this turn (StarPrompt counts those)
         viewModel.sendMessage(rawText)
         noteSendForInputModePref()
         userScrolledAway = false
@@ -2310,7 +2310,7 @@ fun ChatScreen(
             }
         }
     }
-    // wevvy: the profile page's "Change avatar" pre-fills the composer and
+    // ceis: the profile page's "Change avatar" pre-fills the composer and
     // asks for the keyboard (Muse hands you back to the chat with "把虚拟形象改成"
     // already typed). Same guard as above.
     LaunchedEffect(viewModel) {
@@ -2615,7 +2615,7 @@ fun ChatScreen(
         containerColor = ChatColors.background,
         contentWindowInsets = WindowInsets(0),
         topBar = {
-            // wevvy: the header is a solid bar BELOW the system status bar.
+            // ceis: the header is a solid bar BELOW the system status bar.
             // (An overlay starting at y=0 hid the pill row behind the status
             // bar and clipped the avatar on a real phone.)
             Box(
@@ -2624,11 +2624,11 @@ fun ChatScreen(
                     .background(ChatColors.background)
                     .statusBarsPadding(),
             ) {
-            // wevvy: template header (Figma Top Toolbar - Chat): back pill +
+            // ceis: template header (Figma Top Toolbar - Chat): back pill +
             // "2" badge, centered 60dp face, name pill on its chin. Model rows,
             // the status line and the "..." menu are gone: model switching is
             // the name pill tap (model picker sheet), as before via the menu.
-            val nmHeaderMood = io.github.wevvy.ui.avatar.rememberAgentMood(isStreaming, error)
+            val nmHeaderMood = io.github.ceis.ui.avatar.rememberAgentMood(isStreaming, error)
             val nmHeaderSideChat = nmHome != null && !nmHome.isMainChat
             val nmHeaderMainChat = nmHome != null && nmHome.isMainChat
             val nmHeaderSoul by com.openminis.app.agent.SoulStore.cachedMetadata.collectAsState()
@@ -2637,18 +2637,18 @@ fun ChatScreen(
             } else {
                 nmHeaderSoul.name.trim().ifEmpty { stringResource(R.string.app_name) }
             }
-            io.github.wevvy.ui.chat.NmTemplateChatHeader(
+            io.github.ceis.ui.chat.NmTemplateChatHeader(
                 title = nmHeaderTitle,
                 mood = nmHeaderMood,
                 showBack = !isTwoPane,
                 onBackClick = { if (nmHeaderMainChat) onOpenMessages() else onBack() },
                 onToggleSidebar = onToggleSidebar,
                 onNameClick = { showModelPicker = true },
-                onAvatarClick = { io.github.wevvy.ui.header.openAgentProfile(context) },
-                onVideoClick = { /* wevvy: template video pill is visual-only; the app has no video calling */ },
+                onAvatarClick = { io.github.ceis.ui.header.openAgentProfile(context) },
+                onVideoClick = { /* ceis: template video pill is visual-only; the app has no video calling */ },
                 hazeState = nmHazeState,
             )
-            } // wevvy: close the header-fade wrapper
+            } // ceis: close the header-fade wrapper
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
@@ -2658,14 +2658,14 @@ fun ChatScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                // wevvy: the message list slides under the header, which is an
+                // ceis: the message list slides under the header, which is an
                 // overlay, so only the bottom bar insets the content. The
                 // header itself is a scrim over the scrolling list.
                 .padding(bottom = padding.calculateBottomPadding())
                 .imePadding()
                 .onGloballyPositioned { chatPaneWidthPx = it.size.width },
         ) {
-        // wevvy: merge live steps once so the footer and its reserve agree
+        // ceis: merge live steps once so the footer and its reserve agree
         // on the same frame, including tools still in the streaming side channel.
         val streamingById by viewModel.streamingById.collectAsState()
         val lastToolBlocks = remember(messages, streamingById) {
@@ -2681,36 +2681,36 @@ fun ChatScreen(
             else if (nmBarLingers) { kotlinx.coroutines.delay(1_500); nmBarLingers = false }
         }
         val nmToolBarShown = nmShowSteps && (isStreaming || nmBarLingers) && lastToolBlocks.isNotEmpty()
-        // wevvy: only live browser controls suppress the scrolling fade.
-        val nmBrowserHandOver by io.github.wevvy.browser.BrowserHandOver.pending.collectAsState()
+        // ceis: only live browser controls suppress the scrolling fade.
+        val nmBrowserHandOver by io.github.ceis.browser.BrowserHandOver.pending.collectAsState()
         val nmBrowserToolMenuShown =
             nmToolBarShown && lastToolBlocks.lastOrNull()?.toolName == "browser_use"
         val nmComposerFadeSuppressed =
             nmBrowserToolMenuShown || showBrowserSheet || nmBrowserHandOver != null
 
-        // wevvy: the composer and scrolling fade share one rounded outline.
+        // ceis: the composer and scrolling fade share one rounded outline.
         val nmRecState by com.openminis.app.speech.SpeechRecognitionManager.state.collectAsState()
         val nmRecording = nmRecState == com.openminis.app.speech.RecognitionState.RECORDING ||
             nmRecState == com.openminis.app.speech.RecognitionState.STARTING ||
             nmRecState == com.openminis.app.speech.RecognitionState.FINISHING
         val editingId by viewModel.editingMessageId.collectAsState()
-        // wevvy: read once for the composer's material branches below.
+        // ceis: read once for the composer's material branches below.
         val nmVoiceActive = com.openminis.app.ui.chat.voice.VoiceModePrefs.isVoiceActive
-        // wevvy: the pill composer (and its Liquid Glass capsule) is the
+        // ceis: the pill composer (and its Liquid Glass capsule) is the
         // default for every chat path, not only the home shell.
         val nmPill =
             !nmVoiceActive &&
             !nmRecording && editingId == null
         val nmComposerCorner = if (nmPill) 26.dp else 20.dp
         val nmComposerShape = RoundedCornerShape(nmComposerCorner)
-        // wevvy: template toolbar padding: 16 with the keyboard, 28 resting.
+        // ceis: template toolbar padding: 16 with the keyboard, 28 resting.
         val nmComposerHorizontalInset = if (nmPill) (if (imeBottomPx > 0) 16.dp else 28.dp) else 12.dp
         val nmComposerTopPadding = 2.dp
-        val nmComposerBottomPadding = io.github.wevvy.ui.chat.NM_CHAT_COMPOSER_BOTTOM_GAP
+        val nmComposerBottomPadding = io.github.ceis.ui.chat.NM_CHAT_COMPOSER_BOTTOM_GAP
 
-        // wevvy: measure the whole footer before the list, while keeping the
+        // ceis: measure the whole footer before the list, while keeping the
         // list full-size behind the pill for Haze. No asynchronous height feedback.
-        io.github.wevvy.ui.chat.NmChatBottomLayout(
+        io.github.ceis.ui.chat.NmChatBottomLayout(
             modifier = Modifier.fillMaxSize(),
             bottomInset = nmBottomOverlay,
             content = { bottomChromeHeight ->
@@ -2733,14 +2733,14 @@ fun ChatScreen(
             }
 
             // Messages + scroll-to-bottom button
-            // wevvy: the list fills the whole Box, extending behind the
+            // ceis: the list fills the whole Box, extending behind the
             // pill bar so the haze has content to blur. Bottom contentPadding
             // keeps the last message clear of the composer + pill.
             Box(modifier = Modifier.fillMaxSize()) {
-                // wevvy: the measured footer already includes the tool preview,
+                // ceis: the measured footer already includes the tool preview,
                 // approval cards, composer and pill inset. Only breathing room is extra.
                 val bottomReserve = if (nmToolBarShown) 14.dp else 20.dp
-                // wevvy: when the measured footer changes (tools, composer,
+                // ceis: when the measured footer changes (tools, composer,
                 // approval or keyboard), re-pin to bottom
                 // if we are currently following. Without this, the new
                 // contentPadding is honoured for layout but reverseLayout
@@ -2818,7 +2818,7 @@ fun ChatScreen(
                 // scope. The flatten still runs per token (cheap-ish; ran
                 // before too), but the rebuild stays off the main UI
                 // composable's invalidation list.
-                // wevvy: keyed on the steps switch too — flipping it in
+                // ceis: keyed on the steps switch too — flipping it in
                 // Settings rebuilds the rows with or without the steps.
                 LaunchedEffect(messages, sessionId, nmShowSteps) {
                     // [T-android-stream-pipeline-incremental] Frozen/live split.
@@ -2908,7 +2908,7 @@ fun ChatScreen(
                                     // threw ConcurrentModificationException from
                                     // a later frame's SubList.equals. Copying
                                     // severs the view so it can't comodify.
-                                    buildFlatChatItems(msgs.take(splitIdx), sessionId, showSteps = nmShowSteps) // wevvy
+                                    buildFlatChatItems(msgs.take(splitIdx), sessionId, showSteps = nmShowSteps) // ceis
                                 }
                                 val buildMs = (System.nanoTime() - tBuildStart) / 1_000_000
                                 frozenRows = rows
@@ -2984,7 +2984,7 @@ fun ChatScreen(
                             } else {
                                 withContext(Dispatchers.Default) {
                                     val merged = mergeStreamingOverlay(msgs, stream)
-                                    buildFlatChatItems(merged, null, fromIndex = splitIdx, seedKeys = frozenKeys, showSteps = nmShowSteps) // wevvy
+                                    buildFlatChatItems(merged, null, fromIndex = splitIdx, seedKeys = frozenKeys, showSteps = nmShowSteps) // ceis
                                 }
                             }
                             flatItems = if (liveRows.isEmpty()) frozenRows else frozenRows + liveRows
@@ -3100,13 +3100,13 @@ fun ChatScreen(
                     is FlatChatItem.AssistantThinking -> grayedMap[originalMessageId(messageId)] == true
                     is FlatChatItem.AssistantToolUse -> grayedMap[originalMessageId(messageId)] == true
                     is FlatChatItem.AssistantInfo -> false  // system rows never grayed
-                    is FlatChatItem.WevvyNaming -> false // wevvy
-                    is FlatChatItem.WevvyAvatarOptions -> false // wevvy
-                    is FlatChatItem.WevvyAvatarShare -> false // wevvy
-                    is FlatChatItem.WevvyAvatarConfirm -> false // wevvy
-                    is FlatChatItem.WevvyAllowance -> false // wevvy
+                    is FlatChatItem.CeisNaming -> false // ceis
+                    is FlatChatItem.CeisAvatarOptions -> false // ceis
+                    is FlatChatItem.CeisAvatarShare -> false // ceis
+                    is FlatChatItem.CeisAvatarConfirm -> false // ceis
+                    is FlatChatItem.CeisAllowance -> false // ceis
                     is FlatChatItem.AssistantTyping -> false
-                    is FlatChatItem.TimestampDivider -> false // wevvy: time dividers never grayed
+                    is FlatChatItem.TimestampDivider -> false // ceis: time dividers never grayed
                     is FlatChatItem.AssistantError -> grayedMap[originalMessageId(messageId)] == true
                     is FlatChatItem.AssistantLegacyContent -> grayedMap[originalMessageId(messageId)] == true
                 }
@@ -3254,13 +3254,13 @@ fun ChatScreen(
                     // the bubble's 4dp = 8dp (≈22px), tighter but still a clear
                     // breath under the title bar. Bottom padding and inter-
                     // message spacing are untouched.
-                    // wevvy: the list slides under the overlay header, so it
+                    // ceis: the list slides under the overlay header, so it
                     // starts below it: the Scaffold's top inset is the header's
                     // measured height (status bar included), plus breathing room.
                     // The bottom clears the floating pill bar the same way.
                     contentPadding = PaddingValues(
                         top = padding.calculateTopPadding() + 8.dp,
-                        // wevvy: use this layout pass's full footer height.
+                        // ceis: use this layout pass's full footer height.
                         bottom = bottomChromeHeight + bottomReserve,
                     ),
                     modifier = Modifier
@@ -3366,13 +3366,13 @@ fun ChatScreen(
                             )
                         }
                     }
-                    // wevvy: the last line came from another device (C9) — never this phone's
+                    // ceis: the last line came from another device (C9) — never this phone's
                     // turn to resume; while that device works, say so in the banner's place.
                     val nmLastId = messages.lastOrNull()?.id
                     val nmRemoteTail = nmLastId != null && nmLastId.substringBefore('#') in nmRemoteRows
                     if (nmRemoteTail) {
                         item(key = "__nm_working__", contentType = "nm_working") {
-                            io.github.wevvy.ui.chat.NmWorkingLine(viewModel.realSessionId.ifEmpty { sessionId }, nmLastId)
+                            io.github.ceis.ui.chat.NmWorkingLine(viewModel.realSessionId.ifEmpty { sessionId }, nmLastId)
                         }
                     }
                     if (canResume && !isStreaming && error == null && !lastAssistantHasError && nmContinueAsk == null && !nmRemoteTail) {
@@ -3381,7 +3381,7 @@ fun ChatScreen(
                                 viewModel.resume()
                                 // T282: same dual-scroll trick as the regular
                                 // send paths (T281). Resume kicks off a fresh
-                                // stream, so the "wevvy is thinking" indicator
+                                // stream, so the "ceis is thinking" indicator
                                 // mounts a frame or two later — pin once now,
                                 // then again after 100ms so the indicator
                                 // doesn't land below the fold.
@@ -3394,19 +3394,19 @@ fun ChatScreen(
                             })
                         }
                     }
-                    // wevvy: the ask for a star under a finished task, or on the 7th / 30th
+                    // ceis: the ask for a star under a finished task, or on the 7th / 30th
                     // day (reverseLayout: declared first, drawn at the bottom).
                     val nmStarAsk = nmStarNudge
                     if (nmStarAsk != null && !isStreaming) {
                         item(key = "__star_nudge__", contentType = "star_nudge") {
-                            io.github.wevvy.community.StarNudgeCard(
-                                text = remember(nmStarAsk) { io.github.wevvy.community.StarPrompt.text(context, nmStarAsk) },
+                            io.github.ceis.community.StarNudgeCard(
+                                text = remember(nmStarAsk) { io.github.ceis.community.StarPrompt.text(context, nmStarAsk) },
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                 onDone = { nmStarNudge = null },
                             )
                         }
                     }
-                    // wevvy: indexed so a row can see the next message in
+                    // ceis: indexed so a row can see the next message in
                     // time (the list is reversed): a group's last bubble
                     // carries the iMessage tail.
                     itemsIndexed(
@@ -3416,7 +3416,7 @@ fun ChatScreen(
                     ) { revIndex, item ->
                         // The item after this one in time, if any.
                         val chronoNext = flatItems.getOrNull(flatItems.size - revIndex)
-                        // wevvy: true while the received group of message
+                        // ceis: true while the received group of message
                         // [mid] continues with the next row.
                         val nmGroupContinues: (String) -> Boolean = { mid ->
                             when (chronoNext) {
@@ -3534,8 +3534,8 @@ fun ChatScreen(
                         ) {
                         when (item) {
                             is FlatChatItem.UserBubble -> Column {
-                                // wevvy: a row a routine sent is one quiet line, not a bubble in the person's voice
-                                io.github.wevvy.ui.chat.NmRoutineWakeRow(item.message.id.substringBefore('#')) {
+                                // ceis: a row a routine sent is one quiet line, not a bubble in the person's voice
+                                io.github.ceis.ui.chat.NmRoutineWakeRow(item.message.id.substringBefore('#')) {
                                 // User bubbles intentionally don't register
                                 // MinisTextKit shards — long-press on a user
                                 // bubble shows its own action menu (Copy /
@@ -3547,9 +3547,9 @@ fun ChatScreen(
                                 // gap when this bubble directly follows another
                                 // user bubble (back-to-back candidate sends).
                                 precededByUser = item.precededByUser,
-                                // wevvy: the iMessage sent dress in the shell,
+                                // ceis: the iMessage sent dress in the shell,
                                 // with the tail on the sent group's last bubble.
-                                nmIMessage = true, // wevvy: iMessage dress is the default for every chat path
+                                nmIMessage = true, // ceis: iMessage dress is the default for every chat path
                                 showTail = chronoNext !is FlatChatItem.UserBubble,
                                 onCopy = {
                                     val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
@@ -3615,9 +3615,9 @@ fun ChatScreen(
                                     }
                                 },
                             )
-                            } // wevvy: close NmRoutineWakeRow
+                            } // ceis: close NmRoutineWakeRow
                             } // close UserBubble SideEffect + UserMessageBubble block
-                            // wevvy: in the home shell the agent's reply is Muse's —
+                            // ceis: in the home shell the agent's reply is Muse's —
                             // grey bubbles per block, no name above each turn (the face
                             // in the header says who is talking); a small gap keeps the
                             // turns apart.
@@ -3627,7 +3627,7 @@ fun ChatScreen(
                                 messageId = item.messageId,
                                 slotKey = "text:${item.block.id}",
                                 markdown = item.messageMarkdown,
-                            ) { io.github.wevvy.ui.chat.NmAssistantBubble(enabled = true, rawText = item.block.content, showTail = !nmGroupContinues(item.messageId)) { // wevvy: group tail
+                            ) { io.github.ceis.ui.chat.NmAssistantBubble(enabled = true, rawText = item.block.content, showTail = !nmGroupContinues(item.messageId)) { // ceis: group tail
                                 // T-android-gc-storm-issue17: collapse oversized frozen
                                 // assistant text before feeding the markdown parser, which
                                 // is the GC-storm hotspot for legacy sessions.
@@ -3648,12 +3648,12 @@ fun ChatScreen(
                                         ),
                                     )
                                 }
-                            } } // wevvy: bubble
+                            } } // ceis: bubble
                             is FlatChatItem.AssistantMarkdownBlock -> BoundsTrackedBlock(
                                 messageId = item.messageId,
                                 slotKey = "mdblock:${item.parentBlockId}:${item.blockIndex}",
                                 markdown = item.messageMarkdown,
-                            ) { io.github.wevvy.ui.chat.NmAssistantBubble(enabled = true, rawText = item.rawText, showTail = !nmGroupContinues(item.messageId)) { // wevvy: group tail
+                            ) { io.github.ceis.ui.chat.NmAssistantBubble(enabled = true, rawText = item.rawText, showTail = !nmGroupContinues(item.messageId)) { // ceis: group tail
                                 LargeContentGuard(
                                     content = item.rawText,
                                     isStreaming = item.isStreaming,
@@ -3671,7 +3671,7 @@ fun ChatScreen(
                                         ),
                                     )
                                 }
-                            } } // wevvy: bubble
+                            } } // ceis: bubble
                             is FlatChatItem.AssistantThinking -> {
                                 // T300: hide Deep Thinking block when the user
                                 // currently has thinking turned off — even if
@@ -3697,13 +3697,13 @@ fun ChatScreen(
                                         block = item.block,
                                         isStreaming = item.isLastBlockOverall && item.messageIsStreaming,
                                         isLast = item.isLast,
-                                        nmQuiet = true, // wevvy: one quiet line in the shell
+                                        nmQuiet = true, // ceis: one quiet line in the shell
                                     )
                                 }
                             }
                             is FlatChatItem.AssistantToolUse -> ToolCallPill(
                                 block = item.block,
-                                nmCompact = true, // wevvy: compact chip in the received flow
+                                nmCompact = true, // ceis: compact chip in the received flow
                                 allToolBlocks = item.allToolBlocks,
                                 onRetry = if (item.isLastCancelled && !isStreaming && !canResume) ({ safeMutate { viewModel.retryLast() } }) else null,
                                 // T14: route per-card stop to the global
@@ -3757,14 +3757,14 @@ fun ChatScreen(
                                     { viewModel.revertCompact() }
                                 } else null,
                             )
-                            // wevvy: the first-conversation name chooser.
+                            // ceis: the first-conversation name chooser.
                             // A chip names the agent (and sends the name as the
                             // user's message, as Muse does); the dashed row
                             // hands over to the composer.
-                            is FlatChatItem.WevvyNaming -> {
+                            is FlatChatItem.CeisNaming -> {
                                 val nmCard by viewModel.nmNamingCard.collectAsState()
                                 nmCard?.let { card ->
-                                    io.github.wevvy.ui.onboarding.NamingCard(
+                                    io.github.ceis.ui.onboarding.NamingCard(
                                         state = card,
                                         onPick = { name -> viewModel.nmPickName(name) },
                                         onCustom = {
@@ -3774,47 +3774,47 @@ fun ChatScreen(
                                     )
                                 }
                             }
-                            // wevvy: the four candidates for a new face;
+                            // ceis: the four candidates for a new face;
                             // tapping one adopts it (typing "第二个" works too).
-                            is FlatChatItem.WevvyAvatarOptions -> io.github.wevvy.ui.avatar.AvatarOptionsCard(
+                            is FlatChatItem.CeisAvatarOptions -> io.github.ceis.ui.avatar.AvatarOptionsCard(
                                 onPick = { index -> viewModel.nmChooseAvatar(index) },
                                 onAgain = { viewModel.nmRegenerateAvatar() },
                                 onDismiss = { viewModel.nmCancelAvatar() },
                             )
-                            // wevvy: the new face is done — show it off.
-                            is FlatChatItem.WevvyAvatarShare -> io.github.wevvy.ui.avatar.AvatarShareCard(
+                            // ceis: the new face is done — show it off.
+                            is FlatChatItem.CeisAvatarShare -> io.github.ceis.ui.avatar.AvatarShareCard(
                                 description = item.description,
                                 onDismiss = { viewModel.nmDismissAvatarShare() },
                             )
-                            // wevvy: what the face costs on the Cloud allowance — drawn only after the yes.
-                            is FlatChatItem.WevvyAvatarConfirm -> io.github.wevvy.ui.avatar.AvatarConfirmCard(
+                            // ceis: what the face costs on the Cloud allowance — drawn only after the yes.
+                            is FlatChatItem.CeisAvatarConfirm -> io.github.ceis.ui.avatar.AvatarConfirmCard(
                                 text = item.text,
                                 blocked = viewModel.nmAvatarConfirmBlocked(),
                                 onConfirm = { viewModel.nmConfirmAvatar() },
                                 onDismiss = { viewModel.nmDeclineAvatar() },
                             )
-                            // wevvy: the relay refused the turn for a spent allowance — the two ways on.
-                            is FlatChatItem.WevvyAllowance -> {
+                            // ceis: the relay refused the turn for a spent allowance — the two ways on.
+                            is FlatChatItem.CeisAllowance -> {
                                 val info by viewModel.nmAllowance.collectAsState()
                                 info?.let {
-                                    io.github.wevvy.ui.cloud.AllowanceWaysCard(
+                                    io.github.ceis.ui.cloud.AllowanceWaysCard(
                                         info = it,
                                         exhausted = true,
                                     )
                                 }
                             }
-                            // wevvy: the centred time divider (Messages style).
-                            is FlatChatItem.TimestampDivider -> io.github.wevvy.ui.chat.NmTimestampDivider(millis = item.millis)
+                            // ceis: the centred time divider (Messages style).
+                            is FlatChatItem.TimestampDivider -> io.github.ceis.ui.chat.NmTimestampDivider(millis = item.millis)
                             is FlatChatItem.AssistantTyping -> TypingIndicator()
-                            // wevvy: a provider that could not be reached (or refused the
+                            // ceis: a provider that could not be reached (or refused the
                             // region, or whose sign-in ran out) is a card, not the socket's text
-                            is FlatChatItem.AssistantError -> io.github.wevvy.ui.chat.NmProviderErrorOrBanner(
+                            is FlatChatItem.AssistantError -> io.github.ceis.ui.chat.NmProviderErrorOrBanner(
                                 error = item.error,
                                 onRetry = {
                                     coroutineScope.launch { tracedScrollToItem("INLINE-RETRY-LAST", 0, 0) }
                                     safeMutate { viewModel.retryLast() }
                                 },
-                                // wevvy: one turn on wevvy Cloud after a model of the person's own failed; nothing is switched
+                                // ceis: one turn on ceis Cloud after a model of the person's own failed; nothing is switched
                                 onRetryOnCloud = if (viewModel.nmOffersCloudRetry()) ({
                                     coroutineScope.launch { tracedScrollToItem("INLINE-RETRY-LAST", 0, 0) }
                                     safeMutate { viewModel.nmRetryLastOnCloud() }
@@ -3832,7 +3832,7 @@ fun ChatScreen(
                                 messageId = item.messageId,
                                 slotKey = "legacy",
                                 markdown = item.messageMarkdown,
-                            ) { io.github.wevvy.ui.chat.NmAssistantBubble(enabled = true, rawText = item.content, showTail = !nmGroupContinues(item.messageId)) { // wevvy: group tail
+                            ) { io.github.ceis.ui.chat.NmAssistantBubble(enabled = true, rawText = item.content, showTail = !nmGroupContinues(item.messageId)) { // ceis: group tail
                                 LargeContentGuard(
                                     content = item.content,
                                     isStreaming = item.isStreaming,
@@ -3850,7 +3850,7 @@ fun ChatScreen(
                                         ),
                                     )
                                 }
-                            } } // wevvy: bubble
+                            } } // ceis: bubble
                         }
                         } // Box (alpha wrapper)
                     }
@@ -3974,7 +3974,7 @@ fun ChatScreen(
                 // draws above the list, the FABs and the floating tool bar
                 // (iOS mounts its SpeechPlayerControl at app root; chat-screen
                 // scope is the Android first pass).
-                // wevvy: speech controls and scroll buttons share the same
+                // ceis: speech controls and scroll buttons share the same
                 // measured footer obstruction, even when no tools are shown.
                 val upFabVisible = messages.isNotEmpty() && !isNearBottom.value
                 val downFabVisible =
@@ -4039,7 +4039,7 @@ fun ChatScreen(
                     if (leftover > 0.dp) leftover / 2 else 0.dp
                 }
 
-                // wevvy: fade into the canvas above the composer while reading
+                // ceis: fade into the canvas above the composer while reading
                 // older messages. Live browser controls hide it immediately, even
                 // if a scroll animation or the alpha tween is still in progress.
                 val nmEdgeFade = ChatColors.background
@@ -4053,9 +4053,9 @@ fun ChatScreen(
                 if (!nmComposerFadeSuppressed) {
                     val nmFadeHeight = 90.dp
                     val nmFooterHeight = (bottomChromeHeight - nmBottomOverlay).coerceAtLeast(0.dp)
-                    // wevvy: a rounded halo fades into the composer and
+                    // ceis: a rounded halo fades into the composer and
                     // away before the navigation glass, without square edges.
-                    io.github.wevvy.ui.chat.NmComposerVignette(
+                    io.github.ceis.ui.chat.NmComposerVignette(
                         color = nmEdgeFade,
                         opacity = nmBottomFadeAlpha,
                         spread = nmFadeHeight,
@@ -4072,7 +4072,7 @@ fun ChatScreen(
                     )
                 }
 
-                // wevvy: the top vignette. When scrolled up away from the
+                // ceis: the top vignette. When scrolled up away from the
                 // latest, the top edge gets a slow fade in the canvas colour so
                 // messages dissolve under the header instead of hitting a hard
                 // edge. Distinct from the header's static scrim; this one comes
@@ -4117,7 +4117,7 @@ fun ChatScreen(
                 // spacing). Tapping walks BACK one user turn at a time rather
                 // than jumping to the oldest message.
                 if (messages.isNotEmpty() && !isNearBottom.value) {
-                    // wevvy: clear every visible part of the measured footer.
+                    // ceis: clear every visible part of the measured footer.
                     val upBaseBottom = bottomChromeHeight + 8.dp
                     androidx.compose.material3.FilledIconButton(
                         onClick = {
@@ -4160,7 +4160,7 @@ fun ChatScreen(
                 }
 
                 if (userScrolledAway && contentOverflows.value && messages.isNotEmpty()) {
-                    // wevvy: clear every visible part of the measured footer.
+                    // ceis: clear every visible part of the measured footer.
                     val fabBottomPadding = bottomChromeHeight + 8.dp
                     androidx.compose.material3.FilledIconButton(
                         onClick = {
@@ -4190,7 +4190,7 @@ fun ChatScreen(
                                 tracedScrollToItem("FAB-DOWN/settle", 0, 0)
                             }
                         },
-                        // wevvy: scroll-to-latest, centered under the conversation:
+                        // ceis: scroll-to-latest, centered under the conversation:
                         // a disc in the send button's colour with an arrow in the
                         // canvas colour (white on black in dark, inverted in light).
                         modifier = Modifier
@@ -4222,13 +4222,13 @@ fun ChatScreen(
                 // T-chat-title-pill: sticky session title overlay. Sits
                 // above the LazyColumn (top-center), animates in once the
 
-                // wevvy: dim the conversation while the approval card is up.
-                io.github.wevvy.ui.guard.RiskScrim(sessionId = viewModel.activeSessionId)
+                // ceis: dim the conversation while the approval card is up.
+                io.github.ceis.ui.guard.RiskScrim(sessionId = viewModel.activeSessionId)
             }
 
             },
             bottomContent = {
-            // wevvy: tools and composer are siblings in one footer, so their
+            // ceis: tools and composer are siblings in one footer, so their
             // bounds cannot overlap regardless of composer/preview height.
             if (nmToolBarShown) {
                 Box(
@@ -4244,21 +4244,21 @@ fun ChatScreen(
                         onStop = { viewModel.cancelStream() },
                         onOpenTerminalWithCommand = onOpenTerminalWithCommand,
                         onOpenDetail = { viewModel.openToolDetail(it) },
-                        nmHazeState = nmHazeState, // wevvy: glass over the shell backdrop
+                        nmHazeState = nmHazeState, // ceis: glass over the shell backdrop
                     )
                 }
             }
 
-            // wevvy: Muse's "Needs approval" card sits between the messages and the composer.
-            io.github.wevvy.ui.guard.RiskApprovalHost(
+            // ceis: Muse's "Needs approval" card sits between the messages and the composer.
+            io.github.ceis.ui.guard.RiskApprovalHost(
                 sessionId = viewModel.activeSessionId,
                 onOpenSession = { onMoveToSession(it) },
-                hazeState = nmHazeState, // wevvy: the card floats in Liquid Glass
+                hazeState = nmHazeState, // ceis: the card floats in Liquid Glass
             )
-            // wevvy: a long task that hit the step ceiling asks "continue?" here.
-            io.github.wevvy.ui.chat.ContinueAskHost(viewModel, hazeState = nmHazeState)
-            // wevvy: the browser handed to the person (a login, a code) — "Your turn", Open, Done.
-            io.github.wevvy.ui.chat.BrowserHandOverHost(viewModel, hazeState = nmHazeState)
+            // ceis: a long task that hit the step ceiling asks "continue?" here.
+            io.github.ceis.ui.chat.ContinueAskHost(viewModel, hazeState = nmHazeState)
+            // ceis: the browser handed to the person (a login, a code) — "Your turn", Open, Done.
+            io.github.ceis.ui.chat.BrowserHandOverHost(viewModel, hazeState = nmHazeState)
 
             // T-chat-title-pill-edit: reuse SessionEditSheet from the session
             // list (same composable, exposed `internal`) so title + category
@@ -4280,7 +4280,7 @@ fun ChatScreen(
             var composerWidthPx by remember { mutableStateOf(0) }
 
             // ─── Input area (iOS-style: rounded box with text + buttons below) ───
-            // wevvy: the footer places the composer above the pill.
+            // ceis: the footer places the composer above the pill.
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -4305,13 +4305,13 @@ fun ChatScreen(
                     // which is exactly how the first attempt at this fix still
                     // looked broken.
                     .onGloballyPositioned { composerWidthPx = it.size.width }
-                    // wevvy: the footer owns the home pill inset; standalone
+                    // ceis: the footer owns the home pill inset; standalone
                     // chats still consume their system navigation inset here.
                     .then(
                         if (nmBottomOverlay > 0.dp) Modifier
                         else Modifier.navigationBarsPadding()
                     )
-                    // wevvy: match the fade and the nav surround's upper edge.
+                    // ceis: match the fade and the nav surround's upper edge.
                     .padding(horizontal = nmComposerHorizontalInset)
                     .padding(top = nmComposerTopPadding, bottom = nmComposerBottomPadding),
             ) {
@@ -4834,7 +4834,7 @@ fun ChatScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        // wevvy: the material chain is per-branch now. In the
+                        // ceis: the material chain is per-branch now. In the
                         // iMessage dress the Liquid Glass lives on the field
                         // capsule alone (in the button row below), so this
                         // column stays transparent and the attachment rows
@@ -4860,7 +4860,7 @@ fun ChatScreen(
                                             Modifier.liquidGlass(
                                                 hazeState = nmHazeState,
                                                 shape = nmComposerShape,
-                                                tint = io.github.wevvy.ui.home.MuseTones.bubble,
+                                                tint = io.github.ceis.ui.home.MuseTones.bubble,
                                             )
                                         } else {
                                             Modifier.background(ChatColors.inputBg, nmComposerShape)
@@ -4868,7 +4868,7 @@ fun ChatScreen(
                                     )
                             },
                         )
-                        .padding(top = if (attachments.isNotEmpty()) 8.dp else if (nmPill) 0.dp else 4.dp), // wevvy: pill composer
+                        .padding(top = if (attachments.isNotEmpty()) 8.dp else if (nmPill) 0.dp else 4.dp), // ceis: pill composer
                 ) {
                     // T185: Move-to capsule lives INSIDE the composer card,
                     // pinned 8dp from the top-right corner, mirroring iOS
@@ -5167,11 +5167,11 @@ fun ChatScreen(
                     // InlineVoiceInputView). The legacy in-composer waveform
                     // branch below only serves captures started OUTSIDE the
                     // panel (none today, kept as a safety net).
-                    // wevvy: the text field, declared once and placed either
+                    // ceis: the text field, declared once and placed either
                     // on its own row (upstream layout) or between the buttons
                     // (the pill — see nmPill above).
                     val nmTextField: @Composable (Modifier) -> Unit = { nmFieldModifier ->
-                    // Text field (iOS: placeholder "Message wevvy", no border)
+                    // Text field (iOS: placeholder "Message ceis", no border)
                     run {
                         val interactionSource = remember { MutableInteractionSource() }
                         // [T-android-composer-placeholder-rotation] Which entry
@@ -5236,7 +5236,7 @@ fun ChatScreen(
                             lastSendTimeMs = System.currentTimeMillis()
                             viewModel.setInputText("")
                             releaseComposerAfterSend()
-                            viewModel.nmMarkPersonTurn() // wevvy: the person started this turn (StarPrompt counts those)
+                            viewModel.nmMarkPersonTurn() // ceis: the person started this turn (StarPrompt counts those)
                             viewModel.sendMessage(toSend)
                             noteSendForInputModePref()
                             userScrolledAway = false
@@ -5388,7 +5388,7 @@ fun ChatScreen(
                                     caret = value.selection.end,
                                 )
                             },
-                            modifier = nmFieldModifier // wevvy: fillMaxWidth on its own row, weight(1f) in the pill
+                            modifier = nmFieldModifier // ceis: fillMaxWidth on its own row, weight(1f) in the pill
                                 .heightIn(min = 25.dp)
                                 .focusRequester(inputFocusRequester)
                                 .onFocusChanged {
@@ -5571,7 +5571,7 @@ fun ChatScreen(
                                         // swaps instantly — matching the iOS
                                         // Reduce Motion branch.
                                         val fadeMs = if (animationsDisabled(context)) 0 else 220
-                                        // wevvy: while the name chooser is
+                                        // ceis: while the name chooser is
                                         // up, the composer asks for a name
                                         // (Muse: "Write a name here").
                                         val nmNamingCard by viewModel.nmNamingCard.collectAsState()
@@ -5583,7 +5583,7 @@ fun ChatScreen(
                                         ) { idx ->
                                             Text(
                                                 if (nmChoosingName) stringResource(R.string.nm_naming_placeholder)
-                                                // wevvy: Muse's pill says just "Message".
+                                                // ceis: Muse's pill says just "Message".
                                                 else if (nmPill) stringResource(R.string.nm_composer_placeholder)
                                                 else composerPlaceholderText(idx, soulName.name),
                                                 color = if (nmPill) Color(0xFFD9D9D9) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f),
@@ -5669,7 +5669,7 @@ fun ChatScreen(
                         }
                     } else if (!nmPill) nmTextField(Modifier.fillMaxWidth())
 
-                    // wevvy: the button row's tail (the field or the
+                    // ceis: the button row's tail (the field or the
                     // standalone left group, then the language pill, the mic
                     // and send/stop) is defined once and shared: the pill
                     // wraps it in the glass capsule below, the standalone
@@ -5677,7 +5677,7 @@ fun ChatScreen(
                     // dresses cannot drift apart.
                     val nmComposerTail: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {
                         if (nmPill) {
-                            nmTextField(Modifier.weight(1f)) // wevvy: the field between the buttons
+                            nmTextField(Modifier.weight(1f)) // ceis: the field between the buttons
                         } else {
                         Spacer(modifier = Modifier.width(12.dp))
 
@@ -5702,7 +5702,7 @@ fun ChatScreen(
                         // is non-null. Tap clears the edit flag + composer text
                         // without truncating history. iOS parity:
                         // AIChatView.swift L1586 editExitButton.
-                        // (wevvy: editingId is read once, above the text field.)
+                        // (ceis: editingId is read once, above the text field.)
                         if (editingId != null) {
                             Spacer(modifier = Modifier.width(8.dp))
                             Surface(
@@ -5723,7 +5723,7 @@ fun ChatScreen(
                         }
 
                         Spacer(modifier = Modifier.weight(1f))
-                        } // wevvy: end of the two-row layout's left group
+                        } // ceis: end of the two-row layout's left group
 
                         // Right: Mic button — only renders when a speech engine
                         // is actually available on this device (handles the
@@ -6125,7 +6125,7 @@ fun ChatScreen(
                         // RECOVERABLE states, explained inside the panel with a
                         // link to the relevant settings rather than by silently
                         // removing the control.
-                        // wevvy: in the pill the mic gives way to the send
+                        // ceis: in the pill the mic gives way to the send
                         // arrow once there is something to send (or a stop
                         // square while the agent answers), as on Muse.
                         val nmPillBusy = nmPill && (inputText.isNotBlank() || attachments.isNotEmpty() || isStreaming)
@@ -6138,12 +6138,12 @@ fun ChatScreen(
                                 onClick = { triggerVoiceInput() },
                                 onLongClick = { showLangSheet = true },
                                 isVoiceActive = com.openminis.app.ui.chat.voice.VoiceModePrefs.isVoiceActive,
-                                plain = nmPill, // wevvy
+                                plain = nmPill, // ceis
                             )
                         }
 
                         if (!nmPill) Spacer(modifier = Modifier.width(12.dp))
-                        if (!nmPill || nmPillBusy) { // wevvy: the pill shows send/stop only when there is something to do
+                        if (!nmPill || nmPillBusy) { // ceis: the pill shows send/stop only when there is something to do
 
                         // Right: 3-state Send / Enqueue / Stop button (mirrors iOS sendButton).
                         //   • streaming + hasText  → SEND (routes through viewModel.sendMessage,
@@ -6162,7 +6162,7 @@ fun ChatScreen(
                         val hasContent = hasText || attachments.isNotEmpty()
                         val showStop = isStreaming && !hasContent
                         if (showStop) {
-                            // wevvy: match the monochrome send button (black disc with
+                            // ceis: match the monochrome send button (black disc with
                             // white square in light theme, inverted in dark, matching iOS).
                             Box(
                                 modifier = Modifier
@@ -6183,7 +6183,7 @@ fun ChatScreen(
                             // Streaming with content → Send-into-queue; Idle with content → Send.
                             // Idle without text or attachments → disabled.
                             val canActivate = hasContent
-                            // wevvy: in the pill, send is the one prominent
+                            // ceis: in the pill, send is the one prominent
                             // element on the glass and takes the primary fill
                             // (design.md: a stronger tint only to give one
                             // primary element prominence). The standalone
@@ -6192,9 +6192,9 @@ fun ChatScreen(
                             // the light one, the arrow in the canvas colour.
                             val nmSendBg = when {
                                 nmPill && canActivate ->
-                                    io.github.wevvy.ui.theme.WevvyColors.primary
+                                    io.github.ceis.ui.theme.CeisColors.primary
                                 nmPill ->
-                                    io.github.wevvy.ui.theme.WevvyColors.primary.copy(alpha = 0.25f)
+                                    io.github.ceis.ui.theme.CeisColors.primary.copy(alpha = 0.25f)
                                 canActivate -> ChatColors.sendButton
                                 else -> ChatColors.sendButton.copy(
                                     alpha = if (ChatColors.isDark) 0.15f else 0.08f,
@@ -6234,17 +6234,17 @@ fun ChatScreen(
                                 )
                             }
                         }
-                        } // wevvy: send/stop
+                        } // ceis: send/stop
                     }
                     // Button row below text field (iOS layout: + / ... mic send)
-                    // wevvy: in the pill this is THE row — "+", the field, mic/send.
+                    // ceis: in the pill this is THE row — "+", the field, mic/send.
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             // T185: 12dp horizontal lines the +/slash and
                             // mic/send icon-button column up with the
                             // attachment row + textfield + Move-to popup.
-                            // wevvy: the pill row itself is unpadded: the
+                            // ceis: the pill row itself is unpadded: the
                             // footer's inset places the + circle, and the
                             // capsule carries the inner padding (6 by 4).
                             .padding(
@@ -6254,7 +6254,7 @@ fun ChatScreen(
                         verticalAlignment = if (nmPill) Alignment.Bottom else Alignment.CenterVertically,
                     ) {
                         // Left: + button (iOS: 34×34 circle, secondary bg)
-                        // wevvy: template + circle is solid white with a glow,
+                        // ceis: template + circle is solid white with a glow,
                         // not the pale fill — wrap it in a solid white disc.
                         Box(
                             modifier = if (nmPill) Modifier
@@ -6270,7 +6270,7 @@ fun ChatScreen(
                         ) {
                             InputCircleButton(
                                 onClick = { showAttachMenu = true },
-                                plain = nmPill, // wevvy: a bare glyph inside the pill
+                                plain = nmPill, // ceis: a bare glyph inside the pill
                             ) {
                                 if (nmPill) {
                                     Text(
@@ -6292,7 +6292,7 @@ fun ChatScreen(
                                 expanded = showAttachMenu,
                                 onDismissRequest = { showAttachMenu = false },
                             ) {
-                                // wevvy: the "/" button has no seat in the pill,
+                                // ceis: the "/" button has no seat in the pill,
                                 // so the slash commands open from here (typing "/"
                                 // still opens them inline).
                                 if (nmPill) {
@@ -6349,7 +6349,7 @@ fun ChatScreen(
                         }
 
                         if (nmPill) {
-                            // wevvy: the + circle sits outside the capsule,
+                            // ceis: the + circle sits outside the capsule,
                             // as in Messages; the capsule carries the Liquid
                             // Glass (the material that sat on the whole card
                             // in stage 2) around the field, mic and send.
@@ -6365,18 +6365,18 @@ fun ChatScreen(
                                         spotColor = Color.Black.copy(alpha = 0.12f),
                                     )
                                     .clip(nmComposerShape)
-                                    // wevvy: template composer is a solid white
+                                    // ceis: template composer is a solid white
                                     // pill with a glow — faint glass over white
                                     // rendered nearly invisible on a real phone.
                                     .background(
-                                        if (io.github.wevvy.ui.home.MuseTones.isDark) Color(0xFF2C2C2E) else Color.White,
+                                        if (io.github.ceis.ui.home.MuseTones.isDark) Color(0xFF2C2C2E) else Color.White,
                                         nmComposerShape,
                                     )
-                                    // wevvy: visible hairline so the white pill reads
+                                    // ceis: visible hairline so the white pill reads
                                     // against the white transcript on a real phone.
                                     .border(
                                         1.dp,
-                                        if (io.github.wevvy.ui.home.MuseTones.isDark) Color.White.copy(alpha = 0.15f) else Color(0xFFE5E5EA),
+                                        if (io.github.ceis.ui.home.MuseTones.isDark) Color.White.copy(alpha = 0.15f) else Color(0xFFE5E5EA),
                                         nmComposerShape,
                                     ),
                             ) {
@@ -6647,12 +6647,12 @@ fun ChatScreen(
         }
         fun entryById(entryId: String): ModelEntry? =
             config.modelEntries.firstOrNull { it.id == entryId }
-        // wevvy: the relay's own models are never named in the UI; cloud entries read "wevvy Cloud".
-        val sheetCloudId = io.github.wevvy.cloud.WevvyCloud.instance(context)?.id
+        // ceis: the relay's own models are never named in the UI; cloud entries read "ceis Cloud".
+        val sheetCloudId = io.github.ceis.cloud.CeisCloud.instance(context)?.id
         fun sheetEntryName(entry: ModelEntry?): String = when {
             entry == null -> ""
             sheetCloudId != null && entry.providerInstanceId == sheetCloudId ->
-                io.github.wevvy.cloud.WevvyCloud.LABEL
+                io.github.ceis.cloud.CeisCloud.LABEL
             else -> entry.model.displayName
         }
 
@@ -6676,13 +6676,13 @@ fun ChatScreen(
                 } else {
                     viewModel.selectGroup(groupId)
                     showModelPicker = false
-                    // wevvy: a group picked here is the default for new chats too, and the
+                    // ceis: a group picked here is the default for new chats too, and the
                     // main chat follows it (ModelSlots.followPick, with the member the
                     // view-model resolved); the same line as for a model says so.
                     viewModel.activeEntryId.value?.let { resolved ->
-                        val sticks = io.github.wevvy.models.ModelSlots.followPick(context, resolved, groupId)
+                        val sticks = io.github.ceis.models.ModelSlots.followPick(context, resolved, groupId)
                         val name = group?.name?.takeIf { it.isNotBlank() }
-                            // wevvy: cloud entries read "wevvy Cloud", never the model name.
+                            // ceis: cloud entries read "ceis Cloud", never the model name.
                             ?: sheetEntryName(entryById(resolved)).takeIf { it.isNotBlank() }
                             ?: resolved
                         android.widget.Toast.makeText(
@@ -6706,11 +6706,11 @@ fun ChatScreen(
                 } else {
                     viewModel.selectGroupEntry(groupId, entryId)
                     showModelPicker = false
-                    // wevvy: as for a group pick, the default for new chats and the main chat follow
+                    // ceis: as for a group pick, the default for new chats and the main chat follow
                     if (entry != null) {
-                        // wevvy: cloud entries read "wevvy Cloud", never the model name.
+                        // ceis: cloud entries read "ceis Cloud", never the model name.
                         val name = sheetEntryName(entry).ifBlank { entry.model.id }
-                        val sticks = io.github.wevvy.models.ModelSlots.followPick(context, entryId, groupId)
+                        val sticks = io.github.ceis.models.ModelSlots.followPick(context, entryId, groupId)
                         android.widget.Toast.makeText(
                             context,
                             context.getString(if (sticks) R.string.nm_model_switched_sticky else R.string.nm_model_switched, name),
@@ -6731,16 +6731,16 @@ fun ChatScreen(
                 } else {
                     viewModel.selectEntry(entryId)
                     showModelPicker = false
-                    // wevvy: a pick in the picker is meant as "the model from now on" —
+                    // ceis: a pick in the picker is meant as "the model from now on" —
                     // the default for new chats follows it (a group named after the pick's
                     // provider, Settings → Models shows the same), and a line says so, since
                     // the picker's own binding is per chat and the next new chat would
                     // otherwise have gone back to the old default without a word. Since
                     // 0.1.41 this holds for every provider, not the Cloud's models alone.
                     if (entry != null) {
-                        // wevvy: cloud entries read "wevvy Cloud", never the model name.
+                        // ceis: cloud entries read "ceis Cloud", never the model name.
                         val name = sheetEntryName(entry).ifBlank { entry.model.id }
-                        val sticks = io.github.wevvy.models.ModelSlots.followPick(context, entryId)
+                        val sticks = io.github.ceis.models.ModelSlots.followPick(context, entryId)
                         android.widget.Toast.makeText(
                             context,
                             context.getString(if (sticks) R.string.nm_model_switched_sticky else R.string.nm_model_switched, name),

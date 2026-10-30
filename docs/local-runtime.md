@@ -1,47 +1,47 @@
-# wevvy on the phone: the local runtime
+# ceis on the phone: the local runtime
 
 > **Design record of the Python line.** The current Android app runs its agent on the
 > phone through OpenMinis's own Linux sandbox, not through this PRoot + Alpine + Python
 > arrangement; there is no `rootfs.yml`, no `local`/`connect` flavour and no
-> `wevvy-device` CLI in the APK you download. See [android.md](android.md). The files this
+> `ceis-device` CLI in the APK you download. See [android.md](android.md). The files this
 > page names (`scripts/rootfs/`, `android/native/`, the Kotlin under `runtime/`) have left the
 > tree; they are in the history at the tag `pre-openminis`.
 
 
-The Python line's Android app came in two flavours. **connect** was the remote for a `wevvy serve` on your computer ([archive/android-python-line.md](archive/android-python-line.md)). **local** was the whole thing: the same Python server, its tools and its Linux sandbox, running on the phone itself with nothing else to install. This page is about the second.
+The Python line's Android app came in two flavours. **connect** was the remote for a `ceis serve` on your computer ([archive/android-python-line.md](archive/android-python-line.md)). **local** was the whole thing: the same Python server, its tools and its Linux sandbox, running on the phone itself with nothing else to install. This page is about the second.
 
-The idea in one sentence: the APK carries a small Alpine Linux root file system with Python and `wevvy` inside; on first start the app unpacks it into its private storage and runs `wevvy serve` in it under [PRoot](https://proot-me.github.io/), a user-mode `chroot` that needs no root; the app's WebView then opens `http://127.0.0.1:<port>/`. The brain is unchanged. Kotlin only hosts it.
+The idea in one sentence: the APK carries a small Alpine Linux root file system with Python and `ceis` inside; on first start the app unpacks it into its private storage and runs `ceis serve` in it under [PRoot](https://proot-me.github.io/), a user-mode `chroot` that needs no root; the app's WebView then opens `http://127.0.0.1:<port>/`. The brain is unchanged. Kotlin only hosts it.
 
 ```
-┌─ wevvy.apk ───────────────────────────────────────────────────┐
+┌─ ceis.apk ───────────────────────────────────────────────────┐
 │  Kotlin shell            assets/rootfs.tar.xz     lib/…/libproot.so │
 │  ConnectActivity         Alpine 3.21 aarch64      PRoot 5.1        │
-│  RuntimeService  ──┐     python 3.12, wevvy    libproot-loader.so│
+│  RuntimeService  ──┐     python 3.12, ceis    libproot-loader.so│
 │  WebView ──────────┼──►  node 22 (optional)                        │
 └────────────────────┼─────────────────────────────────────────────┘
                      │ starts, watches, restarts
         ┌────────────▼──────────────────────────────────────────────┐
         │ proot -0 -r files/rootfs -b files/home:/root … \           │
-        │       /bin/sh /usr/local/bin/wevvy-serve                │
-        │   └─ wevvy serve --host 127.0.0.1 --port N --token T    │
+        │       /bin/sh /usr/local/bin/ceis-serve                │
+        │   └─ ceis serve --host 127.0.0.1 --port N --token T    │
         │        shell / python / files / browser / MCP / skills     │
         └───────────────────────────────────────────────────────────┘
 ```
 
 ## What the user sees
 
-The first screen asks **where your wevvy should live**: *Run on this phone* or *Connect to my computer*. The first choice unpacks the root file system (about 330 MB on disk, a minute or so) with a progress bar, starts the runtime, waits for its first health check, and opens the app. From then on the app starts the runtime whenever it is opened; a quiet notification (*Running on this phone*, or what the agent is doing right now) shows it is alive, with a **Stop** action. After a reboot the runtime comes back on its own so routines and check-ins keep running.
+The first screen asks **where your ceis should live**: *Run on this phone* or *Connect to my computer*. The first choice unpacks the root file system (about 330 MB on disk, a minute or so) with a progress bar, starts the runtime, waits for its first health check, and opens the app. From then on the app starts the runtime whenever it is opened; a quiet notification (*Running on this phone*, or what the agent is doing right now) shows it is alive, with a **Stop** action. After a reboot the runtime comes back on its own so routines and check-ins keep running.
 
 Failures land on one screen with the runtime's last log lines, a **Try again** and a **Start over**. Starting over returns to the first screen; it does not delete the phone's data.
 
 ## Where things live
 
-Everything is under the app's private files directory (`/data/data/io.github.wevvy.app/files`), which no other app can read:
+Everything is under the app's private files directory (`/data/data/io.github.ceis.app/files`), which no other app can read:
 
 | Path | Inside the box | What |
 | --- | --- | --- |
-| `rootfs/` | `/` | Alpine + python + `wevvy`. Replaced whole when the app updates |
-| `home/` | `/root` | The data dir (`~/.wevvy`), the workspace, npm's globals, uv's cache. Kept across updates |
+| `rootfs/` | `/` | Alpine + python + `ceis`. Replaced whole when the app updates |
+| `home/` | `/root` | The data dir (`~/.ceis`), the workspace, npm's globals, uv's cache. Kept across updates |
 | `etc/resolv.conf`, `etc/hosts` | `/etc/…` | Written from the phone's network settings before each start |
 | `proc/` | `/proc/stat` … | Stand-ins for the `/proc` files Android hides from apps |
 | `tmp/` | `/tmp` | Also PRoot's own scratch space |
@@ -60,7 +60,7 @@ libproot.so -0 --kill-on-exit --link2symlink
     -b <files>/home:/root  -b <files>/tmp:/tmp
     -b <files>/etc/resolv.conf:/etc/resolv.conf  -b <files>/etc/hosts:/etc/hosts
     [-b <files>/proc/stat:/proc/stat …  for each unreadable /proc file]
-    /bin/sh /usr/local/bin/wevvy-serve
+    /bin/sh /usr/local/bin/ceis-serve
 ```
 
 - `-0`: fake root. `apk add` and friends want uid 0; there is no real root anywhere here.
@@ -68,14 +68,14 @@ libproot.so -0 --kill-on-exit --link2symlink
 - `--link2symlink`: Android's file system refuses hard links to an app's files; PRoot emulates them with symlinks (pip and apk both make hard links).
 - The loader lives outside the root file system: `PROOT_LOADER` points at `libproot-loader.so` in the app's `nativeLibraryDir`, the one place a modern Android lets an app execute a binary from (W^X). The same is why PRoot itself ships as a `.so` under `jniLibs/` rather than as an asset.
 
-And the environment (`wevvy-serve` in the rootfs reads it):
+And the environment (`ceis-serve` in the rootfs reads it):
 
 | Variable | Value |
 | --- | --- |
-| `WEVVY_SERVER_PORT` / `WEVVY_SERVER_TOKEN` | A free loopback port picked once; a 32-byte random token. The WebView uses the same pair |
-| `WEVVY_DEVICE=android`, `WEVVY_DEVICE_MODEL`, `WEVVY_DEVICE_SDK` | The Python side knows it is on a phone (`wevvy/runtime.py`) |
-| `WEVVY_HOST_URL` / `WEVVY_HOST_TOKEN` | The app's own local API, when it runs one: its device capabilities join as the MCP server `device` |
-| `WEVVY_REGION` | The phone's region; `CN` switches the apk and pip mirrors on first start (`wevvy-mirror cn`) |
+| `CEIS_SERVER_PORT` / `CEIS_SERVER_TOKEN` | A free loopback port picked once; a 32-byte random token. The WebView uses the same pair |
+| `CEIS_DEVICE=android`, `CEIS_DEVICE_MODEL`, `CEIS_DEVICE_SDK` | The Python side knows it is on a phone (`ceis/runtime.py`) |
+| `CEIS_HOST_URL` / `CEIS_HOST_TOKEN` | The app's own local API, when it runs one: its device capabilities join as the MCP server `device` |
+| `CEIS_REGION` | The phone's region; `CN` switches the apk and pip mirrors on first start (`ceis-mirror cn`) |
 | `TZ` | The phone's IANA time zone, so routines fire at the right hour |
 | `http_proxy` / `https_proxy` | The system proxy, when one is set |
 | `UV_LINK_MODE=symlink` | uv would hard-link otherwise |
@@ -91,40 +91,40 @@ With the screen off, Doze freezes the app's process between maintenance windows,
 - `RuntimeService` reads it (from `/api/upcoming` after the connection comes up, then from each `schedule` event) and sets one alarm for it (`WakeAlarms`): `setExactAndAllowWhileIdle` when the app may schedule exact alarms, `setAndAllowWhileIdle` otherwise. Android 14 denies `SCHEDULE_EXACT_ALARM` to a fresh install, so the inexact path is the common one until the user grants it under *Settings → Keep it running*; inexact means within Android's batching window, a few minutes late at most, never early.
 - When the alarm fires, `WakeReceiver` pokes the service: it takes the wake lock for up to 45 s, calls `POST /api/tick`, and re-arms for whatever the runtime announces next. `tick` sets the event, the scheduler wakes, sees what is due, runs it, and the `status` events from the run keep the wake lock held for as long as the task takes, exactly as when the user started it.
 
-Nothing is due → no alarm, and the runtime idles until the WebView or a notification action wakes it. On a computer the same `next_wake_at` is just informative (`wevvy serve` never sleeps), and `POST /api/tick` is harmless: it ends the current nap early and nothing more.
+Nothing is due → no alarm, and the runtime idles until the WebView or a notification action wakes it. On a computer the same `next_wake_at` is just informative (`ceis serve` never sleeps), and `POST /api/tick` is harmless: it ends the current nap early and nothing more.
 
 ## The Python side on a phone
 
-`wevvy.runtime.device()` reads `WEVVY_DEVICE*`. With it:
+`ceis.runtime.device()` reads `CEIS_DEVICE*`. With it:
 
 - The sandbox describes itself honestly: there is no bubblewrap under PRoot, and the app's own root file system *is* the box. `Sandbox.describe()` says so in the system prompt, and the shell runs directly.
-- `wevvy serve` adds the app's device capabilities as the MCP server `device` when `WEVVY_HOST_URL` is set: the Kotlin side runs a small MCP server on `127.0.0.1` and the tools appear as `device__<name>` (`device__calendar_list`, `device__clipboard_read` …), each with its own Sentinel default. The tools, their permissions and what they ask the user: [device.md](device.md).
-- **The CLI bridge.** Every `shell` and `python_execute` call gets a one-command token (`WEVVY_BRIDGE`, `WEVVY_BRIDGE_TOKEN`), added after the sandbox has scrubbed all `WEVVY_*` from the environment, and revoked when the command ends (30 s of grace for backgrounded children). Three small stdlib-only CLIs in the rootfs use it to call back into the server:
+- `ceis serve` adds the app's device capabilities as the MCP server `device` when `CEIS_HOST_URL` is set: the Kotlin side runs a small MCP server on `127.0.0.1` and the tools appear as `device__<name>` (`device__calendar_list`, `device__clipboard_read` …), each with its own Sentinel default. The tools, their permissions and what they ask the user: [device.md](device.md).
+- **The CLI bridge.** Every `shell` and `python_execute` call gets a one-command token (`CEIS_BRIDGE`, `CEIS_BRIDGE_TOKEN`), added after the sandbox has scrubbed all `CEIS_*` from the environment, and revoked when the command ends (30 s of grace for backgrounded children). Three small stdlib-only CLIs in the rootfs use it to call back into the server:
 
   | CLI | Does |
   | --- | --- |
-  | `wevvy-device <capability> [action] [k=v …]` | A device tool: `clipboard read`, `calendar list from=2026-09-24`, `alarm set hour=7 minute=30 message=Train`, `contacts search query=张`, `notify title=Done body=Booked`, `location`, `photo pick`; `wevvy-device list` shows what this phone has ([device.md](device.md)) |
-  | `wevvy-browser <action> [k=v …]` | The `browser` tool: `navigate` / `extract` / `click` / `type` / `key` / `scroll` / `back` / `wait` / `screenshot` / `fetch URL [--post BODY]` (with the browser's cookies) / `profile mobile\|desktop` / `close` ([browser.md](browser.md)) |
-  | `wevvy-open <url>` | Opens the page in the in-app take-over sheet; the rootfs sets it as `BROWSER` |
+  | `ceis-device <capability> [action] [k=v …]` | A device tool: `clipboard read`, `calendar list from=2026-09-24`, `alarm set hour=7 minute=30 message=Train`, `contacts search query=张`, `notify title=Done body=Booked`, `location`, `photo pick`; `ceis-device list` shows what this phone has ([device.md](device.md)) |
+  | `ceis-browser <action> [k=v …]` | The `browser` tool: `navigate` / `extract` / `click` / `type` / `key` / `scroll` / `back` / `wait` / `screenshot` / `fetch URL [--post BODY]` (with the browser's cookies) / `profile mobile\|desktop` / `close` ([browser.md](browser.md)) |
+  | `ceis-open <url>` | Opens the page in the in-app take-over sheet; the rootfs sets it as `BROWSER` |
 
-  The server runs the request as a nested tool call inside the calling command's context: the same Sentinel, the same permissions, the same timeline (`tool` events carry `via: "shell"`), so a script can no more escape the rules than the model can. Off the phone (no `WEVVY_BRIDGE` in the environment) the CLIs exit 2 with a one-line note; on a computer these things are done from the desktop anyway.
+  The server runs the request as a nested tool call inside the calling command's context: the same Sentinel, the same permissions, the same timeline (`tool` events carry `via: "shell"`), so a script can no more escape the rules than the model can. Off the phone (no `CEIS_BRIDGE` in the environment) the CLIs exit 2 with a one-line note; on a computer these things are done from the desktop anyway.
 
 ## Limits
 
 - **PRoot is user-mode.** No real root, no mounting, no raw sockets, no `ptrace` inside (PRoot already uses it). Programs that read `/proc/self/…` or `/proc/stat` get the real Android values or the stand-ins. Anything that wants a capability Android does not grant apps (binding to ports below 1024, changing uid) fails the same way it would in Termux.
-- **Slower syscalls.** PRoot works by `ptrace`-ing every syscall. Compute-bound Python is barely affected; syscall-heavy work (a `git clone` of a big tree, `pip install` of many small files, `find /`) is 2–5× slower than native. `wevvy serve` itself is idle most of the time.
+- **Slower syscalls.** PRoot works by `ptrace`-ing every syscall. Compute-bound Python is barely affected; syscall-heavy work (a `git clone` of a big tree, `pip install` of many small files, `find /`) is 2–5× slower than native. `ceis serve` itself is idle most of the time.
 - **musl, not glibc.** Alpine uses musl. Most Python wheels come as `musllinux`; a prebuilt binary that assumes glibc needs `apk add gcompat`. Node is the Alpine build.
-- **No Chromium in the rootfs.** Playwright cannot run a browser here; the browser is always the app's own WebView (the `Browser` tool's device backend, `wevvy-browser` from scripts; [browser.md](browser.md)). `apk add chromium` does install but does not start under PRoot on Android.
+- **No Chromium in the rootfs.** Playwright cannot run a browser here; the browser is always the app's own WebView (the `Browser` tool's device backend, `ceis-browser` from scripts; [browser.md](browser.md)). `apk add chromium` does install but does not start under PRoot on Android.
 - **Storage.** About 330 MB after unpacking, plus whatever the user installs. The compressed rootfs is under 70 MB; the APK a little more.
 - **Background limits.** Android may still kill the service under memory pressure or aggressive vendor battery managers (the per-vendor battery allowances are in [archive/android-python-line.md](archive/android-python-line.md#keeping-it-running)). The service is `START_STICKY` and restarts; the alarm above survives the process, and the scheduler catches up on missed routines when it is back.
-- **What is in the box.** Alpine's `apk`, `git`, `curl`, `jq`, `bash`, `openssh-client`, `python3` with `pip`, and Node with `npm`. `uv` is not (35 MB); `pip install uv` gets it. `wevvy-mirror cn|default` switches apk, pip and npm between the upstream servers and mirrors in mainland China; the first start picks from the phone's region.
+- **What is in the box.** Alpine's `apk`, `git`, `curl`, `jq`, `bash`, `openssh-client`, `python3` with `pip`, and Node with `npm`. `uv` is not (35 MB); `pip install uv` gets it. `ceis-mirror cn|default` switches apk, pip and npm between the upstream servers and mirrors in mainland China; the first start picks from the phone's region.
 - **Node is optional.** `NODE=0 scripts/rootfs/build.sh` produces a rootfs without it, about 12 MB smaller compressed. The default includes it because the showcase's Chinese services (lark-cli, `@tencentcloud/tmeet`, `12306-mcp`) are npm packages.
 
 ## Building the pieces
 
 ```bash
 # the root file system (Docker with QEMU for arm64: docker run --privileged --rm tonistiigi/binfmt --install arm64)
-scripts/rootfs/build.sh                # → dist/rootfs/wevvy-rootfs-<ver>-aarch64.tar.xz + .json,
+scripts/rootfs/build.sh                # → dist/rootfs/ceis-rootfs-<ver>-aarch64.tar.xz + .json,
                                        #   copied to android/app/src/local/assets/rootfs.{tar.xz,json}
 APK_MIRROR=https://mirrors.aliyun.com PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
   scripts/rootfs/build.sh              # the same, with mirrors for the build machine only
@@ -138,7 +138,7 @@ ANDROID_NDK_HOME=~/Android/Sdk/ndk/27.2.12479018 android/native/build-proot.sh
 cd android && ./gradlew assembleLocalDebug assembleConnectDebug   # app/build/outputs/apk/{local,connect}/debug/
 ```
 
-`scripts/rootfs/Dockerfile` is the whole recipe: a wheel stage builds `wevvy` from the checkout, the rootfs stage installs Alpine packages, Python and the wheel into `/opt/wevvy`, Node when asked, the two helper scripts (`wevvy-serve`, `wevvy-mirror`), then trims tests, docs and caches. `/etc/wevvy-rootfs` stamps what went in. The size gate (`ROOTFS_MAX_MB`, 80) fails the build when the compressed tar outgrows the budget.
+`scripts/rootfs/Dockerfile` is the whole recipe: a wheel stage builds `ceis` from the checkout, the rootfs stage installs Alpine packages, Python and the wheel into `/opt/ceis`, Node when asked, the two helper scripts (`ceis-serve`, `ceis-mirror`), then trims tests, docs and caches. `/etc/ceis-rootfs` stamps what went in. The size gate (`ROOTFS_MAX_MB`, 80) fails the build when the compressed tar outgrows the budget.
 
 PRoot is built from the [Termux fork](https://github.com/termux/proot) (`5.1.107.94`, which carries the Android fixes: `--link2symlink`, ashmem/memfd, the loader as a separate file) with talloc `2.4.3`, both pinned by SHA-256, with the NDK's clang for API 26. PRoot is GPL-2.0; it runs as a separate executable that the app starts, and is not linked into the app. Its notice and the source offer are in `THIRD_PARTY_NOTICES.md`.
 
@@ -152,7 +152,7 @@ In the Python line's CI a `rootfs.yml` workflow built both and put them into the
 | `…/runtime/TarUnpacker.kt` | A tar reader for the root file system: ustar / PAX / GNU long names, symlinks, hard links, modes; refuses entries that would escape |
 | `…/runtime/RuntimeService.kt` | The foreground service: start, health, restart with backoff, `/ws` → notification text and wake lock, the Stop action |
 | `…/Notifier.kt` | Events → notifications, shared with `NotifyService` (remote mode) |
-| `wevvy/runtime.py` | `device()`: the phone as the Python side sees it; the `device` MCP server |
-| `wevvy/bridge/` | Tokens, the server side (`/api/bridge/*`), the three CLIs |
+| `ceis/runtime.py` | `device()`: the phone as the Python side sees it; the `device` MCP server |
+| `ceis/bridge/` | Tokens, the server side (`/api/bridge/*`), the three CLIs |
 | `scripts/rootfs/` | Dockerfile, `build.sh`, the two scripts inside the rootfs |
 | `android/native/build-proot.sh` | PRoot + talloc with the NDK |

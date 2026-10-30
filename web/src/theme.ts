@@ -9,7 +9,7 @@ import { useSyncExternalStore } from "react";
 export type ThemeSetting = "light" | "dark" | "system";
 export type Theme = "light" | "dark";
 
-const STORAGE_KEY = "wevvy_theme";
+const STORAGE_KEY = "ceis_theme";
 const COLORS: Record<Theme, string> = { light: "#ffffff", dark: "#181819" };
 
 function load(): ThemeSetting {

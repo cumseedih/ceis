@@ -100,11 +100,11 @@ class BackgroundTaskNotifier(
         }
 
         val deepLink = Uri.parse("minis://session/$sessionId")
-        // wevvy: to MainActivity by name, never through the system's choice of an app for the scheme.
+        // ceis: to MainActivity by name, never through the system's choice of an app for the scheme.
         // FLAG_ACTIVITY_NEW_TASK because we're posting from a background scope without an Activity
         // context; FLAG_ACTIVITY_CLEAR_TOP so MainActivity (singleTask) reuses the existing instance
         // and routes the deep-link via onNewIntent rather than spawning a duplicate.
-        val launchIntent: Intent = io.github.wevvy.deeplink.OwnScheme.intent(
+        val launchIntent: Intent = io.github.ceis.deeplink.OwnScheme.intent(
             context, deepLink, Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP,
         )
         val pendingIntent = PendingIntent.getActivity(
@@ -115,8 +115,8 @@ class BackgroundTaskNotifier(
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_wevvy) // wevvy: flat status-bar mark // wevvy: flat status-bar mark // wevvy: flat status-bar mark
-            .setLargeIcon(io.github.wevvy.identity.WevvyIdentity.face(context)) // wevvy: the agent is the sender
+            .setSmallIcon(R.drawable.ic_stat_ceis) // ceis: flat status-bar mark // ceis: flat status-bar mark // ceis: flat status-bar mark
+            .setLargeIcon(io.github.ceis.identity.CeisIdentity.face(context)) // ceis: the agent is the sender
             .setContentTitle(title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))

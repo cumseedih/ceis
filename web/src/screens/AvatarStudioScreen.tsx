@@ -34,7 +34,7 @@ export function AvatarStudioScreen() {
   const { state, setTab, toast, draft, refreshSettings } = useStore();
   const t = useT();
   const profile = state.profile;
-  const name = profile?.name ?? "wevvy";
+  const name = profile?.name ?? "ceis";
   const [view, setView] = useState<StudioView | null>(null);
   const [description, setDescription] = useState("");
   const [style, setStyle] = useState("muse");
@@ -248,7 +248,7 @@ export function AvatarStudioScreen() {
               {view === null
                 ? "…"
                 : view.available
-                  ? t("Drawn by wevvy Cloud")
+                  ? t("Drawn by ceis Cloud")
                   : unavailableLine(t, "image", regionOf(state.hub?.account), getLocale())}
             </span>
             <span className="shrink-0 font-medium text-accent">{t("Change model")}</span>

@@ -3,7 +3,7 @@
     android:height="18dp"
     android:viewportWidth="18"
     android:viewportHeight="18">
-    <!-- wevvy: row chevron, redrawn stroke path (the Figma export had only the words 'Help chevron' as path data) -->
+    <!-- ceis: row chevron, redrawn stroke path (the Figma export had only the words 'Help chevron' as path data) -->
     <path
         android:pathData="M9,5 L15,11 L9,17"
         android:fillColor="#00000000"

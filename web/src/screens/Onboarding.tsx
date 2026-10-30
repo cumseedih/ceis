@@ -21,7 +21,7 @@ type Step = "welcome" | "list" | "model" | "connect";
  * start locked until a model answers — and three optional connections under it. The
  * naming is not a form here: Start opens the chat, where the agent introduces itself and
  * asks what to call you, then picks its own name with you (the first conversation,
- * contract C4; `wevvy/server/firstrun.py`). Everything else can be changed later under
+ * contract C4; `ceis/server/firstrun.py`). Everything else can be changed later under
  * the avatar (Settings, Connections).
  */
 export function Onboarding() {
@@ -124,7 +124,7 @@ export function Onboarding() {
         {step === "welcome" && (
           <div className="flex h-full flex-col items-center justify-center text-center">
             <Avatar profile={preview} size={96} />
-            <h1 className="mt-6 text-[28px] font-bold tracking-tight">{t("Meet your wevvy")}</h1>
+            <h1 className="mt-6 text-[28px] font-bold tracking-tight">{t("Meet your ceis")}</h1>
             <p className="mt-2 text-[15px] text-muted">{t("A personal agent of your own. Three things to know:")}</p>
             <ul className="mt-6 w-full max-w-sm space-y-2.5 text-left">
               <Point n={1} title={t("It does things for you.")} body={t("Searches, browses, writes, books, reads mail, and hands you the result, not a list of links.")} />
@@ -133,7 +133,7 @@ export function Onboarding() {
             </ul>
             <p className="mt-5 max-w-sm text-[13px] text-muted">{t("There is no form to fill in: once it has a model, it introduces itself in the chat and asks what to call you.")}</p>
             {/* the free-use line the sign-in gate says, for a runtime that does not ask for an account */}
-            <p className="mt-2 max-w-sm text-[13px] text-muted">{t("wevvy is free to use.")}</p>
+            <p className="mt-2 max-w-sm text-[13px] text-muted">{t("ceis is free to use.")}</p>
           </div>
         )}
 
@@ -153,7 +153,7 @@ export function Onboarding() {
                 body={
                   modelReady
                     ? conn?.llm.cloud
-                      ? `wevvy Cloud · ${conn.llm.model}`
+                      ? `ceis Cloud · ${conn.llm.model}`
                       : `${conn?.llm.model} · ${hostOf(conn?.llm.base_url ?? "")}`
                     : state.hub?.account.signed_in
                       ? t("Your account's model, or a key of your own.")
@@ -192,7 +192,7 @@ export function Onboarding() {
                       {cloudBusy ? <Loader2 size={18} className="animate-spin" /> : <Cloud size={18} />}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] font-medium">{t("Use the wevvy Cloud model")}</span>
+                      <span className="block text-[15px] font-medium">{t("Use the ceis Cloud model")}</span>
                       <span className="block text-[12.5px] text-muted">{t("Signed in as {hint}. A free allowance, nothing to paste. Recommended to start.", { hint: state.hub.account.hint })}</span>
                     </span>
                     <ChevronRight size={16} className="shrink-0 text-muted" />

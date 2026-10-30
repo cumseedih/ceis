@@ -1,4 +1,4 @@
-"""The picture ↔ screen arithmetic of the hands (wevvy.computer.coords): UI-TARS's
+"""The picture ↔ screen arithmetic of the hands (ceis.computer.coords): UI-TARS's
 smart resize on known sizes, the picture size the model gets, the 0–1000 grid, boxes,
 and the mapping of picture pixels onto the hands' screen space and onto fractions."""
 
@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import pytest
 
-from wevvy.computer.coords import (
+from ceis.computer.coords import (
     IMAGE_FACTOR,
     MAX_PIXELS,
     MIN_PIXELS,

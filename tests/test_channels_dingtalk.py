@@ -14,8 +14,8 @@ from typing import Any
 import httpx
 import pytest
 
-from wevvy.channels.base import InboundMessage
-from wevvy.channels.dingtalk import DingTalkChannel
+from ceis.channels.base import InboundMessage
+from ceis.channels.dingtalk import DingTalkChannel
 
 
 class Bus:

@@ -1,6 +1,6 @@
-"""The sign-in page of wevvy Web (``/web/``), one file, in both languages.
+"""The sign-in page of ceis Web (``/web/``), one file, in both languages.
 
-Two steps: a phone number or an e-mail address, then the six-digit code wevvy Cloud sends
+Two steps: a phone number or an e-mail address, then the six-digit code ceis Cloud sends
 (and, the first time, a friend's invite code if there is one — ``?invite=`` in the address
 fills it in); or, for an account that set one, the password in one step. On success the
 browser goes to the account's own Muse at ``<slug>.<SESSION_DOMAIN>``. The page
@@ -18,10 +18,10 @@ PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>wevvy Web</title>
-<meta name="description" content="wevvy in the browser — sign in with a phone number or an e-mail, nothing to install. Free, open source, non-profit.">
+<title>ceis Web</title>
+<meta name="description" content="ceis in the browser — sign in with a phone number or an e-mail, nothing to install. Free, open source, non-profit.">
 <link rel="icon" href="https://wevvy.in/assets/icon-512.png">
-<script>try{var t=localStorage.getItem("wevvy_theme")||"light";if(t==="system")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem("ceis_theme")||"light";if(t==="system")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
 <style>
 :root{--bg:#F3F3F5;--card:#fff;--ink:#1C1B22;--muted:#6E6B7A;--line:#E4E3EA;--accent:#5B4EE6;--accent-ink:#fff;--warn:#B23B3B}
 html[data-theme=dark]{--bg:#121216;--card:#1B1B21;--ink:#F1F0F5;--muted:#9C99AA;--line:#2C2B34;--accent:#8A7DFF;--accent-ink:#0F0E16;color-scheme:dark}
@@ -94,17 +94,17 @@ i.en,i.zh{font-style:normal}
 <main>
 <div class="page">
   <section class="words">
-    <div class="brand"><img src="https://wevvy.in/assets/icon-512.png" alt=""><div><b>wevvy Web</b>
+    <div class="brand"><img src="https://wevvy.in/assets/icon-512.png" alt=""><div><b>ceis Web</b>
     <small><i class="zh">打开网页就能用，不用下载</i><i class="en">In the browser, nothing to install</i></small></div></div>
-    <h1 class="title"><i class="zh">试试 wevvy</i><i class="en">Try wevvy</i></h1>
-    <p><i class="zh">手机号或邮箱收个验证码，一分钟后就有一台属于你的 wevvy，模型自带。</i><i class="en">A phone number or an e-mail, a code, and a minute later a wevvy of your own is here, model included.</i></p>
+    <h1 class="title"><i class="zh">试试 ceis</i><i class="en">Try ceis</i></h1>
+    <p><i class="zh">手机号或邮箱收个验证码，一分钟后就有一台属于你的 ceis，模型自带。</i><i class="en">A phone number or an e-mail, a code, and a minute later a ceis of your own is here, model included.</i></p>
   </section>
 
   <ul class="perks">
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"/><path d="M10 19v-3.96 3.15"/><path d="M7 19h5"/><rect width="6" height="10" x="16" y="12" rx="2"/></svg><span><i class="zh">不用下载，打开浏览器就能用</i><i class="en">Nothing to install — it opens in the browser</i></span></li>
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg><span><i class="zh">自带模型和免费额度，也可以换自己的 key</i><i class="en">A model with a free allowance, or your own key</i></span></li>
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span><i class="zh">一直保存着，下次登录还在</i><i class="en">It keeps everything for your next visit</i></span></li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg><span><i class="zh">同一个账号，手机和电脑上就是同一个 wevvy</i><i class="en">The same account on the phone and the desktop is the same wevvy</i></span></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg><span><i class="zh">同一个账号，手机和电脑上就是同一个 ceis</i><i class="en">The same account on the phone and the desktop is the same ceis</i></span></li>
   </ul>
 
   <section class="card">
@@ -126,7 +126,7 @@ i.en,i.zh{font-style:normal}
       <input id="invite" name="invite" maxlength="8" autocomplete="off" spellcheck="false" placeholder="ABCD2345">
     </details>
     <button id="send" type="submit"><i class="zh">发送验证码</i><i class="en">Send the code</i></button>
-    <button id="login" type="submit" class="hidden"><i class="zh">进入我的 wevvy</i><i class="en">Open my wevvy</i></button>
+    <button id="login" type="submit" class="hidden"><i class="zh">进入我的 ceis</i><i class="en">Open my ceis</i></button>
     <div class="msg" id="msg1"></div>
   </form>
 
@@ -135,7 +135,7 @@ i.en,i.zh{font-style:normal}
     <p><i class="zh">六位数字已发到 </i><i class="en">Six digits were sent to </i><b id="to"></b></p>
     <label for="code"><i class="zh">验证码</i><i class="en">Code</i></label>
     <input id="code" class="code" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required>
-    <button id="go" type="submit"><i class="zh">进入我的 wevvy</i><i class="en">Open my wevvy</i></button>
+    <button id="go" type="submit"><i class="zh">进入我的 ceis</i><i class="en">Open my ceis</i></button>
     <button id="back" class="ghost" type="button"><i class="zh">换个账号</i><i class="en">Use another account</i></button>
     <div class="msg" id="msg2"></div>
   </form>
@@ -144,19 +144,19 @@ i.en,i.zh{font-style:normal}
   <section class="more">
   <div class="notice tip">
     <b><i class="zh">浏览器版适合先试一试</i><i class="en">The browser version is for a first try</i></b>
-    <i class="zh">要天天用，推荐装手机 App——功能最全，智能体整个跑在手机上；电脑上装桌面版。同一个账号登录，就是同一个 wevvy。<a href="https://wevvy.in/#download">下载手机 App 和桌面版</a></i>
-    <i class="en">For every day, install the phone app — the fullest, the whole agent runs on the phone — and the desktop app on your computer. The same account is the same wevvy everywhere. <a href="https://wevvy.in/#download">Get the phone and desktop apps</a></i>
+    <i class="zh">要天天用，推荐装手机 App——功能最全，智能体整个跑在手机上；电脑上装桌面版。同一个账号登录，就是同一个 ceis。<a href="https://wevvy.in/#download">下载手机 App 和桌面版</a></i>
+    <i class="en">For every day, install the phone app — the fullest, the whole agent runs on the phone — and the desktop app on your computer. The same account is the same ceis everywhere. <a href="https://wevvy.in/#download">Get the phone and desktop apps</a></i>
   </div>
   <div class="notice">
     <b><a href="https://wevvy.in/#open-source" rel="noopener"><i class="zh">免费、开源、非营利</i><i class="en">Free, open source, non-profit</i></a></b>
-    <i class="zh">每个账号都有一份由开发者承担的免费模型额度，用完换自己的 key：中国大陆用阿里云百炼，海外用 OpenRouter。登录后，对话文字会保存在 wevvy Cloud，让你的几台设备看到同样的对话——「数据控制」里一个开关就能关掉；数据不会出售。</i>
-    <i class="en">Every account starts with an allowance of model use paid by the developer; after that, your own key — Alibaba Cloud Bailian in mainland China, OpenRouter elsewhere. With an account, the text of your conversations is kept on wevvy Cloud so that your devices show the same chats — a switch in Data controls turns it off; nothing is sold.</i>
+    <i class="zh">每个账号都有一份由开发者承担的免费模型额度，用完换自己的 key：中国大陆用阿里云百炼，海外用 OpenRouter。登录后，对话文字会保存在 ceis Cloud，让你的几台设备看到同样的对话——「数据控制」里一个开关就能关掉；数据不会出售。</i>
+    <i class="en">Every account starts with an allowance of model use paid by the developer; after that, your own key — Alibaba Cloud Bailian in mainland China, OpenRouter elsewhere. With an account, the text of your conversations is kept on ceis Cloud so that your devices show the same chats — a switch in Data controls turns it off; nothing is sold.</i>
     <br><a href="https://github.com/nano-muse/nanoMuse" rel="noopener"><i class="zh">GitHub</i><i class="en">GitHub</i></a><a href="https://wevvy.in/own-key" rel="noopener"><i class="zh">换自己的 key</i><i class="en">Bring your own key</i></a>
   </div>
   <div class="foot">
-    <i class="zh">你的 wevvy 运行在我们的服务器上，数据只有你能访问；长时间不用会休眠，登录即唤醒。</i>
-    <i class="en">Your wevvy runs on our server and only you can reach it; it sleeps after a long quiet spell and wakes when you sign in.</i>
-    <br><i class="zh">wevvy 是社区项目，与 Meta 无关。</i><i class="en">wevvy is a community project, not affiliated with Meta.</i>
+    <i class="zh">你的 ceis 运行在我们的服务器上，数据只有你能访问；长时间不用会休眠，登录即唤醒。</i>
+    <i class="en">Your ceis runs on our server and only you can reach it; it sleeps after a long quiet spell and wakes when you sign in.</i>
+    <br><i class="zh">ceis 是社区项目，与 Meta 无关。</i><i class="en">ceis is a community project, not affiliated with Meta.</i>
   </div>
   </section>
 </div>
@@ -199,7 +199,7 @@ i.en,i.zh{font-style:normal}
   } catch (e) {}
   var T = {
     sending: ["正在发送…", "Sending…"], sent: ["已发送", "Sent"],
-    starting: ["正在准备你的 wevvy，第一次大约需要十几秒…", "Getting your wevvy ready — the first time takes ten seconds or so…"],
+    starting: ["正在准备你的 ceis，第一次大约需要十几秒…", "Getting your ceis ready — the first time takes ten seconds or so…"],
     ready: ["好了，正在进入…", "Ready, opening…"],
     network: ["网络不通，请稍后再试。", "Could not reach the server. Try again in a moment."]
   };
@@ -213,7 +213,7 @@ i.en,i.zh{font-style:normal}
     web_off: "这里没有开启网页版。", web_full: "网页版的名额已满。装 App 吧，它跑在你自己的设备上。",
     web_busy: "网页版现在很忙，请几分钟后再试，或者装 App。", start_failed: "没能启动你的 Muse，请稍后再试。",
     start_timeout: "你的 Muse 启动太久了，请稍后再试。", sign_in_again: "登录已失效，请重新登录。",
-    relay_error: "wevvy Cloud 没有返回 key，请稍后再试。", relay_unreachable: "连不上 wevvy Cloud，请稍后再试。"
+    relay_error: "ceis Cloud 没有返回 key，请稍后再试。", relay_unreachable: "连不上 ceis Cloud，请稍后再试。"
   };
   function errText(r){ return (zh && E[r.body.error]) || r.body.message || ("HTTP " + r.status); }
   function show(el, text, err){ el.textContent = text || ""; el.className = "msg" + (err ? " err" : ""); }

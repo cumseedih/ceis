@@ -17,5 +17,5 @@ harness/**/*.icns binary
 harness/**/*.ico binary
 # The phones' copies of the desktop's catalogues and Ideas lists: the desktop's tests compare
 # them with its own byte for byte (tests/fences.test.mjs), so they keep LF the same way.
-android/src/android/app/src/main/assets/wevvy/*.json text eol=lf
-android/src/ios/Wevvy/Resources/*.json text eol=lf
+android/src/android/app/src/main/assets/ceis/*.json text eol=lf
+android/src/ios/Ceis/Resources/*.json text eol=lf

@@ -1,4 +1,4 @@
-# Mac 实机检查任务 — wevvy Desktop 0.1.36
+# Mac 实机检查任务 — ceis Desktop 0.1.36
 
 这份文档是给在一台 Mac 上运行的 Cursor（或任何编码代理）看的。把它整个粘贴给代理，它就有了
 全部上下文：仓库是什么、怎么在 Mac 上构建桌面端、要检查哪几件事、每件事的预期、代码在哪、
@@ -11,18 +11,18 @@
 ## 0. 背景
 
 - 仓库 https://github.com/nano-muse/nanoMuse （GPL-3.0-or-later）。桌面端在 `harness/`：
-  `harness/dsh-wevvy` 是跑在 DeepSeek Harness（dsh）里的 wevvy 插件包（TypeScript，React
+  `harness/dsh-ceis` 是跑在 DeepSeek Harness（dsh）里的 ceis 插件包（TypeScript，React
   通过 `h()` 写，样式在 `src/client/styles.ts` 一个文件里），`harness/desktop` 是 Electron 外壳
   （`src/main.ts` 主进程、`src/preload.ts`、`resources/*.html` 启动页/发光层/胶囊），
-  `wevvy/` 是 Python 运行时（电脑端的「双手」，`wevvy/computer/`），由外壳作为子进程拉起。
-- 文档：`docs/desktop.md`（是什么、数据目录 `~/.wevvy/desktop`、`desktop.log`）、
+  `ceis/` 是 Python 运行时（电脑端的「双手」，`ceis/computer/`），由外壳作为子进程拉起。
+- 文档：`docs/desktop.md`（是什么、数据目录 `~/.ceis/desktop`、`desktop.log`）、
   `docs/desktop-muse.md`（界面逐项说明，含「Computer use」一节）、`docs/gui.md`（双手/坐标约定）、
   `CONTRIBUTING.md`（代码约定）。`CHANGELOG.md` 顶部 `## [Unreleased]` 记录未发布改动。
 - 0.1.35 在 Mac 上已知的问题：**点顶部中央的形象没有反应**（Linux 正常）。0.1.36 的修法是
   让聊天顶栏不再是窗口拖拽区（`styles.ts` 平台块，`MuseHeader.tsx` 里新增的空拖拽条
   `.nm-header-drag`），并把形象整体下移到 macOS 标题栏带以下。这需要实机确认。
 - 规则：不改版本号（版本号只在发布提交里改）；新代码放在我们自己的文件/命名空间里；改
-  上游文件要留 `// wevvy:` 注释；字符串英文在前、中文随后（`locales.ts` 两份）；不往仓库里
+  上游文件要留 `// ceis:` 注释；字符串英文在前、中文随后（`locales.ts` 两份）；不往仓库里
   放笔记、截图、日志。提交用 `git commit -s`（DCO 签名）。
 
 ## 1. 环境
@@ -33,7 +33,7 @@ xcode-select --install 2>/dev/null || true          # 命令行工具（git、co
 brew install node@22 pnpm python@3.12 cliclick       # Node 22（CI 同版本）、pnpm 11、Python 3.12、cliclick（读/写鼠标位置）
 export PATH="/opt/homebrew/opt/node@22/bin:$PATH"    # Intel Mac 是 /usr/local/opt/node@22/bin
 node -v   # v22.x
-git clone https://github.com/nano-muse/nanoMuse.git && cd wevvy
+git clone https://github.com/nano-muse/nanoMuse.git && cd ceis
 git checkout -b mac-check-0.1.36
 ```
 
@@ -41,13 +41,13 @@ git checkout -b mac-check-0.1.36
 
 ```bash
 # 2.1 插件包
-cd harness/dsh-wevvy
+cd harness/dsh-ceis
 pnpm install --frozen-lockfile && pnpm build && pnpm typecheck && pnpm test
 # 2.2 把 dsh 和插件包放到外壳的 resources/dsh（CI 的同一步）
 cd ../desktop && node scripts/prepare-dsh.mjs
 # 2.3 运行时：开发时不用 PyInstaller，直接用 venv 里的可执行文件
 cd ../.. && python3.12 -m venv .venv && .venv/bin/pip install -e ".[hands]"
-export WEVVY_PY="$PWD/.venv/bin/wevvy"
+export CEIS_PY="$PWD/.venv/bin/ceis"
 # 2.4 外壳
 cd harness/desktop && npm ci && npm run typecheck
 ```
@@ -59,12 +59,12 @@ cd harness/desktop && npm ci && npm run typecheck
 - **打包态**（验证权限、启动页、Dock 图标等）：
   ```bash
   npm run dist:dir && ../../scripts/desktop-app/package-mac.sh arm64     # Intel 用 x64
-  open dist/mac-arm64/wevvy.app                                        # 或 dist/mac/
+  open dist/mac-arm64/ceis.app                                        # 或 dist/mac/
   ```
   本地没有证书时是 ad-hoc 签名；首次打开若被 Gatekeeper 拦下，系统设置 → 隐私与安全性 → 仍要打开。
-  bundle id 是 `io.github.wevvy.desktop`。重测权限提示用
-  `tccutil reset ScreenCapture io.github.wevvy.desktop; tccutil reset Accessibility io.github.wevvy.desktop`。
-- 数据目录 `~/.wevvy/desktop`（日志 `desktop.log`）。想从头开始：`mv ~/.wevvy/desktop ~/.wevvy/desktop.bak`。
+  bundle id 是 `io.github.ceis.desktop`。重测权限提示用
+  `tccutil reset ScreenCapture io.github.ceis.desktop; tccutil reset Accessibility io.github.ceis.desktop`。
+- 数据目录 `~/.ceis/desktop`（日志 `desktop.log`）。想从头开始：`mv ~/.ceis/desktop ~/.ceis/desktop.bak`。
 - 看渲染进程内部：加 `--remote-debugging-port=9333` 启动，然后用 CDP（`curl 127.0.0.1:9333/json`
   拿到 webSocketDebuggerUrl，用 node 的 `ws` 或 `chrome-remote-interface` 执行 `Runtime.evaluate`）。
   检查完关掉，不要带着调试端口长期运行。
@@ -88,13 +88,13 @@ cd harness/desktop && npm ci && npm run typecheck
      （比如 56px，同时把 `header[data-window-drag]:has(.nm-header)` 的 `min-height` 加同样的量），
      或把 `harness/desktop/src/main.ts` 里 `trafficLightPosition: { x: 16, y: 18 }` 的 y 改小，看哪一个起效。
   3. 全屏（绿灯按钮）下也点一次：全屏时 `data-nm-fullscreen` 生效，头像回到 `top: 12px`。
-- 代码：`harness/dsh-wevvy/src/client/styles.ts`（搜 `nm-header-drag`、`data-nm-platform='darwin'`）、
+- 代码：`harness/dsh-ceis/src/client/styles.ts`（搜 `nm-header-drag`、`data-nm-platform='darwin'`）、
   `src/client/MuseHeader.tsx`、`harness/desktop/src/main.ts`（`titleBarStyle: "hiddenInset"`）。
 
 ### B. 权限文案与「试一下」行
 
-- 位置：设置 → Computer use（电脑操作）→ 权限页（`harness/dsh-wevvy/src/client/Sections.tsx`，
-  文案键 `pm*` 在 `locales.ts`，英文一份、中文一份；主进程探测在 `main.ts` 的 `wevvy:permissions*`）。
+- 位置：设置 → Computer use（电脑操作）→ 权限页（`harness/dsh-ceis/src/client/Sections.tsx`，
+  文案键 `pm*` 在 `locales.ts`，英文一份、中文一份；主进程探测在 `main.ts` 的 `ceis:permissions*`）。
 - 预期：辅助功能、屏幕录制两行的状态与系统设置一致（授予/未授予），按钮能跳到对应的系统设置
   面板；「试一下」会截一张图并做一次无害的鼠标移动，然后用一句话报告结果；屏幕录制未授予时
   截图是黑的，要出现 `pmTryShotBlack` 那句（让人去系统设置里打开并重启）。中英文都看一遍，
@@ -103,7 +103,7 @@ cd harness/desktop && npm ci && npm run typecheck
 
 ### C. 屏幕录制的重启对话框
 
-- 做法：应用运行中，到系统设置 → 隐私与安全性 → 屏幕录制，打开 wevvy Desktop。
+- 做法：应用运行中，到系统设置 → 隐私与安全性 → 屏幕录制，打开 ceis Desktop。
 - 预期：应用弹一次对话框「屏幕录制已允许，重新启动后生效」（英文 “Screen Recording is on; it
   takes effect after a restart”），按钮「立即重启 / 稍后」；点「立即重启」应用重开（`app.relaunch`），
   之后截图不再是黑的。对话框只出现一次，不重复弹；「稍后」之后也不要再弹。
@@ -120,22 +120,22 @@ cd harness/desktop && npm ci && npm run typecheck
 ### E. 窗口模式的点击与 Retina 映射
 
 - 背景：macOS 上 `[hands] mode = auto` 时，一旦指定目标应用，双手就进入「窗口模式」——截图只
-  截那个窗口，事件直接发给那个进程（`wevvy/computer/mac_window.py`）。Retina 屏的窗口截图是
+  截那个窗口，事件直接发给那个进程（`ceis/computer/mac_window.py`）。Retina 屏的窗口截图是
   点数的两倍，`WindowFrame.to_screen` 负责把图上的像素映射回屏幕点。
-- 做法：开一个 TextEdit 窗口放在屏幕右下（避开左上角默认位置），对 wevvy 说「在 TextEdit 里
+- 做法：开一个 TextEdit 窗口放在屏幕右下（避开左上角默认位置），对 ceis 说「在 TextEdit 里
   点一下工具栏最左边的按钮」或通过工具直接调用：先 `computer_screen`（app=TextEdit）看图，再
   `computer_act click` 到图上某个明确的按钮坐标。
 - 预期：点在图上那个按钮上（用 `cliclick p` 读当前鼠标位置，和换算后的屏幕点比对；差距应在 2 pt 内）。
   如果偏差恰好是 2 倍，是 Retina 比例没除；如果偏移固定一个窗口原点，是窗口 frame 没加。
-- 代码：`wevvy/computer/mac_window.py`、`wevvy/computer/link.py`（`_capture_window`、`_where`）。
+- 代码：`ceis/computer/mac_window.py`、`ceis/computer/link.py`（`_capture_window`、`_where`）。
 
 ### F. 新的桌面操作器（0.1.36：Electron 内的 nut.js 操作器，源自 UI-TARS-desktop）
 
 - 背景：0.1.36 起，桌面端的截图和鼠标键盘由 Electron 主进程里的操作器完成
   （`harness/desktop/src/operator.ts`、`operator-server.ts`，依赖 `@computer-use/nut-js` 4.2.0），通过
-  回环 HTTP 暴露给 Python 运行时（每次启动随机端口和 token，环境变量 `WEVVY_OPERATOR_URL`/
-  `WEVVY_OPERATOR_TOKEN`，经 Host → preset 白名单 → `wevvy mcp`）。运行时侧是
-  `wevvy/computer/operator.py`（`desktop` 后端，`auto` 在有操作器时优先选它）和 `coords.py`
+  回环 HTTP 暴露给 Python 运行时（每次启动随机端口和 token，环境变量 `CEIS_OPERATOR_URL`/
+  `CEIS_OPERATOR_TOKEN`，经 Host → preset 白名单 → `ceis mcp`）。运行时侧是
+  `ceis/computer/operator.py`（`desktop` 后端，`auto` 在有操作器时优先选它）和 `coords.py`
   （模型的坐标单位是**它看到的那张图片**，运行时在动作前一次性换算到操作器的屏幕像素）。
   在 Linux X11（4K、缩放 2）上实测点击误差 ≤1 px；macOS 的原生二进制（`@computer-use/libnut-darwin`）、
   权限归属、坐标空间、滚动单位、热键映射、内容保护都需要实机确认。
@@ -150,11 +150,11 @@ cd harness/desktop && npm ci && npm run typecheck
   1. **原生模块能加载。** 打包后：`node scripts/prepare-dsh.mjs` 之后 `npm run dist:dir`，确认
      `dist/mac-arm64/*.app/Contents/Resources/app.asar.unpacked/node_modules/@computer-use/libnut-darwin/build/Release/libnut.node`
      存在；跑 `node scripts/smoke.mjs --app dist/mac-arm64 --operator`（`/info` 可用、无 token → 401、
-     320×180 PNG 可解码）。另外 `open -a "wevvy Desktop" --args --operator-check=/tmp/op.json`
+     320×180 PNG 可解码）。另外 `open -a "ceis Desktop" --args --operator-check=/tmp/op.json`
      （加 `--operator-move` 会把鼠标移到屏幕中心）写出一份自检 JSON，贴进报告。
-  2. **权限归属。** 首次使用前 TCC 应各弹一次提示，并且两项都归在 **wevvy Desktop** 名下
-     （不是 Electron，不是 Python）。`tccutil reset ScreenCapture io.github.wevvy.desktop` /
-     `tccutil reset Accessibility io.github.wevvy.desktop` 后重做一次。权限 `not-determined` 时
+  2. **权限归属。** 首次使用前 TCC 应各弹一次提示，并且两项都归在 **ceis Desktop** 名下
+     （不是 Electron，不是 Python）。`tccutil reset ScreenCapture io.github.ceis.desktop` /
+     `tccutil reset Accessibility io.github.ceis.desktop` 后重做一次。权限 `not-determined` 时
      `/info` 应为 `available:false` 且 reason 说清缺哪一项；此时运行时会退回 pyautogui 并缓存到重启——
      授予权限后重启应用，确认 `/info` 变为 `available:true`。
   3. **坐标空间。** Mac 上 `/info` 的 `display` 应是**点**（`scaleFactor` 报 1，`width/height` 等于
@@ -170,17 +170,17 @@ cd harness/desktop && npm ci && npm run typecheck
      `setContentProtection`）。截一张有标记时的图核对。
   8. **窗口模式**（与 E 节一起）：`[hands] mode = window` 时点击仍应准确，Retina 映射不重复缩放。
 - 诊断：`desktop.log` 中搜 `operator`（启动行有端口和 available；token 不打印）。要 `curl` 时从
-  运行时进程的环境里取：`PID=$(pgrep -f "[n]anomuse mcp" | head -1); ps eww -p "$PID" | tr ' ' '\\n' | grep WEVVY_OPERATOR_`
-  （只在本机终端里用，不要把 token 写进报告）。常见原因：权限未归到 wevvy Desktop → 按 2 节 reset；`libnut.node` 缺失 → `asarUnpack` 没生效，
+  运行时进程的环境里取：`PID=$(pgrep -f "[n]anomuse mcp" | head -1); ps eww -p "$PID" | tr ' ' '\\n' | grep CEIS_OPERATOR_`
+  （只在本机终端里用，不要把 token 写进报告）。常见原因：权限未归到 ceis Desktop → 按 2 节 reset；`libnut.node` 缺失 → `asarUnpack` 没生效，
   检查 `electron-builder.yml`；坐标偏一倍 → `display.scaleFactor` 在 Mac 上没取 1，看 `operator.ts`
   的 `screenSpace`。
 - 代码：`harness/desktop/src/operator.ts`、`operator-server.ts`、`main.ts`（启动/注入/`--operator-check`）、
-  `resources/glow.html`（标记）、`wevvy/computer/operator.py`、`coords.py`、`link.py`、
-  `harness/dsh-wevvy/presets/wevvy.patch.yml`（env 白名单）。
+  `resources/glow.html`（标记）、`ceis/computer/operator.py`、`coords.py`、`link.py`、
+  `harness/dsh-ceis/presets/ceis.patch.yml`（env 白名单）。
 
 ### G. 启动页与图标
 
-- 启动时先出现启动页：wevvy 图标在一个安静的加载圆环里，下面是字标和「正在启动」；没有
+- 启动时先出现启动页：ceis 图标在一个安静的加载圆环里，下面是字标和「正在启动」；没有
   龙、没有任何形象。深浅色模式都看。Dock 图标、菜单栏托盘图标正常。
 - 代码：`harness/desktop/resources/loading.html`、`main.ts` 的 `createWindow`。
 
@@ -192,16 +192,16 @@ cd harness/desktop && npm ci && npm run typecheck
 
 ## 4. 修复与提交
 
-- 直接在本分支修。代码放对位置：插件 `harness/dsh-wevvy/src/`（客户端在 `src/client/`），
-  外壳 `harness/desktop/src/`，运行时 `wevvy/`。不要改版本号。
-- 跑检查：`cd harness/dsh-wevvy && pnpm typecheck && pnpm test && pnpm build`；
-  `cd harness/desktop && npm run typecheck`；动了 Python 就 `.venv/bin/ruff check wevvy tests &&
-  .venv/bin/mypy wevvy && .venv/bin/pytest tests -q`。
+- 直接在本分支修。代码放对位置：插件 `harness/dsh-ceis/src/`（客户端在 `src/client/`），
+  外壳 `harness/desktop/src/`，运行时 `ceis/`。不要改版本号。
+- 跑检查：`cd harness/dsh-ceis && pnpm typecheck && pnpm test && pnpm build`；
+  `cd harness/desktop && npm run typecheck`；动了 Python 就 `.venv/bin/ruff check ceis tests &&
+  .venv/bin/mypy ceis && .venv/bin/pytest tests -q`。
 - `CHANGELOG.md` 的 `## [Unreleased]` 下按平台小节（Desktop / Runtime）写一句话，过去式，说清
   改了什么、为什么。
 - 提交：`git add -A && git commit -s -m "fix(desktop): <一句话>"`；推送 `git push -u origin mac-check-0.1.36`；
   `gh pr create --base main --title "Mac check 0.1.36: <摘要>" --body-file <报告文件>`（没有 gh 就把
-  分支名和报告发回来）。不要把 `~/.wevvy`、密钥、带 token 的日志放进提交。
+  分支名和报告发回来）。不要把 `~/.ceis`、密钥、带 token 的日志放进提交。
 
 ## 5. 报告格式
 

@@ -1,10 +1,10 @@
 # The landing page (legacy)
 
-The wevvy homepage now lives in [nano-muse/nano-muse.github.io](https://github.com/nano-muse/nano-muse.github.io)
+The ceis homepage now lives in [nano-muse/nano-muse.github.io](https://github.com/nano-muse/nano-muse.github.io)
 and is served at <https://wevvy.in/>, with a GitHub Pages copy at <https://nano-muse.github.io/>.
 `site/index.html` here is a redirect to it;
 the page below — the Python line's site with the promo film — is kept as `legacy.html` and
-still published by `.github/workflows/pages.yml` under `https://nano-muse.github.io/wevvy/legacy.html`.
+still published by `.github/workflows/pages.yml` under `https://nano-muse.github.io/ceis/legacy.html`.
 
 `legacy.html` is one static page, no framework, English and 中文 in the same file (the toggle
 in the top right, `?lang=zh` or `?lang=en` in the URL).

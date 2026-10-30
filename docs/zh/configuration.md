@@ -1,18 +1,18 @@
 # 配置
 
-wevvy 只读一个 TOML 文件。`wevvy config init` 把带注释的 [`config/config.example.toml`](../../config/config.example.toml) 抄一份写到 `config/config.toml`；`wevvy config show` 打印实际生效的设置，机密值打码。
+ceis 只读一个 TOML 文件。`ceis config init` 把带注释的 [`config/config.example.toml`](../../config/config.example.toml) 抄一份写到 `config/config.toml`；`ceis config show` 打印实际生效的设置，机密值打码。
 
 查找顺序：
 
-1. `--config PATH` / `WEVVY_CONFIG`
+1. `--config PATH` / `CEIS_CONFIG`
 2. `./config/config.toml`
-3. `~/.wevvy/config.toml`
+3. `~/.ceis/config.toml`
 
 任何字符串值都可以写 `${VAR}` 或 `${VAR:-default}`，加载文件时会替换成环境变量，所以 API key 不必落在文件里。`api_key`、`address` 和 `password` 还可以写成 `{{vault:NAME}}`：值在构建客户端时才从加密的保险库里读出，从不给模型看。
 
 三层设置，后面的覆盖前面的：先是这个文件，然后是环境变量覆盖，最后是 App 里「连接」屏幕改过的东西（`<data_dir>/app-settings.json`：模型、邮件服务器、浏览器开关、从手机上添加的 MCP 服务器）。最后这个文件里提到机密，一律只写 `{{vault:NAME}}`。
 
-运行时没有对应设置的键（拼错的 `modle`、来自另一个版本的键）会被忽略，取默认值；加载时会在日志里带着键的路径（`llm.modle`）说明，`wevvy doctor` 把这类键列为问题。自由格式的表（`[llm.extra_headers]`、MCP 服务器的 `env`）和 [channels.md](channels.md) 里的 `[channels.<name>]` 表接受任何键。
+运行时没有对应设置的键（拼错的 `modle`、来自另一个版本的键）会被忽略，取默认值；加载时会在日志里带着键的路径（`llm.modle`）说明，`ceis doctor` 把这类键列为问题。自由格式的表（`[llm.extra_headers]`、MCP 服务器的 `env`）和 [channels.md](channels.md) 里的 `[channels.<name>]` 表接受任何键。
 
 ## 环境变量覆盖 {#environment-overrides}
 
@@ -20,24 +20,24 @@ wevvy 只读一个 TOML 文件。`wevvy config init` 把带注释的 [`config/co
 
 | 变量 | 设置 |
 |---|---|
-| `WEVVY_LLM_PROVIDER`、`WEVVY_LLM_MODEL`、`WEVVY_LLM_BASE_URL`、`WEVVY_LLM_API_KEY`、`WEVVY_LLM_TOOL_MODE`、`WEVVY_LLM_VISION`、`WEVVY_LLM_IMAGE_MODEL`、`WEVVY_LLM_VIDEO_MODEL`、`WEVVY_LLM_VIDEO_BASE_URL` | `[llm]`（`video_base_url`：异步视频 API 在聊天模型以外的另一台主机上；转发用的主机，比如展示站的网关，会在这里报上自己的名字） |
+| `CEIS_LLM_PROVIDER`、`CEIS_LLM_MODEL`、`CEIS_LLM_BASE_URL`、`CEIS_LLM_API_KEY`、`CEIS_LLM_TOOL_MODE`、`CEIS_LLM_VISION`、`CEIS_LLM_IMAGE_MODEL`、`CEIS_LLM_VIDEO_MODEL`、`CEIS_LLM_VIDEO_BASE_URL` | `[llm]`（`video_base_url`：异步视频 API 在聊天模型以外的另一台主机上；转发用的主机，比如展示站的网关，会在这里报上自己的名字） |
 | `DEEPSEEK_API_KEY`、`OPENAI_API_KEY` | `llm.api_key` 为空时顶上：`base_url` 是 `*.deepseek.com` 用 DeepSeek 的，其他所有主机（OpenAI 自己、OpenRouter、网关、vLLM）用 OpenAI 的 |
-| `WEVVY_DATA_DIR` | `data_dir`（默认 `~/.wevvy`） |
-| `WEVVY_WORKSPACE` | `agent.workspace`（默认：当前目录下有 `./workspace` 就用它，否则 `<data_dir>/workspace`） |
-| `WEVVY_SENTINEL_MODE` | `sentinel.mode` |
-| `WEVVY_SEARCH_PROVIDER`、`WEVVY_SEARCH_API_KEY`、`WEVVY_SEARCH_BASE_URL` | `[connectors.search]` |
-| `WEVVY_SERVER_HOST`、`WEVVY_SERVER_PORT`、`WEVVY_SERVER_TOKEN` | `[server]` |
-| `WEVVY_BROWSER_ENABLED=1` | `browser.enabled = true`（只能打开，不能关；浏览器版 Docker 镜像会设它；手机通过 `WEVVY_DEVICE` 设它） |
-| `WEVVY_BROWSER_BACKEND` | `browser.backend`：`auto`、`playwright` 或 `device` |
-| `WEVVY_GUI_ENABLED=1`、`WEVVY_GUI_PROVIDER`、`WEVVY_GUI_MODEL`、`WEVVY_GUI_BASE_URL`、`WEVVY_GUI_API_KEY` | `[gui]`：操作手机，以及干这件事的模型 |
-| `WEVVY_IMAGE_PROVIDER`、`WEVVY_IMAGE_MODEL`、`WEVVY_IMAGE_BASE_URL`、`WEVVY_IMAGE_API_KEY`；把 `IMAGE` 换成 `VIDEO` 也一样 | [`[image]` 和 `[video]` 槽位](#image-and-video)：图片和短视频从哪里来 |
-| `WEVVY_VAULT_KEY` | 保险库的 Fernet 密钥（默认：`<data_dir>/vault.key`） |
-| `WEVVY_CLOUD_BASE_URL`、`WEVVY_CLOUD_REQUIRED`、`WEVVY_CLOUD_SYNC` | `[cloud]`：托管运行时登录的那个中继、是否必须有 wevvy Cloud 账号，以及「在我的设备之间同步对话」的默认值（`sync`，除非设为 `0` 否则是开的；「设置 → 数据控制」里的开关只要动过一次，就以它为准；[every-device.md](every-device.md#the-same-conversations-everywhere)）（[cloud.md](cloud.md)；中继自己的变量在 [cloud/README.md](../../cloud/README.md)） |
-| `WEVVY_HUB_NAME` | `hub.name`，这台设备在其他设备上叫什么 |
-| `WEVVY_CLOUD_KEY`、`WEVVY_CLOUD_HINT`、`WEVVY_CLOUD_CHANNEL`、`WEVVY_ONBOARDED` | 托管的运行时（wevvy Web）一启动就是登录状态：创建容器的网关交来账号 key（和手动输入的一样进保险库）、账号页要显示的打码标识和渠道，以及首次运行是否已经完成；保险库里已经有 key 时什么都不做 |
-| `WEVVY_IN_CONTAINER=1` | 说明运行时在容器里（镜像会设置它；`/.dockerenv` 也会被读取），于是 `sandbox.mode = auto` 把容器当作箱子，而不是报告缺少 bubblewrap |
-| `WEVVY_CODING_HOME` | 到哪里找编程 CLI 各自的家目录（`~/.codex`、`~/.claude`……），默认是用户的家目录（[coding-agents.md](coding-agents.md)） |
-| `WEVVY_LOG_LEVEL` | `log_level` |
+| `CEIS_DATA_DIR` | `data_dir`（默认 `~/.ceis`） |
+| `CEIS_WORKSPACE` | `agent.workspace`（默认：当前目录下有 `./workspace` 就用它，否则 `<data_dir>/workspace`） |
+| `CEIS_SENTINEL_MODE` | `sentinel.mode` |
+| `CEIS_SEARCH_PROVIDER`、`CEIS_SEARCH_API_KEY`、`CEIS_SEARCH_BASE_URL` | `[connectors.search]` |
+| `CEIS_SERVER_HOST`、`CEIS_SERVER_PORT`、`CEIS_SERVER_TOKEN` | `[server]` |
+| `CEIS_BROWSER_ENABLED=1` | `browser.enabled = true`（只能打开，不能关；浏览器版 Docker 镜像会设它；手机通过 `CEIS_DEVICE` 设它） |
+| `CEIS_BROWSER_BACKEND` | `browser.backend`：`auto`、`playwright` 或 `device` |
+| `CEIS_GUI_ENABLED=1`、`CEIS_GUI_PROVIDER`、`CEIS_GUI_MODEL`、`CEIS_GUI_BASE_URL`、`CEIS_GUI_API_KEY` | `[gui]`：操作手机，以及干这件事的模型 |
+| `CEIS_IMAGE_PROVIDER`、`CEIS_IMAGE_MODEL`、`CEIS_IMAGE_BASE_URL`、`CEIS_IMAGE_API_KEY`；把 `IMAGE` 换成 `VIDEO` 也一样 | [`[image]` 和 `[video]` 槽位](#image-and-video)：图片和短视频从哪里来 |
+| `CEIS_VAULT_KEY` | 保险库的 Fernet 密钥（默认：`<data_dir>/vault.key`） |
+| `CEIS_CLOUD_BASE_URL`、`CEIS_CLOUD_REQUIRED`、`CEIS_CLOUD_SYNC` | `[cloud]`：托管运行时登录的那个中继、是否必须有 ceis Cloud 账号，以及「在我的设备之间同步对话」的默认值（`sync`，除非设为 `0` 否则是开的；「设置 → 数据控制」里的开关只要动过一次，就以它为准；[every-device.md](every-device.md#the-same-conversations-everywhere)）（[cloud.md](cloud.md)；中继自己的变量在 [cloud/README.md](../../cloud/README.md)） |
+| `CEIS_HUB_NAME` | `hub.name`，这台设备在其他设备上叫什么 |
+| `CEIS_CLOUD_KEY`、`CEIS_CLOUD_HINT`、`CEIS_CLOUD_CHANNEL`、`CEIS_ONBOARDED` | 托管的运行时（ceis Web）一启动就是登录状态：创建容器的网关交来账号 key（和手动输入的一样进保险库）、账号页要显示的打码标识和渠道，以及首次运行是否已经完成；保险库里已经有 key 时什么都不做 |
+| `CEIS_IN_CONTAINER=1` | 说明运行时在容器里（镜像会设置它；`/.dockerenv` 也会被读取），于是 `sandbox.mode = auto` 把容器当作箱子，而不是报告缺少 bubblewrap |
+| `CEIS_CODING_HOME` | 到哪里找编程 CLI 各自的家目录（`~/.codex`、`~/.claude`……），默认是用户的家目录（[coding-agents.md](coding-agents.md)） |
+| `CEIS_LOG_LEVEL` | `log_level` |
 
 ## `[llm]` {#llm}
 
@@ -56,7 +56,7 @@ stream        = true
 tool_mode     = "auto"             # "auto" | "native" | "prompt" — see below
 vision        = "auto"             # pictures attached in chat go to the model: "auto" | "on" | "off"
 pass_reasoning = false             # send reasoning_content back with assistant turns (some DeepSeek endpoints)
-extra_headers = {}                 # e.g. { "X-End-User-Id" = "wevvy" }
+extra_headers = {}                 # e.g. { "X-End-User-Id" = "ceis" }
 extra_body    = {}                 # e.g. { "thinking" = { "type" = "enabled" } }
 proxy         = ""                 # an HTTP(S) or SOCKS proxy for this slot only, e.g. "http://127.0.0.1:7890"
 image_model   = ""                 # the older way to name the avatar studio's picture model on this host; see [image] below
@@ -64,7 +64,7 @@ video_model   = ""                 # the same for clips
 video_base_url = ""                # the asynchronous video API when it is not on this host (a relaying gateway)
 ```
 
-`proxy` 让这个槽位的请求（`chatgpt` 槽位还包括登录的令牌刷新）走那个代理，并对它们忽略环境里的 `HTTPS_PROXY`；留空则由环境决定。它从不作用于 wevvy Cloud 和 hub。（手机上同样的开关在「设置 → 网络」；[own-key.md](own-key.md#when-the-provider-cannot-be-reached)。）
+`proxy` 让这个槽位的请求（`chatgpt` 槽位还包括登录的令牌刷新）走那个代理，并对它们忽略环境里的 `HTTPS_PROXY`；留空则由环境决定。它从不作用于 ceis Cloud 和 hub。（手机上同样的开关在「设置 → 网络」；[own-key.md](own-key.md#when-the-provider-cannot-be-reached)。）
 
 各服务商的写法：
 
@@ -82,27 +82,27 @@ video_base_url = ""                # the asynchronous video API when it is not o
 | vLLM / LM Studio | 你起的服务名 | `http://localhost:8000/v1` | 服务器不理会 `tools` 的话，设 `tool_mode = "prompt"` |
 | 公司网关 | 按要求 | 按要求 | 用 `extra_headers` / `extra_body`；按网关说的 API 形状来选 provider |
 
-网页控制台提供同一组预设（「连接 → 对话模型」，以及第一次打开时），每个都带一个链接，指向它的 key 从哪里领；确切的主机名在 `wevvy/server/connections.py` 的 `PROVIDERS` 里。从 App 保存的 `base_url` 如果没有路径，会补上 `/v1`（`http://host:8000` → `http://host:8000/v1`）；预设自带的主机原样保留。Ollama 和自定义端点可以没有 key。从网页控制台添加的自定义接口是一个列表（`app-settings.json` 里的 `endpoints`，每项是 `{id, label, base_url, api_key, models}`，key 以 `ENDPOINT_<ID>_API_KEY` 存在保险库里）；设在其中一个接口上的槽位带着它的地址和那个保险库引用，所以这个文件不需要知道列表的存在（[web.md](web.md#where-it-shows)）。在这里设在目录外主机上的 `[llm]` 对话模型保持原样；只有从 App 里设的那个会搬进列表。
+网页控制台提供同一组预设（「连接 → 对话模型」，以及第一次打开时），每个都带一个链接，指向它的 key 从哪里领；确切的主机名在 `ceis/server/connections.py` 的 `PROVIDERS` 里。从 App 保存的 `base_url` 如果没有路径，会补上 `/v1`（`http://host:8000` → `http://host:8000/v1`）；预设自带的主机原样保留。Ollama 和自定义端点可以没有 key。从网页控制台添加的自定义接口是一个列表（`app-settings.json` 里的 `endpoints`，每项是 `{id, label, base_url, api_key, models}`，key 以 `ENDPOINT_<ID>_API_KEY` 存在保险库里）；设在其中一个接口上的槽位带着它的地址和那个保险库引用，所以这个文件不需要知道列表的存在（[web.md](web.md#where-it-shows)）。在这里设在目录外主机上的 `[llm]` 对话模型保持原样；只有从 App 里设的那个会搬进列表。
 
-`provider` 也可以是服务商目录 [`wevvy/llm/providers.json`](../../wevvy/llm/providers.json) 里的一个 id（`bailian`、`deepseek`、`moonshot`、`zhipu`、`openrouter`、`openai`、`gemini`……），这时 `base_url` 以及（为空时的）`model` 从目录里填上，只有 `api_key` 是你自己的。目录还写明每家服务商的 key 覆盖什么（聊天、手、图片、短视频）；服务器上的 `GET /api/providers` 报告每个槽位用的是哪家服务商、还剩哪些没被覆盖，App 对一项没人覆盖的功能只显示一句话（[own-key.md](own-key.md)）。
+`provider` 也可以是服务商目录 [`ceis/llm/providers.json`](../../ceis/llm/providers.json) 里的一个 id（`bailian`、`deepseek`、`moonshot`、`zhipu`、`openrouter`、`openai`、`gemini`……），这时 `base_url` 以及（为空时的）`model` 从目录里填上，只有 `api_key` 是你自己的。目录还写明每家服务商的 key 覆盖什么（聊天、手、图片、短视频）；服务器上的 `GET /api/providers` 报告每个槽位用的是哪家服务商、还剩哪些没被覆盖，App 对一项没人覆盖的功能只显示一句话（[own-key.md](own-key.md)）。
 
 ### 用 ChatGPT 套餐代替 key {#a-chatgpt-plan-instead-of-a-key}
 
 ```toml
 [llm]
-provider = "chatgpt"     # the sign-in from `wevvy chatgpt login`; no base_url, no api_key
+provider = "chatgpt"     # the sign-in from `ceis chatgpt login`; no base_url, no api_key
 model    = ""            # empty → gpt-5.6-sol (also gpt-6.1-sol, gpt-6-sol, gpt-6-luna, gpt-6-astra, gpt-5.4, gpt-5.4-mini)
 ```
 
-有 ChatGPT 套餐（Plus、Pro、Team）的人可以让 wevvy 用它来聊天和动手，方式和 OpenAI 自己的 Codex CLI 一样：`wevvy chatgpt login` 在浏览器里打开 OpenAI 的登录页（PKCE，和 Codex 相同的 client id、scope 和重定向地址），在运行时所在机器的 1455 端口等回调，然后把令牌存进 `<data_dir>/chatgpt.json`（权限 0600），到期前自动刷新。`wevvy chatgpt status` 说明是谁登录的、有效到什么时候（从不显示令牌）；`wevvy chatgpt logout` 删掉存储。同样的三步也在网页控制台的「连接」屏幕上（「或者用 ChatGPT 套餐登录」），它调用运行时的 `POST /api/chatgpt/login`、`GET /api/chatgpt/status` 和 `POST /api/chatgpt/logout`（[web.md](web.md)）。登录之后什么都不会自己切换：在这里设 `provider = "chatgpt"`，在网页上选「让它来回答对话」，或者 `PUT /api/connections/llm {"provider": "chatgpt"}`。`[gui] provider = "chatgpt"` 对手同样适用。
+有 ChatGPT 套餐（Plus、Pro、Team）的人可以让 ceis 用它来聊天和动手，方式和 OpenAI 自己的 Codex CLI 一样：`ceis chatgpt login` 在浏览器里打开 OpenAI 的登录页（PKCE，和 Codex 相同的 client id、scope 和重定向地址），在运行时所在机器的 1455 端口等回调，然后把令牌存进 `<data_dir>/chatgpt.json`（权限 0600），到期前自动刷新。`ceis chatgpt status` 说明是谁登录的、有效到什么时候（从不显示令牌）；`ceis chatgpt logout` 删掉存储。同样的三步也在网页控制台的「连接」屏幕上（「或者用 ChatGPT 套餐登录」），它调用运行时的 `POST /api/chatgpt/login`、`GET /api/chatgpt/status` 和 `POST /api/chatgpt/logout`（[web.md](web.md)）。登录之后什么都不会自己切换：在这里设 `provider = "chatgpt"`，在网页上选「让它来回答对话」，或者 `PUT /api/connections/llm {"provider": "chatgpt"}`。`[gui] provider = "chatgpt"` 对手同样适用。
 
 它覆盖什么：聊天和视觉（手要读截图）。Codex 后端没有图片和视频端点，所以图片和短视频仍然需要一把 key：下面的 `[image]` 或 `[video]` 槽位，或者一家主机会画图的聊天服务商。`chatgpt` 槽位里的 `base_url` 和 `api_key` 会被忽略，并在日志里留一条警告。
 
 **实话一句**，每次登录都会打印：*OpenAI 的条款只允许在 OpenAI 自己的 Codex 里使用 ChatGPT 套餐；别的应用曾被切断过这种访问（OpenCode，2026 年 1 月）。哪天它不能用了，API key 还能用。*
 
-**回调必须到得了运行时。** OpenAI 把浏览器送回 `http://localhost:1455/auth/callback`，所以浏览器必须和运行时在同一台机器上（或者把这个端口转发过去）。不在同一台时（运行时在服务器上、控制台开在笔记本上），登录页照样能用，只是浏览器最后落在一个没人应答的地址上。把地址栏里那整个地址（`http://localhost:1455/auth/callback?code=…&state=…`）复制出来交给运行时：端口被占或者迟迟没有回调时，CLI 会问你要；带 `--json` 时它从 stdin 读一行；网页控制台的卡片上有一个输入框；从 `/api/chatgpt/login` 发起的登录还在等待期间，服务器接受 `POST /api/chatgpt/callback {"url": "<the address>"}`。`state` 和正在等待的那次登录对不上会被拒绝（400 `state_mismatch`），什么都不会交换。`wevvy chatgpt proxy` 把这个登录以回环地址上一个 OpenAI 兼容端点的形式提供出来（`GET /v1/models`、`POST /v1/chat/completions`、`GET /v1/usage`，一个本地 bearer 令牌），给同一台机器上的其他程序用；`--proxy`（或 `[llm] proxy`）让它的上游调用走代理。
+**回调必须到得了运行时。** OpenAI 把浏览器送回 `http://localhost:1455/auth/callback`，所以浏览器必须和运行时在同一台机器上（或者把这个端口转发过去）。不在同一台时（运行时在服务器上、控制台开在笔记本上），登录页照样能用，只是浏览器最后落在一个没人应答的地址上。把地址栏里那整个地址（`http://localhost:1455/auth/callback?code=…&state=…`）复制出来交给运行时：端口被占或者迟迟没有回调时，CLI 会问你要；带 `--json` 时它从 stdin 读一行；网页控制台的卡片上有一个输入框；从 `/api/chatgpt/login` 发起的登录还在等待期间，服务器接受 `POST /api/chatgpt/callback {"url": "<the address>"}`。`state` 和正在等待的那次登录对不上会被拒绝（400 `state_mismatch`），什么都不会交换。`ceis chatgpt proxy` 把这个登录以回环地址上一个 OpenAI 兼容端点的形式提供出来（`GET /v1/models`、`POST /v1/chat/completions`、`GET /v1/usage`，一个本地 bearer 令牌），给同一台机器上的其他程序用；`--proxy`（或 `[llm] proxy`）让它的上游调用走代理。
 
-**套餐还剩多少。** OpenAI 按两个窗口（几小时和一周）统计套餐用量，并在每次 Codex 调用的响应头里（`x-codex-primary-used-percent`、`…-window-minutes`、`…-reset-after-seconds`，`secondary` 也有同样一组）和 `GET https://chatgpt.com/backend-api/wham/usage`（Codex CLI 的 `/status` 读的就是这个端点）上写明。`wevvy chatgpt usage` 打印两个窗口（`--json` 给原始的 `{label, plan, limits}`），运行时在 `GET /api/chatgpt/usage` 提供给控制台，回环代理在 `GET /v1/usage` 提供；运行时还保留最近一次调用的响应头（`CodexClient.limits`）。没有什么会缓存超过一分钟。
+**套餐还剩多少。** OpenAI 按两个窗口（几小时和一周）统计套餐用量，并在每次 Codex 调用的响应头里（`x-codex-primary-used-percent`、`…-window-minutes`、`…-reset-after-seconds`，`secondary` 也有同样一组）和 `GET https://chatgpt.com/backend-api/wham/usage`（Codex CLI 的 `/status` 读的就是这个端点）上写明。`ceis chatgpt usage` 打印两个窗口（`--json` 给原始的 `{label, plan, limits}`），运行时在 `GET /api/chatgpt/usage` 提供给控制台，回环代理在 `GET /v1/usage` 提供；运行时还保留最近一次调用的响应头（`CodexClient.limits`）。没有什么会缓存超过一分钟。
 
 **失败的时候。** 一次过不去的 Codex 调用会归结为少数几句话之一，从不原样照抄 socket 的报错：*这个网络连不上 chatgpt.com*（DNS、连接、TLS、超时，或者该返回 JSON 的地方给了一个 HTML 页面：拦截页）、*OpenAI 不向这个地区提供服务*（HTTP 403 `unsupported_country_region_territory`）、*ChatGPT 登录已失效。请重新登录*（401）、*ChatGPT 套餐暂时没有余量了*（指明用量上限的 429，后面附上 OpenAI 的原话和 `Retry-After`）以及*同时发出的请求太多*（其他任何 429）。回环代理返回这些句子时在 `error.code` 里带一个机器码（`unreachable`、`region_blocked`、`not_signed_in`、`quota`、`rate_limited`、`upstream`），客户端可以据此处理；手机上把同样的句子显示成一张卡片（[own-key.md](own-key.md#when-the-provider-cannot-be-reached)）。
 
@@ -110,7 +110,7 @@ model    = ""            # empty → gpt-5.6-sol (also gpt-6.1-sol, gpt-6-sol, g
 
 | `tool_mode` | 发生什么 |
 |---|---|
-| `auto`（默认） | 用 API 的函数调用。如果端点*拒绝* `tools` 字段（Ollama 跑一个没有工具模板的模型（"does not support tools"）、vLLM 启动时没带工具解析器），wevvy 记一条警告，这次运行余下的时间改在提示词里描述工具。 |
+| `auto`（默认） | 用 API 的函数调用。如果端点*拒绝* `tools` 字段（Ollama 跑一个没有工具模板的模型（"does not support tools"）、vLLM 启动时没带工具解析器），ceis 记一条警告，这次运行余下的时间改在提示词里描述工具。 |
 | `native` | 始终用函数调用 API；被拒绝就是错误。 |
 | `prompt` | 工具写在系统提示词里，调用从 `<tool_call>` 块里解析。对那些默默*无视* `tools` 的端点（不报错，模型就是从不调用任何东西）来说，这是唯一能用的模式；有些「agent 应用」网关就是这样。 |
 
@@ -129,7 +129,7 @@ Ollama 在 `http://localhost:11434/v1` 提供 OpenAI 兼容的 API；带工具�
 | `gemma3:4b` | 提示词，经 `auto` 回退 | 5/5 | Ollama 对它拒绝 `tools`；它输出 ```` ```tool_call ```` 围栏，提示词解析器接受 |
 | DeepSeek V4.1 Flash（在线） | 原生 | 5/5 | 每个任务 1–4 秒 |
 
-小模型会以可预料的方式扭曲协议，wevvy 选择迁就它们而不是让任务失败：回复如果是一个光秃秃的或围栏里的 JSON 对象、点名了某个工具（并带一个 arguments 对象），在任何模式下都算作工具调用；JSON 字符串里可以有真正的换行；`files.write` 遇到只有一行、却含两个及以上拼出来的 `\n` 的文本时会把它拆成多行（代码本来就有真正的换行，从不动它）。带其他键的加引号 JSON 对象仍当文字。
+小模型会以可预料的方式扭曲协议，ceis 选择迁就它们而不是让任务失败：回复如果是一个光秃秃的或围栏里的 JSON 对象、点名了某个工具（并带一个 arguments 对象），在任何模式下都算作工具调用；JSON 字符串里可以有真正的换行；`files.write` 遇到只有一行、却含两个及以上拼出来的 `\n` 的文本时会把它拆成多行（代码本来就有真正的换行，从不动它）。带其他键的加引号 JSON 对象仍当文字。
 
 把 `max_tokens` 设成模型一轮能产出的量（对这些模型 4096 就够），`agent.max_context_messages` 别太大：一个 8k 上下文窗口的本地 8B 模型，工具结果一开始回传，很快就满了。
 
@@ -137,7 +137,7 @@ Ollama 在 `http://localhost:11434/v1` 提供 OpenAI 兼容的 API；带工具�
 
 ## `[image]` 和 `[video]` {#image-and-video}
 
-形象工作室的图片和形象的短视频不在聊天模型的主机上生成时，从哪里来。两个槽位都空（默认）时按一个顺序来（模型约定，0.1.41）：聊天服务商自己的图片模型（它有的话），账号的中继、阿里云百炼，以及目录里任何带 `image` 的服务商（它的 `defaults.image`；`[llm] image_model` / `video_model` 仍可指定别的）；否则在你登录了 wevvy Cloud 时是账号的中继，哪怕聊天模型在别处；再否则没有。短视频同理：图片主机会说视频 API 就用它，否则登录时用账号 key 走中继。设一个槽位，就能换到别处画，或者在聊天模型是 DeepSeek、ChatGPT 套餐或本地模型而你没有登录时才有地方画：
+形象工作室的图片和形象的短视频不在聊天模型的主机上生成时，从哪里来。两个槽位都空（默认）时按一个顺序来（模型约定，0.1.41）：聊天服务商自己的图片模型（它有的话），账号的中继、阿里云百炼，以及目录里任何带 `image` 的服务商（它的 `defaults.image`；`[llm] image_model` / `video_model` 仍可指定别的）；否则在你登录了 ceis Cloud 时是账号的中继，哪怕聊天模型在别处；再否则没有。短视频同理：图片主机会说视频 API 就用它，否则登录时用账号 key 走中继。设一个槽位，就能换到别处画，或者在聊天模型是 DeepSeek、ChatGPT 套餐或本地模型而你没有登录时才有地方画：
 
 ```toml
 [image]
@@ -161,7 +161,7 @@ api_key  = "{{vault:VIDEO_API_KEY}}"
 
 ```toml
 [agent]
-name                 = "wevvy"      # what the agent calls itself (the app's profile overrides this)
+name                 = "ceis"      # what the agent calls itself (the app's profile overrides this)
 max_steps            = 30              # tool calls per turn before it must wrap up
 # workspace          = "./workspace"   # the only directory the files tool can touch; default ./workspace if present here, else <data_dir>/workspace
 extra_roots          = []              # directories outside the workspace the files tool may read and write, e.g. ["~/Documents/notes"]; writable inside the sandbox too
@@ -193,7 +193,7 @@ side_chats = false   # off: only the main conversation travels between devices
 base_url = "https://cloud.wevvy.in"   # 自己架的中继写在这里
 required = true
 sync = true
-models = true        # 账号的模型是否作为来源；控制台里的「使用 wevvy Cloud 模型」
+models = true        # 账号的模型是否作为来源；控制台里的「使用 ceis Cloud 模型」
 
 [hub]
 enabled = true
@@ -201,7 +201,7 @@ remote_control = true
 name = ""            # 空：用主机名
 ```
 
-`[cloud]` 是这个运行时登录的中继（[cloud.md](cloud.md)）：`base_url` 是它的公网地址（按 [self-hosting.md](self-hosting.md) 自己架一台后填这里）；`required = false` 允许首次运行不登录账号就完成，适合完全不用中继的运行时；`sync` 是整个账号「数据控制 → 同步」开关的默认值，人一旦选过，以选择为准；`models = false`（控制台里的「使用 wevvy Cloud 模型」开关，存在 app-settings 里）把账号的模型从动手、生成图片、短视频的自动顺序和服务商列表里拿掉，登录保持不变，于是除了明确点下的「这次改用 wevvy Cloud」，没有什么会消耗额度。账号密钥本身是保险库里的 `WEVVY_CLOUD_KEY`。
+`[cloud]` 是这个运行时登录的中继（[cloud.md](cloud.md)）：`base_url` 是它的公网地址（按 [self-hosting.md](self-hosting.md) 自己架一台后填这里）；`required = false` 允许首次运行不登录账号就完成，适合完全不用中继的运行时；`sync` 是整个账号「数据控制 → 同步」开关的默认值，人一旦选过，以选择为准；`models = false`（控制台里的「使用 ceis Cloud 模型」开关，存在 app-settings 里）把账号的模型从动手、生成图片、短视频的自动顺序和服务商列表里拿掉，登录保持不变，于是除了明确点下的「这次改用 ceis Cloud」，没有什么会消耗额度。账号密钥本身是保险库里的 `CEIS_CLOUD_KEY`。
 
 `[hub]` 是把这台电脑当作账号的一台设备（[hub.md](hub.md)）：`enabled` 表示账号登录后就加入 hub；`remote_control = false` 时，其他设备只能从这台拿到 `info`，别的什么都做不了；`name` 是其他设备对它的称呼（空：用主机名）。`device_id` 按安装生成，由 App 写入。
 
@@ -234,7 +234,7 @@ reason = "recursive deletes are not allowed"
 mode = "auto"                        # auto | bwrap | off
 ```
 
-在装了 [bubblewrap](https://github.com/containers/bubblewrap) 的 Linux 上（`apt install bubblewrap`、`dnf install bubblewrap`），每次 `shell` 和 `python_execute` 调用都在自己的命名空间里跑：工作区和 `agent.extra_roots` 是仅有的可写位置，你的家目录不在里面，`/tmp` 是私有的，而且除非这次调用被评估为需要网络，否则没有网络。`auto` 在这里能用就用，不能用时在日志里说明；`bwrap` 则坚持要用（否则 `wevvy doctor` 失败）；`off` 不装箱直接跑命令，只有清理过的环境变量。`share_read_only` 列出箱子可以读的目录（你想让智能体用的某个 CLI：`["~/.nvm"]` 给 node 和 lark-cli），`share` 列出工具还必须写的目录（它的登录态：`["~/.lark-cli", "~/.local/share/lark-cli"]`）；你家目录下的共享目录在箱子的家目录下同一位置也看得到，所以到 `$HOME` 里找东西的工具能找到。细节和哨兵（Sentinel）在沙箱里有什么变化，见 [sentinel.md → 沙箱](sentinel.md#the-sandbox)。
+在装了 [bubblewrap](https://github.com/containers/bubblewrap) 的 Linux 上（`apt install bubblewrap`、`dnf install bubblewrap`），每次 `shell` 和 `python_execute` 调用都在自己的命名空间里跑：工作区和 `agent.extra_roots` 是仅有的可写位置，你的家目录不在里面，`/tmp` 是私有的，而且除非这次调用被评估为需要网络，否则没有网络。`auto` 在这里能用就用，不能用时在日志里说明；`bwrap` 则坚持要用（否则 `ceis doctor` 失败）；`off` 不装箱直接跑命令，只有清理过的环境变量。`share_read_only` 列出箱子可以读的目录（你想让智能体用的某个 CLI：`["~/.nvm"]` 给 node 和 lark-cli），`share` 列出工具还必须写的目录（它的登录态：`["~/.lark-cli", "~/.local/share/lark-cli"]`）；你家目录下的共享目录在箱子的家目录下同一位置也看得到，所以到 `$HOME` 里找东西的工具能找到。细节和哨兵（Sentinel）在沙箱里有什么变化，见 [sentinel.md → 沙箱](sentinel.md#the-sandbox)。
 
 ## `[memory]` {#memory}
 
@@ -250,7 +250,7 @@ embedding_api_key  = ""        # a key of its own, "{{vault:EMBEDDINGS_API_KEY}}
 
 回忆按关键词进行（生僻词权重更高，中文按字的两两组合匹配），有了嵌入端点，还能按含义回忆：每条记忆只嵌入一次（向量和文本的哈希一起存在 `memory.db` 里，所以改过的行会重新嵌入，换回某个模型不花代价），每轮把消息嵌入一次，含义最接近的记忆和关键词排名融合在一起，于是「写邮件给房东」能唤起「房东是 Bob Li」，虽然两句话没有一个词相同。任何 OpenAI 兼容的 `/embeddings` 都行：OpenAI（`text-embedding-3-small` 是那里和多数网关的默认值）、拉取了嵌入模型的 [Ollama](https://ollama.com)（`ollama pull qwen3-embedding:0.6b`，`:11434` 上的默认值，很小，中英文都读）、OpenRouter（`openai/text-embedding-3-small`）。DeepSeek 没有嵌入模型，所以用它时把 `embedding_base_url` 指到一个有的地方（DeepSeek 旁边放一个 Ollama 是常见搭配），或者就只按关键词回忆。
 
-`auto` 每次启动试一次端点，调用失败就退回关键词回忆，在日志里说明原因：失败一次，不是每轮一次；连不上的端点五分钟后再试。`on` 则坚持要用：回忆照样退回，但失败算警告，`wevvy doctor` 会因此失败。`off` 从不嵌入。`embedding_api_key` 为空表示在模型自己的端点上用模型自己的 key；从 App 里设置时它是一个 `{{vault:EMBEDDINGS_API_KEY}}` 引用。`llm.extra_headers` 里的网关请求头只发给模型的端点，不发给这里指定的另一个端点。App 里的「连接 → 按含义召回」设置并测试这一切；`wevvy memory recall "…"` 显示会回忆起什么，带每条记忆的接近程度。
+`auto` 每次启动试一次端点，调用失败就退回关键词回忆，在日志里说明原因：失败一次，不是每轮一次；连不上的端点五分钟后再试。`on` 则坚持要用：回忆照样退回，但失败算警告，`ceis doctor` 会因此失败。`off` 从不嵌入。`embedding_api_key` 为空表示在模型自己的端点上用模型自己的 key；从 App 里设置时它是一个 `{{vault:EMBEDDINGS_API_KEY}}` 引用。`llm.extra_headers` 里的网关请求头只发给模型的端点，不发给这里指定的另一个端点。App 里的「连接 → 按含义召回」设置并测试这一切；`ceis memory recall "…"` 显示会回忆起什么，带每条记忆的接近程度。
 
 ## `[skills]` {#skills}
 
@@ -261,7 +261,7 @@ dir      = ""                        # your skills; empty → <data_dir>/skills
 disabled = ["inbox-triage"]          # built-in ones to leave out of the model's list
 ```
 
-一个技能就是一个带 `SKILL.md` 的文件夹（YAML front matter 里有 `name` 和 `description`，后面是 Markdown 写的步骤），采用 [Agent Skills](https://agentskills.io) 格式，所以给其他智能体写的技能在这里也能用。wevvy 多读一个键 `channel`：技能在[阶梯](gui.md#the-ladder)的哪一级上工作：`api`（MCP 服务器或连接器）、`cli`、`web`（一次抓取）、`browser`、`gui`（手机屏幕；也接受 `app-only`）或 `mixed`。`gui` 技能在智能体的索引里标为*在手机屏幕上*，这样它开始之前就知道这活需要手机；必须严格遵守共享格式的技能可以改用 `metadata.channel`。内置十一个（`weekly-review`、`trip-plan`、`inbox-triage`、`compare-options`、`meeting-prep`；`phone-messages` 用于手机屏幕；五个面向不需要屏幕的中国服务：`feishu` 经 lark-cli、`tencent-meeting` 经 tmeet、`amap` 经高德 MCP 服务器、`kuaidi100` 经快递100 服务器，以及 `train-tickets`，它通过 12306 服务器查询，只在被明确要求时才在手机上订票；哪些在哪里跑过，见 [services.md](services.md)）；`dir` 里一个和内置同名的文件夹会替换掉内置的那个。模型在系统提示词里拿到索引（每个启用技能的名字和描述），请求合适时用 `skills` 工具读取技能的步骤；聊天消息开头的 `/name` 直接运行一个。从聊天里保存或删除技能是敏感调用：无论哨兵是什么模式，都先问。在 App 里关掉的技能记在 `app-settings.json`；这里的列表和那份会合并。在[沙箱](sentinel.md#the-sandbox)里，技能的文件夹（它的脚本和参考文件）以只读方式可见。见 [App → 技能](app.md#skills)和 [CLI](cli.md#skills) 里的 `wevvy skills`。
+一个技能就是一个带 `SKILL.md` 的文件夹（YAML front matter 里有 `name` 和 `description`，后面是 Markdown 写的步骤），采用 [Agent Skills](https://agentskills.io) 格式，所以给其他智能体写的技能在这里也能用。ceis 多读一个键 `channel`：技能在[阶梯](gui.md#the-ladder)的哪一级上工作：`api`（MCP 服务器或连接器）、`cli`、`web`（一次抓取）、`browser`、`gui`（手机屏幕；也接受 `app-only`）或 `mixed`。`gui` 技能在智能体的索引里标为*在手机屏幕上*，这样它开始之前就知道这活需要手机；必须严格遵守共享格式的技能可以改用 `metadata.channel`。内置十一个（`weekly-review`、`trip-plan`、`inbox-triage`、`compare-options`、`meeting-prep`；`phone-messages` 用于手机屏幕；五个面向不需要屏幕的中国服务：`feishu` 经 lark-cli、`tencent-meeting` 经 tmeet、`amap` 经高德 MCP 服务器、`kuaidi100` 经快递100 服务器，以及 `train-tickets`，它通过 12306 服务器查询，只在被明确要求时才在手机上订票；哪些在哪里跑过，见 [services.md](services.md)）；`dir` 里一个和内置同名的文件夹会替换掉内置的那个。模型在系统提示词里拿到索引（每个启用技能的名字和描述），请求合适时用 `skills` 工具读取技能的步骤；聊天消息开头的 `/name` 直接运行一个。从聊天里保存或删除技能是敏感调用：无论哨兵是什么模式，都先问。在 App 里关掉的技能记在 `app-settings.json`；这里的列表和那份会合并。在[沙箱](sentinel.md#the-sandbox)里，技能的文件夹（它的脚本和参考文件）以只读方式可见。见 [App → 技能](app.md#skills)和 [CLI](cli.md#skills) 里的 `ceis skills`。
 
 ## 连接器 {#connectors}
 
@@ -280,7 +280,7 @@ password      = "{{vault:EMAIL_PASSWORD}}"
 scrub_secrets = true   # remove one-time codes and reset links before the model reads a mail
 ```
 
-用 `wevvy vault set EMAIL_ADDRESS` 和 `wevvy vault set EMAIL_PASSWORD` 存值。`read_emails` 会把这段对话标记为已污染；`send_email` 默认在 `always_ask_tools` 里。
+用 `ceis vault set EMAIL_ADDRESS` 和 `ceis vault set EMAIL_PASSWORD` 存值。`read_emails` 会把这段对话标记为已污染；`send_email` 默认在 `always_ask_tools` 里。
 
 ### 日历 {#calendar}
 
@@ -295,14 +295,14 @@ day_end         = "18:00"
 
 [[connectors.calendar.feeds]]
 name = "Work"
-url  = "{{vault:CALENDAR_WORK}}"   # the link is the secret: wevvy vault set CALENDAR_WORK
+url  = "{{vault:CALENDAR_WORK}}"   # the link is the secret: ceis vault set CALENDAR_WORK
 
 [[connectors.calendar.feeds]]
 name = "Family"
 url  = "~/family.ics"
 ```
 
-`calendar` 工具负责读（日程、搜索、空闲时间）和*起草*：它提议的日程写成工作区里的 `calendar/<date>-<title>.ics`，App 把它显示成一张带「加入日历」按钮的卡片。它自己从不写你的日历。今天和明天的日程在系统提示词里；动态在「今天」下面显示它们。`wevvy calendar add NAME URL` 和「连接」屏幕做的是同一件事。
+`calendar` 工具负责读（日程、搜索、空闲时间）和*起草*：它提议的日程写成工作区里的 `calendar/<date>-<title>.ics`，App 把它显示成一张带「加入日历」按钮的卡片。它自己从不写你的日历。今天和明天的日程在系统提示词里；动态在「今天」下面显示它们。`ceis calendar add NAME URL` 和「连接」屏幕做的是同一件事。
 
 ### 联系人 {#contacts}
 
@@ -318,10 +318,10 @@ url  = "~/Downloads/contacts.vcf"
 
 [[connectors.contacts.sources]]
 name = "Nextcloud"
-url  = "{{vault:CONTACTS_NEXTCLOUD}}"   # a link, kept in the vault: wevvy vault set CONTACTS_NEXTCLOUD
+url  = "{{vault:CONTACTS_NEXTCLOUD}}"   # a link, kept in the vault: ceis vault set CONTACTS_NEXTCLOUD
 ```
 
-除了这些来源，始终还有一本「我的联系人」，`<data_dir>/contacts.vcf`：在聊天里告诉过智能体的人（「房东是 Bob Li，bob@example.com」），通过 `contacts` 的 action=add 加进去；这是它唯一会写的一本，也是唯一能从里面删人的一本。`contacts` 工具按姓名、昵称、公司、邮箱或电话搜索（每个词都要匹配上，前缀算数，中文名里的一个字也算数）；一次查询属于私密数据，会污染这段对话。命令行用 `wevvy contacts search | list | add | sources | add-source | remove-source`。
+除了这些来源，始终还有一本「我的联系人」，`<data_dir>/contacts.vcf`：在聊天里告诉过智能体的人（「房东是 Bob Li，bob@example.com」），通过 `contacts` 的 action=add 加进去；这是它唯一会写的一本，也是唯一能从里面删人的一本。`contacts` 工具按姓名、昵称、公司、邮箱或电话搜索（每个词都要匹配上，前缀算数，中文名里的一个字也算数）；一次查询属于私密数据，会污染这段对话。命令行用 `ceis contacts search | list | add | sources | add-source | remove-source`。
 
 ### 网页搜索 {#web-search}
 
@@ -330,14 +330,14 @@ url  = "{{vault:CONTACTS_NEXTCLOUD}}"   # a link, kept in the vault: wevvy vault
 ```toml
 [connectors.search]
 provider = "duckduckgo"          # duckduckgo | brave | tavily | serply | you | searxng
-api_key  = "{{vault:SEARCH_API_KEY}}"   # brave / tavily / serply，以及有 key 的 you：wevvy vault set SEARCH_API_KEY
+api_key  = "{{vault:SEARCH_API_KEY}}"   # brave / tavily / serply，以及有 key 的 you：ceis vault set SEARCH_API_KEY
 base_url = ""                    # searxng: your instance, e.g. "http://127.0.0.1:8080"
 fallback = true                  # false：搜索失败就失败，不再转去 DuckDuckGo
 ```
 
-You.com 不带 key 时走 `api.you.com`，每个地址每天 100 次，不用注册；超出后搜索会说明原因，由 DuckDuckGo 补答一次。带 key 时走 `ydc-index.io`，也就是额度更高的付费 Search API；哨兵显示的是这次搜索真正去的主机。发往 You.com 的请求带 `youdotcom-integration/nano-muse-wevvy` 这个 User-Agent，是应对方要求加的，方便他们认出来自 wevvy 的流量；除此之外不多发任何东西，其他服务商也不会收到它。
+You.com 不带 key 时走 `api.you.com`，每个地址每天 100 次，不用注册；超出后搜索会说明原因，由 DuckDuckGo 补答一次。带 key 时走 `ydc-index.io`，也就是额度更高的付费 Search API；哨兵显示的是这次搜索真正去的主机。发往 You.com 的请求带 `youdotcom-integration/nano-muse-ceis` 这个 User-Agent，是应对方要求加的，方便他们认出来自 ceis 的流量；除此之外不多发任何东西，其他服务商也不会收到它。
 
-不管选的是谁，一次失败的搜索（key 过期、被限流、实例挂了）都改由 DuckDuckGo 回答，只补这一次，并在结果顶上加一条说明，任务就能继续（这时查询词除了到你选的服务商，也会到 DuckDuckGo 的主机；不希望这样，就在 `[connectors.search]` 下设 `fallback = false`）；`wevvy doctor` 会报告缺了必要配置的服务商。工具的 `region` 参数（`cn-zh`、`us-en`）按每家服务商自己的写法传过去。服务商的主机是你选定的目的地，所以读过私密数据之后再搜索，不像去一个陌生主机那样需要审批（见[污点追踪](sentinel.md#taint-tracking)）；对搜索结果做 `web_fetch` 仍然需要。
+不管选的是谁，一次失败的搜索（key 过期、被限流、实例挂了）都改由 DuckDuckGo 回答，只补这一次，并在结果顶上加一条说明，任务就能继续（这时查询词除了到你选的服务商，也会到 DuckDuckGo 的主机；不希望这样，就在 `[connectors.search]` 下设 `fallback = false`）；`ceis doctor` 会报告缺了必要配置的服务商。工具的 `region` 参数（`cn-zh`、`us-en`）按每家服务商自己的写法传过去。服务商的主机是你选定的目的地，所以读过私密数据之后再搜索，不像去一个陌生主机那样需要审批（见[污点追踪](sentinel.md#taint-tracking)）；对搜索结果做 `web_fetch` 仍然需要。
 
 ## `[triggers]` {#triggers}
 
@@ -355,8 +355,8 @@ hook_min_seconds  = 10   # deliveries to one webhook closer together than this g
 
 ```toml
 [browser]
-enabled    = true      # pip install "wevvy[browser]" && playwright install chromium
-backend    = "auto"    # auto | playwright | device — the phone's own WebView when a wevvy app is connected, Chromium otherwise
+enabled    = true      # pip install "ceis[browser]" && playwright install chromium
+backend    = "auto"    # auto | playwright | device — the phone's own WebView when a ceis app is connected, Chromium otherwise
 profile    = ""        # mobile | desktop | "" (mobile on the phone, desktop on a computer)
 headless   = true      # Playwright only
 timeout_ms = 30000
@@ -369,7 +369,7 @@ timeout_ms = 30000
 ```toml
 [hands]
 enabled         = false    # the switch is Devices → Hands on this computer in the app
-backend         = "auto"   # auto | desktop | pyautogui | xdotool (X11) — desktop: the desktop app's own hands (auto takes them when the app set WEVVY_OPERATOR_URL)
+backend         = "auto"   # auto | desktop | pyautogui | xdotool (X11) — desktop: the desktop app's own hands (auto takes them when the app set CEIS_OPERATOR_URL)
 mode            = "auto"   # auto | screen | window — window: one app's window on macOS, events to its process, your mouse untouched; auto = window on macOS once an app is named
 coords          = "pixels" # pixels | norm1000 — what the model's x, y mean: pixels of the picture it was shown (default), or a 0–1000 grid over it
 max_image_width = 1600
@@ -397,7 +397,7 @@ reconnect_grace_s = 30.0             # 手机掉线后，进行中的任务等�
 sensitive_words  = ["确认支付", "立即付款", "转账", "提交订单", "发送", "删除", "pay now", "place order", "send", "delete"]  # a tap on these asks first; 这里是节选，默认列表有 22 个词
 ```
 
-`base_url` 和 `api_key` 为空时回退到 `[llm]`。空的 `model` 按一个顺序来（模型约定，0.1.41）：以中继为聊天模型时，是中继的手的模型（`qwen3.8-27b`，除非 `/v1/models` 另有指定），而不是聊天模型（聊天的默认模型看得懂图片，但手需要的是训练过、会在屏幕上指东西的模型）；聊天服务商是目录里带 `vision` 的自有服务商时，是它自己的手的模型（`defaults.hands`，百炼是 `qwen3.8-27b`，智谱是 `glm-4.6v`），用聊天的 key；聊天服务商看不了图（按目录 id 或主机识别出的本地服务器）而账号已登录时，是中继的手的模型，用账号的 key，聊天模型留在原处；其余情况是聊天模型，目录里没有的主机也是。明确写了 `model` 总是优先。只有操作器的 `base_url` 是另一个服务时才需要 key。每次手机任务的轨迹都进 `<data_dir>/phone-traces/`（保留最近 200 条；`wevvy phone traces`）。
+`base_url` 和 `api_key` 为空时回退到 `[llm]`。空的 `model` 按一个顺序来（模型约定，0.1.41）：以中继为聊天模型时，是中继的手的模型（`qwen3.8-27b`，除非 `/v1/models` 另有指定），而不是聊天模型（聊天的默认模型看得懂图片，但手需要的是训练过、会在屏幕上指东西的模型）；聊天服务商是目录里带 `vision` 的自有服务商时，是它自己的手的模型（`defaults.hands`，百炼是 `qwen3.8-27b`，智谱是 `glm-4.6v`），用聊天的 key；聊天服务商看不了图（按目录 id 或主机识别出的本地服务器）而账号已登录时，是中继的手的模型，用账号的 key，聊天模型留在原处；其余情况是聊天模型，目录里没有的主机也是。明确写了 `model` 总是优先。只有操作器的 `base_url` 是另一个服务时才需要 key。每次手机任务的轨迹都进 `<data_dir>/phone-traces/`（保留最近 200 条；`ceis phone traces`）。
 
 应用层通过 `PUT /api/connections/gui` 设置这个槽位，它接受的 `provider` 和 `PUT /api/connections/llm` 一样：协议（`openai`、`openai_responses`）、`chatgpt`，或者 `bailian` 这样的目录 id，后者自带接口地址（`base_url` 可以留空）；目录里没有的 id，或运行时不会说其协议的 id，回 400 并列出可选项。回答（以及 `GET /api/connections` → `gui`）带 `provider` 原样、`provider_id`（协议加 URL 对应的目录条目）、`effective_model` 和 `effective_source`（`gui`、`chat` 或 `cloud`）。
 
@@ -427,7 +427,7 @@ risk               = "sensitive"
 reads_private_data = false
 ```
 
-`tools` 是可选的，按工具名（不带 `<server>__` 前缀）逐个写；没写的都回退到服务器的值。手机自带的工具就是这样拿到默认值的：在手机上，App 的能力不用任何配置就以 `device` 这个服务器的身份出现（[device.md](device.md)），逐工具的表来自 `wevvy/runtime.py`。
+`tools` 是可选的，按工具名（不带 `<server>__` 前缀）逐个写；没写的都回退到服务器的值。手机自带的工具就是这样拿到默认值的：在手机上，App 的能力不用任何配置就以 `device` 这个服务器的身份出现（[device.md](device.md)），逐工具的表来自 `ceis/runtime.py`。
 
 需要 key 的命令通过 `env` 拿到它，而 key 本身放在保险库里：写 `env = { AMAP_MAPS_API_KEY = "{{vault:AMAP_KEY}}" }`，引用在服务器启动时才解析，不会写进磁盘，也不会显示在 App 里。从 App（连接页）添加的服务器也是同样的做法，不需要你额外操作：你输入的每个 `env` 值都存进保险库，名字是 `MCP_<SERVER>_<KEY>`（全部大写，`amap` 配 `AMAP_MAPS_API_KEY` 就是 `MCP_AMAP_AMAP_MAPS_API_KEY`），`app-settings.json` 里只保留 `{{vault:...}}`；移除服务器时这些条目一并删除。本来就写成引用的值原样保留。`config.toml` 里的明文值仍然可用，连接页会给这个服务器打上标记，提醒你把它挪进保险库。
 
@@ -453,7 +453,7 @@ start_grace      = 4             # seconds the services may take before the app 
 `update_check` 每天一次（点「现在检查」时提前；查询失败时，比如运行时比网络先起来，一小时后再试）先问下载镜像的索引（`wevvy.in/dl/index.json`），
 它不答再问 `api.github.com` 最新版本，并在「设置 → 关于」下显示版本号和指向发布页的链接；什么都不下载，
 除了请求 `User-Agent` 里的运行时版本号，也不发送任何关于这次安装的信息。
-`WEVVY_NO_UPDATE_CHECK=1` 同样能关掉它；托管的网页会话（用 `WEVVY_CLOUD_KEY`
+`CEIS_NO_UPDATE_CHECK=1` 同样能关掉它；托管的网页会话（用 `CEIS_CLOUD_KEY`
 启动的运行时）从不检查；由它的运营者来更新。
 
 这些设置只适用于 Python 运行时。Windows 桌面壳在启动后和每六小时独立检查，自动下载
@@ -463,13 +463,13 @@ start_grace      = 4             # seconds the services may take before the app 
 
 | 路径 | 内容 |
 |---|---|
-| `~/.wevvy/`（`data_dir`） | 下面所有的东西 |
+| `~/.ceis/`（`data_dir`） | 下面所有的东西 |
 | `memory.db`、`goals.db` | SQLite |
-| `vault.enc`、`vault.key` | 加密存放的机密和它的密钥（或 `WEVVY_VAULT_KEY`） |
+| `vault.enc`、`vault.key` | 加密存放的机密和它的密钥（或 `CEIS_VAULT_KEY`） |
 | `audit.jsonl` | 只追加的审计日志 |
 | `approvals.json` | 你授予 24 小时或永久的权限（工具 + 目标、范围、过期时间） |
 | `app-settings.json` | App「连接」屏幕里改过的东西，叠在 `config.toml` 之上（没有密钥，只有 `{{vault:NAME}}` 引用） |
-| `chatgpt.json` | ChatGPT 登录的令牌（权限 0600；`wevvy chatgpt logout` 删掉它） |
+| `chatgpt.json` | ChatGPT 登录的令牌（权限 0600；`ceis chatgpt logout` 删掉它） |
 | `sessions/` | CLI 的对话历史 |
 | `skills/<name>/SKILL.md` | 你的技能（Agent Skills 格式）；和内置同名的会替换掉内置的 |
 | `threads/`、`profile.json`、`ideas.json`、`server_token`、`logs/` | App 状态 |

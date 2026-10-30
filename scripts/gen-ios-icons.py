@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the wevvy app icon for android/src/ios from assets/brand/.
+"""Generate the ceis app icon for android/src/ios from assets/brand/.
 
 Idempotent; re-run after every upstream pull (CONTRIBUTING.md). Writes 1024x1024 PNGs:
 
@@ -13,7 +13,7 @@ Idempotent; re-run after every upstream pull (CONTRIBUTING.md). Writes 1024x1024
   pairing as the Android classic skins).
 
 iOS applies its own corner mask, so the tiles are full squares. The mark comes from
-gen-android-icons.py, which reads assets/brand/wevvy-mark.png.
+gen-android-icons.py, which reads assets/brand/ceis-mark.png.
 Needs Playwright with Chromium (`pip install playwright && playwright install chromium`).
 """
 

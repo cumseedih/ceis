@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import com.openminis.app.MinisApp
-import com.openminis.app.R // wevvy
+import com.openminis.app.R // ceis
 import com.openminis.app.debug.HeadlessChatRunner
 import com.openminis.app.logging.AppLogger
 import com.openminis.app.service.AgentForegroundService
@@ -168,9 +168,9 @@ object ScheduledAgentRunner {
                 timeoutMs = RUN_TIMEOUT_MS,
             )
         } else {
-            // wevvy: the row this sends is the routine's, not the person's: the chat draws it as
+            // ceis: the row this sends is the routine's, not the person's: the chat draws it as
             // a quiet line and the model is told so for this one turn (RoutineWakes).
-            io.github.wevvy.chat.RoutineWakes.arm(app, sessionId, task.label)
+            io.github.ceis.chat.RoutineWakes.arm(app, sessionId, task.label)
             HeadlessChatRunner.prompt(
                 context = app,
                 sessionId = sessionId,
@@ -188,7 +188,7 @@ object ScheduledAgentRunner {
             responseText = "Error: ${t.message}",
             timedOut = false,
         )
-    }.also { if (it.status == "Error") io.github.wevvy.chat.RoutineWakes.disarm(sessionId) } // wevvy: a prompt that never went out leaves no mark
+    }.also { if (it.status == "Error") io.github.ceis.chat.RoutineWakes.disarm(sessionId) } // ceis: a prompt that never went out leaves no mark
 
     private suspend fun resolveSessionId(app: MinisApp, task: ScheduledTask): String? {
         return when (val mode = task.targetMode) {
@@ -301,11 +301,11 @@ object ScheduledAgentRunner {
         sessionId: String,
         preview: String,
     ) {
-        // wevvy: the feed's routine tells of its posts itself (and opens the Feed, not a chat).
-        if (io.github.wevvy.feed.FeedFlow.notifyIfFeed(context, task)) return
+        // ceis: the feed's routine tells of its posts itself (and opens the Feed, not a chat).
+        if (io.github.ceis.feed.FeedFlow.notifyIfFeed(context, task)) return
         val deepLink = Uri.parse("minis://session/$sessionId")
-        // wevvy: to MainActivity by name; the manifest no longer registers the `minis` scheme
-        val openIntent: Intent = io.github.wevvy.deeplink.OwnScheme.intent(context, deepLink, flags = 0)
+        // ceis: to MainActivity by name; the manifest no longer registers the `minis` scheme
+        val openIntent: Intent = io.github.ceis.deeplink.OwnScheme.intent(context, deepLink, flags = 0)
         val notificationId = task.id.hashCode() and 0x7FFFFFFF
         val contentPi = PendingIntent.getActivity(
             context,
@@ -313,11 +313,11 @@ object ScheduledAgentRunner {
             openIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        // wevvy: the agent's own name, as on every other notification it sends.
-        val title = "${io.github.wevvy.identity.WevvyIdentity.name(context)}: ${task.label.ifBlank { "Scheduled task" }}"
+        // ceis: the agent's own name, as on every other notification it sends.
+        val title = "${io.github.ceis.identity.CeisIdentity.name(context)}: ${task.label.ifBlank { "Scheduled task" }}"
         val notification = NotificationCompat.Builder(context, ScheduledTaskManager.CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_wevvy) // wevvy: flat status-bar mark // wevvy: flat status-bar mark // wevvy: flat status-bar mark
-            .setLargeIcon(io.github.wevvy.identity.WevvyIdentity.face(context)) // wevvy: the agent is the sender
+            .setSmallIcon(R.drawable.ic_stat_ceis) // ceis: flat status-bar mark // ceis: flat status-bar mark // ceis: flat status-bar mark
+            .setLargeIcon(io.github.ceis.identity.CeisIdentity.face(context)) // ceis: the agent is the sender
             .setContentTitle(title)
             .setContentText(preview)
             .setStyle(NotificationCompat.BigTextStyle().bigText(preview))

@@ -1,23 +1,23 @@
 # Launch checklist: v0.1.0
 
 > **Archived.** This was the working list for the first public release of the Python
-> line. Domains (`wevvy.dev`), artifacts (two APKs, a rootfs) and the mascot decision
+> line. Domains (`ceis.dev`), artifacts (two APKs, a rootfs) and the mascot decision
 > (red panda) it mentions are not the current ones: the site is wevvy.in, the release
-> carries one `wevvy-<version>-arm64.apk`, the default face is the dragon. Kept
+> carries one `ceis-<version>-arm64.apk`, the default face is the dragon. Kept
 > unchanged as a record; the plan that replaced it is [roadmap.md](roadmap.md).
 
 
-Everything that has to happen before the first public release of wevvy, in the order it will be done. This is a working document: items are ticked as they land, and the [CHANGELOG](../CHANGELOG.md) records what shipped.
+Everything that has to happen before the first public release of ceis, in the order it will be done. This is a working document: items are ticked as they land, and the [CHANGELOG](../CHANGELOG.md) records what shipped.
 
 Priorities: **P0**: the release does not go out without it. **P1**: the release should have it. **P2**: can follow in a point release.
 
-Decisions this list rests on (see [design.md](design.md) for the reasoning): the agent stays in Python and the Kotlin side is only a runtime host and an executor; nothing is copied from GPL projects, OpenMinis included: conclusions and pitfalls are borrowed, code is not; phase 1 is a *local* Android build (PRoot + Alpine + the `wevvy` package inside the APK, the web app talking to `127.0.0.1`); users bring their own API key, there is no OAuth subscription login; operating the phone's screen is the last rung of a four-rung ladder (skills / MCP / CLI → logged-in fetch → the in-app browser → the phone's GUI) and a switch that is off by default; the Linux sandbox stays.
+Decisions this list rests on (see [design.md](design.md) for the reasoning): the agent stays in Python and the Kotlin side is only a runtime host and an executor; nothing is copied from GPL projects, OpenMinis included: conclusions and pitfalls are borrowed, code is not; phase 1 is a *local* Android build (PRoot + Alpine + the `ceis` package inside the APK, the web app talking to `127.0.0.1`); users bring their own API key, there is no OAuth subscription login; operating the phone's screen is the last rung of a four-rung ladder (skills / MCP / CLI → logged-in fetch → the in-app browser → the phone's GUI) and a switch that is off by default; the Linux sandbox stays.
 
 ---
 
 ## 0. What ships, and how we know it is done
 
-**Artifacts**: PyPI `wevvy` · GitHub Release (`wevvy-<ver>-local.apk` with the rootfs inside, `wevvy-<ver>-connect.apk`, the rootfs, checksums) · a mirror at `dl.wevvy.dev` · Docker image · the site at `wevvy.dev` with the film · docs. The demo site (`demo.wevvy.dev`) is already live; aligning it is P1 and not a release artifact.
+**Artifacts**: PyPI `ceis` · GitHub Release (`ceis-<ver>-local.apk` with the rootfs inside, `ceis-<ver>-connect.apk`, the rootfs, checksums) · a mirror at `dl.ceis.dev` · Docker image · the site at `ceis.dev` with the film · docs. The demo site (`demo.ceis.dev`) is already live; aligning it is P1 and not a release artifact.
 
 **Acceptance (P0, all on real phones)**
 
@@ -55,18 +55,18 @@ Decisions this list rests on (see [design.md](design.md) for the reasoning): the
 
 ## 3. Local runtime (P0)
 
-- [x] **rootfs built in CI** (buildx + QEMU): Alpine aarch64 + python3 + the `wevvy` wheel and its dependencies; trimmed; versioned with checksums; Chinese apk/pip/npm mirrors chosen on first start from the phone's region (`wevvy-mirror`); `scripts/rootfs/`, `.github/workflows/rootfs.yml`; 315 MB unpacked / 67.9 MB xz with Node
+- [x] **rootfs built in CI** (buildx + QEMU): Alpine aarch64 + python3 + the `ceis` wheel and its dependencies; trimmed; versioned with checksums; Chinese apk/pip/npm mirrors chosen on first start from the phone's region (`ceis-mirror`); `scripts/rootfs/`, `.github/workflows/rootfs.yml`; 315 MB unpacked / 67.9 MB xz with Node
 - [x] **Node**: preinstalled (Node 22 + npm; `NODE=0` builds without, ~12 MB smaller); recommended in, the owner confirms against the budget (local APK 72 MB release ≈ 75 MB debug, budget 80)
 - [x] **proot built with the NDK**: Termux proot 5.1.107.94 + talloc 2.4.3 → `libproot.so` / `libproot-loader.so`; W^X handled through `nativeLibraryDir`; no 32-bit loader; `android/native/build-proot.sh`
-- [x] **`LocalRuntime`**: first-run unpack with progress and a version marker (swap-in, old tree kept until the new one is in place); the proot argument set; DNS written from `ConnectivityManager`; `TZ` as the phone's IANA id; system proxy; `UV_LINK_MODE=symlink`; `wevvy serve --host 127.0.0.1 --port <random> --token <random>`; health check, crash restart with backoff, logs rolled at 2 MB; `home/` survives upgrades
+- [x] **`LocalRuntime`**: first-run unpack with progress and a version marker (swap-in, old tree kept until the new one is in place); the proot argument set; DNS written from `ConnectivityManager`; `TZ` as the phone's IANA id; system proxy; `UV_LINK_MODE=symlink`; `ceis serve --host 127.0.0.1 --port <random> --token <random>`; health check, crash restart with backoff, logs rolled at 2 MB; `home/` survives upgrades
 - [x] **`RuntimeService`**: foreground service of type `specialUse`; `PARTIAL_WAKE_LOCK` only while a task runs; the notification shows the current status `detail` (the §10 `tool_title` replaces it when it lands); subscribes to the local `/ws` event stream and feeds the shared `Notifier`; a Stop action; back after reboot
 - [x] **Mode chooser**: Run on this phone / Connect to my computer; the WebView points at `127.0.0.1`; failure screen with the log tail, Try again, Start over
-- [x] Python detects local mode (`wevvy.runtime.device()`); the sandbox says so when bubblewrap is unavailable
-- [x] **CLI bridge inside the rootfs** (`wevvy/bridge/`, `/api/bridge/{kind}`, one token per command, nested Sentinel-guarded tool calls, `via: "shell"` on the timeline):
-  - `wevvy-device` (§6: clipboard / calendar / alarm / contacts / location / notifications / photos); the Kotlin side of the tools is §6
-  - `wevvy-browser`: navigate / extract / click / type / fetch / screenshot; the device backend it drives is §4
-  - `wevvy-open <url>`: the rootfs `BROWSER`
-- [ ] **Owner**: toolchain verified on a real phone, with traces: shell / python / files, apk, pip, git, curl, lark-cli, tmeet, `npx 12306-mcp`, the three bridge CLIs. Verified so far under QEMU (arm64 rootfs, not PRoot): `wevvy serve` boots in ~14 s, `/api/health`, `device` detected, mirrors switch, the CLIs are on `PATH`; PRoot itself can only be exercised on a phone
+- [x] Python detects local mode (`ceis.runtime.device()`); the sandbox says so when bubblewrap is unavailable
+- [x] **CLI bridge inside the rootfs** (`ceis/bridge/`, `/api/bridge/{kind}`, one token per command, nested Sentinel-guarded tool calls, `via: "shell"` on the timeline):
+  - `ceis-device` (§6: clipboard / calendar / alarm / contacts / location / notifications / photos); the Kotlin side of the tools is §6
+  - `ceis-browser`: navigate / extract / click / type / fetch / screenshot; the device backend it drives is §4
+  - `ceis-open <url>`: the rootfs `BROWSER`
+- [ ] **Owner**: toolchain verified on a real phone, with traces: shell / python / files, apk, pip, git, curl, lark-cli, tmeet, `npx 12306-mcp`, the three bridge CLIs. Verified so far under QEMU (arm64 rootfs, not PRoot): `ceis serve` boots in ~14 s, `/api/health`, `device` detected, mirrors switch, the CLIs are on `PATH`; PRoot itself can only be exercised on a phone
 - [x] Document the limits: PRoot is user-mode with no root; glibc binaries need `gcompat`; no Chromium in the rootfs (the browser is always the Kotlin WebView); ptrace makes syscall-heavy work slower; [docs/local-runtime.md](local-runtime.md)
 - [ ] P2: a terminal page (xterm.js + pty)
 
@@ -74,7 +74,7 @@ Decisions this list rests on (see [design.md](design.md) for the reasoning): the
 
 ## 4. Browser (P0)
 
-- [x] `BrowserBackend` interface + `PlaywrightBackend` + `DeviceBackend`; `_ANNOTATE_JS` shared; `on_frame` identical; `wevvy/tools/browser_backends.py`, `browser.py`
+- [x] `BrowserBackend` interface + `PlaywrightBackend` + `DeviceBackend`; `_ANNOTATE_JS` shared; `on_frame` identical; `ceis/tools/browser_backends.py`, `browser.py`
 - [x] **Persistent Playwright profile**: `launch_persistent_context(workspace/browser-profile)`; verified: persistent cookies survive a restart, session cookies (no expiry) do not; documented
 - [x] Device protocol `browser.*` (fourteen ops); capability declaration in the phone's hello (`"browser": true`); `DeviceLink.kt`, `phone/link.py`
 - [x] Kotlin offscreen WebView (`DeviceBrowser.kt`): a `Presentation` on a private `VirtualDisplay` (composited frames from its `ImageReader` are the screenshots), `measure/layout` + `draw` as the fallback; third-party cookies; native setters + `input`/`change` events for typing; a dialog queue; downloads into the workspace (local build) or the phone's Downloads (connect); one tab
@@ -83,7 +83,7 @@ Decisions this list rests on (see [design.md](design.md) for the reasoning): the
 - [x] UA / viewport profiles `mobile` / `desktop` / custom, on both backends (`profile` action, `[browser] profile`)
 - [x] Take-over sheet: the same WebView moved into a bottom sheet, no reload; `userControl` mutex; **Take over** / **Done**; the web app sends `handed_back` and the agent gets a fresh frame; verified end to end on the emulator
 - [x] Logged-in `fetch` action (rung two of the ladder), cookies both ways, `CookieManager.flush()`; verified: a cookie set by a page arrives in `fetch`
-- [x] Logged-in requests from scripts: `wevvy-browser fetch URL [--post BODY]`, `wevvy-browser profile` (§3); exporting a cookie file stays P2
+- [x] Logged-in requests from scripts: `ceis-browser fetch URL [--post BODY]`, `ceis-browser profile` (§3); exporting a cookie file stays P2
 - [x] Document: Google login does not work inside a WebView; scanning a QR code on the same phone is not possible; passkeys are not portable; [browser.md](browser.md)
 - [x] Unit tests: backend parity, protocol decoding, the Sentinel unchanged; `tests/test_browser.py`, `tests/test_bridge.py`
 - [ ] Google domains → Custom Tabs automatically (today: the sheet's "open in the system browser" arrow; automatic hand-off is P2 because a login made there does not reach the WebView anyway)
@@ -92,7 +92,7 @@ Decisions this list rests on (see [design.md](design.md) for the reasoning): the
 
 ## 5. Model access and first run (P0)
 
-- [x] First-run checklist in this order: meet your wevvy (name it) → add a model → start; done items ticked, locked items greyed; ticks survive a reload (derived from the saved profile); `web/src/screens/Onboarding.tsx`
+- [x] First-run checklist in this order: meet your ceis (name it) → add a model → start; done items ticked, locked items greyed; ticks survive a reload (derived from the saved profile); `web/src/screens/Onboarding.tsx`
 - [x] Provider form: grouped by protocol with vendor subtitles; masked key with a reveal toggle; vendor-specific placeholders and a *Get a key* link; Base URL with "/v1 is added when the URL has no path" (`normalize_base_url`, preset hosts kept verbatim); Ollama and custom endpoints may have an empty key; `ModelCard` in `ConnectionsScreen.tsx`, `connections.py`
 - [x] `/api/llm/models`: `/models` then `/v1/models` with the given or vaulted key, fall back to the preset's catalogue (`source` says which), never overwrite a typed model (a model carried over from another provider yields to the live list); verified against a local Ollama
 - [x] Chinese presets: DeepSeek / Kimi / Qwen / GLM / 豆包 / MiniMax, each with a link to get a key (`PROVIDERS`; catalogue names are a fallback: the live list is the source of truth and should be re-checked before release)
@@ -101,9 +101,9 @@ Decisions this list rests on (see [design.md](design.md) for the reasoning): the
 
 ### 5a. Identity (as in Muse: the name comes first)
 
-- [x] **P0** Naming page: 1–20 characters, empty falls back to wevvy; six suggested names as chips plus a shuffle; the avatar; a one-line tagline (`web/src/components/IdentityForm.tsx`, shared with Settings)
+- [x] **P0** Naming page: 1–20 characters, empty falls back to ceis; six suggested names as chips plus a shuffle; the avatar; a one-line tagline (`web/src/components/IdentityForm.tsx`, shared with Settings)
 - [x] **P0** The welcome screen down to three points: it does things for you / it keeps working when closed / it asks you first where it matters
-- [x] **P0** `Profile` (`wevvy/server/service.py`) gains `tagline`; `style` splits into `tone` (formal / casual / playful / concise) + `communication` (short / detailed / bullets) + free text, each its own prompt paragraph; `tests/test_server.py::test_identity_fields_each_get_a_paragraph`
+- [x] **P0** `Profile` (`ceis/server/service.py`) gains `tagline`; `style` splits into `tone` (formal / casual / playful / concise) + `communication` (short / detailed / bullets) + free text, each its own prompt paragraph; `tests/test_server.py::test_identity_fields_each_get_a_paragraph`
 - [x] **P0** Name audit: system prompt, approval and permission copy (`MuseSheet.tsx`), Settings heading, MobileGym `bridge.ts` (name from the hello / profile), the CLI banner (`· <name>`); the Android foreground notification keeps the product name while starting (no profile yet) and shows the agent's status text once connected
 - [ ] **P1** `identity` tool (set_name / set_tagline / set_avatar / set_style): renaming and avatar changes go through a choose/confirm card; tone changes apply at once with a one-line reply; "too long" / "more casual" map to settings
 - [ ] **P1** `identity/IDENTITY.md` + `identity/SOUL.md`, readable and editable; profile → markdown one-way sync; an "Identity" row in the Muse sheet (IDENTITY / SOUL / memory) with reset to default
@@ -117,7 +117,7 @@ Decisions this list rests on (see [design.md](design.md) for the reasoning): the
 ## 6. Device capabilities (P0, seven of them)
 
 - [x] Kotlin local MCP server (Streamable HTTP, `127.0.0.1` + token); registered automatically as the `device` MCP server (tools `device__*`); per-tool risk and taint through the new `MCPServerSettings.tools` overrides; [device.md](device.md)
-- [x] `wevvy-device` CLI inside the rootfs (the §3 bridge): `capability [action] k=v…`, single-word tools (`notify`, `location`, `calendars`) take no action word
+- [x] `ceis-device` CLI inside the rootfs (the §3 bridge): `capability [action] k=v…`, single-word tools (`notify`, `location`, `calendars`) take no action word
 - [x] Clipboard read/write, post a notification, calendar read/create/update/delete, contacts read-only, location, alarms and timers, the Photo Picker; all thirteen verified end to end on the emulator with the reference MCP client (permission dialog in the foreground, notification route from the background, declined and unanswered outcomes, clipboard from the background, alarm hand-off from the background, the picker)
 - [x] Permission defaults in the Sentinel table (`DEVICE_TOOLS` in `runtime.py`, checked against the Kotlin list by `tests/test_bridge.py`); reading notifications is not offered; recorded as its own switch, off by default, for P2
 - [x] `DocumentsProvider` (local build; compiles and lints, the root can only be seen on an arm64 phone: the emulator cannot install the local build); share sheet → a new conversation with the text as draft and the files uploaded (verified on the emulator from the Files app's share sheet)
@@ -131,7 +131,7 @@ Decisions this list rests on (see [design.md](design.md) for the reasoning): the
 - [x] `DeviceExecutor` interface; phase 1 ships only the accessibility backend (`gui/A11yExecutor.kt`)
 - [x] `AccessibilityService`: `dispatchGesture`, `takeScreenshot` (API 30+), global actions, a node-tree dump with stable ids (`gui/NodeTree.kt`), `SET_TEXT` with a clipboard fallback, event waits (`awaitIdle`)
 - [x] `screen` / `act` wired into `mobile_use`; the node tree as a second input (`Screen.nodes`, 999-grid lines after the picture; the picture decides)
-- [x] During GUI operation the capsule is in its Stop state (`TYPE_ACCESSIBILITY_OVERLAY`: the red panda + the current step + Stop; hidden for the screenshot); a notice card with *Open* when the agent needs the user (`task begin` / `end` / `notice`, `wevvy:stop` → `stopped`)
+- [x] During GUI operation the capsule is in its Stop state (`TYPE_ACCESSIBILITY_OVERLAY`: the red panda + the current step + Stop; hidden for the screenshot); a notice card with *Open* when the agent needs the user (`task begin` / `end` / `notice`, `ceis:stop` → `stopped`)
 - [x] Onboarding: enabling the service, Android 13+ restricted settings, recovery after the service is killed; the *This phone* row on the Phone card, live through `accessibilityState()`, and the device re-announces when the service comes or goes
 - [x] **The four-rung ladder in the system prompt**: skills / MCP / CLI → logged-in fetch → the in-app browser → the phone's GUI; the GUI only when asked explicitly, when a skill is `gui`, or after the first three rungs failed; announced before entering, `ask_user` first when climbing on its own
 - [x] `channel` in `SKILL.md` (`api` / `cli` / `web` / `browser` / `gui` / `mixed`, `app-only` accepted); the audit log records the channel of every tool call; Activity shows the share of GUI steps
@@ -188,7 +188,7 @@ Decisions this list rests on (see [design.md](design.md) for the reasoning): the
 
 ```mermaid
 flowchart LR
-  Agent["wevvy agent (Python)"] -->|"tool / browser / status events"| WebUI["webui.py emit / patch"]
+  Agent["ceis agent (Python)"] -->|"tool / browser / status events"| WebUI["webui.py emit / patch"]
   WebUI -->|"ws://127.0.0.1/ws"| Chat["Web chat: tool chips + live browser card"]
   WebUI -->|"ws://127.0.0.1/ws"| Host["Kotlin RuntimeService"]
   Host --> Capsule["StatusCapsule (collapsed / expanded)"]
@@ -214,10 +214,10 @@ flowchart LR
 ## 12. Build, CI and release (P0)
 
 - [ ] `rootfs.yml`; `android.yml` builds the local and connect APKs with a size gate
-- [ ] `release.yml`: two APKs, the rootfs, checksums, notes; rsync to `dl.wevvy.dev` in the same run
-- [x] PyPI pending publisher verified (`nano-muse/nanoMuse` + `release.yml` + environment Any, matching `environment: pypi` / `id-token: write`; the name `wevvy` is free)
+- [ ] `release.yml`: two APKs, the rootfs, checksums, notes; rsync to `dl.ceis.dev` in the same run
+- [x] PyPI pending publisher verified (`nano-muse/nanoMuse` + `release.yml` + environment Any, matching `environment: pypi` / `id-token: write`; the name `ceis` is free)
 - [ ] First PyPI release: push a `v*` tag (must equal the `pyproject.toml` version); optionally tighten the environment to `pypi`
-- [ ] Decide whether to publish an `openmuse` 0.7.x transition release that only depends on `wevvy`
+- [ ] Decide whether to publish an `openmuse` 0.7.x transition release that only depends on `ceis`
 - [ ] Docker; review `showcase.yml`
 - [ ] Signing secrets (added by the owner, or with explicit authorisation); version numbers aligned; CHANGELOG final; tag
 
@@ -225,7 +225,7 @@ flowchart LR
 
 ## 13. Tests and quality (P0)
 
-- [ ] Python: backend abstraction, protocol, the four-rung ladder, permission defaults, `/api/llm/models`, identity sync and tool, the `wevvy-browser` / `wevvy-open` CLIs, stdout streaming if built
+- [ ] Python: backend abstraction, protocol, the four-rung ladder, permission defaults, `/api/llm/models`, identity sync and tool, the `ceis-browser` / `ceis-open` CLIs, stdout streaming if built
 - [ ] Web: vitest + `tsc` (onboarding, provider form, RedPanda, identity page)
 - [ ] Kotlin: proot argument assembly, tar unpack, protocol, a11y node tree, `StatusCapsule` event mapping (tool → text, browser → frame, waiting → approval) and both window backends
 - [ ] Phone script over adb: install → unpack → start the service → the seven cases
@@ -236,14 +236,14 @@ flowchart LR
 ## 14. Documentation (P0)
 
 - [ ] `docs/android.md` local mode + the capsule and its permission; `docs/design.md` (mascot v2, identity, Muse UI, the ladder, the permission table, no OAuth, StatusCapsule); `docs/gui.md`; `docs/architecture.md` local topology and the CLI bridge; `docs/configuration.md`; `docs/troubleshooting.md`; `docs/services.md`; `docs/showcase.md`; this checklist kept current
-- [ ] roadmap / README / README_zh in sync; every link to `wevvy.dev`; screenshots retaken after mascot v2
+- [ ] roadmap / README / README_zh in sync; every link to `ceis.dev`; screenshots retaken after mascot v2
 
 ---
 
 ## 15. The site (P0)
 
-- [ ] **Apex online**: a `wevvy.dev` vhost in the Caddyfile (static `/srv/www/site`), `www` 301, the `dl.` mirror; Cloudflare DNS A records (the token is on the server); fixes the current 500
-- [ ] `pages.yml` publishes twice: the Pages mirror (deploy key pushing to the root of `nano-muse.github.io`, with a canonical link) + rsync to the server; retire the `/wevvy/` path; update the repository homepage field
+- [ ] **Apex online**: a `ceis.dev` vhost in the Caddyfile (static `/srv/www/site`), `www` 301, the `dl.` mirror; Cloudflare DNS A records (the token is on the server); fixes the current 500
+- [ ] `pages.yml` publishes twice: the Pages mirror (deploy key pushing to the root of `nano-muse.github.io`, with a canonical link) + rsync to the server; retire the `/ceis/` path; update the repository homepage field
 - [ ] **Eight sections**, copy written separately in Chinese and English, not translated: Hero (one line + one sentence + Download / GitHub + a quiet "try it in the browser" + a muted looping phone video) / Watch it work / Many hands (four tiles) / A Chinese day (seven case cards with trace links) / It asks first where it matters / Runs on your phone (the local build + what leaves the phone + a row of models) / Install (the three APK steps first, pip / Docker folded) / Footer
 - [ ] Copy rules: headlines ≤ 6 characters / 4 words; one idea per section; numbers over adjectives; banned: 赋能 / 一站式 / 极致 / 丝滑 / seamless / empower; no exclamation marks, no emoji headings; limits stated (Alpha, GUI needs Android 11+, Google login, no payments)
 - [ ] Real screenshots of real apps on one device frame and background; the red panda only in the hero and the ending
@@ -256,7 +256,7 @@ flowchart LR
 
 - [ ] Footage: `scrcpy --record` at 60 fps on a real phone; real 飞书 / 高德 / 12306 MCP / 腾讯会议 / 京东 / 携程 / 美团; no more mock-ups
 - [ ] Assembly: keep `storyboard.html + render.py` with real recordings; or Remotion (licence noted)
-- [ ] Shot list: 0–4 s the red panda + one line → 4–34 s the hero case with no GUI ("if there is an API, it does not tap the screen") → 34–44 s the 京东 login wall → take-over sheet → the run continues → 44–52 s the morning-brief notification + clipboard into the calendar → 52–60 s 美团 stopping before payment, the approval card → 60–66 s "runs on your phone · your key · payment is yours" → end card wevvy.dev + GitHub; a capsule shot may go into the 4–34 s section (switch to another app, commands scrolling in the capsule)
+- [ ] Shot list: 0–4 s the red panda + one line → 4–34 s the hero case with no GUI ("if there is an API, it does not tap the screen") → 34–44 s the 京东 login wall → take-over sheet → the run continues → 44–52 s the morning-brief notification + clipboard into the calendar → 52–60 s 美团 stopping before payment, the approval card → 60–66 s "runs on your phone · your key · payment is yours" → end card ceis.dev + GitHub; a capsule shot may go into the 4–34 s section (switch to another app, commands scrolling in the capsule)
 - [ ] Deliverables: the 16:9 film in Chinese and in English; 9:16 × 3 (the business trip / the morning brief / the phone moving on its own); a 6 s GIF/WebM for the README and the social preview
 - [ ] Sound: CC0 / CC-BY music + light UI sounds, listed in NOTICES; no narration, no TTS; burned-in subtitles
 - [ ] Blur order numbers, phone numbers, addresses; replace `site/media/`
@@ -283,7 +283,7 @@ OAuth subscription login · Shizuku / wadb backend · several instances and mode
 
 **Now (needed during M0–M2)**
 
-- Four decisions (one reply, "as recommended", is enough): version 0.1.0; Muse's missing features / voice / starter quota all after the release; Node preinstalled in the rootfs; `wevvy.dev` canonical with `nano-muse.github.io` as a mirror
+- Four decisions (one reply, "as recommended", is enough): version 0.1.0; Muse's missing features / voice / starter quota all after the release; Node preinstalled in the rootfs; `ceis.dev` canonical with `nano-muse.github.io` as a mirror
 - An Android 11+ phone with USB debugging, connected to this machine (`adb devices` sees it); ideally a 小米 or 华为 as a second device
 - A 高德 web-service key; one official DeepSeek key; the 腾讯会议 `tmeet` OAuth step clicked in a browser when we get there; a 飞书 "project group" that can be filmed and one or two accounts that can be @-mentioned
 - [x] The PyPI pending publisher (verified)

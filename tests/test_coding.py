@@ -16,12 +16,12 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy.coding import agents, runner
-from wevvy.coding.runner import Run, _normalise, start_run
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
+from ceis.coding import agents, runner
+from ceis.coding.runner import Run, _normalise, start_run
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.server import create_app
+from ceis.server.service import MuseService
 
 pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="posix shell in the tests")
 
@@ -266,7 +266,7 @@ def coding_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
             ],
         ],
     )
-    monkeypatch.setenv("WEVVY_CODING_HOME", str(home))
+    monkeypatch.setenv("CEIS_CODING_HOME", str(home))
     return home
 
 
@@ -733,7 +733,7 @@ def test_runs_survive_a_restart(
     rows.append({**rows[0], "id": "run_lost", "status": "running", "ended_at": None})
     store.write_text(json.dumps(rows), encoding="utf-8")
 
-    from wevvy.coding.service import CodingService
+    from ceis.coding.service import CodingService
 
     again = CodingService(service)
     listed = {r["id"]: r for r in again.list_runs()}
@@ -787,16 +787,16 @@ def test_offline_device_is_refused(server: tuple[TestClient, MuseService]) -> No
     client, _ = server
     r = client.get("/api/coding/sessions?device=laptop")
     assert r.status_code in (404, 409, 502)
-    assert os.environ.get("WEVVY_CODING_HOME")
+    assert os.environ.get("CEIS_CODING_HOME")
 
 
 def test_coding_clis_get_a_scrubbed_environment_plus_their_own_keys() -> None:
-    from wevvy.coding.runner import agent_env
+    from ceis.coding.runner import agent_env
 
     parent = {
         "PATH": "/usr/bin",
         "HOME": "/home/me",
-        "WEVVY_CLOUD_TOKEN": "ours",
+        "CEIS_CLOUD_TOKEN": "ours",
         "DEEPSEEK_API_KEY": "model-key",
         "OPENAI_API_KEY": "codex-key",
         "ANTHROPIC_API_KEY": "claude-key",
@@ -807,7 +807,7 @@ def test_coding_clis_get_a_scrubbed_environment_plus_their_own_keys() -> None:
     codex = agent_env("codex", parent)
     assert codex["OPENAI_API_KEY"] == "codex-key" and codex["PATH"] == "/usr/bin"
     for name in (
-        "WEVVY_CLOUD_TOKEN",
+        "CEIS_CLOUD_TOKEN",
         "DEEPSEEK_API_KEY",
         "ANTHROPIC_API_KEY",
         "CURSOR_API_KEY",
@@ -815,7 +815,7 @@ def test_coding_clis_get_a_scrubbed_environment_plus_their_own_keys() -> None:
         "SSH_AUTH_SOCK",
     ):
         assert name not in codex, name
-    assert "WEVVY_SANDBOX" not in codex and codex["CI"] == "1" and codex["NO_COLOR"] == "1"
+    assert "CEIS_SANDBOX" not in codex and codex["CI"] == "1" and codex["NO_COLOR"] == "1"
 
     claude = agent_env("claude", parent)
     assert claude["ANTHROPIC_API_KEY"] == "claude-key" and "OPENAI_API_KEY" not in claude
@@ -830,8 +830,8 @@ def test_coding_clis_get_a_scrubbed_environment_plus_their_own_keys() -> None:
     dsh = agent_env("dsh", parent)
     assert dsh["DEEPSEEK_API_KEY"] == "model-key"
     assert "OPENAI_API_KEY" not in dsh and "ANTHROPIC_API_KEY" not in dsh
-    assert "WEVVY_CLOUD_TOKEN" not in dsh and dsh["CI"] == "1"
+    assert "CEIS_CLOUD_TOKEN" not in dsh and dsh["CI"] == "1"
     # and it runs in the store the readers list, whatever DSH_HOME it inherited (the desktop
     # app points it at its own home)
-    moved = agent_env("dsh", {**parent, "DSH_HOME": "/app/home", "WEVVY_CODING_HOME": "/h"})
+    moved = agent_env("dsh", {**parent, "DSH_HOME": "/app/home", "CEIS_CODING_HOME": "/h"})
     assert moved["DSH_HOME"] == str(Path("/h") / ".dsh")

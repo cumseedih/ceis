@@ -648,7 +648,7 @@ fun SkillDetailScreen(
 
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(skill.name) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -806,9 +806,9 @@ fun SkillDetailScreen(
                     is UpdateStatus.Done -> {
                         DetailDivider()
                         DetailRow {
-                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = io.github.wevvy.ui.theme.WevvyColors.success, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = io.github.ceis.ui.theme.CeisColors.success, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(10.dp))
-                            Text(stringResource(R.string.skill_detail_updated), style = MaterialTheme.typography.bodySmall, color = io.github.wevvy.ui.theme.WevvyColors.success)
+                            Text(stringResource(R.string.skill_detail_updated), style = MaterialTheme.typography.bodySmall, color = io.github.ceis.ui.theme.CeisColors.success)
                         }
                     }
                     is UpdateStatus.Failed -> {
@@ -1037,7 +1037,7 @@ private fun shareSkillZip(context: android.content.Context, zip: java.io.File) {
  *  Settings rows use (SettingsScreen): blue for navigational/remote actions,
  *  green for local filesystem operations. */
 private val SettingsIconBlue = Color(0xFF005ABF)
-private val SettingsIconGreen = io.github.wevvy.ui.theme.WevvyColors.success
+private val SettingsIconGreen = io.github.ceis.ui.theme.CeisColors.success
 
 /**
  * [T-android-skill-icon-circular] A colored circular badge with a white glyph
@@ -1155,7 +1155,7 @@ fun SkillFileViewerScreen(
 
     Scaffold(
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(fileName) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {

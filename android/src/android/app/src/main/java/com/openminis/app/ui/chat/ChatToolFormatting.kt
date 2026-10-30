@@ -75,7 +75,7 @@ internal fun toolIconFor(toolName: String) = when (toolName) {
     else -> Icons.Default.Build
 }
 
-// Helper: tool display name for "wevvy is using X"
+// Helper: tool display name for "ceis is using X"
 internal fun toolDisplayName(toolName: String): String = when (toolName) {
     "shell_execute" -> "terminal"
     "file_read" -> "file reader"
@@ -90,36 +90,36 @@ internal fun toolDisplayName(toolName: String): String = when (toolName) {
 }
 
 /**
- * Full "wevvy is …" label shown in the tool detail sheet's bottom bar.
+ * Full "ceis is …" label shown in the tool detail sheet's bottom bar.
  * Mirrors iOS ToolLiveSheet.toolTitle so the wording matches per tool.
  */
 internal fun toolTitleLabel(toolName: String): String = when (toolName) {
-    "shell_execute" -> "wevvy is using Shell"
-    "file_read" -> "wevvy is reading File"
-    "file_write" -> "wevvy is using Editor"
-    "file_edit" -> "wevvy is editing File"
-    "browser_use" -> "wevvy is using Browser"
-    "read_image" -> "wevvy is reading Image"
-    "memory_write", "memory_get" -> "wevvy is using Memory"
-    "web_search" -> "wevvy is using Search"
-    else -> "wevvy is using ${toolDisplayName(toolName)}"
+    "shell_execute" -> "ceis is using Shell"
+    "file_read" -> "ceis is reading File"
+    "file_write" -> "ceis is using Editor"
+    "file_edit" -> "ceis is editing File"
+    "browser_use" -> "ceis is using Browser"
+    "read_image" -> "ceis is reading Image"
+    "memory_write", "memory_get" -> "ceis is using Memory"
+    "web_search" -> "ceis is using Search"
+    else -> "ceis is using ${toolDisplayName(toolName)}"
 }
 
-// wevvy: the same label once the step is over (issue #67 — the sheet's bottom bar
+// ceis: the same label once the step is over (issue #67 — the sheet's bottom bar
 // kept saying "is using" for a step that had finished long ago). Present tense while it
 // runs; what happened afterwards.
 internal fun toolTitleLabel(toolName: String, status: ToolBlockStatus?): String = when (status) {
     null, ToolBlockStatus.RUNNING, ToolBlockStatus.STREAMING, ToolBlockStatus.PENDING -> toolTitleLabel(toolName)
     ToolBlockStatus.SUCCESS -> when (toolName) {
-        "shell_execute" -> "wevvy used Shell"
-        "file_read" -> "wevvy read File"
-        "file_write" -> "wevvy used Editor"
-        "file_edit" -> "wevvy edited File"
-        "browser_use" -> "wevvy used Browser"
-        "read_image" -> "wevvy read Image"
-        "memory_write", "memory_get" -> "wevvy used Memory"
-        "web_search" -> "wevvy used Search"
-        else -> "wevvy used ${toolDisplayName(toolName)}"
+        "shell_execute" -> "ceis used Shell"
+        "file_read" -> "ceis read File"
+        "file_write" -> "ceis used Editor"
+        "file_edit" -> "ceis edited File"
+        "browser_use" -> "ceis used Browser"
+        "read_image" -> "ceis read Image"
+        "memory_write", "memory_get" -> "ceis used Memory"
+        "web_search" -> "ceis used Search"
+        else -> "ceis used ${toolDisplayName(toolName)}"
     }
     ToolBlockStatus.FAILED -> "${toolDisplayName(toolName).replaceFirstChar { it.uppercase() }} failed"
     ToolBlockStatus.CANCELLED -> "${toolDisplayName(toolName).replaceFirstChar { it.uppercase() }} stopped"

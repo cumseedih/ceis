@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from wevvy.config import LLMSettings, check_provider, resolve_provider
-from wevvy.llm import catalogue
-from wevvy.llm.factory import create_llm
+from ceis.config import LLMSettings, check_provider, resolve_provider
+from ceis.llm import catalogue
+from ceis.llm.factory import create_llm
 
 
 def test_the_packaged_file_is_read_once_and_has_the_twenty_one_providers():

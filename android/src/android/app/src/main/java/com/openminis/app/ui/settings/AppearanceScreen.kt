@@ -46,8 +46,8 @@ import androidx.compose.material.icons.outlined.Psychology
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.ScreenLockPortrait
 import androidx.compose.material.icons.outlined.Visibility
-import androidx.compose.material.icons.outlined.Face // wevvy
-import androidx.compose.material.icons.outlined.VisibilityOff // wevvy
+import androidx.compose.material.icons.outlined.Face // ceis
+import androidx.compose.material.icons.outlined.VisibilityOff // ceis
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -146,13 +146,13 @@ fun showChatTitleEnabled(context: Context): Boolean =
 fun autoExpandThinkingEnabled(context: Context): Boolean =
     getAppearancePrefs(context).getBoolean(KEY_AUTO_EXPAND_THINKING, true)
 
-// wevvy: Muse's header shows only the agent's name; the model group and
+// ceis: Muse's header shows only the agent's name; the model group and
 // provider · model under it are off by default and a Setting turns them on.
 const val KEY_NM_HEADER_MODEL = "nm.header_model"  // Boolean, default false
 fun headerModelEnabled(context: Context): Boolean =
     getAppearancePrefs(context).getBoolean(KEY_NM_HEADER_MODEL, false)
 
-// wevvy: the agent's steps in the chat — the tool pills, the reasoning
+// ceis: the agent's steps in the chat — the tool pills, the reasoning
 // blocks, the bar over the composer that opens the Computer sheet — are on
 // by default (0.1.37); a Setting hides them for whoever only wants the line
 // under the face. A stored false wins over the default.
@@ -171,7 +171,7 @@ fun showStepsEnabled(context: Context): Boolean =
  */
 private val APP_ICON_TILE_MAX_WIDTH = 192.dp
 
-// wevvy: resolve font scale labels in the current app language.
+// ceis: resolve font scale labels in the current app language.
 private val fontScaleLabelResIds = listOf(
     R.string.nm_font_scale_extra_small,
     R.string.nm_font_scale_small,
@@ -190,7 +190,7 @@ private data class LanguageOption(val code: String, val flag: String, val label:
 private val languageOptions = listOf(
     LanguageOption("", "\uD83C\uDF10", ""),
     LanguageOption("en", "\uD83C\uDDFA\uD83C\uDDF8", "English"),
-    // wevvy: Chinese (zh, zh-Hant) is not an app UI language; removed from the picker.
+    // ceis: Chinese (zh, zh-Hant) is not an app UI language; removed from the picker.
     LanguageOption("ja", "\uD83C\uDDEF\uD83C\uDDF5", "日本語"),
     LanguageOption("ko", "\uD83C\uDDF0\uD83C\uDDF7", "한국어"),
     LanguageOption("fr", "\uD83C\uDDEB\uD83C\uDDF7", "Français"),
@@ -269,21 +269,21 @@ fun AppearanceScreen(
     var appBaseLevel by remember { mutableIntStateOf(prefs.getInt(KEY_FONT_APP_BASE, 0)) }
     var selectedLanguage by remember { mutableStateOf(prefs.getString(KEY_LANGUAGE, "") ?: "") }
     var selectedAppIcon by remember { mutableStateOf(AppIconRepository.current(context)) }
-    var headerModel by remember { mutableStateOf(prefs.getBoolean(KEY_NM_HEADER_MODEL, false)) } // wevvy
-    var showSteps by remember { mutableStateOf(prefs.getBoolean(KEY_NM_SHOW_STEPS, true)) } // wevvy: on by default
-    var avatarSize by remember { mutableStateOf(io.github.wevvy.ui.avatar.AvatarSize.current(context)) } // wevvy
+    var headerModel by remember { mutableStateOf(prefs.getBoolean(KEY_NM_HEADER_MODEL, false)) } // ceis
+    var showSteps by remember { mutableStateOf(prefs.getBoolean(KEY_NM_SHOW_STEPS, true)) } // ceis: on by default
+    var avatarSize by remember { mutableStateOf(io.github.ceis.ui.avatar.AvatarSize.current(context)) } // ceis
 
     val fontsModified = chatInputLevel != 0 || messageLevel != 0 || appBaseLevel != 0
 
-    // wevvy: glyph tints come from the design tokens in design.md, not a second
+    // ceis: glyph tints come from the design tokens in design.md, not a second
     // accent palette. The primary blue carries the strongest rows, the link blue
     // carries secondary rows, and no other accent colour is introduced.
-    val tintPrimary = io.github.wevvy.ui.theme.WevvyColors.primary
-    val tintLink = io.github.wevvy.ui.theme.WevvyColors.link
+    val tintPrimary = io.github.ceis.ui.theme.CeisColors.primary
+    val tintLink = io.github.ceis.ui.theme.CeisColors.link
 
     SettingsScaffold(title = stringResource(R.string.appearance_title), onBack = onBack) {
 
-        // wevvy: -- Home header -- the model under the name, off by default as on Muse.
+        // ceis: -- Home header -- the model under the name, off by default as on Muse.
         SettingsSection(
             header = stringResource(R.string.nm_appearance_section_home),
             footer = stringResource(R.string.nm_appearance_header_model_footer),
@@ -301,7 +301,7 @@ fun AppearanceScreen(
             )
         }
 
-        // wevvy: -- Conversation -- the agent's steps, on by default (0.1.37); off, the
+        // ceis: -- Conversation -- the agent's steps, on by default (0.1.37); off, the
         // status line under the face carries the gist instead.
         SettingsSection(
             header = stringResource(R.string.nm_appearance_section_chat),
@@ -320,12 +320,12 @@ fun AppearanceScreen(
             )
         }
 
-        // wevvy: -- Avatar size -- Muse's five steps for the face on the home header.
+        // ceis: -- Avatar size -- Muse's five steps for the face on the home header.
         SettingsSection(
             header = stringResource(R.string.nm_appearance_section_avatar_size),
             footer = stringResource(R.string.nm_appearance_avatar_size_footer),
         ) {
-            // wevvy: a live preview of the current choice, drawn with the same disc
+            // ceis: a live preview of the current choice, drawn with the same disc
             // the home header uses, so the size is visible before leaving this page.
             // It follows the selection at once because avatarSize is state here.
             Row(
@@ -336,8 +336,8 @@ fun AppearanceScreen(
             ) {
                 val disc = avatarSize.disc
                 if (disc != null) {
-                    io.github.wevvy.ui.avatar.AgentAvatarDisc(
-                        mood = io.github.wevvy.ui.avatar.AgentMood.IDLE,
+                    io.github.ceis.ui.avatar.AgentAvatarDisc(
+                        mood = io.github.ceis.ui.avatar.AgentMood.IDLE,
                         discSize = disc,
                     )
                 } else {
@@ -348,14 +348,14 @@ fun AppearanceScreen(
                     )
                 }
             }
-            val sizes = io.github.wevvy.ui.avatar.AvatarSize.entries
+            val sizes = io.github.ceis.ui.avatar.AvatarSize.entries
             sizes.forEachIndexed { idx, size ->
                 SettingsChoiceRow(
                     title = stringResource(size.label),
                     selected = avatarSize == size,
                     onSelect = {
                         avatarSize = size
-                        io.github.wevvy.ui.avatar.AvatarSize.save(context, size)
+                        io.github.ceis.ui.avatar.AvatarSize.save(context, size)
                     },
                     leading = {
                         androidx.compose.material3.Icon(
@@ -564,7 +564,7 @@ fun AppearanceScreen(
         }
 
         // -- Chat Title (T-chat-title-pill) --
-        // wevvy: not offered. The chat top bar shows the agent's name, not
+        // ceis: not offered. The chat top bar shows the agent's name, not
         // the session title (see ChatScreen), so the "Show chat title" switch
         // has nothing left to govern. KEY_SHOW_CHAT_TITLE and its strings stay
         // for minis-config compatibility; session titles live in the session
@@ -861,7 +861,7 @@ private fun FontScaleSliderRow(
 ) {
     val idx = fontScaleValues.indexOf(level).coerceIn(0, fontScaleValues.lastIndex)
     var sliderPos by remember(level) { mutableFloatStateOf(idx.toFloat()) }
-    // wevvy: localize the selected label and the default fallback.
+    // ceis: localize the selected label and the default fallback.
     val currentLabel = stringResource(
         fontScaleLabelResIds.getOrElse(sliderPos.roundToInt()) { R.string.common_default },
     )

@@ -13,14 +13,14 @@ import pytest
 from fastapi.testclient import TestClient
 from typer.testing import CliRunner
 
-from wevvy.cli import app as cli_app
-from wevvy.config import SandboxSettings, Settings, SkillsSettings, load_app_settings
-from wevvy.llm import MockLLM
-from wevvy.sandbox import Sandbox
-from wevvy.schema import Function, LLMResponse, RiskLevel, ToolCall
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
-from wevvy.skills import (
+from ceis.cli import app as cli_app
+from ceis.config import SandboxSettings, Settings, SkillsSettings, load_app_settings
+from ceis.llm import MockLLM
+from ceis.sandbox import Sandbox
+from ceis.schema import Function, LLMResponse, RiskLevel, ToolCall
+from ceis.server import create_app
+from ceis.server.service import MuseService
+from ceis.skills import (
     BUILT_IN,
     BUILTIN_DIR,
     YOURS,
@@ -30,8 +30,8 @@ from wevvy.skills import (
     raw_skill_url,
     render_skill,
 )
-from wevvy.skills.library import fetch_skill_text, normalise_channel
-from wevvy.tools.skills_tool import Skills
+from ceis.skills.library import fetch_skill_text, normalise_channel
+from ceis.tools.skills_tool import Skills
 
 APPLE_STYLE = """---
 name: expense-report
@@ -345,10 +345,10 @@ async def test_skills_tool(tmp_path: Path):
 
 # ----------------------------------------------------------------------------- sandbox
 def test_skill_folders_are_readable_in_the_box(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setattr("wevvy.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
-    monkeypatch.setattr("wevvy.sandbox.platform.system", lambda: "Linux")
+    monkeypatch.setattr("ceis.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
+    monkeypatch.setattr("ceis.sandbox.platform.system", lambda: "Linux")
     ws = tmp_path / "ws"
-    data = ws / ".wevvy"  # a data dir inside the workspace: masked …
+    data = ws / ".ceis"  # a data dir inside the workspace: masked …
     skills = data / "skills"  # … but the skills under it are bound back, read-only
     skills.mkdir(parents=True)
     box = Sandbox(

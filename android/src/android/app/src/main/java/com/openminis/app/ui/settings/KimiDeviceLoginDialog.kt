@@ -100,7 +100,7 @@ fun KimiDeviceLoginDialog(
                             if (copied) Icons.Default.CheckCircle else Icons.Default.ContentCopy,
                             contentDescription = stringResource(R.string.kimi_login_copy_code),
                             tint = if (copied) {
-                                io.github.wevvy.ui.theme.WevvyColors.success
+                                io.github.ceis.ui.theme.CeisColors.success
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
                             },

@@ -95,9 +95,9 @@ fun ModelGroupDetailScreen(
     val config by providerRepository.config.collectAsState()
     val group = config.modelGroups.find { it.id == groupId }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    // wevvy: the relay's own models are never named in the UI; cloud entries read "wevvy Cloud".
+    // ceis: the relay's own models are never named in the UI; cloud entries read "ceis Cloud".
     val mgdContext = LocalContext.current
-    val mgdCloudId = remember(config) { io.github.wevvy.cloud.WevvyCloud.instance(mgdContext)?.id }
+    val mgdCloudId = remember(config) { io.github.ceis.cloud.CeisCloud.instance(mgdContext)?.id }
 
     if (group == null) {
         onBack()
@@ -144,7 +144,7 @@ fun ModelGroupDetailScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            io.github.wevvy.ui.muse.MuseTopAppBar( // wevvy: Muse's bar (drop-in for TopAppBar)
+            io.github.ceis.ui.muse.MuseTopAppBar( // ceis: Muse's bar (drop-in for TopAppBar)
                 title = { Text(group.name, fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -337,8 +337,8 @@ fun ModelGroupDetailScreen(
                         ReorderableItem(reorderState, key = entryId) { _ ->
                             ListItem(
                                 modifier = Modifier.alpha(if (providerDisabled) 0.4f else 1f),
-                                // wevvy: cloud entries read "wevvy Cloud", never the model name.
-                                headlineContent = { Text(if (mgdCloudId != null && entry.providerInstanceId == mgdCloudId) io.github.wevvy.cloud.WevvyCloud.LABEL else entry.model.displayName) },
+                                // ceis: cloud entries read "ceis Cloud", never the model name.
+                                headlineContent = { Text(if (mgdCloudId != null && entry.providerInstanceId == mgdCloudId) io.github.ceis.cloud.CeisCloud.LABEL else entry.model.displayName) },
                                 supportingContent = {
                                     if (providerDisabled) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {

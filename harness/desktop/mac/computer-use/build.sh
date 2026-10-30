@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Build "wevvy Computer Use.app" — the helper that holds the hands' macOS permissions
+# Build "ceis Computer Use.app" — the helper that holds the hands' macOS permissions
 # (Sources/main.swift says what it does; docs/desktop.md "macOS permissions" says why).
 #
-#   harness/desktop/mac/computer-use/build.sh            → build/wevvy Computer Use.app
+#   harness/desktop/mac/computer-use/build.sh            → build/ceis Computer Use.app
 #
 # Plain swiftc, no Xcode project: one binary per architecture (arm64 and x86_64, or ARCHS
 # to pick), joined with lipo; the frameworks (AppKit, Network, CoreGraphics, ScreenCaptureKit)
@@ -10,7 +10,7 @@
 # app icon from resources/app-icon.png when iconutil is there (the panes show it); an ad-hoc
 # signature so the bundle runs at all — scripts/desktop-app/package-mac.sh signs it again
 # with the release identity before the outer app. electron-builder copies the result into
-# wevvy.app/Contents/Helpers (electron-builder.yml, mac.extraFiles).
+# ceis.app/Contents/Helpers (electron-builder.yml, mac.extraFiles).
 #
 #   VERSION                     the bundle's version (default: harness/desktop/package.json)
 #   ARCHS                       "arm64 x86_64" (default) — one of them for a quicker local build
@@ -22,13 +22,13 @@
 #   OUT_DIR                     where build/ goes
 #
 # Warnings: the compiler's output is kept and any `warning:` line is surfaced as a GitHub
-# annotation (::warning::) so it is seen without failing the release build; a Wevvy Swift
+# annotation (::warning::) so it is seen without failing the release build; a Ceis Swift
 # file with a warning is treated as a failure by the project's rules — fix it.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 desktop="$(cd "$here/../.." && pwd)"
 out="${OUT_DIR:-$here/build}"
-name="wevvy Computer Use"
+name="ceis Computer Use"
 app="$out/$name.app"
 min="${MACOSX_DEPLOYMENT_TARGET:-12.3}"
 archs="${ARCHS:-arm64 x86_64}"
@@ -45,7 +45,7 @@ binaries=()
 for arch in $archs; do
   log="$out/obj/swiftc-$arch.log"
   if ! swiftc -O -swift-version 5 -target "$arch-apple-macos$min" -sdk "$sdk" \
-      -module-name WevvyComputerUse "$here"/Sources/*.swift -o "$out/obj/$arch" 2> "$log"; then
+      -module-name CeisComputerUse "$here"/Sources/*.swift -o "$out/obj/$arch" 2> "$log"; then
     cat "$log" >&2
     echo "swiftc failed for $arch" >&2
     exit 1
@@ -79,7 +79,7 @@ if command -v iconutil >/dev/null && command -v sips >/dev/null && [ -f "$icon" 
 fi
 
 echo "== ad-hoc signature"
-codesign --force --sign - --identifier io.github.wevvy.desktop.computer-use "$app"
+codesign --force --sign - --identifier io.github.ceis.desktop.computer-use "$app"
 codesign --verify --strict "$app" && echo "signature ok"
 "$app/Contents/MacOS/$name" --version
 lipo -info "$app/Contents/MacOS/$name" 2>/dev/null || true

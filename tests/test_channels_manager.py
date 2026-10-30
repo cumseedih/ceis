@@ -11,13 +11,13 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy.channels.base import Channel, ChannelStatus, Field, InboundFile, InboundMessage
-from wevvy.channels.manager import ChannelManager, thread_id_for
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.schema import Function, LLMResponse, ToolCall
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
+from ceis.channels.base import Channel, ChannelStatus, Field, InboundFile, InboundMessage
+from ceis.channels.manager import ChannelManager, thread_id_for
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.schema import Function, LLMResponse, ToolCall
+from ceis.server import create_app
+from ceis.server.service import MuseService
 
 
 def tc(name: str, **args: Any) -> ToolCall:
@@ -145,7 +145,7 @@ def test_first_message_gets_a_pairing_code_and_approval_pairs(chan):
     pending = client.get("/api/channels").json()["pending"]
     assert len(pending) == 1 and pending[0]["sender_name"] == "Ann"
     code = pending[0]["code"]
-    assert chat == "chat1" and code in text and "wevvy channels approve" in text
+    assert chat == "chat1" and code in text and "ceis channels approve" in text
     # nothing reached the agent
     assert "channel-fake-chat1" not in service.threads and llm.calls == []
     # the same code again while it is good; a bad code is a 404
@@ -394,7 +394,7 @@ def test_switching_off_and_on_and_removing_a_chat(chan):
 
 def test_reload_picks_up_cli_edits(chan):
     client, service, llm, manager, fake = chan
-    # as `wevvy channels approve` does when the server runs elsewhere: edit the file
+    # as `ceis channels approve` does when the server runs elsewhere: edit the file
     fake.bus.inbound(dm("hi", sender="u5", chat="c5"))
     code = wait_for(lambda: client.get("/api/channels").json()["pending"])[0]["code"]
     assert manager.pairing.approve(code)

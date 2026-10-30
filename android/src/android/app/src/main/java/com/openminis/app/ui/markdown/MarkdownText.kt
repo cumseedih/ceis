@@ -110,10 +110,10 @@ private fun BlockContent(
     when (block) {
         is MarkdownParser.Block.Heading -> HeadingBlock(block, color)
         is MarkdownParser.Block.Paragraph -> ParagraphBlock(block.content, color, baseStyle, mathSpans)
-        // wevvy: `wevvy-*` fences are app protocol (goal created / goal
+        // ceis: `ceis-*` fences are app protocol (goal created / goal
         // update) and render as cards, never as code.
         is MarkdownParser.Block.CodeBlock ->
-            if (block.language.startsWith("wevvy-")) io.github.wevvy.ui.chat.WevvyBlock(block.language, block.code)
+            if (block.language.startsWith("ceis-")) io.github.ceis.ui.chat.CeisBlock(block.language, block.code)
             else CodeBlockView(block)
         is MarkdownParser.Block.Blockquote -> BlockquoteView(block, color, baseStyle, mathSpans)
         is MarkdownParser.Block.BulletList -> BulletListView(block, color, baseStyle)

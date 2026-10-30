@@ -3,16 +3,16 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from wevvy.agent import MuseAgent
-from wevvy.config import Settings
-from wevvy.goals import GoalStore
-from wevvy.llm import MockLLM
-from wevvy.memory import MemoryStore
-from wevvy.schema import Function, LLMResponse, Message, Role, ToolCall, ToolResult
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.tools import Goals, Remember, Terminate, ToolCollection
-from wevvy.tools.base import BaseTool
-from wevvy.ui import HeadlessUI
+from ceis.agent import MuseAgent
+from ceis.config import Settings
+from ceis.goals import GoalStore
+from ceis.llm import MockLLM
+from ceis.memory import MemoryStore
+from ceis.schema import Function, LLMResponse, Message, Role, ToolCall, ToolResult
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.tools import Goals, Remember, Terminate, ToolCollection
+from ceis.tools.base import BaseTool
+from ceis.ui import HeadlessUI
 
 
 class Adder(BaseTool):
@@ -142,7 +142,7 @@ async def test_stuck_detection_nudges(settings: Settings):
 async def test_context_window_trims_at_user_boundary(settings: Settings):
     settings.agent.max_context_messages = 4
     agent, *_ = make_agent(settings, [])
-    from wevvy.schema import Message
+    from ceis.schema import Message
 
     agent.messages = [
         Message.user("u1"),
@@ -161,7 +161,7 @@ async def test_context_window_keeps_only_the_newest_images(settings: Settings):
     go to the model; older ones are replaced by a note. The history itself keeps them."""
     settings.agent.max_context_images = 2
     agent, *_ = make_agent(settings, [])
-    from wevvy.schema import Message
+    from ceis.schema import Message
 
     agent.messages = [
         Message.user("look", images=["/a.png"]),
@@ -222,7 +222,7 @@ class Picky(BaseTool):
     }
 
     def assess(self, args: dict[str, Any]):
-        from wevvy.tools.base import CallAssessment
+        from ceis.tools.base import CallAssessment
 
         return CallAssessment(summary=f"picky {args['path'].strip()}")
 
@@ -275,7 +275,7 @@ async def test_fixed_reply_language_wins_over_the_client(settings: Settings):
 
 
 def test_language_name_from_tags():
-    from wevvy.prompts import language_name
+    from ceis.prompts import language_name
 
     assert language_name("en") == "English"
     assert language_name("en-US") == "English"

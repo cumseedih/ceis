@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { FENCE_NAMING, stripFences, stripNamingFence } from "./fences";
 
-const BLOCK = '```wevvy-naming\n{"addressGiven": true, "userAddress": "Lin"}\n```';
+const BLOCK = '```ceis-naming\n{"addressGiven": true, "userAddress": "Lin"}\n```';
 
 describe("stripFences", () => {
   it("removes a complete block and the blank line it left", () => {
@@ -16,9 +16,9 @@ describe("stripFences", () => {
   });
 
   it("cuts from an opener that never closed, whole or still streaming", () => {
-    expect(stripNamingFence('Sure.\n```wevvy-naming\n{"agentName": "Ju')).toBe("Sure.");
-    expect(stripNamingFence("Sure.\n```wevvy-naming", true)).toBe("Sure.");
-    expect(stripNamingFence("Sure.\n```wevvy-na", true)).toBe("Sure.");
+    expect(stripNamingFence('Sure.\n```ceis-naming\n{"agentName": "Ju')).toBe("Sure.");
+    expect(stripNamingFence("Sure.\n```ceis-naming", true)).toBe("Sure.");
+    expect(stripNamingFence("Sure.\n```ceis-na", true)).toBe("Sure.");
     expect(stripNamingFence("Sure.\n``", true)).toBe("Sure.\n``");
     expect(stripNamingFence("Sure.\n```", true)).toBe("Sure.");
   });

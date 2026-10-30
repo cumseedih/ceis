@@ -64,6 +64,6 @@ object MinisUserAgent {
     val DEFAULT: String by lazy {
         val release = android.os.Build.VERSION.RELEASE ?: "unknown"
         val model = (android.os.Build.MODEL ?: "unknown").trim().ifEmpty { "unknown" }
-        "wevvy/${BuildConfig.VERSION_NAME} (Android $release; $model)"
+        "ceis/${BuildConfig.VERSION_NAME} (Android $release; $model)"
     }
 }

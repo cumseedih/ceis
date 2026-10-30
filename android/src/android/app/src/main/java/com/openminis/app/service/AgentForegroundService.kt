@@ -189,7 +189,7 @@ class AgentForegroundService : Service() {
         if (com.openminis.app.crash.CrashFrequencyDetector.isSafeMode()) {
             try {
                 val stub = androidx.core.app.NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("wevvy")
+                    .setContentTitle("ceis")
                     .setSmallIcon(android.R.drawable.stat_sys_warning)
                     .setOngoing(false)
                     .build()
@@ -686,7 +686,7 @@ class AgentForegroundService : Service() {
             )
             val notif = NotificationCompat.Builder(this, OVERLAY_NUDGE_CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setLargeIcon(io.github.wevvy.identity.WevvyIdentity.face(this)) // wevvy: the agent is the sender
+                .setLargeIcon(io.github.ceis.identity.CeisIdentity.face(this)) // ceis: the agent is the sender
                 .setContentTitle(getString(R.string.bg_overlay_nudge_title))
                 .setContentText(getString(R.string.bg_overlay_nudge_body))
                 .setStyle(
@@ -756,7 +756,7 @@ class AgentForegroundService : Service() {
         )
 
         // T-bg-overlay phase 1: enrich the ongoing notification.
-        // Title:   "wevvy is using <Tool>"  (or session-count summary when idle/between turns)
+        // Title:   "ceis is using <Tool>"  (or session-count summary when idle/between turns)
         // Text:    one-line "<sessionLabel> · <elapsed>" so the always-visible row stays compact
         // BigText: full status string from SessionActivityTracker.currentToolStatus when expanded
         // Progress: indeterminate while a tool is in flight (isToolRunning), hidden otherwise
@@ -767,14 +767,14 @@ class AgentForegroundService : Service() {
         // [T-android-live-update-completed] In the completed resting state the
         // title/status must stop describing work in progress. `toolName` is
         // already null by then (setInactive clears it), so the old code fell
-        // through to the generic "wevvy is running" title while the icon fell
+        // through to the generic "ceis is running" title while the icon fell
         // through to the wrench (toolSmallIconRes' else branch) — a finished
         // task rendered exactly like a running one.
         val titleText = when {
             isCompleted -> getString(R.string.bg_service_notification_title_completed)
             toolName != null -> toolDisplayLabel(toolName)
-            // wevvy: "<name> is working", the way Muse phrases it.
-            else -> getString(R.string.nm_notif_working, io.github.wevvy.identity.WevvyIdentity.name(this))
+            // ceis: "<name> is working", the way Muse phrases it.
+            else -> getString(R.string.nm_notif_working, io.github.ceis.identity.CeisIdentity.name(this))
         }
         val collapsedText = if (isCompleted) {
             getString(R.string.bg_service_notification_text_completed, sessionLabel, timeString)
@@ -830,7 +830,7 @@ class AgentForegroundService : Service() {
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(smallIconRes(toolName, isCompleted))
-            .setLargeIcon(io.github.wevvy.identity.WevvyIdentity.face(this)) // wevvy: the agent is the sender
+            .setLargeIcon(io.github.ceis.identity.CeisIdentity.face(this)) // ceis: the agent is the sender
             .setContentTitle(titleText)
             .setContentText(collapsedText)
             .setStyle(NotificationCompat.BigTextStyle().bigText(collapsedText))
@@ -912,7 +912,7 @@ class AgentForegroundService : Service() {
 
         val builder = Notification.Builder(this, CHANNEL_ID)
             .setSmallIcon(smallIcon)
-            .setLargeIcon(io.github.wevvy.identity.WevvyIdentity.face(this)) // wevvy: the agent is the sender
+            .setLargeIcon(io.github.ceis.identity.CeisIdentity.face(this)) // ceis: the agent is the sender
             .setContentTitle(titleText)
             .setContentText(collapsedText)
             .setStyle(progressStyle)
@@ -983,15 +983,15 @@ class AgentForegroundService : Service() {
      * so the user still gets a hint about what's running.
      */
     private fun toolDisplayLabel(toolName: String): String = when (toolName) {
-        "shell_execute" -> "wevvy is using Shell"
-        "file_read" -> "wevvy is reading File"
-        "file_write" -> "wevvy is using Editor"
-        "file_edit" -> "wevvy is editing File"
-        "browser_use" -> "wevvy is using Browser"
-        "read_image" -> "wevvy is reading Image"
-        "memory_write", "memory_get" -> "wevvy is using Memory"
-        "web_search" -> "wevvy is using Search"
-        else -> "wevvy is using $toolName"
+        "shell_execute" -> "ceis is using Shell"
+        "file_read" -> "ceis is reading File"
+        "file_write" -> "ceis is using Editor"
+        "file_edit" -> "ceis is editing File"
+        "browser_use" -> "ceis is using Browser"
+        "read_image" -> "ceis is reading Image"
+        "memory_write", "memory_get" -> "ceis is using Memory"
+        "web_search" -> "ceis is using Search"
+        else -> "ceis is using $toolName"
     }
 
     /**

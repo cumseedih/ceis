@@ -1,0 +1,314 @@
+/**
+ * The account, as the phone and the web app show it: the pool in yuan with the two ways on
+ * when it runs low (your own key, an invitation — and a star, once), the invite code, what was
+ * used by kind and by model, the password, every device holding a key, the account's own
+ * timeline, and the way out (this device, every device, the account itself). Everything here
+ * is read from the relay through the host's pass-through routes (`/ceis/cloud/me`,
+ * `/sessions`, `/account-events`, `/password`, …); nothing of it is kept on the computer.
+ */
+import { Button, Input } from '@deepseek-ai/dsh-client-ui-primitives'
+import { createElement as h, Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { allowanceInfo, AllowanceWays, type Guidance } from './AllowanceWays.tsx'
+import { dollars, usdNum } from './money.ts'
+import { call, errorStyle, muted, row, type CloudStatus, type Translate, failureText } from './api.ts'
+import { settingsBus } from './bus.ts'
+import { IconCopy } from './icons.tsx'
+
+/** `GET /v1/me`, the parts this page reads (every field optional: an older relay sends fewer). */
+export interface AccountSheet {
+  account?: { id?: string; channel?: string; hint?: string; member?: boolean; has_password?: boolean; sessions?: number; signed_in_via?: string; created_at?: number; region?: string; /** the @ceis tag, verbatim from the relay (newer relays) */ tag?: string }
+  /** Where the account is, as the relay sees it (0.1.34): `cn` or `intl`. */
+  region?: string
+  spend?: { total?: number; total_usd?: number; grant?: number; grant_usd?: number; left?: number | null; left_usd?: number | null; today_usd?: number; unlimited?: boolean; warn?: boolean; usd_cny?: number; invite_bonus_cny?: number; invitee_bonus_cny?: number; own_key_docs?: string; guidance?: Guidance }
+  usage?: { today?: { by_kind?: UsageRow[] }; total?: { by_kind?: UsageRow[]; by_model?: UsageRow[] } }
+  invite?: { code?: string; url?: string; invites?: number; bonus_cny?: number; invitee_bonus_cny?: number; earned_cny?: number }
+}
+export interface UsageRow { kind?: string; model?: string; requests?: number; prompt_tokens?: number; completion_tokens?: number; cost_cny?: number }
+interface Session { prefix: string; device: string; via: string; created_at: number; last_used_at: number | null; current: boolean }
+interface AccountEvent { ts: number; kind: string; detail: string }
+
+/** `GET /v1/config` on the relay (0.15): the amounts a client prints before anyone signs in. */
+export interface CloudConfig { version?: string; signup_open?: boolean; allowance_cny?: number; allowance_usd?: number; usd_cny?: number; invite_bonus_cny?: number; invitee_bonus_cny?: number; star_url?: string }
+let configCache: CloudConfig | undefined
+let configPending: Promise<CloudConfig> | undefined
+/** The relay's public config, fetched once per window; `{}` until it arrives or when the relay is older. */
+export function useCloudConfig(): CloudConfig {
+  const [config, setConfig] = useState<CloudConfig>(configCache ?? {})
+  useEffect(() => {
+    if (configCache) return
+    configPending ??= call<CloudConfig>('config').then((c) => { configCache = c ?? {}; return configCache }).catch(() => ({} as CloudConfig))
+    let alive = true
+    void configPending.then((c) => { if (alive) setConfig(c) })
+    return () => { alive = false }
+  }, [])
+  return config
+}
+
+const when = (ts: number | null | undefined, locale: string): string => (ts ? new Date(ts * 1000).toLocaleString(locale, { dateStyle: 'medium', timeStyle: 'short' }) : '—')
+
+// ---- the star, asked for at the moments the policy names (C1) ----------------------------
+
+/**
+ * The star-on-GitHub asks are switched off for ceis: the host still keeps its ledger and
+ * gate (`nudges.json`, `src/nudges.ts`), but no ask is ever drawn. The names below keep
+ * the call sites compiling; the components render nothing and the actions do nothing.
+ */
+export type StarMoment = 'signed_in' | 'new_look' | 'exhausted' | 'goal_done'
+
+/** The star is done — a no-op while the asks are switched off. */
+export function markStarred(): void {}
+/** Off to GitHub — a no-op while the asks are switched off. */
+export function openStar(_url?: string): void {}
+/** "Not now" — a no-op while the asks are switched off. */
+export function dismissStar(): void {}
+
+/** The star card — switched off: nothing is drawn. */
+export function StarNudge(_props: { t: Translate; text: string; onDone: () => void }): ReactNode {
+  return null
+}
+
+/** The card for a moment — switched off: nothing is drawn. */
+export function StarNudgeOnce(_props: { t: Translate; moment: StarMoment; text?: string; due?: boolean }): ReactNode {
+  return null
+}
+
+// ---- the page ------------------------------------------------------------------------------
+
+interface AccountPageProps {
+  t: Translate
+  status: CloudStatus
+  locale: string
+  /** The host's status after a sign-out of every device or a deletion: the parent shows the sign-in again. */
+  onEnded(status: CloudStatus): void
+}
+
+export function AccountPage({ t, status, locale, onEnded }: AccountPageProps): ReactNode {
+  const [sheet, setSheet] = useState<AccountSheet | undefined>()
+  const [sessions, setSessions] = useState<Session[] | undefined>()
+  const [events, setEvents] = useState<AccountEvent[] | undefined>()
+  const [error, setError] = useState<string | undefined>()
+  const [tick, setTick] = useState(0)
+  const reload = () => setTick((n) => n + 1)
+
+  useEffect(() => {
+    let alive = true
+    setError(undefined)
+    void Promise.all([
+      call<AccountSheet>('me'),
+      call<{ sessions?: Session[] }>('sessions').catch(() => ({ sessions: undefined })),
+      call<{ events?: AccountEvent[] }>('account-events?limit=40').catch(() => ({ events: undefined })),
+    ]).then(([me, s, e]) => {
+      if (!alive) return
+      setSheet(me)
+      setSessions(s.sessions ?? [])
+      setEvents(e.events ?? [])
+    }).catch((err: unknown) => { if (alive) setError(failureText(t, err)) })
+    return () => { alive = false }
+  }, [tick, status.account?.id, t])
+
+  const a = sheet?.account
+  const member = Boolean(a?.member ?? status.account?.member)
+  return h(Fragment, null,
+    error ? h('div', { style: errorStyle, role: 'alert' }, error) : null,
+    sheet ? h(StarNudgeOnce, { t, moment: 'signed_in' }) : null,
+    h('h3', { style: heading }, t('acAllowance')),
+    sheet ? h(Allowance, { t, sheet, member }) : h('div', { style: muted }, t('loading')),
+    sheet?.invite?.code ? h(Fragment, null, h('h3', { style: heading }, t('acInvite')), h(InviteBlock, { t, invite: sheet.invite, rate: sheet.spend?.usd_cny })) : null,
+    h('h3', { style: heading }, t('acUsage')),
+    sheet ? h(Usage, { t, sheet }) : null,
+    h('h3', { style: heading }, t('acPassword')),
+    h(Password, { t, has: Boolean(a?.has_password), onChanged: reload }),
+    h('h3', { style: heading }, t('acSessions')),
+    h(Sessions, { t, sessions, locale, onChanged: reload, onEnded }),
+    events && events.length > 0 ? h(Fragment, null, h('h3', { style: heading }, t('acTimeline')), h(Timeline, { events, locale })) : null,
+    h('h3', { style: heading }, t('acDanger')),
+    h(Danger, { t, onEnded }))
+}
+
+const heading: Record<string, string | number> = { fontSize: 14, fontWeight: 600, margin: '8px 0 0' }
+
+// ---- the pool, and the ways on ------------------------------------------------------------
+
+function Allowance({ t, sheet, member }: { t: Translate; sheet: AccountSheet; member: boolean }): ReactNode {
+  const s = sheet.spend
+  // money shows in dollars only: the relay's own USD figure first, else its usd_cny rate
+  const rate = s?.usd_cny
+  const usd = (cny: number, relayUsd?: number | null, digits = 2): string => dollars(cny, relayUsd, rate, digits)
+  if (!s || member || s.unlimited || s.grant === undefined) {
+    return h('div', { style: muted }, member ? t('acMemberNoLimit') : t('acNoPool', { total: usd(s?.total ?? 0, s?.total_usd) }))
+  }
+  const grant = s.grant
+  const left = s.left ?? Math.max(0, grant - (s.total ?? 0))
+  const pct = grant > 0 ? Math.min(100, Math.round(((s.total ?? 0) / grant) * 100)) : 0
+  const exhausted = left <= 0
+  const low = exhausted || Boolean(s.warn) || pct >= 80
+  return h('div', { className: 'nm-card nm-usage' },
+    h('div', { className: 'nm-usage-row' },
+      h('span', { className: 'nm-usage-plan' }, t('gnPlanFree')),
+      h('span', { className: 'nm-usage-pct' }, t('acLeftOf', { left: usd(left, s.left_usd), grant: usd(grant, s.grant_usd, 0) }))),
+    h('div', { className: 'nm-usage-bar', role: 'progressbar', 'aria-valuenow': pct, 'aria-valuemin': 0, 'aria-valuemax': 100 }, h('span', { style: { width: `${pct}%` } })),
+    h('div', { className: 'nm-usage-fine' }, t('acSpent', { total: usd(s.total ?? 0, s.total_usd) })),
+    low ? h(WaysOn, { t, exhausted, sheet }) : null)
+}
+
+/** Mainland China when the account signed in with a phone, or the relay says `cn` (C5). */
+export function mainland(_t: Translate, sheet: AccountSheet): boolean {
+  const region = sheet.region ?? sheet.account?.region
+  if (region === 'cn') return true
+  if (region && region !== 'cn') return false
+  return sheet.account?.channel === 'phone'
+}
+
+/** When the pool is low or spent: the ways on, from what the relay sends (C11), under the pool bar. */
+function WaysOn({ t, exhausted, sheet }: { t: Translate; exhausted: boolean; sheet: AccountSheet }): ReactNode {
+  return h(AllowanceWays, { t, info: allowanceInfo(sheet), sheet, exhausted, inSettings: true })
+}
+
+// ---- the invite ----------------------------------------------------------------------------
+
+function InviteBlock({ t, invite, rate }: { t: Translate; invite: NonNullable<AccountSheet['invite']>; rate?: number | undefined }): ReactNode {
+  const [copied, setCopied] = useState<'code' | 'link' | undefined>()
+  const copy = (what: 'code' | 'link', text: string) => {
+    void navigator.clipboard?.writeText(text).then(() => {
+      setCopied(what)
+      window.setTimeout(() => setCopied(undefined), 1800)
+    }).catch(() => undefined)
+  }
+  const earned = invite.earned_cny ?? 0
+  return h('div', { className: 'nm-card' },
+    h('div', { className: 'nm-row' },
+      h('div', { className: 'nm-row-main' },
+        h('span', { className: 'nm-row-title' }, invite.code ?? ''),
+        h('span', { className: 'nm-row-sub nm-wrap' }, t('inviteText', { bonus: usdNum(invite.bonus_cny ?? 5, undefined, rate, 0) }))),
+      h('button', { type: 'button', className: 'nm-pill nm-pill-ghost nm-pill-sm', onClick: () => copy('code', invite.code ?? '') }, h(IconCopy, { size: 14 }), copied === 'code' ? t('inviteCopied') : t('inviteCopy'))),
+    invite.url
+      ? h('div', { className: 'nm-row' },
+          h('div', { className: 'nm-row-main' },
+            h('span', { className: 'nm-row-title', style: { fontWeight: 400, fontSize: 13 } }, invite.url)),
+          h('button', { type: 'button', className: 'nm-pill nm-pill-ghost nm-pill-sm', onClick: () => copy('link', invite.url ?? '') }, h(IconCopy, { size: 14 }), copied === 'link' ? t('inviteCopied') : t('inviteCopy')))
+      : null,
+    h('div', { className: 'nm-row' }, h('span', { className: 'nm-row-sub' }, t('inviteStats', { n: invite.invites ?? 0, earned: usdNum(earned, undefined, rate, earned % 1 === 0 ? 0 : 2) }))))
+}
+
+// ---- usage by kind and by model (the models stay unnamed: every row is the account's) ----------
+
+function Usage({ t, sheet }: { t: Translate; sheet: AccountSheet }): ReactNode {
+  const [which, setWhich] = useState<'today' | 'total'>('total')
+  const rows = (which === 'today' ? sheet.usage?.today?.by_kind : sheet.usage?.total?.by_kind) ?? []
+  const models = sheet.usage?.total?.by_model ?? []
+  const kindWord = (k: string | undefined) => (k === 'chat' ? t('acKindChat') : k === 'image' ? t('acKindImage') : k === 'video' ? t('acKindVideo') : k === 'realtime' ? t('acKindCalls') : (k ?? ''))
+  const rate = sheet.spend?.usd_cny
+  const line = (r: UsageRow, label: string, key?: string) =>
+    h('div', { key: key ?? label, className: 'nm-row' },
+      h('div', { className: 'nm-row-main' },
+        h('span', { className: 'nm-row-title' }, label),
+        h('span', { className: 'nm-row-sub' }, t('acUsageLine', { n: r.requests ?? 0, tokens: ((r.prompt_tokens ?? 0) + (r.completion_tokens ?? 0)).toLocaleString() }))),
+      h('span', { className: 'nm-usage-pct' }, dollars(r.cost_cny ?? 0, undefined, rate)))
+  return h(Fragment, null,
+    h('div', { className: 'nm-seg', role: 'tablist', style: { alignSelf: 'flex-start' } },
+      (['today', 'total'] as const).map((w) => h('button', { key: w, type: 'button', role: 'tab', className: `nm-seg-btn${which === w ? ' nm-active' : ''}`, 'aria-selected': which === w, onClick: () => setWhich(w) }, t(w === 'today' ? 'acToday' : 'acTotal')))),
+    h('div', { className: 'nm-card' },
+      rows.length ? rows.map((r) => line(r, kindWord(r.kind))) : h('div', { className: 'nm-row' }, h('span', { className: 'nm-row-sub' }, t('acUsageNone')))),
+    which === 'total' && models.length
+      // every by-model row is the account's usage: the row reads `ceis Cloud`, never the model
+      ? h('div', { className: 'nm-card' }, models.map((r, i) => line(r, 'ceis Cloud', `cloud-${i}`)))
+      : null)
+}
+
+// ---- the password --------------------------------------------------------------------------
+
+function Password({ t, has, onChanged }: { t: Translate; has: boolean; onChanged(): void }): ReactNode {
+  const [open, setOpen] = useState(false)
+  const [current, setCurrent] = useState('')
+  const [next, setNext] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | undefined>()
+  const [done, setDone] = useState<string | undefined>()
+  const submit = (event: FormEvent) => {
+    event.preventDefault()
+    setBusy(true)
+    setError(undefined)
+    void call('password', { password: next, ...(has ? { current } : {}) })
+      .then(() => { setOpen(false); setCurrent(''); setNext(''); setDone(next ? t('acPasswordSaved') : t('acPasswordRemoved')); onChanged() })
+      .catch((err: unknown) => setError(failureText(t, err)))
+      .finally(() => setBusy(false))
+  }
+  if (!open) {
+    return h('div', { className: 'nm-card' },
+      h('div', { className: 'nm-row' },
+        h('div', { className: 'nm-row-main' },
+          h('span', { className: 'nm-row-title' }, has ? t('acPasswordSet') : t('acPasswordNone')),
+          h('span', { className: 'nm-row-sub nm-wrap' }, done ?? t('acPasswordWhy'))),
+        h('button', { type: 'button', className: 'nm-pill nm-pill-ghost nm-pill-sm', onClick: () => { setDone(undefined); setOpen(true) } }, has ? t('acPasswordChange') : t('acPasswordAdd'))))
+  }
+  return h('form', { className: 'nm-card', style: { display: 'flex', flexDirection: 'column', gap: 8, padding: '12px 14px' }, onSubmit: submit },
+    has ? h(Input, { value: current, type: 'password', onChange: (e: FormEvent<HTMLInputElement>) => setCurrent(e.currentTarget.value), placeholder: t('acPasswordCurrent'), autoComplete: 'current-password', 'aria-label': t('acPasswordCurrent') }) : null,
+    h(Input, { value: next, type: 'password', onChange: (e: FormEvent<HTMLInputElement>) => setNext(e.currentTarget.value), placeholder: has ? t('acPasswordNew') : t('obPassword'), autoComplete: 'new-password', autoFocus: true, 'aria-label': t('acPasswordNew') }),
+    h('div', { style: muted }, has ? t('acPasswordRemoveHint') : t('acPasswordRule')),
+    error ? h('div', { style: errorStyle, role: 'alert' }, error) : null,
+    h('div', { style: row },
+      h(Button, { variant: 'primary', size: 'sm', type: 'submit', disabled: busy || (!has && next.length < 8) || (has && current.length === 0) || (next.length > 0 && next.length < 8) }, busy ? t('saving') : t('save')),
+      h(Button, { variant: 'ghost', size: 'sm', type: 'button', disabled: busy, onClick: () => { setOpen(false); setError(undefined) } }, t('cancel'))))
+}
+
+// ---- the devices holding a key ------------------------------------------------------------
+
+function Sessions({ t, sessions, locale, onChanged, onEnded }: { t: Translate; sessions: Session[] | undefined; locale: string; onChanged(): void; onEnded(status: CloudStatus): void }): ReactNode {
+  const [busy, setBusy] = useState<string | undefined>()
+  const revoke = (prefix: string) => {
+    setBusy(prefix)
+    void call('sessions/revoke', { prefix }).then(onChanged).catch(() => undefined).finally(() => setBusy(undefined))
+  }
+  const everywhere = () => {
+    if (!window.confirm(t('acSignOutAllConfirm'))) return
+    setBusy('*')
+    void call<CloudStatus>('sign-out-all', {}).then(onEnded).catch(() => undefined).finally(() => setBusy(undefined))
+  }
+  if (!sessions) return h('div', { style: muted }, t('loading'))
+  return h(Fragment, null,
+    h('div', { className: 'nm-card' },
+      sessions.length === 0
+        ? h('div', { className: 'nm-row' }, h('span', { className: 'nm-row-sub' }, t('acSessionsNone')))
+        : sessions.map((s) =>
+            h('div', { key: s.prefix, className: 'nm-row' },
+              h('div', { className: 'nm-row-main' },
+                h('span', { className: 'nm-row-title' }, s.device || t('acSessionUnnamed'), s.current ? ` · ${t('acThisDevice')}` : ''),
+                h('span', { className: 'nm-row-sub' }, t('acSessionLine', { via: s.via === 'password' ? t('acViaPassword') : t('acViaCode'), when: when(s.last_used_at ?? s.created_at, locale) }))),
+              s.current ? null : h('button', { type: 'button', className: 'nm-pill nm-pill-ghost nm-pill-sm', disabled: busy !== undefined, onClick: () => revoke(s.prefix) }, busy === s.prefix ? t('working') : t('acRevoke'))))),
+    sessions.length > 1
+      ? h('div', null, h('button', { type: 'button', className: 'nm-pill nm-pill-ghost nm-pill-sm', disabled: busy !== undefined, onClick: everywhere }, t('acSignOutAll')))
+      : null)
+}
+
+// ---- the timeline --------------------------------------------------------------------------
+
+function Timeline({ events, locale }: { events: AccountEvent[]; locale: string }): ReactNode {
+  return h('div', { className: 'nm-card' },
+    events.slice(0, 40).map((e, i) =>
+      h('div', { key: `${e.ts}-${i}`, className: 'nm-row' },
+        h('div', { className: 'nm-row-main' },
+          h('span', { className: 'nm-row-title' }, e.kind.replace(/[._]/g, ' ')),
+          e.detail ? h('span', { className: 'nm-row-sub nm-wrap' }, e.detail) : null),
+        h('span', { className: 'nm-row-sub' }, when(e.ts, locale)))))
+}
+
+// ---- the way out ---------------------------------------------------------------------------
+
+function Danger({ t, onEnded }: { t: Translate; onEnded(status: CloudStatus): void }): ReactNode {
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | undefined>()
+  const remove = () => {
+    if (!window.confirm(t('acDeleteConfirm'))) return
+    if (!window.confirm(t('acDeleteConfirm2'))) return
+    setBusy(true)
+    setError(undefined)
+    void call<CloudStatus>('delete-account', {}).then(onEnded).catch((err: unknown) => setError(failureText(t, err))).finally(() => setBusy(false))
+  }
+  return h('div', { className: 'nm-card' },
+    h('div', { className: 'nm-row' },
+      h('div', { className: 'nm-row-main' },
+        h('span', { className: 'nm-row-title' }, t('acDelete')),
+        h('span', { className: 'nm-row-sub nm-wrap' }, t('acDeleteSub'))),
+      h('button', { type: 'button', className: 'nm-pill nm-pill-danger nm-pill-sm', disabled: busy, onClick: remove }, busy ? t('working') : t('acDelete'))),
+    error ? h('div', { style: { ...errorStyle, padding: '0 0 10px' }, role: 'alert' }, error) : null)
+}

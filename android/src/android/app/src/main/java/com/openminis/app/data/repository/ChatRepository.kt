@@ -11,10 +11,10 @@ import java.util.UUID
 
 class ChatRepository(internal val dao: ChatDao) {
 
-    // wevvy: signed in, the list is the account's: chats synced under another account stay on the phone, out of sight (contract C10);
+    // ceis: signed in, the list is the account's: chats synced under another account stay on the phone, out of sight (contract C10);
     // the feed's working conversation is the agent's, not a chat of the person's, and stays out too (FeedFlow.hidden)
     fun observeSessions(): Flow<List<ChatSessionEntity>> =
-        kotlinx.coroutines.flow.combine(dao.observeSessions(), io.github.wevvy.sync.ConversationSync.hidden, io.github.wevvy.feed.FeedFlow.hidden) { list, hidden, feed ->
+        kotlinx.coroutines.flow.combine(dao.observeSessions(), io.github.ceis.sync.ConversationSync.hidden, io.github.ceis.feed.FeedFlow.hidden) { list, hidden, feed ->
             if (hidden.isEmpty() && feed.isEmpty()) list else list.filter { it.id !in hidden && it.id !in feed }
         }
 
@@ -38,7 +38,7 @@ class ChatRepository(internal val dao: ChatDao) {
             memoryEnabled = if (memoryEnabled) 1 else 0,
         )
         dao.insertSession(session)
-        io.github.wevvy.account.AccountData.claim(session.id) // wevvy: the chat belongs to whoever is signed in now (contract C12)
+        io.github.ceis.account.AccountData.claim(session.id) // ceis: the chat belongs to whoever is signed in now (contract C12)
         return session
     }
 
@@ -98,12 +98,12 @@ class ChatRepository(internal val dao: ChatDao) {
 
     suspend fun updateSessionTitle(id: String, title: String) {
         dao.updateSessionTitle(id, title, System.currentTimeMillis())
-        io.github.wevvy.sync.ConversationSync.changed() // wevvy: the new title reaches the account's other devices
+        io.github.ceis.sync.ConversationSync.changed() // ceis: the new title reaches the account's other devices
     }
 
     suspend fun updateSessionTitleAndCategory(id: String, title: String, category: String?) {
         dao.updateSessionTitleAndCategory(id, title, category, System.currentTimeMillis())
-        io.github.wevvy.sync.ConversationSync.changed() // wevvy
+        io.github.ceis.sync.ConversationSync.changed() // ceis
     }
 
     suspend fun updateSessionModel(sessionId: String, modelId: String) {
@@ -117,8 +117,8 @@ class ChatRepository(internal val dao: ChatDao) {
     suspend fun deleteSession(id: String) {
         dao.deleteMessages(id)
         dao.deleteSession(id)
-        io.github.wevvy.guard.Grants.clearSession(id) // wevvy
-        io.github.wevvy.sync.ConversationSync.changed() // wevvy: a tombstone goes to the other devices
+        io.github.ceis.guard.Grants.clearSession(id) // ceis
+        io.github.ceis.sync.ConversationSync.changed() // ceis: a tombstone goes to the other devices
     }
 
     // ─── Session groups ("folders") ────────────────────────────────────────
@@ -323,7 +323,7 @@ class ChatRepository(internal val dao: ChatDao) {
 
     suspend fun deleteMessagesAfter(sessionId: String, keepCount: Int) {
         dao.deleteMessagesAfter(sessionId, keepCount)
-        io.github.wevvy.sync.ConversationSync.changed() // wevvy: an edit or regenerate — the cut rows become tombstones
+        io.github.ceis.sync.ConversationSync.changed() // ceis: an edit or regenerate — the cut rows become tombstones
     }
 
     /**
@@ -413,8 +413,8 @@ class ChatRepository(internal val dao: ChatDao) {
         } else {
             dao.touchSession(sessionId, now)
         }
-        // wevvy: a moment after the turn's last row, the chat reaches the account's other devices
-        io.github.wevvy.sync.ConversationSync.changed()
+        // ceis: a moment after the turn's last row, the chat reaches the account's other devices
+        io.github.ceis.sync.ConversationSync.changed()
         return message
     }
 

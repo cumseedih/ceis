@@ -340,8 +340,8 @@ fun BrowserSheet(
                 }
             }
 
-            // wevvy: while the browser is handed to the person, the one line and Done sit above the downloads.
-            io.github.wevvy.ui.chat.BrowserHandOverBanner(accent)
+            // ceis: while the browser is handed to the person, the one line and Done sit above the downloads.
+            io.github.ceis.ui.chat.BrowserHandOverBanner(accent)
 
             // ── Download progress banner ──
             val activeDownload by tabPool.activeDownload.collectAsState()
@@ -602,10 +602,10 @@ private fun AgentBrowsingOverlay(accent: Color, onTakeover: () -> Unit) {
                     .background(accent.copy(alpha = breathingAlpha), CircleShape),
             )
             Spacer(Modifier.width(12.dp))
-            // wevvy: "<name> is browsing" — the Soul name, like the composer placeholder.
+            // ceis: "<name> is browsing" — the Soul name, like the composer placeholder.
             val browsingSoul by com.openminis.app.agent.SoulStore.cachedMetadata.collectAsState()
             Text(
-                stringResource(R.string.browser_minis_browsing, browsingSoul.name.trim().ifEmpty { "wevvy" }),
+                stringResource(R.string.browser_minis_browsing, browsingSoul.name.trim().ifEmpty { "ceis" }),
                 color = Color.White.copy(alpha = 0.9f),
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,

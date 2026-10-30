@@ -210,7 +210,7 @@ class OpenAIOAuthManager(context: Context, instanceId: String) : OAuthManager(co
         response.close()
         AppLogger.info(
             TAG,
-            // wevvy: the success body carries the access, refresh and id tokens; mask them before they reach the log file.
+            // ceis: the success body carries the access, refresh and id tokens; mask them before they reach the log file.
             "token exchange response: $responseCode bodyLen=${responseBody.length} body[0..500]=${OAuthManager.sanitizeBody(responseBody, 500)}",
         )
 
@@ -305,7 +305,7 @@ class OpenAIOAuthManager(context: Context, instanceId: String) : OAuthManager(co
                 )
                 chain.proceed(req)
             }
-            .proxyAuthenticator(io.github.wevvy.net.OwnProviderProxy.authenticator) // wevvy: Settings → Network, a proxy with a password
+            .proxyAuthenticator(io.github.ceis.net.OwnProviderProxy.authenticator) // ceis: Settings → Network, a proxy with a password
             .build()
     }
 

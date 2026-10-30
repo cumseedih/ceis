@@ -1700,8 +1700,8 @@ private fun RenderBlock(block: MdBlock) {
             )
         }
 
-        is MdBlock.CodeBlock -> if (block.language.startsWith("wevvy-")) { // wevvy: goal cards etc.
-            io.github.wevvy.ui.chat.WevvyBlock(block.language, block.code)
+        is MdBlock.CodeBlock -> if (block.language.startsWith("ceis-")) { // ceis: goal cards etc.
+            io.github.ceis.ui.chat.CeisBlock(block.language, block.code)
         } else {
             val clipboardManager = LocalClipboardManager.current
             var copied by remember { mutableStateOf(false) }
@@ -1734,7 +1734,7 @@ private fun RenderBlock(block: MdBlock) {
                     Icon(
                         imageVector = if (copied) Icons.Default.Check else Icons.Default.ContentCopy,
                         contentDescription = if (copied) "Copied" else "Copy code",
-                        tint = if (copied) io.github.wevvy.ui.theme.WevvyColors.success else Color.White.copy(alpha = 0.4f),
+                        tint = if (copied) io.github.ceis.ui.theme.CeisColors.success else Color.White.copy(alpha = 0.4f),
                         modifier = Modifier
                             .size(16.dp)
                             .clickable {

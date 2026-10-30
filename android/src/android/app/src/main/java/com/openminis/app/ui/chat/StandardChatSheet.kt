@@ -64,7 +64,7 @@ fun StandardChatSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        // wevvy: sheets float (design.md): a whisper of translucency over
+        // ceis: sheets float (design.md): a whisper of translucency over
         // the dimmed chat. A sheet is its own window, so cross-window blur
         // is not available; the tint carries the glass reading.
         containerColor = ChatColors.background.copy(alpha = 0.92f),

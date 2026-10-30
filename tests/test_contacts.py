@@ -11,20 +11,20 @@ import pytest
 from fastapi.testclient import TestClient
 from typer.testing import CliRunner
 
-from wevvy.cli import app as cli_app
-from wevvy.config import (
+from ceis.cli import app as cli_app
+from ceis.config import (
     ContactSourceSettings,
     ContactsSettings,
     EmailSettings,
     Settings,
     load_app_settings,
 )
-from wevvy.contacts import OWN, ContactBook, parse_vcards, render_vcard
-from wevvy.llm import MockLLM
-from wevvy.schema import RiskLevel
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
-from wevvy.tools import Contacts, SendEmail
+from ceis.contacts import OWN, ContactBook, parse_vcards, render_vcard
+from ceis.llm import MockLLM
+from ceis.schema import RiskLevel
+from ceis.server import create_app
+from ceis.server.service import MuseService
+from ceis.tools import Contacts, SendEmail
 
 
 def private(path: Path) -> bool:

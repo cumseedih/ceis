@@ -1,4 +1,4 @@
-// The helper client (src/mac-helper.ts) against a fake "wevvy Computer Use" — an HTTP
+// The helper client (src/mac-helper.ts) against a fake "ceis Computer Use" — an HTTP
 // server in this process that behaves like the Swift one: reads the token file the client
 // wrote, writes the port file, checks the bearer token, answers the seven routes. Then the
 // operator (src/operator.ts) on top of it, with a fake `electron` module in place of the
@@ -123,16 +123,16 @@ function fakeHelper(mode = "ok") {
         }
         if (req.method === "POST" && req.url === "/request") return send(200, status);
         if (req.method === "POST" && req.url === "/screenshot") {
-          if (mode === "denied") return send(403, { error: "screen_denied", message: "Screen Recording is off for wevvy Computer Use" });
+          if (mode === "denied") return send(403, { error: "screen_denied", message: "Screen Recording is off for ceis Computer Use" });
           if (mode === "fails") return send(500, { error: "screenshot_failed", message: SCK_FAILURE });
           return send(200, { base64: Buffer.from("png").toString("base64"), mime: json.format === "png" ? "image/png" : "image/jpeg", width: json.width ?? 1440, height: json.height ?? 900, screen: { width: 1440, height: 900 }, scale: 2, capture: "ScreenCaptureKit" });
         }
         if (req.method === "GET" && req.url === "/windows") {
-          if (mode === "denied") return send(403, { error: "screen_denied", message: "Screen Recording is off for wevvy Computer Use" });
+          if (mode === "denied") return send(403, { error: "screen_denied", message: "Screen Recording is off for ceis Computer Use" });
           return send(200, { windows, capture: "ScreenCaptureKit" });
         }
         if (req.method === "POST" && req.url === "/window") {
-          if (mode === "denied") return send(403, { error: "screen_denied", message: "Screen Recording is off for wevvy Computer Use" });
+          if (mode === "denied") return send(403, { error: "screen_denied", message: "Screen Recording is off for ceis Computer Use" });
           const found = windows.find((w) => w.id === json.id);
           if (!found) return send(404, { error: "no_window", message: `no window with id ${json.id} is on screen` });
           const [x, y, w, h] = found.bounds;
@@ -204,7 +204,7 @@ test("start: token file 0600 before the launch, open's arguments, port discovery
   assert.equal(status.pid, 4242);
   assert.equal(status.version, "0.1.38");
   assert.deepEqual(status.display, { width: 1440, height: 900, scale: 2 });
-  assert.ok(lines.some((l) => l.includes("wevvy Computer Use 0.1.38") && l.includes("screen granted")));
+  assert.ok(lines.some((l) => l.includes("ceis Computer Use 0.1.38") && l.includes("screen granted")));
   // a second ready() is a no-op
   assert.equal(await helper.ready(), true);
   assert.equal(fake.servers.length, 1);
@@ -266,7 +266,7 @@ test("denied: /screenshot's 403 comes through with its code; status says denied"
   assert.equal(await helper.ready(), true);
   assert.equal(helper.cachedStatus().screen, "denied");
   assert.equal(helper.cachedStatus().accessibility, false);
-  await assert.rejects(helper.screenshot(), (exc) => exc instanceof MacHelperError && exc.status === 403 && exc.code === "screen_denied" && /wevvy Computer Use/.test(exc.message));
+  await assert.rejects(helper.screenshot(), (exc) => exc instanceof MacHelperError && exc.status === 403 && exc.code === "screen_denied" && /ceis Computer Use/.test(exc.message));
   await helper.stop();
 });
 
@@ -335,7 +335,7 @@ test("operator: a helper whose capture fails is reported with its own words — 
     await assert.rejects(operator.screenshot({ width: 640, height: 400 }), (exc) => {
       assert.ok(exc instanceof OperatorError);
       assert.equal(exc.status, 500);
-      assert.match(exc.message, /^no screenshot: wevvy Computer Use could not take the picture: /);
+      assert.match(exc.message, /^no screenshot: ceis Computer Use could not take the picture: /);
       assert.ok(exc.message.includes("picture: ScreenCaptureKit userDeclined (-3801)"), exc.message);
       assert.equal(exc.message.split("no screenshot:").length, 2, "the prefix is said once");
       return true;
@@ -356,7 +356,7 @@ test("operator: without the helper's Screen Recording grant the refusal names th
     await assert.rejects(operator.screenshot(), (exc) => exc instanceof OperatorError && exc.status === 403 && exc.message === `no screenshot: ${HELPER_SCREEN_PERMISSION_TEXT}`);
     assert.equal(electronFake.captures, 0);
     assert.equal(operator.info().available, false);
-    assert.match(operator.info().reason, /wevvy Computer Use/);
+    assert.match(operator.info().reason, /ceis Computer Use/);
   });
 });
 
@@ -366,12 +366,12 @@ test("operator: a helper bundle that did not start is the reason — for the pic
   const { operator, helper } = macOperator(dir, fake, { startTimeoutMs: 200, retryAfterMs: 60_000 });
   await onDarwin(async () => {
     electronFake.captures = 0;
-    await assert.rejects(operator.screenshot(), (exc) => exc instanceof OperatorError && exc.status === 503 && /^no screenshot: wevvy Computer Use did not start \(no port after/.test(exc.message));
+    await assert.rejects(operator.screenshot(), (exc) => exc instanceof OperatorError && exc.status === 503 && /^no screenshot: ceis Computer Use did not start \(no port after/.test(exc.message));
     await assert.rejects(operator.execute({ action: "click", x: 10, y: 10 }), (exc) => exc instanceof OperatorError && exc.status === 503 && /did not start/.test(exc.message));
     assert.equal(electronFake.captures, 0);
     const info = operator.info();
     assert.equal(info.available, false);
-    assert.match(info.reason, /^wevvy Computer Use did not start \(no port after/);
+    assert.match(info.reason, /^ceis Computer Use did not start \(no port after/);
     assert.equal(info.helper.running, false);
   });
   assert.equal(helper.running(), false);
@@ -391,7 +391,7 @@ test("operator: with no helper bundle at all the Electron path takes the picture
     assert.equal(operator.info().helper.reason, "no helper bundle");
     assert.equal(operator.info().helper.present, false);
     // window mode needs the helper
-    await assert.rejects(operator.windows(), (exc) => exc instanceof OperatorError && exc.status === 503 && /window mode needs wevvy Computer Use/.test(exc.message));
+    await assert.rejects(operator.windows(), (exc) => exc instanceof OperatorError && exc.status === 503 && /window mode needs ceis Computer Use/.test(exc.message));
   });
 });
 
@@ -511,10 +511,10 @@ const posix = (path) => path.split(sep).join("/");
 test("an app under App Translocation does not start its helper, and says why", async () => {
   const dir = scratch();
   // joined with "/" on purpose: translocation is a macOS path, and Windows accepts the slash
-  const app = [dir, "AppTranslocation", "4F1C", "d", "wevvy.app", "Contents", "Helpers", `${HELPER_NAME}.app`].join("/");
+  const app = [dir, "AppTranslocation", "4F1C", "d", "ceis.app", "Contents", "Helpers", `${HELPER_NAME}.app`].join("/");
   mkdirSync(app, { recursive: true });
   assert.equal(translocated(app), true);
-  assert.equal(translocated("/Applications/wevvy.app/Contents/Helpers/x.app"), false);
+  assert.equal(translocated("/Applications/ceis.app/Contents/Helpers/x.app"), false);
   const fake = fakeHelper();
   const helper = new MacHelper({ appPath: app, dataDir: join(dir, "data"), launch: fake.launch, quarantine: () => ({ result: "none", detail: "" }) });
   assert.equal(helper.present(), true);
@@ -524,9 +524,9 @@ test("an app under App Translocation does not start its helper, and says why", a
 });
 
 test("defaultHelperPath: the env override, Contents/Helpers when packaged, the build dir in development", () => {
-  assert.equal(defaultHelperPath("/x/wevvy.app/Contents/MacOS/wevvy-desktop", true, "/proj", { WEVVY_COMPUTER_USE_APP: "/elsewhere/Helper.app" }), "/elsewhere/Helper.app");
-  assert.equal(posix(defaultHelperPath("/x/wevvy.app/Contents/MacOS/wevvy-desktop", true, "/proj", {})), "/x/wevvy.app/Contents/Helpers/wevvy Computer Use.app");
-  assert.equal(posix(defaultHelperPath("/usr/bin/electron", false, "/proj", {})), "/proj/mac/computer-use/build/wevvy Computer Use.app");
+  assert.equal(defaultHelperPath("/x/ceis.app/Contents/MacOS/ceis-desktop", true, "/proj", { CEIS_COMPUTER_USE_APP: "/elsewhere/Helper.app" }), "/elsewhere/Helper.app");
+  assert.equal(posix(defaultHelperPath("/x/ceis.app/Contents/MacOS/ceis-desktop", true, "/proj", {})), "/x/ceis.app/Contents/Helpers/ceis Computer Use.app");
+  assert.equal(posix(defaultHelperPath("/usr/bin/electron", false, "/proj", {})), "/proj/mac/computer-use/build/ceis Computer Use.app");
 });
 
 test("describeAction: the glow's words, as the operator phrases them", () => {

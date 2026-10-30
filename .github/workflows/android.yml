@@ -88,7 +88,7 @@ jobs:
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
           ./gradlew :app:assembleDebug --console=plain --no-daemon
 
-      # Our unit tests (io.github.wevvy.*: the guards, the hub client, the sandbox paths, the
+      # Our unit tests (io.github.ceis.*: the guards, the hub client, the sandbox paths, the
       # strings' parity), plus the upstream provider and sandbox tests, the two OpenMinis packages
       # our edits touch (#333, #334, #335). Same Gradle invocation as AGENTS.md; the compiled
       # classes are warm.
@@ -96,12 +96,12 @@ jobs:
         working-directory: android/src/android
         run: |
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
-          ./gradlew :app:testDebugUnitTest --tests 'io.github.wevvy.*' \
+          ./gradlew :app:testDebugUnitTest --tests 'io.github.ceis.*' \
             --tests 'com.openminis.app.provider.*' --tests 'com.openminis.app.sandbox.*' \
             --console=plain --no-daemon
 
       # The on-device tests cannot run here (no emulator), but the source set must keep
-      # compiling or io.github.wevvy.reach.ReachHubInstrumentedTest never runs anywhere (#332).
+      # compiling or io.github.ceis.reach.ReachHubInstrumentedTest never runs anywhere (#332).
       - name: androidTest compiles
         working-directory: android/src/android
         run: |
@@ -115,7 +115,7 @@ jobs:
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: wevvy-debug-apk
+          name: ceis-debug-apk
           path: android/src/android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 14
           if-no-files-found: error

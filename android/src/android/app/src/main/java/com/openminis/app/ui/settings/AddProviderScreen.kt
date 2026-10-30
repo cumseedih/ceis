@@ -92,21 +92,21 @@ fun AddProviderScreen(
     providerRepository: ProviderRepository,
     onBack: () -> Unit,
     onSaved: () -> Unit,
-    preset: String? = null, // wevvy: open straight on the form, pre-filled for a known vendor
+    preset: String? = null, // ceis: open straight on the form, pre-filled for a known vendor
 ) {
-    // wevvy: a preset (from "use your own key" — a vendor of the own-key catalogue) skips the
+    // ceis: a preset (from "use your own key" — a vendor of the own-key catalogue) skips the
     // type and credential steps; the form opens with the vendor's name and public endpoint —
     // `<id>:oauth` on its sign-in (OpenAIOAuthManager for a ChatGPT plan, ClaudeOAuthManager,
     // OpenRouterOAuthManager, Kimi's device code), a key with no paste.
     val presetContext = LocalContext.current
-    val presetTemplate = remember(preset) { io.github.wevvy.cloud.OwnKeyPresets.template(presetContext, preset) }
+    val presetTemplate = remember(preset) { io.github.ceis.cloud.OwnKeyPresets.template(presetContext, preset) }
     var step by remember { mutableStateOf(if (presetTemplate != null) AddProviderStep.CONFIGURE else AddProviderStep.CHOOSE_TYPE) }
     var selectedType by remember { mutableStateOf<ProviderType?>(presetTemplate?.providerType) }
     var selectedCredential by remember {
         mutableStateOf<ProviderCredential?>(
             when {
                 presetTemplate == null -> null
-                io.github.wevvy.cloud.OwnKeyPresets.signIn(presetContext, preset) -> ProviderCredential.oauth
+                io.github.ceis.cloud.OwnKeyPresets.signIn(presetContext, preset) -> ProviderCredential.oauth
                 else -> ProviderCredential.apiKey
             },
         )
@@ -115,7 +115,7 @@ fun AddProviderScreen(
     // Voice Chat Provider template row — preseeds type/base URL/label/appendV1
     // on the configure step (mirrors iOS applyVoiceTemplate).
     var selectedVoiceTemplate by remember {
-        mutableStateOf<com.openminis.app.data.model.VoiceProviderTemplate?>(presetTemplate) // wevvy: a preset opens on its template
+        mutableStateOf<com.openminis.app.data.model.VoiceProviderTemplate?>(presetTemplate) // ceis: a preset opens on its template
     }
 
     // Unified back handler: reuse each step's onBack so predictive-back gesture
@@ -128,7 +128,7 @@ fun AddProviderScreen(
                 selectedType = null
             }
             AddProviderStep.CONFIGURE -> {
-                // wevvy: a preset came straight to the form; back leaves the screen.
+                // ceis: a preset came straight to the form; back leaves the screen.
                 if (presetTemplate != null && selectedVoiceTemplate === presetTemplate) {
                     onBack()
                 }
@@ -229,10 +229,10 @@ private fun providerIcon(type: ProviderType): Pair<ImageVector, Color> = when (t
 private fun availableCredentials(type: ProviderType): List<ProviderCredential> {
     return when (type) {
         ProviderType.openRouter -> listOf(ProviderCredential.apiKey, ProviderCredential.oauth)
-        // wevvy: the Claude sign-in only on a build that carries Anthropic's identifier; the
+        // ceis: the Claude sign-in only on a build that carries Anthropic's identifier; the
         // public build has none, so it offers the API key alone (#373)
         ProviderType.anthropic ->
-            if (io.github.wevvy.cloud.ClaudeSignIn.available) listOf(ProviderCredential.apiKey, ProviderCredential.oauth)
+            if (io.github.ceis.cloud.ClaudeSignIn.available) listOf(ProviderCredential.apiKey, ProviderCredential.oauth)
             else listOf(ProviderCredential.apiKey)
         ProviderType.openAI -> listOf(ProviderCredential.apiKey, ProviderCredential.oauth)
         ProviderType.gemini -> listOf(ProviderCredential.apiKey)
@@ -593,8 +593,8 @@ private fun ColumnScope.ApiKeyConfigSection(
         } else {
             "The URL is used verbatim. Include the full path up to (but not including) the endpoint."
         }
-        // wevvy: plain http:// only for addresses on the local network (io.github.wevvy.net.LanOnly)
-        val baseUrlProblem = io.github.wevvy.net.LanOnly.refusedHost(customBaseURL)?.let { stringResource(R.string.nm_lan_only_https, it) }
+        // ceis: plain http:// only for addresses on the local network (io.github.ceis.net.LanOnly)
+        val baseUrlProblem = io.github.ceis.net.LanOnly.refusedHost(customBaseURL)?.let { stringResource(R.string.nm_lan_only_https, it) }
         SettingsSection(
             header = stringResource(R.string.add_provider_endpoint),
             footer = baseUrlProblem ?: baseUrlFooter,
@@ -680,8 +680,8 @@ private fun ColumnScope.ApiKeyConfigSection(
         // (custom base URL filled in) — ollama / LM Studio / LiteLLM /
         // private relays need no key. Official endpoints and OAuth flows
         // keep requiring a credential. Mirrors iOS AddProviderView.
-        // wevvy: no saving while the endpoint is a plain http:// address off the local network
-        enabled = io.github.wevvy.net.LanOnly.refusedHost(customBaseURL) == null && (
+        // ceis: no saving while the endpoint is a plain http:// address off the local network
+        enabled = io.github.ceis.net.LanOnly.refusedHost(customBaseURL) == null && (
             apiKey.isNotBlank() || (
                 customBaseURL.isNotBlank() &&
                     (providerType == ProviderType.openAI || providerType == ProviderType.anthropic)
@@ -754,7 +754,7 @@ private fun ColumnScope.OAuthConfigSection(
                     Icon(
                         Icons.Default.CheckCircle,
                         contentDescription = null,
-                        tint = io.github.wevvy.ui.theme.WevvyColors.success,
+                        tint = io.github.ceis.ui.theme.CeisColors.success,
                         modifier = Modifier.size(20.dp),
                     )
                     Spacer(Modifier.width(8.dp))
@@ -878,8 +878,8 @@ private fun ColumnScope.OAuthConfigSection(
                         Text(signInLabel)
                     }
                 }
-                // wevvy: a proxy or VPN can swallow the localhost callback; after ten seconds the person can paste the address (#441).
-                io.github.wevvy.oauth.OAuthCallbackRescue(active = isAuthenticating, providerType = providerType)
+                // ceis: a proxy or VPN can swallow the localhost callback; after ten seconds the person can paste the address (#441).
+                io.github.ceis.oauth.OAuthCallbackRescue(active = isAuthenticating, providerType = providerType)
                 if (errorMessage != null) {
                     Spacer(Modifier.height(8.dp))
                     Text(
@@ -904,8 +904,8 @@ private fun ColumnScope.OAuthConfigSection(
             ProviderType.antigravity,
             ProviderType.unsupported -> ""
         }
-        // wevvy: plain http:// only for addresses on the local network
-        val manualBaseProblem = io.github.wevvy.net.LanOnly.refusedHost(customBaseURL)?.let { stringResource(R.string.nm_lan_only_https, it) }
+        // ceis: plain http:// only for addresses on the local network
+        val manualBaseProblem = io.github.ceis.net.LanOnly.refusedHost(customBaseURL)?.let { stringResource(R.string.nm_lan_only_https, it) }
         SettingsSection(
             header = stringResource(R.string.add_provider_or_configure_manually),
             footer = manualBaseProblem ?: stringResource(R.string.add_provider_for_third_party_coding_plans_e_g_minimax),
@@ -958,7 +958,7 @@ private fun ColumnScope.OAuthConfigSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            enabled = manualToken.isNotBlank() && manualBaseProblem == null, // wevvy: LanOnly
+            enabled = manualToken.isNotBlank() && manualBaseProblem == null, // ceis: LanOnly
         ) {
             Text(stringResource(R.string.provider_list_add_provider))
         }

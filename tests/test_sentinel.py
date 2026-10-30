@@ -6,15 +6,15 @@ from typing import Any
 
 import pytest
 
-from wevvy.config import SentinelRule, SentinelSettings
-from wevvy.schema import Function, RiskLevel, ToolCall, ToolResult
-from wevvy.sentinel import AuditLog, Decision, Policy, Sentinel, host_allowed
-from wevvy.sentinel import grants as grants_module
-from wevvy.sentinel.grants import GrantStore
-from wevvy.tools.base import BaseTool, CallAssessment
-from wevvy.tools.shell import programs_of
-from wevvy.ui import ApprovalDecision, ApprovalRequest, HeadlessUI
-from wevvy.vault import CredentialVault
+from ceis.config import SentinelRule, SentinelSettings
+from ceis.schema import Function, RiskLevel, ToolCall, ToolResult
+from ceis.sentinel import AuditLog, Decision, Policy, Sentinel, host_allowed
+from ceis.sentinel import grants as grants_module
+from ceis.sentinel.grants import GrantStore
+from ceis.tools.base import BaseTool, CallAssessment
+from ceis.tools.shell import programs_of
+from ceis.ui import ApprovalDecision, ApprovalRequest, HeadlessUI
+from ceis.vault import CredentialVault
 
 
 class Echo(BaseTool):

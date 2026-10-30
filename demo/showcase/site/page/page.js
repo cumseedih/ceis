@@ -1,8 +1,8 @@
 // The page around the phone: the language, the status line, the lines to try, and the two
 // buttons. The phone is MobileGym in a frame on this origin, booted and framed by MobileGym's own
 // scripts (state-builder.js powers it on into #demo-frame and runs the State Builder; boot-hero.js
-// runs the gesture keys and the power button). The wevvy app on the phone exposes
-// window.__WEVVY__ on the frame's window (demo/mobilegym/apps/wevvy/host.ts), which is how
+// runs the gesture keys and the power button). The ceis app on the phone exposes
+// window.__CEIS__ on the frame's window (demo/mobilegym/apps/ceis/host.ts), which is how
 // a tap here becomes text in the chat there. The whole stage fits one screen: the phone is scaled
 // to the room there is beside the panel.
 (function () {
@@ -15,7 +15,7 @@
   // ?embed=1 (the inline script in index.html sets data-embed): this page is the frame on the
   // project site, wevvy.in. The site has the header, so ours is hidden (page.css); links
   // out of the page open in the top window, not inside the frame; the site tells us its
-  // language and theme over postMessage ({type: "wevvy:lang", lang} / {type: "wevvy:theme",
+  // language and theme over postMessage ({type: "ceis:lang", lang} / {type: "ceis:theme",
   // theme}), the first paint taking them from ?lang= and ?theme=. Nothing on this page
   // scrolls, so a wheel turned over the frame reaches the site by itself (the browser hands a
   // scroll on to the parent when the frame has nowhere to go).
@@ -43,7 +43,7 @@
   function setLang(l) {
     root.setAttribute("data-lang", l);
     root.lang = l === "zh" ? "zh-CN" : "en";
-    document.title = l === "zh" ? "wevvy · 在线体验" : "wevvy · Try it in the browser";
+    document.title = l === "zh" ? "ceis · 在线体验" : "ceis · Try it in the browser";
     try {
       localStorage.setItem("nm-lang", l);
     } catch (e) {
@@ -53,7 +53,7 @@
     render();
   }
   // The phone has a language of its own (MobileGym's Settings; its default is Chinese) and
-  // wevvy's welcome page, the capsule and the notifications follow it. The switch up here is
+  // ceis's welcome page, the capsule and the notifications follow it. The switch up here is
   // the one a visitor sees, so the phone follows it: on the first boot and on every change.
   // The phone follows the page's language: its own strings, and the Muse's replies (the
   // hosted runtime's reply language, so what it reads on a Chinese screen is told in the
@@ -63,7 +63,7 @@
     var api = w && w.__OS__ && w.__OS__.locale;
     try {
       if (api && typeof api.setLocale === "function") api.setLocale(lang() === "zh" ? "zh-Hans" : "en");
-      var h = w && w.__WEVVY__;
+      var h = w && w.__CEIS__;
       if (h && typeof h.language === "function") h.language(lang());
     } catch (e) {
       /* a phone that is going away */
@@ -77,8 +77,8 @@
       if (EMBEDDERS.indexOf(ev.origin) < 0 && ev.origin !== embedder) return;
       var d = ev.data;
       if (!d) return;
-      if (d.type === "wevvy:lang" && (d.lang === "zh" || d.lang === "en") && d.lang !== lang()) setLang(d.lang);
-      if (d.type === "wevvy:theme") {
+      if (d.type === "ceis:lang" && (d.lang === "zh" || d.lang === "en") && d.lang !== lang()) setLang(d.lang);
+      if (d.type === "ceis:theme") {
         if (d.theme === "dark") root.setAttribute("data-theme", "dark");
         else root.removeAttribute("data-theme");
       }
@@ -138,9 +138,9 @@
     if (btn) btn.click();
   }
 
-  // ---- the phone's wevvy app ---------------------------------------------------------
+  // ---- the phone's ceis app ---------------------------------------------------------
   var hostWindow = null; // the frame's window the host below belongs to
-  var host = null; // window.__WEVVY__ of the frame
+  var host = null; // window.__CEIS__ of the frame
   var state = null; // what it last told us
   var launched = false;
   var flash = null; // a short message in the status line, over the regular one
@@ -155,7 +155,7 @@
     return renewedAt > 0 && Date.now() - renewedAt < 20000;
   }
   function adopt(w) {
-    var api = w && w.__WEVVY__;
+    var api = w && w.__CEIS__;
     if (!api || host) return !!host;
     host = api;
     hostWindow = w;
@@ -181,7 +181,7 @@
     render();
   }
 
-  // Bring wevvy to the front once the simulated phone has booted (a beat after
+  // Bring ceis to the front once the simulated phone has booted (a beat after
   // __OS__ appears, so the launcher is there to animate from).
   function launch(w) {
     if (launched || !host || !w || !w.__OS__) return;
@@ -196,10 +196,10 @@
     }, 1200);
   }
 
-  // wevvy's icon at the top of the dock beside the phone (compose.mjs puts it there): a tap
+  // ceis's icon at the top of the dock beside the phone (compose.mjs puts it there): a tap
   // brings the app to the front — or turns the phone on — and it is lit while the app is on
   // the screen.
-  var dockApp = document.querySelector("[data-wevvy-open]");
+  var dockApp = document.querySelector("[data-ceis-open]");
   function showApp() {
     if (!phoneWindow()) powerOn();
     else if (host) host.open();
@@ -354,7 +354,7 @@
       cls += " warn";
     } else {
       var parts = [];
-      var who = state.name && state.name.toLowerCase() !== "wevvy" ? state.name : null;
+      var who = state.name && state.name.toLowerCase() !== "ceis" ? state.name : null;
       parts.push(who ? tr("Your Muse, " + who, "你的 Muse「" + who + "」") : tr("Your Muse", "你的 Muse"));
       var left = minutesLeft();
       if (left !== null) parts.push(tr(left + " min left", "还剩 " + left + " 分钟"));
@@ -447,7 +447,7 @@
 
   // ---- the phone turns itself on, and the Muse starts once a person is looking --------------
   // The phone is on as soon as the page is, the frame on the project site included, and
-  // wevvy comes to the front (launch, above): the visitor sees the welcome page, and a
+  // ceis comes to the front (launch, above): the visitor sees the welcome page, and a
   // sign-in the showcase asks for is theirs to do. Pressing Start (a container on the server,
   // a share of the day's model budget) is not done for every page load: it is pressed once
   // this page has been in view for a few seconds with the tab in front, or at the first sign

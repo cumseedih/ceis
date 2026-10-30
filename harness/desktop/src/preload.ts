@@ -1,6 +1,6 @@
 /**
  * The one bridge between the harness's web client and the Electron shell. The
- * wevvy client bundle looks for `window.wevvyHarness`; in a plain
+ * ceis client bundle looks for `window.ceisHarness`; in a plain
  * browser (dsh on its own) it is absent and the bundle shows nothing that
  * needs it. Everything here is a request to the main process — the renderer
  * stays sandboxed with no Node access of its own.
@@ -22,62 +22,62 @@ const bridge = {
   platform: process.platform,
   /** One Windows update state for the menu and settings; null in unsupported builds. */
   updates: {
-    snapshot: (): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("wevvy:updates:snapshot"),
-    check: (): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("wevvy:updates:check"),
-    download: (): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("wevvy:updates:download"),
-    restart: (): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("wevvy:updates:restart"),
-    setAutoDownload: (enabled: boolean): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("wevvy:updates:auto-download", enabled),
+    snapshot: (): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("ceis:updates:snapshot"),
+    check: (): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("ceis:updates:check"),
+    download: (): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("ceis:updates:download"),
+    restart: (): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("ceis:updates:restart"),
+    setAutoDownload: (enabled: boolean): Promise<WindowsUpdateState | null> => ipcRenderer.invoke("ceis:updates:auto-download", enabled),
     subscribe: (listener: (state: WindowsUpdateState) => void): (() => void) => {
       const handler = (_event: Electron.IpcRendererEvent, state: WindowsUpdateState) => listener(state);
-      ipcRenderer.on("wevvy:updates:state", handler);
-      return () => ipcRenderer.off("wevvy:updates:state", handler);
+      ipcRenderer.on("ceis:updates:state", handler);
+      return () => ipcRenderer.off("ceis:updates:state", handler);
     },
   },
   /** The app's version, its platform and arch; `appImage` when the Linux build runs from an AppImage (so an update is offered as one). */
-  info: (): Promise<{ version: string; platform: string; arch: string; appImage: boolean }> => ipcRenderer.invoke("wevvy:info"),
-  /** Where every permission the hands use stands right now; `helper` (0.1.38) when "wevvy Computer Use" holds them — the rows to switch on are its, and a grant needs no app restart. */
-  permissions: (): Promise<Record<PermissionKind, PermissionState> & { helper?: boolean }> => ipcRenderer.invoke("wevvy:permissions"),
+  info: (): Promise<{ version: string; platform: string; arch: string; appImage: boolean }> => ipcRenderer.invoke("ceis:info"),
+  /** Where every permission the hands use stands right now; `helper` (0.1.38) when "ceis Computer Use" holds them — the rows to switch on are its, and a grant needs no app restart. */
+  permissions: (): Promise<Record<PermissionKind, PermissionState> & { helper?: boolean }> => ipcRenderer.invoke("ceis:permissions"),
   /** Ask the system for one permission (its own dialog, or the Settings pane); the new state. */
-  requestPermission: (kind: PermissionKind): Promise<PermissionState> => ipcRenderer.invoke("wevvy:permissions:request", kind),
+  requestPermission: (kind: PermissionKind): Promise<PermissionState> => ipcRenderer.invoke("ceis:permissions:request", kind),
   /** Open the System Settings pane for one permission (macOS); a no-op elsewhere. */
-  openPermissionSettings: (kind: PermissionKind): Promise<void> => ipcRenderer.invoke("wevvy:permissions:settings", kind),
+  openPermissionSettings: (kind: PermissionKind): Promise<void> => ipcRenderer.invoke("ceis:permissions:settings", kind),
   /** Quit and start again (after a permission macOS applies only to new processes). */
-  relaunch: (): Promise<void> => ipcRenderer.invoke("wevvy:relaunch"),
+  relaunch: (): Promise<void> => ipcRenderer.invoke("ceis:relaunch"),
   /** Open an http(s) link in the default browser. */
-  openExternal: (url: string): Promise<void> => ipcRenderer.invoke("wevvy:open-external", url),
+  openExternal: (url: string): Promise<void> => ipcRenderer.invoke("ceis:open-external", url),
   /** Keep the display awake (while the agent works the computer). */
-  keepAwake: (on: boolean): Promise<void> => ipcRenderer.invoke("wevvy:keep-awake", on),
+  keepAwake: (on: boolean): Promise<void> => ipcRenderer.invoke("ceis:keep-awake", on),
   /** Tell the window which theme the page shows, so its base colour matches on resize. */
-  setTheme: (theme: "light" | "dark"): Promise<void> => ipcRenderer.invoke("wevvy:theme", theme),
+  setTheme: (theme: "light" | "dark"): Promise<void> => ipcRenderer.invoke("ceis:theme", theme),
   /** App behaviour (open at login, menu bar icon, quick-chat key): the values, the key's name, what this platform can do. */
-  prefs: (): Promise<DesktopPrefs> => ipcRenderer.invoke("wevvy:prefs"),
+  prefs: (): Promise<DesktopPrefs> => ipcRenderer.invoke("ceis:prefs"),
   /** Change some of it; the shell applies it at once and answers with the whole. */
-  setPrefs: (patch: Partial<Pick<DesktopPrefs, "openAtLogin" | "menuBar" | "quickChat" | "quickChatKey" | "proxy" | "relayHosts">>): Promise<DesktopPrefs> => ipcRenderer.invoke("wevvy:prefs:set", patch),
+  setPrefs: (patch: Partial<Pick<DesktopPrefs, "openAtLogin" | "menuBar" | "quickChat" | "quickChatKey" | "proxy" | "relayHosts">>): Promise<DesktopPrefs> => ipcRenderer.invoke("ceis:prefs:set", patch),
   // since 0.1.41
   /** Stop the Host and start it again with the window up: the Network row's *Restart now*, so a proxy just set applies. */
-  restartHost: (): Promise<void> => ipcRenderer.invoke("wevvy:restart-host"),
+  restartHost: (): Promise<void> => ipcRenderer.invoke("ceis:restart-host"),
   /** A screenshot of the window to Downloads and the issue page with the build's facts filled in. */
-  reportBug: (): Promise<{ screenshot: string; url: string }> => ipcRenderer.invoke("wevvy:report-bug"),
+  reportBug: (): Promise<{ screenshot: string; url: string }> => ipcRenderer.invoke("ceis:report-bug"),
   /** Show a file in the system's file manager. */
-  reveal: (path: string): Promise<void> => ipcRenderer.invoke("wevvy:reveal", path),
+  reveal: (path: string): Promise<void> => ipcRenderer.invoke("ceis:reveal", path),
   // since 0.1.34
   /** The macOS permissions, asked for in order with a word on why; answers with what is granted now. */
-  guidePermissions: (): Promise<Record<PermissionKind, PermissionState>> => ipcRenderer.invoke("wevvy:permissions:guide"),
+  guidePermissions: (): Promise<Record<PermissionKind, PermissionState>> => ipcRenderer.invoke("ceis:permissions:guide"),
   /** Keep this window out of screenshots while the hands work. */
-  setContentProtection: (on: boolean): Promise<void> => ipcRenderer.invoke("wevvy:content-protection", on),
+  setContentProtection: (on: boolean): Promise<void> => ipcRenderer.invoke("ceis:content-protection", on),
   /** What the overlays show: the hands' pointer for the glow window; the step, its words, the face and the buttons for the capsule, with the cards. */
-  setOverlay: (state: { hands: { active: boolean; held: boolean; x: number; y: number; kind: string; step: number; title: string; text: string; face: string; stop: string; take: string } | null; cards: { id: string; kind: "approval" | "hold"; title: string; text: string; actions: { id: string; label: string; tone?: "on" | "no" }[] }[] }): void => ipcRenderer.send("wevvy:overlay", state),
+  setOverlay: (state: { hands: { active: boolean; held: boolean; x: number; y: number; kind: string; step: number; title: string; text: string; face: string; stop: string; take: string } | null; cards: { id: string; kind: "approval" | "hold"; title: string; text: string; actions: { id: string; label: string; tone?: "on" | "no" }[] }[] }): void => ipcRenderer.send("ceis:overlay", state),
   /** A button pressed on the capsule window. */
   onOverlayAction: (listener: (card: string, action: string) => void): (() => void) => {
     const handler = (_e: Electron.IpcRendererEvent, payload: { card: string; action: string }) => listener(payload.card, payload.action);
-    ipcRenderer.on("wevvy:overlay:action", handler);
-    return () => ipcRenderer.off("wevvy:overlay:action", handler);
+    ipcRenderer.on("ceis:overlay:action", handler);
+    return () => ipcRenderer.off("ceis:overlay:action", handler);
   },
   /** The quick-chat key was pressed (or the menu bar's New chat): start a chat and focus the composer. */
   onQuickChat: (listener: () => void): (() => void) => {
     const handler = () => listener();
-    ipcRenderer.on("wevvy:quick-chat", handler);
-    return () => ipcRenderer.off("wevvy:quick-chat", handler);
+    ipcRenderer.on("ceis:quick-chat", handler);
+    return () => ipcRenderer.off("ceis:quick-chat", handler);
   },
 };
 
@@ -88,7 +88,7 @@ export interface DesktopPrefs {
   /** The combination in force, an Electron accelerator (`Alt+Space`); set it to change, to "" for the default. */
   quickChatKey: string;
   quickChatDefault: string;
-  /** Another app holds the combination, so wevvy did not get it. */
+  /** Another app holds the combination, so ceis did not get it. */
   quickChatTaken: boolean;
   // since 0.1.41: the proxy for the model providers
   /** The address as kept (`http://host:port`, `socks5://host:port`); "" for none. Set it to change, to "" to remove. */
@@ -102,12 +102,12 @@ export interface DesktopPrefs {
   supports: { openAtLogin: boolean; menuBar: boolean; quickChat: boolean };
 }
 
-export type WevvyHarnessBridge = typeof bridge;
+export type CeisHarnessBridge = typeof bridge;
 
-contextBridge.exposeInMainWorld("wevvyHarness", bridge);
+contextBridge.exposeInMainWorld("ceisHarness", bridge);
 
 // The window has no title bar on macOS (the traffic lights sit over the rail, as in
-// Muse's window), so the page marks the platform on the document and the wevvy
+// Muse's window), so the page marks the platform on the document and the ceis
 // bundle adds the clearance and the drag regions; full screen drops the clearance.
 // (The harness's own `data-platform` is not used: it would expect the harness's
 // desktop keyboard bridge.)
@@ -116,7 +116,7 @@ const mark = () => {
 };
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mark, { once: true });
 else mark();
-ipcRenderer.on("wevvy:fullscreen", (_event, on: boolean) => {
+ipcRenderer.on("ceis:fullscreen", (_event, on: boolean) => {
   if (on) document.documentElement.setAttribute("data-nm-fullscreen", "");
   else document.documentElement.removeAttribute("data-nm-fullscreen");
 });

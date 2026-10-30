@@ -1,7 +1,7 @@
-"""wevvy Web: a Muse of your own in the browser, kept for you.
+"""ceis Web: a Muse of your own in the browser, kept for you.
 
 The showcase gives a visitor a Muse for half an hour. An *account* — someone signed in to
-wevvy Cloud with an e-mail or phone code — gets one that stays: a container of its own
+ceis Cloud with an e-mail or phone code — gets one that stays: a container of its own
 with a volume for its data and its workspace, started when the person arrives, put to sleep
 after a long quiet spell (``docker stop``; the volume remains), woken on the next visit. It
 signs in to the Cloud with the account's own key, so its model use is the account's daily
@@ -233,7 +233,7 @@ class AccountManager:
             raise
         key = str(data.get("api_key") or "")
         if not key:
-            raise Refused(502, "relay_error", "wevvy Cloud returned no key.")
+            raise Refused(502, "relay_error", "ceis Cloud returned no key.")
         try:
             await self._relay("POST", "/v1/auth/sign-out", None, ip, key=standing)
         except Refused as exc:
@@ -245,7 +245,7 @@ class AccountManager:
         container carries its key in its environment, so the old one goes; the volumes stay)."""
         key = str(data.get("api_key") or "")
         if not key:
-            raise Refused(502, "relay_error", "wevvy Cloud returned no key.")
+            raise Refused(502, "relay_error", "ceis Cloud returned no key.")
         key, key_expires_at = await self._session_key(key, ip)
         raw_account = data.get("account")
         account_info: dict[str, Any] = raw_account if isinstance(raw_account, dict) else {}
@@ -300,13 +300,13 @@ class AccountManager:
 
     def _env_for(self, a: Account) -> dict[str, str]:
         env = {
-            "WEVVY_SERVER_TOKEN": a.token,
-            "WEVVY_CLOUD_BASE_URL": self.s.web_relay_internal_url,
-            "WEVVY_CLOUD_KEY": a.key,
-            "WEVVY_CLOUD_HINT": a.hint,
-            "WEVVY_CLOUD_CHANNEL": a.channel,
-            "WEVVY_HUB_NAME": self.s.web_device_name,
-            "WEVVY_ONBOARDED": "1",
+            "CEIS_SERVER_TOKEN": a.token,
+            "CEIS_CLOUD_BASE_URL": self.s.web_relay_internal_url,
+            "CEIS_CLOUD_KEY": a.key,
+            "CEIS_CLOUD_HINT": a.hint,
+            "CEIS_CLOUD_CHANNEL": a.channel,
+            "CEIS_HUB_NAME": self.s.web_device_name,
+            "CEIS_ONBOARDED": "1",
         }
         # the runtime makes the Cloud its model on first start (hub/service.py _seed_from_env)
         env.update(self.s.extra_env)

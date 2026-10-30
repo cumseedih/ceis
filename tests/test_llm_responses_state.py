@@ -11,19 +11,19 @@ import httpx
 import openai
 import pytest
 
-from wevvy.agent import MuseAgent
-from wevvy.config import Settings
-from wevvy.goals import GoalStore
-from wevvy.llm.base import BaseLLM, ResponseStateRejected
-from wevvy.llm.mock import MockLLM
-from wevvy.llm.openai_chat import OpenAIChatLLM
-from wevvy.llm.openai_responses import OpenAIResponsesLLM
-from wevvy.memory import MemoryStore
-from wevvy.schema import Function, LLMResponse, Message, Role, ToolCall, ToolResult
-from wevvy.sentinel import AuditLog, Sentinel
-from wevvy.tools import Terminate, ToolCollection
-from wevvy.tools.base import BaseTool
-from wevvy.ui import HeadlessUI
+from ceis.agent import MuseAgent
+from ceis.config import Settings
+from ceis.goals import GoalStore
+from ceis.llm.base import BaseLLM, ResponseStateRejected
+from ceis.llm.mock import MockLLM
+from ceis.llm.openai_chat import OpenAIChatLLM
+from ceis.llm.openai_responses import OpenAIResponsesLLM
+from ceis.memory import MemoryStore
+from ceis.schema import Function, LLMResponse, Message, Role, ToolCall, ToolResult
+from ceis.sentinel import AuditLog, Sentinel
+from ceis.tools import Terminate, ToolCollection
+from ceis.tools.base import BaseTool
+from ceis.ui import HeadlessUI
 
 
 def _bad_request(message: str) -> openai.BadRequestError:

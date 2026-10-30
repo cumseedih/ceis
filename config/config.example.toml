@@ -1,9 +1,9 @@
-# wevvy configuration
-# Copy to config/config.toml (or ~/.wevvy/config.toml) and edit.
+# ceis configuration
+# Copy to config/config.toml (or ~/.ceis/config.toml) and edit.
 # String values may reference environment variables: "${VAR}" or "${VAR:-default}".
 
 # Where memory, goals, vault, audit log and sessions are stored.
-data_dir = "~/.wevvy"
+data_dir = "~/.ceis"
 log_level = "INFO"
 
 # ------------------------------------------------------------------------------
@@ -40,14 +40,14 @@ api_key = "${DEEPSEEK_API_KEY}"
 # model = "my-app-id"
 # base_url = "https://gateway.example.com/v1"
 # api_key = "${GATEWAY_API_KEY}"
-# extra_headers = { "X-End-User-Id" = "wevvy" }
+# extra_headers = { "X-End-User-Id" = "ceis" }
 
-# --- A ChatGPT plan instead of a key (`wevvy chatgpt login` first) ----------
+# --- A ChatGPT plan instead of a key (`ceis chatgpt login` first) ----------
 # Covers chat and the hands; not pictures or clips. No base_url, no api_key.
 # provider = "chatgpt"
 # model = ""                        # empty → gpt-5.6-sol
 
-# --- A catalogue id as the provider (wevvy/llm/providers.json) --------------
+# --- A catalogue id as the provider (ceis/llm/providers.json) --------------
 # The endpoint and the default model come from the catalogue; only the key is yours.
 # provider = "bailian"
 # api_key = "${DASHSCOPE_API_KEY}"
@@ -73,12 +73,12 @@ pass_reasoning = false
 # extra_body = { "thinking" = { "type" = "enabled" } }
 # An HTTP(S) or SOCKS proxy for this slot's requests only, when this machine's network
 # cannot reach the provider directly; empty, the environment's HTTPS_PROXY applies.
-# Honoured by the ChatGPT sign-in too; never used for wevvy Cloud.
+# Honoured by the ChatGPT sign-in too; never used for ceis Cloud.
 # proxy = "http://127.0.0.1:7890"
 
 # ------------------------------------------------------------------------------
 [agent]
-name = "wevvy"
+name = "ceis"
 max_steps = 30
 # workspace = "./workspace"     # the agent's files. Default: ./workspace when the current directory has one, else <data_dir>/workspace
 # Directories outside the workspace the files tool may use. Reads there count as
@@ -153,7 +153,7 @@ imap_port = 993
 smtp_host = "smtp.gmail.com"
 smtp_port = 587
 smtp_starttls = true
-# Store with: wevvy vault set EMAIL_ADDRESS ; wevvy vault set EMAIL_PASSWORD
+# Store with: ceis vault set EMAIL_ADDRESS ; ceis vault set EMAIL_PASSWORD
 address = "{{vault:EMAIL_ADDRESS}}"
 password = "{{vault:EMAIL_PASSWORD}}"
 scrub_secrets = true     # strip one-time codes / reset links before the model reads mail
@@ -165,7 +165,7 @@ day_start = "09:00"      # working hours, for "when am I free"
 day_end = "18:00"
 # Private .ics links (Google: Settings → Integrate calendar → Secret address in iCal format;
 # Outlook: Shared calendars → Publish; iCloud: Share Calendar → Public Calendar) or .ics files.
-# The link is the secret: wevvy vault set CALENDAR_WORK
+# The link is the secret: ceis vault set CALENDAR_WORK
 # [[connectors.calendar.feeds]]
 # name = "Work"
 # url = "{{vault:CALENDAR_WORK}}"
@@ -184,7 +184,7 @@ enabled = true
 # URL of an instance you run (json among its formats). A failed search falls back to
 # DuckDuckGo once, with a note.
 provider = "duckduckgo"               # duckduckgo | brave | tavily | serply | you | searxng
-# api_key = "{{vault:SEARCH_API_KEY}}"  # brave / tavily / serply / you: wevvy vault set SEARCH_API_KEY
+# api_key = "{{vault:SEARCH_API_KEY}}"  # brave / tavily / serply / you: ceis vault set SEARCH_API_KEY
 # base_url = "http://127.0.0.1:8080"    # searxng
 # fallback = false                      # a failed search fails instead of going to DuckDuckGo
 
@@ -215,7 +215,7 @@ mail_poll_minutes = 5
 hook_min_seconds = 10
 
 [browser]
-enabled = false          # pip install "wevvy[browser]" && playwright install chromium
+enabled = false          # pip install "ceis[browser]" && playwright install chromium
 headless = true
 timeout_ms = 30000
 
@@ -250,7 +250,7 @@ settle_s = 0.6           # pause after each action before the next screenshot
 # Pictures and clips: where the avatar studio draws when it is not the chat model's
 # host. All empty (the default): the chat provider's own picture model when it has one,
 # else the account's when signed in, else none. `provider` is a catalogue id
-# (wevvy/llm/providers.json); base_url fills in from it. The app sets the same keys
+# (ceis/llm/providers.json); base_url fills in from it. The app sets the same keys
 # through PUT /api/connections/image and /video (Connections → Making pictures / clips).
 # ------------------------------------------------------------------------------
 # [image]
@@ -282,7 +282,7 @@ settle_s = 0.6           # pause after each action before the next screenshot
 #
 # 高德地图 (Amap): places, routes, weather, distance; twelve tools, no browser, no phone.
 # Get a key at https://console.amap.com (Web 服务), keep it in the vault
-# (`wevvy vault set AMAP_KEY`); url, args and env accept {{vault:NAME}}.
+# (`ceis vault set AMAP_KEY`); url, args and env accept {{vault:NAME}}.
 # [[mcp.servers]]
 # name = "amap"
 # url = "https://mcp.amap.com/mcp?key={{vault:AMAP_KEY}}"
@@ -301,7 +301,7 @@ settle_s = 0.6           # pause after each action before the next screenshot
 #
 # 快递100 (parcels): where a parcel is, when it arrives, what shipping costs; the official
 # server (https://github.com/kuaidi100-api/kuaidi100-MCP). Paid per new tracking number, with
-# a free trial; the 授权 key from api.kuaidi100.com goes in the vault (`wevvy vault set KUAIDI100_KEY`).
+# a free trial; the 授权 key from api.kuaidi100.com goes in the vault (`ceis vault set KUAIDI100_KEY`).
 # [[mcp.servers]]
 # name = "kuaidi100"
 # url = "https://api.kuaidi100.com/mcp/streamable?key={{vault:KUAIDI100_KEY}}"
@@ -310,7 +310,7 @@ settle_s = 0.6           # pause after each action before the next screenshot
 # reads_private_data = true    # a tracking number and a phone number go out
 
 # ------------------------------------------------------------------------------
-# App server: `wevvy serve` (the phone app)
+# App server: `ceis serve` (the phone app)
 # ------------------------------------------------------------------------------
 [server]
 host = "127.0.0.1"       # 0.0.0.0 to open it on your Wi-Fi, then scan the QR code with your phone
@@ -335,12 +335,12 @@ start_grace = 4          # seconds the tools/MCP servers/cloud account may take 
 side_chats = false
 
 # ------------------------------------------------------------------------------
-# wevvy Cloud: the relay this runtime signs in to (docs/cloud.md)
+# ceis Cloud: the relay this runtime signs in to (docs/cloud.md)
 # ------------------------------------------------------------------------------
 [cloud]
 base_url = "https://cloud.wevvy.in"   # a relay you run yourself: its public address (docs/self-hosting.md)
 required = true          # the first run does not finish without an account; false for a runtime with no relay at all
-models = true            # the account's models as a source (the apps' "Use wevvy Cloud models" switch); false keeps the sign-in for sync and the devices only
+models = true            # the account's models as a source (the apps' "Use ceis Cloud models" switch); false keeps the sign-in for sync and the devices only
 sync = true              # default for the account-wide Data controls → Sync switch (the person's choice, once made, counts)
 
 # ------------------------------------------------------------------------------

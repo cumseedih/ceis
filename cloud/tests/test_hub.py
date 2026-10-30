@@ -12,12 +12,12 @@ import pytest
 from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
 
-from wevvy_cloud.api import create_app
-from wevvy_cloud.config import Settings
-from wevvy_cloud.db import Database
-from wevvy_cloud.hub import SEND_QUEUE_FRAMES, Connection
-from wevvy_cloud.senders import LogSender
-from wevvy_cloud.service import Cloud
+from ceis_cloud.api import create_app
+from ceis_cloud.config import Settings
+from ceis_cloud.db import Database
+from ceis_cloud.hub import SEND_QUEUE_FRAMES, Connection
+from ceis_cloud.senders import LogSender
+from ceis_cloud.service import Cloud
 
 
 @pytest.fixture
@@ -143,7 +143,7 @@ def test_target_leaving_fails_the_pending_call(client):
 def test_a_lone_pending_call_times_out_on_the_callers_ping(client):
     """The sweep ran only when another `call` arrived, so a caller with one call outstanding
     and nothing more to ask never heard `timeout`; every client pings, so it sweeps too."""
-    from wevvy_cloud import hub as hub_mod
+    from ceis_cloud import hub as hub_mod
 
     key = sign_up(client, "someone@example.com")
     with connect(client, key) as phone, connect(client, key) as pc:
@@ -512,8 +512,8 @@ def test_a_flooding_socket_is_slowed_then_closed(client):
     """One socket may send so many frames and bytes a second (hub.FRAMES_PER_S, BYTES_PER_S,
     twice that in a burst); over it frames are dropped with one error a second, and a socket
     that keeps flooding is closed. The bucket itself, with a clock of our own."""
-    from wevvy_cloud import hub as hub_module
-    from wevvy_cloud.hub import FLOOD_CLOSE_AFTER, Bucket
+    from ceis_cloud import hub as hub_module
+    from ceis_cloud.hub import FLOOD_CLOSE_AFTER, Bucket
 
     clock = [0.0]
     bucket = Bucket(10.0, 20.0, clock=lambda: clock[0])

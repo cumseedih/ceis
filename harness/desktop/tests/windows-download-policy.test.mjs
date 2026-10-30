@@ -14,7 +14,7 @@ function fixture(options = {}) {
   const updater = Object.assign(new EventEmitter(), {
     currentVersion: { compare: () => -1 }, setFeedURL() {},
     checkForUpdates: async () => ({ isUpdateAvailable: true, updateInfo: {
-      version: "1.0.4", files: [{ url: "wevvy-Desktop-1.0.4-win-x64.exe", sha512: "digest", size: 10 }],
+      version: "1.0.4", files: [{ url: "ceis-Desktop-1.0.4-win-x64.exe", sha512: "digest", size: 10 }],
     } }),
     downloadUpdate: async () => { downloads++; if (fails) throw new Error("offline"); return ["verified.exe"]; },
   });

@@ -8,10 +8,10 @@ import httpx
 from test_accounts import auth, make
 from test_cloud import sign_up
 
-from wevvy_cloud.api import create_app
-from wevvy_cloud.db import Database
-from wevvy_cloud.senders import LogSender
-from wevvy_cloud.service import Cloud
+from ceis_cloud.api import create_app
+from ceis_cloud.db import Database
+from ceis_cloud.senders import LogSender
+from ceis_cloud.service import Cloud
 
 ADMIN = {"X-Admin-Token": "admin"}
 

@@ -273,7 +273,7 @@ export class WindowsUpdates {
     updater.allowPrerelease = false;
     updater.allowDowngrade = false;
     updater.disableWebInstaller = true;
-    updater.requestHeaders = { "User-Agent": `wevvy-Desktop/${this.options.currentVersion}` };
+    updater.requestHeaders = { "User-Agent": `ceis-Desktop/${this.options.currentVersion}` };
     // The library queues quitAndInstall's quit before asynchronous spawn errors arrive.
     // This updater's app adapter refuses that queued quit once this attempt has failed.
     updater.on("error", () => { failed = true; });
@@ -281,7 +281,7 @@ export class WindowsUpdates {
   }
 
   private installer(info: UpdateInfo) {
-    const name = `wevvy-Desktop-${info.version}-win-x64.exe`;
+    const name = `ceis-Desktop-${info.version}-win-x64.exe`;
     const files = info.files.filter((f) => /\.exe$/i.test(f.url));
     const file = files[0];
     if (files.length !== 1 || file?.url !== name || !file.sha512) throw new Error("No matching Windows installer integrity metadata");

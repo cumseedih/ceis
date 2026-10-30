@@ -14,12 +14,12 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy import nudges
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.schema import LLMResponse
-from wevvy.server import create_app, update
-from wevvy.server.service import MuseService
+from ceis import nudges
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.schema import LLMResponse
+from ceis.server import create_app, update
+from ceis.server.service import MuseService
 
 
 # ----------------------------------------------------------------------------- nudges: the policy
@@ -216,8 +216,8 @@ def test_release_check_asks_the_mirror_first_and_github_second(monkeypatch):
             )
 
     monkeypatch.setattr(update.httpx, "AsyncClient", Client)
-    monkeypatch.delenv("WEVVY_CLOUD_KEY", raising=False)
-    monkeypatch.delenv("WEVVY_NO_UPDATE_CHECK", raising=False)
+    monkeypatch.delenv("CEIS_CLOUD_KEY", raising=False)
+    monkeypatch.delenv("CEIS_NO_UPDATE_CHECK", raising=False)
 
     check = update.UpdateCheck(True, current="0.1.35")
     view = asyncio.run(check.view())
@@ -241,8 +241,8 @@ def test_release_check_asks_the_mirror_first_and_github_second(monkeypatch):
 
 def test_api_update_check_now(server, monkeypatch):
     client, _, _ = server
-    monkeypatch.delenv("WEVVY_CLOUD_KEY", raising=False)
-    monkeypatch.delenv("WEVVY_NO_UPDATE_CHECK", raising=False)
+    monkeypatch.delenv("CEIS_CLOUD_KEY", raising=False)
+    monkeypatch.delenv("CEIS_NO_UPDATE_CHECK", raising=False)
     forced: list[bool] = []
 
     async def fake_view(self: update.UpdateCheck, force: bool = False) -> dict:

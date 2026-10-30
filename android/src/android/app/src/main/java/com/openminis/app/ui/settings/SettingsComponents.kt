@@ -18,10 +18,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.shape.CircleShape // wevvy
-import androidx.compose.foundation.border // wevvy
-import androidx.compose.foundation.selection.selectable // wevvy
-import androidx.compose.ui.semantics.Role // wevvy
+import androidx.compose.foundation.shape.CircleShape // ceis
+import androidx.compose.foundation.border // ceis
+import androidx.compose.foundation.selection.selectable // ceis
+import androidx.compose.ui.semantics.Role // ceis
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -76,7 +76,7 @@ fun SettingsScaffold(
     // the usual back arrow — unchanged.
     onBack: (() -> Unit)? = null,
     actions: @Composable (() -> Unit)? = null,
-    // wevvy: title size, default keeps every existing caller at 17sp; the
+    // ceis: title size, default keeps every existing caller at 17sp; the
     // Settings tree passes the phone-calibrated 24sp.
     titleSize: androidx.compose.ui.unit.TextUnit = 17.sp,
     // [T-android-modeldetail-savecancel-ios-parity] Optional custom
@@ -108,13 +108,13 @@ fun SettingsScaffold(
                     }
                 }
             }
-            // wevvy: Muse's bar on every settings page — the back glyph on a
+            // ceis: Muse's bar on every settings page — the back glyph on a
             // white disc, the title centred (so `centerTitle` is always true), no
             // container tint. A custom `navigation` slot (a Cancel text action)
             // is placed as-is, without the disc.
-            io.github.wevvy.ui.muse.MuseTopAppBar(
+            io.github.ceis.ui.muse.MuseTopAppBar(
                 title = titleSlot,
-                titleSize = titleSize, // wevvy
+                titleSize = titleSize, // ceis
                 navigationIcon = if (navigation != null || onBack != null) navigationSlot else null,
                 disc = navigation == null,
                 actions = { actions?.invoke() },
@@ -218,7 +218,7 @@ fun SettingsSection(
             .padding(top = 24.dp),
     ) {
         if (header != null) {
-            // wevvy: Muse's section label — small, grey, sentence case, no
+            // ceis: Muse's section label — small, grey, sentence case, no
             // tracking (was Material's small caps).
             Text(
                 text = header,
@@ -245,9 +245,9 @@ fun SettingsSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                // wevvy: Muse's card — 16dp corners, white on the grey canvas.
+                // ceis: Muse's card — 16dp corners, white on the grey canvas.
                 .clip(RoundedCornerShape(16.dp))
-                .background(io.github.wevvy.ui.home.MuseTones.surface),
+                .background(io.github.ceis.ui.home.MuseTones.surface),
             content = content,
         )
         if (footer != null) {
@@ -300,13 +300,13 @@ fun SettingsRow(
                 // is what made a no-subtitle last row read ~50px shorter.
                 .heightIn(min = minHeight)
                 .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-                .padding(horizontal = 16.dp, vertical = 12.dp), // wevvy: 16dp like Muse
+                .padding(horizontal = 16.dp, vertical = 12.dp), // ceis: 16dp like Muse
             // #10 keep the trailing control (Switch/value) vertically centered
             // against the title — already centered, kept explicit.
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (icon != null) {
-                // wevvy: Muse draws the glyph bare, in ink, 22dp — no coloured
+                // ceis: Muse draws the glyph bare, in ink, 22dp — no coloured
                 // tile behind it. `iconColor` is kept for the callers but only
                 // the glyph remains.
                 @Suppress("UNUSED_EXPRESSION") iconColor
@@ -358,7 +358,7 @@ fun SettingsRow(
         }
 
         if (showDivider) {
-            val insetStart = if (icon != null) 52.dp else 16.dp // wevvy: bare glyph inset
+            val insetStart = if (icon != null) 52.dp else 16.dp // ceis: bare glyph inset
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -449,7 +449,7 @@ fun SettingsChoiceRow(
                 // [T-android-settings-ui-md3] #1 match SettingsRow's 56dp min so
                 // choice/radio rows line up with toggle/value rows in mixed lists.
                 .heightIn(min = 56.dp)
-                // wevvy: a radio row says whether it is the chosen one to TalkBack
+                // ceis: a radio row says whether it is the chosen one to TalkBack
                 .selectable(selected = selected, role = Role.RadioButton, onClick = onSelect)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -464,7 +464,7 @@ fun SettingsChoiceRow(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
             )
-            // wevvy: Muse's radio — a hollow ring, or an ink disc with a
+            // ceis: Muse's radio — a hollow ring, or an ink disc with a
             // white check when selected (was a bare blue check mark).
             Box(
                 modifier = Modifier

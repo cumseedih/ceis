@@ -15,19 +15,19 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy.cloud import CloudClient, model_url
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
+from ceis.cloud import CloudClient, model_url
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.server import create_app
+from ceis.server.service import MuseService
 
 BAILIAN = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 RELAY = "http://127.0.0.1:9"
 RELAY_MODELS: list[dict[str, Any]] = [
-    {"id": "qwen3.8-27b", "wevvy": {"kind": "chat", "for": ["chat", "gui"], "recommended_for": ["gui"]}},
-    {"id": "deepseek-v4.1-flash", "wevvy": {"kind": "chat", "for": ["chat"], "recommended": True}},
-    {"id": "qwen-image-3.0", "wevvy": {"kind": "image"}},
-    {"id": "wan2.2-i2v-flash", "wevvy": {"kind": "video"}},
+    {"id": "qwen3.8-27b", "ceis": {"kind": "chat", "for": ["chat", "gui"], "recommended_for": ["gui"]}},
+    {"id": "deepseek-v4.1-flash", "ceis": {"kind": "chat", "for": ["chat"], "recommended": True}},
+    {"id": "qwen-image-3.0", "ceis": {"kind": "image"}},
+    {"id": "wan2.2-i2v-flash", "ceis": {"kind": "video"}},
 ]  # fmt: skip
 
 
@@ -146,14 +146,14 @@ def test_the_account_takes_the_hands_when_the_chat_provider_cannot_see(
     client, service = _make(settings)
     with client:
         assert service.app.hands_choice() == ("chat", "qwen3:8b")  # signed out: as before
-        service.app.vault.set("WEVVY_CLOUD_KEY", "cloud-key")
+        service.app.vault.set("CEIS_CLOUD_KEY", "cloud-key")
         service.app.cloud_gui_model = "qwen3.8-27b"
         assert service.app.hands_choice() == ("cloud", "qwen3.8-27b")
         gui = client.get("/api/connections").json()["gui"]
         assert gui["effective_source"] == "cloud" and gui["effective_model"] == "qwen3.8-27b"
         assert gui["cloud"] is False  # the chat model is still the local one
         hands = client.get("/api/providers").json()["configured"]["hands"]
-        assert hands["provider"] == "wevvy_cloud" and hands["source"] == "cloud"
+        assert hands["provider"] == "ceis_cloud" and hands["source"] == "cloud"
         llm = getattr(service.app.make_gui_llm(), "inner", None) or service.app.make_gui_llm()
         assert llm.settings.base_url == model_url(RELAY) and llm.settings.api_key == "cloud-key"
         assert llm.settings.model == "qwen3.8-27b"
@@ -234,13 +234,13 @@ def test_image_and_video_slots_round_trip(settings: Settings) -> None:
         assert client.get("/api/providers").json()["configured"]["image"]["provider"] == "custom"
 
         # a reference to a key the vault already holds (the account's) is kept as written
-        service.app.vault.set("WEVVY_CLOUD_KEY", "nmc-key")
+        service.app.vault.set("CEIS_CLOUD_KEY", "nmc-key")
         ref = client.put(
             "/api/connections/image",
-            json={"provider": "bailian", "api_key": "{{vault:WEVVY_CLOUD_KEY}}"},
+            json={"provider": "bailian", "api_key": "{{vault:CEIS_CLOUD_KEY}}"},
         ).json()
         assert ref["key_source"] == "vault"
-        assert _settings_file(settings)["image"]["api_key"] == "{{vault:WEVVY_CLOUD_KEY}}"
+        assert _settings_file(settings)["image"]["api_key"] == "{{vault:CEIS_CLOUD_KEY}}"
         assert service.app.vault.get("IMAGE_API_KEY") == "sk-img"  # untouched
         ep = service.avatar.endpoint()
         assert ep is not None and ep.api_key == "nmc-key"
@@ -248,7 +248,7 @@ def test_image_and_video_slots_round_trip(settings: Settings) -> None:
             "/api/connections/image", json={"api_key": "{{vault:NOBODY_HAS_THIS}}"}
         ).json()
         assert missing["key_source"] == "missing"
-        service.app.vault.delete("WEVVY_CLOUD_KEY")  # signed out again
+        service.app.vault.delete("CEIS_CLOUD_KEY")  # signed out again
 
         # clearing: all four empty, and the slot is gone from the file and the vault
         cleared = client.put(
@@ -300,7 +300,7 @@ def test_pictures_follow_the_chat_provider_then_the_account(
         assert service.avatar.endpoint() is None
         assert client.get("/api/providers").json()["configured"]["image"] is None
         # signed in: the account draws and makes the clips
-        service.app.vault.set("WEVVY_CLOUD_KEY", "cloud-key")
+        service.app.vault.set("CEIS_CLOUD_KEY", "cloud-key")
         service.hub.models = list(RELAY_MODELS)
         ep = service.avatar.endpoint()
         assert ep is not None and ep.cloud and ep.base_url == model_url(RELAY).rstrip("/")
@@ -308,12 +308,12 @@ def test_pictures_follow_the_chat_provider_then_the_account(
         assert ep.clips and ep.video_model == "wan2.2-i2v-flash" and ep.video_key == "cloud-key"
         view = client.get("/api/providers").json()
         assert view["configured"]["image"] == {
-            "provider": "wevvy_cloud",
+            "provider": "ceis_cloud",
             "model": "qwen-image-3.0",
             "protocol": "openai",
             "source": "cloud",
         }
-        assert view["configured"]["video"]["provider"] == "wevvy_cloud"
+        assert view["configured"]["video"]["provider"] == "ceis_cloud"
         conn = client.get("/api/connections").json()
         assert conn["image"]["effective_source"] == "cloud" and conn["image"]["configured"] is False
         assert conn["video"]["effective_model"] == "wan2.2-i2v-flash"
@@ -331,7 +331,7 @@ def test_pictures_follow_the_chat_provider_then_the_account(
         view = client.get("/api/providers").json()
         assert view["configured"]["image"]["provider"] == "openai"
         assert view["configured"]["image"]["model"] == "gpt-image-2.5-flare"
-        assert view["configured"]["video"]["provider"] == "wevvy_cloud"
+        assert view["configured"]["video"]["provider"] == "ceis_cloud"
         conn = client.get("/api/connections").json()
         assert conn["image"]["effective_source"] == "chat"
         assert conn["video"]["effective_source"] == "cloud"
@@ -352,7 +352,7 @@ def test_pictures_follow_the_chat_provider_then_the_account(
 def test_cloud_models_off_takes_the_account_out_of_every_automatic_rung(
     settings: Settings, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """*Use wevvy Cloud models* off (``[cloud] models``): the hands, the pictures and
+    """*Use ceis Cloud models* off (``[cloud] models``): the hands, the pictures and
     the clips no longer fall to the relay, the providers' listing and the chat picker leave
     the account out, a sign-in changes no slot; the sign-in itself stays. On again, the
     order is as before."""
@@ -362,13 +362,13 @@ def test_cloud_models_off_takes_the_account_out_of_every_automatic_rung(
     _sign_in(settings, monkeypatch)
     client, service = _make(settings)
     with client:
-        service.app.vault.set("WEVVY_CLOUD_KEY", "cloud-key")
+        service.app.vault.set("CEIS_CLOUD_KEY", "cloud-key")
         service.app.cloud_gui_model = "qwen3.8-27b"
         service.hub.models = list(RELAY_MODELS)
         assert client.get("/api/cloud").json()["models"] is True
         assert service.app.hands_choice() == ("cloud", "qwen3.8-27b")
         assert service.avatar.endpoint() is not None
-        assert "wevvy_cloud" in client.get("/api/connections").json()["providers"]
+        assert "ceis_cloud" in client.get("/api/connections").json()["providers"]
 
         view = client.post("/api/cloud/models", json={"on": False}).json()
         assert view["models"] is False and view["signed_in"] is True
@@ -378,12 +378,12 @@ def test_cloud_models_off_takes_the_account_out_of_every_automatic_rung(
         assert service.app.hands_choice() == ("chat", "qwen3:8b")
         assert service.avatar.endpoint() is None
         providers = client.get("/api/providers").json()
-        assert providers["configured"]["hands"]["provider"] != "wevvy_cloud"
+        assert providers["configured"]["hands"]["provider"] != "ceis_cloud"
         assert providers["configured"]["image"] is None
-        assert all(p["id"] != "wevvy_cloud" for p in providers["providers"])
-        assert "wevvy_cloud" not in client.get("/api/connections").json()["providers"]
+        assert all(p["id"] != "ceis_cloud" for p in providers["providers"])
+        assert "ceis_cloud" not in client.get("/api/connections").json()["providers"]
         # the account page still knows the account: the switch is not a sign-out
-        assert service.app.vault.get("WEVVY_CLOUD_KEY") == "cloud-key"
+        assert service.app.vault.get("CEIS_CLOUD_KEY") == "cloud-key"
 
         view = client.post("/api/cloud/models", json={"on": True}).json()
         assert view["models"] is True
@@ -400,12 +400,12 @@ def test_cloud_models_off_is_refused_while_the_chat_model_is_the_account(
     _sign_in(settings, monkeypatch)
     client, service = _make(settings)
     with client:
-        service.app.vault.set("WEVVY_CLOUD_KEY", "cloud-key")
+        service.app.vault.set("CEIS_CLOUD_KEY", "cloud-key")
         settings.llm.base_url = model_url(RELAY)
-        settings.llm.api_key = "{{vault:WEVVY_CLOUD_KEY}}"
+        settings.llm.api_key = "{{vault:CEIS_CLOUD_KEY}}"
         res = client.post("/api/cloud/models", json={"on": False})
         assert res.status_code == 409
-        assert res.headers["X-Wevvy-Code"] == "chat_on_cloud"
+        assert res.headers["X-Ceis-Code"] == "chat_on_cloud"
         assert settings.cloud.models is True
         # another chat model first, then the switch takes
         client.put(

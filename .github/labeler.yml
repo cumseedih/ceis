@@ -34,18 +34,18 @@ web:
   - changed-files:
       - any-glob-to-any-file:
           - "web/**"
-          - "wevvy/server/static/**"
+          - "ceis/server/static/**"
           - "demo/**"
 
 runtime:
   - changed-files:
       - any-glob-to-any-file:
-          # wevvy/ without wevvy/server/static/, the committed web build (that is `web`,
-          # above): the four globs together cover every other file under wevvy/
-          - "wevvy/*"
-          - "wevvy/!(server)/**"
-          - "wevvy/server/*"
-          - "wevvy/server/!(static)/**"
+          # ceis/ without ceis/server/static/, the committed web build (that is `web`,
+          # above): the four globs together cover every other file under ceis/
+          - "ceis/*"
+          - "ceis/!(server)/**"
+          - "ceis/server/*"
+          - "ceis/server/!(static)/**"
           - "tests/**"
           - "pyproject.toml"
           - "Dockerfile"

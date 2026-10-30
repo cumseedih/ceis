@@ -35,7 +35,7 @@ export function ChatsDrawer() {
     }
   }, [open]);
 
-  const name = state.profile?.name || "wevvy";
+  const name = state.profile?.name || "ceis";
   const side = useMemo(() => {
     const q = query.trim().toLowerCase();
     return state.threads

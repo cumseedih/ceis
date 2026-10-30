@@ -1,11 +1,11 @@
-# wevvy on DeepSeek Harness
+# ceis on DeepSeek Harness
 
 > **Status: shipping.** The code is in [`harness/`](../harness/) on `main`. From 0.1.30
-> this is **wevvy Desktop**, the one desktop app: installers for Windows, macOS and
+> this is **ceis Desktop**, the one desktop app: installers for Windows, macOS and
 > Linux with the harness, the bundle and the runtime for the hands inside
-> ([desktop.md](desktop.md)); the bundle alone also ships packed, `dsh-wevvy-<v>.tgz`,
+> ([desktop.md](desktop.md)); the bundle alone also ships packed, `dsh-ceis-<v>.tgz`,
 > for a DeepSeek Harness Desktop someone already runs ([harness/README.md](../harness/README.md)).
-> It came in two steps: the bundle from 0.1.27, the shell as *wevvy Harness* beside the
+> It came in two steps: the bundle from 0.1.27, the shell as *ceis Harness* beside the
 > older Electron app in 0.1.28–0.1.29 ([Phases](#phases)). This page is the design and the
 > plan; [desktop-muse.md](desktop-muse.md) is what the window is meant to look like.
 
@@ -22,7 +22,7 @@ and a model layer that takes any OpenAI-compatible endpoint from configuration. 
 0.2.0-rc, a developer preview whose plugin API will break, and it has the community a
 project of ours will not have for years.
 
-So the next desktop is **dsh plus wevvy plugins**: what makes wevvy wevvy (the
+So the next desktop is **dsh plus ceis plugins**: what makes ceis ceis (the
 account, the face, the voice, Hands, Reach, the Sentinel) goes in as plugins; the loop,
 the tools and the UI are dsh's. We stop maintaining a second harness for the desktop.
 The phone keeps the Python runtime (dsh is Node and does not run on Android), the browser
@@ -30,30 +30,30 @@ demo keeps it too for now, and the account is the bridge between them, as it is 
 
 ## What runs
 
-The first slice is a dsh **bundle**, `dsh-wevvy` ([`harness/dsh-wevvy/`](../harness/dsh-wevvy/)),
+The first slice is a dsh **bundle**, `dsh-ceis` ([`harness/dsh-ceis/`](../harness/dsh-ceis/)),
 linked into a profile created from dsh's own web template:
 
-- **Account.** A host service `wevvyCloud` signs in against the relay with the same
+- **Account.** A host service `ceisCloud` signs in against the relay with the same
   two calls the phone and the desktop use (`/v1/auth/code`, `/v1/auth/verify`), keeps the
-  key in dsh's credential store as `WEVVY_CLOUD_TOKEN`, and writes the account's chat
-  models into dsh's model adapter (`dsh-llm-pi-ai`) as a provider called *wevvy
+  key in dsh's credential store as `CEIS_CLOUD_TOKEN`, and writes the account's chat
+  models into dsh's model adapter (`dsh-llm-pi-ai`) as a provider called *ceis
   Cloud* with the relay's `/v1` as its base URL. No model adapter of ours: the relay
   speaks OpenAI Chat Completions, dsh speaks it back. Sign-out removes both again. A
-  loopback API (`/wevvy/cloud/{status,code,verify,refresh,sign-out}`, same-origin
+  loopback API (`/ceis/cloud/{status,code,verify,refresh,sign-out}`, same-origin
   only) serves the settings section.
 - **Face and name.** The browser half fills dsh's slots: the dragon in the sidebar brand
-  seat and the hero, the *wevvy* wordmark, and a *wevvy account* section in
+  seat and the hero, the *ceis* wordmark, and a *ceis account* section in
   Settings (phone or e-mail → code → signed in, with the masked identifier, the
   allowance and the models). The stock brand plugin is disabled by the patch; the stills
   are served by the host half.
 - **Voice.** dsh's web sessions compose from an *agent preset*, and a preset's persona
-  wins over the global one, so the bundle declares a preset `wevvy` (the same plugin
-  list as dsh's *Standard* with wevvy's persona) and makes it the default. The
+  wins over the global one, so the bundle declares a preset `ceis` (the same plugin
+  list as dsh's *Standard* with ceis's persona) and makes it the default. The
   person can still pick *Standard*, *PTC* or *Minimal*.
 - **Hands, the first of our capabilities as a plugin.** The preset mounts dsh's MCP
-  client on `wevvy mcp` ([cli.md](cli.md#audit-and-config)): the runtime's
+  client on `ceis mcp` ([cli.md](cli.md#audit-and-config)): the runtime's
   `computer_screen` and `computer_act` served over stdio, with their own descriptions
-  and schemas, arriving in dsh as `mcp__wevvy__computer_screen` and
+  and schemas, arriving in dsh as `mcp__ceis__computer_screen` and
   `…computer_act`. Screenshots travel as MCP images, so a vision model sees the screen.
   What the Sentinel does in the runtime the bridge does at the model's level: a step the
   runtime would ask the person about (Enter or a submit, a heavy shortcut, a click on a
@@ -64,13 +64,13 @@ linked into a profile created from dsh's own web template:
   (`read_emails` / `send_email`, `calendar`, `contacts`), so a mailbox or a calendar set
   up for the runtime is a connector of the desktop too (Settings → Connectors lists
   them as connected once they appear).
-  `WEVVY_PY` names the runtime's executable when it is not on `PATH`; without a
+  `CEIS_PY` names the runtime's executable when it is not on `PATH`; without a
   runtime the preset simply has no hands.
 
 Verified end to end on a scratch install against a local relay: sign in, the two chat
-models appear under *wevvy Cloud* in the picker without a restart, a new session
-starts as *wevvy*, "who are you?" is answered through the relay in wevvy's voice,
-and "what is on my screen?" is answered after one `mcp__wevvy__computer_screen` call
+models appear under *ceis Cloud* in the picker without a restart, a new session
+starts as *ceis*, "who are you?" is answered through the relay in ceis's voice,
+and "what is on my screen?" is answered after one `mcp__ceis__computer_screen` call
 with a correct description of the desktop. [`harness/README.md`](../harness/README.md)
 has the recipe.
 
@@ -86,8 +86,8 @@ The second slice adds what the Android app has around the chat, modelled on what
   provider the person added) unless it is reopened on purpose.
 - **Name, face and moods from the account.** The host pulls the relay's profile
   (`/v1/me/profile`) when the hub says it changed and keeps it under
-  `$DSH_HOME/wevvy/`; a drawn face's five stills are cached once per face id and served
-  at `/wevvy/assets/face/<id>/<mood>.webp`. The sidebar brand mark and the hero wear
+  `$DSH_HOME/ceis/`; a drawn face's five stills are cached once per face id and served
+  at `/ceis/assets/face/<id>/<mood>.webp`. The sidebar brand mark and the hero wear
   it (the dragon stills, an emoji on its colour, or the drawn face), *working* while a
   session runs and *waiting* while one asks something; the brand name is the name the
   person gave it on any device. A system-prompt context tells the model that name, so
@@ -95,13 +95,13 @@ The second slice adds what the Android app has around the chat, modelled on what
   desktop within the hub's round trip, no restart.
 - **Reach.** A hub client (`hub.ts`, plain WebSocket, the key in the `hello` frame)
   puts this computer on the account's device list as `pc-dsh-<id>` and answers `info` and
-  `notify` (a toast). A second plugin, `dsh-wevvy/reach`, registers the tools the
+  `notify` (a toast). A second plugin, `dsh-ceis/reach`, registers the tools the
   phone and the runtime have: `devices`, `device_screen` (the still admitted as an image
   when the model takes images), `device_shell` and `device_open` (dsh's approval card
   first, with the command or URL in it), `device_files`, `device_notify`, and `delegate`:
   the other device's own Muse runs the task, and when *it* asks for an approval the
   question comes back here as an approval card and the answer travels back over the hub.
-  Settings → *wevvy account* lists the devices with online dots, renames this
+  Settings → *ceis account* lists the devices with online dots, renames this
   computer and forgets offline ones.
 - **The capsule.** While Hands or Reach work, a pill at the top of the window shows the
   face, moving bars, *Hands · step N* or *Reach · step N*, what it is doing ("on Laptop
@@ -109,7 +109,7 @@ The second slice adds what the Android app has around the chat, modelled on what
   the composer's stop does; the in-flight call ends with *aborted: the call was
   stopped*. The host learns about the calls through dsh's `tools/execute` hook and
   streams them, with the profile, the hub state and the notices, to the client over one
-  SSE connection (`/wevvy/cloud/events`).
+  SSE connection (`/ceis/cloud/events`).
 
 Verified on the same scratch install with a second runtime on the account as *Laptop B*:
 the first run through to *Start*; `devices` and `device_files` on Laptop B; `device_shell`
@@ -123,10 +123,10 @@ The third slice makes the desktop answer the phone, so Reach runs both ways:
 - **This computer's hands for the others.** `actions.ts` is a port of the runtime's
   [hub actions](hub.md): `shell` (the login shell, a clamped timeout, 124 on timeout,
   the output cap), `files`, `file.get` / `file.put` (the 8 MiB limit, `force`, the
-  `.wevvy-part` rename), `open` and `screen` (`screencapture`, PowerShell,
+  `.ceis-part` rename), `open` and `screen` (`screencapture`, PowerShell,
   `gnome-screenshot` / `spectacle` / `grim` / `scrot` / `import` in turn). Same names,
   same shapes, same error codes, so a phone cannot tell a runtime from a dsh desktop.
-- **The remote-control switch.** Settings → *wevvy account* → under *this computer*,
+- **The remote-control switch.** Settings → *ceis account* → under *this computer*,
   the same switch the runtime has: on, the device announces the six actions in `hello`;
   off, it announces `info` and `notify` only and refuses the rest with `not_allowed`
   (the phone sees the same message a runtime would give). Flipping it re-greets the hub
@@ -151,7 +151,7 @@ delegated `sleep 120` on Laptop B stopped there within two seconds of *Stop* her
 The fourth slice is the phone's `delegate` landing here; the desktop answers `task`:
 
 - **A task runs in a dsh session.** `task.ts` opens a session per asking device and
-  conversation through dsh's session controller (`create` with the `wevvy` preset,
+  conversation through dsh's session controller (`create` with the `ceis` preset,
   renamed "From <device>"), feeds the task as a user message that says where it came
   from and which computer this is, and follows the run on the `session/event` feed:
   `tool/call` → `tool`, `tool/result` → `tool_result`, `assistant/message` → interim
@@ -224,12 +224,12 @@ screen in [desktop-muse.md](desktop-muse.md):
   plugin's settings, is passed through.
 - **The first run.** Full-window sheets: welcome with the face and one *Sign in*
   pill → *Sign in or create an account* (phone or e-mail) → six code boxes (or a
-  password: `/v1/auth/login`) → spinner → the permissions carousel (‹ ›): *Allow wevvy
+  password: `/v1/auth/login`) → spinner → the permissions carousel (‹ ›): *Allow ceis
   to use your computer?* on macOS (Accessibility, Screen recording, each with *Allow*
   through the shell's bridge and a green check once granted), *…access your files?* (the
   workspace folder, *Change* through the native picker), *Your other devices* → *ready*.
 - **The desktop shell's bridge.** `harness/desktop/src/preload.ts` exposes
-  `window.wevvyHarness` to the page (sandboxed, IPC to the main process):
+  `window.ceisHarness` to the page (sandboxed, IPC to the main process):
   `permissions()`, `requestPermission(kind)` (`systemPreferences`), the System Settings
   panes, `openExternal`, `keepAwake` (a power-save blocker while a session runs),
   `setTheme` (the window's base colour follows the page); it marks the document with the
@@ -249,12 +249,12 @@ composer, the bubbles and the approval card in both themes, an answer recorded i
 panel's Approvals tab; the profile panel beside the chat; Settings with the nine pages.
 The Electron shell boots the same bundle with its bridge on Linux (screenshot check).
 
-## Where each part of wevvy goes
+## Where each part of ceis goes
 
-| wevvy today (Python runtime)                         | On dsh                                                                                                                                       | State      |
+| ceis today (Python runtime)                         | On dsh                                                                                                                                       | State      |
 | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Cloud account, provider provisioning ([cloud.md](cloud.md)) | `dsh-wevvy/cloud` service + `llm-pi-ai` provider + credential store                                                                    | done       |
-| Persona, agent name ([design.md](design.md))            | Agent preset `wevvy` (`@deepseek-ai/dsh-persona`); the account's chosen name from the profile, in the brand seat and a system-prompt context | done       |
+| Cloud account, provider provisioning ([cloud.md](cloud.md)) | `dsh-ceis/cloud` service + `llm-pi-ai` provider + credential store                                                                    | done       |
+| Persona, agent name ([design.md](design.md))            | Agent preset `ceis` (`@deepseek-ai/dsh-persona`); the account's chosen name from the profile, in the brand seat and a system-prompt context | done       |
 | The face in the UI ([avatar.md](avatar.md))             | Slots `sidebar.brand.*`, `conversation.hero.brand.mark`; stills from the host; moods from the session status; the capsule while the hands work | done       |
 | Face sync across devices                                | `profile.ts` pulls the relay's profile on the hub's `profile` frame; drawn-face stills cached and served by the host                            | done       |
 | The face moving ([avatar.md](avatar.md))                | `Avatar.tsx`: the dragon's state clips from `assets/`, looped silently at 44 px and up with the still as poster; CSS breath / sway / hop for drawn faces and emoji, nothing under reduced motion | done       |
@@ -262,8 +262,8 @@ The Electron shell boots the same bundle with its bridge on Linux (screenshot ch
 | First run                                               | Our step in dsh's `settings.onboarding` seat, full-window: welcome, sign in, code boxes, the permissions carousel (computer on macOS, files, devices), ready | done       |
 | The window ([desktop-muse.md](desktop-muse.md))         | The `sidebar`, `sidebar.settings` and `shell.overlay` seats and the bundle's stylesheet: rail + main / side chats, the pinned face and status chip with Stop, Invite, the profile panel, pill composer, bubbles, permission card, grouped Settings with Advanced, the app's tones | done       |
 | Sentinel ([sentinel.md](sentinel.md))                   | dsh approval policies and the `tools/pre-execute` waterfall; our categories become an approval preset; the visible gate stays                | phase 4    |
-| Hands: GUI control of this computer ([gui.md](gui.md)) | The Python hands over MCP (`wevvy mcp`, mounted in the preset): done; a native TypeScript driver behind dsh's computer-use seam (`ctx.computerUse.register`) later, so no Python is needed | done (bridge) |
-| Reach: the phone and other devices ([hub.md](hub.md), [every-device.md](every-device.md)) | `hub.ts` + `dsh-wevvy/reach`: `devices`, `device_screen/shell/files/open/notify`, `delegate` with relayed approvals and `stop` on *Stop*; the phone side unchanged | done       |
+| Hands: GUI control of this computer ([gui.md](gui.md)) | The Python hands over MCP (`ceis mcp`, mounted in the preset): done; a native TypeScript driver behind dsh's computer-use seam (`ctx.computerUse.register`) later, so no Python is needed | done (bridge) |
+| Reach: the phone and other devices ([hub.md](hub.md), [every-device.md](every-device.md)) | `hub.ts` + `dsh-ceis/reach`: `devices`, `device_screen/shell/files/open/notify`, `delegate` with relayed approvals and `stop` on *Stop*; the phone side unchanged | done       |
 | Being controlled from the phone (shell, files, screen)  | `actions.ts` answers `shell`, `files`, `file.get`, `file.put`, `open`, `screen` with the runtime's shapes, behind the remote-control switch in Settings; each call a toast | done       |
 | A task run here for the phone (`task`)                  | `task.ts`: the phone's `delegate` lands in a dsh session ("From <device>", resumed next time), its run streamed back as the runtime's event frames, its approvals relayed to the asker, `stop {call}` honoured | done       |
 | Connectors ([desktop-muse.md](desktop-muse.md#settings)) | `connectors.ts`: a catalogue of ~70 remote MCP servers, the MCP authorization flow (metadata, DCR, PKCE, refresh), keys, the MCP Registry search, and a loopback proxy that holds the credential and filters the tools; `connectors-tools.ts` mounts a `dsh-mcp-client` per connection and follows the page | done       |
@@ -321,10 +321,10 @@ The Electron shell boots the same bundle with its bridge on Linux (screenshot ch
 ## Names and licences
 
 DeepSeek Harness is MIT; it is a dependency, not vendored, and its notice travels with
-it. Our bundle is GPL-3.0-or-later like the rest of wevvy, so the "no closed
+it. Our bundle is GPL-3.0-or-later like the rest of ceis, so the "no closed
 component" promise holds. "DeepSeek Harness" and "DSH" are DeepSeek's names: we say
 *built on DeepSeek Harness*, never use them in ours, and the shipped About text and
-brand assets stay as they are. The usual notices (Muse is Meta's trademark, wevvy is
+brand assets stay as they are. The usual notices (Muse is Meta's trademark, ceis is
 a community project with no affiliation) apply unchanged.
 
 ## Phases
@@ -347,9 +347,9 @@ a community project with no affiliation) apply unchanged.
    and the web.
 6. **Ship.** The shell, in two steps. dsh's own desktop app is an Electron wrapper
    around the same web app with a `desktop` profile that takes external plugins (`dsh
-   plugin --profile desktop add …`), so the first wevvy desktop was that app with the
+   plugin --profile desktop add …`), so the first ceis desktop was that app with the
    bundle in its profile: **from 0.1.27 every release carries the bundle packed**
-   (`wevvy-Harness-<v>.tgz` then, `dsh-wevvy-<v>.tgz` from 0.1.30), with the
+   (`ceis-Harness-<v>.tgz` then, `dsh-ceis-<v>.tgz` from 0.1.30), with the
    install in [harness/README.md](../harness/README.md) (`.github/workflows/harness.yml`
    builds, tests, packs it and installs the tarball into a fresh dsh profile). **From
    0.1.28 the second step is there too**: our own shell in
@@ -360,9 +360,9 @@ a community project with no affiliation) apply unchanged.
    (`ELECTRON_RUN_AS_NODE`, `--expose-internals`; the harness's `require-builtin` addon
    fingerprints the Electron it was built for, so the shell pins one exact Electron version), from a `dsh`
    that npm installed under `resources/dsh` together with the bundle at build time,
-   against a profile of its own under `~/.wevvy/desktop` that names the bundle and
+   against a profile of its own under `~/.ceis/desktop` that names the bundle and
    links it from the copy inside the app. The runtime for the hands rides along as a
-   PyInstaller build, and `WEVVY_PY` points the preset at it. `desktop-app.yml` builds
+   PyInstaller build, and `CEIS_PY` points the preset at it. `desktop-app.yml` builds
    the Windows installer, the macOS dmg/zip for both architectures and the Linux
    AppImage/deb on every release tag, boots each packaged harness once in Node mode as a
    check, lists the Windows installer's archive to see that the face's four clips are in
@@ -371,9 +371,9 @@ a community project with no affiliation) apply unchanged.
    live; `nsis.preCompressedFileExtensions: []` in `electron-builder.yml` turns that off,
    and `tests/installer.test.mjs` keeps it so), and attaches them to the release (the
    same Apple secrets sign and notarize the macOS build when they are set). It shipped as
-   *wevvy Harness* beside the older
-   desktop app in 0.1.28 and 0.1.29; **from 0.1.30 it is wevvy Desktop**, the one
-   desktop app (`wevvy-Desktop-<v>-…`, the application id of the retired
+   *ceis Harness* beside the older
+   desktop app in 0.1.28 and 0.1.29; **from 0.1.30 it is ceis Desktop**, the one
+   desktop app (`ceis-Desktop-<v>-…`, the application id of the retired
    `desktop/app` so it installs over it), and the site's downloads point here.
 7. **Daily-driver on the new shell.** The rooms beside the chat (Feed, Ideas,
    Goals, Library), the live stage while the hands work on this screen, signing on both

@@ -1,4 +1,4 @@
-# wevvy brand
+# ceis brand
 
 The single source of truth for the brand is [design.md](../design.md): primary `#005ABF`,
 link `#0064D4`, text `#111112`, page `#FCFCFC`, input fill `#F3F4F6`, pill controls, flat
@@ -9,9 +9,9 @@ assets were removed on 2026-10-18.
 
 The current mark is the script "We" supplied 2026-10-17. Never recolour or distort it.
 
-- Source of truth: `assets/brand/wevvy-mark.png` (the script mark on transparency,
+- Source of truth: `assets/brand/ceis-mark.png` (the script mark on transparency,
   1433x944). Everything else is derived from it.
-- `assets/brand/wevvy-icon-512.png`: white tile with the mark, 512x512. This is the app
+- `assets/brand/ceis-icon-512.png`: white tile with the mark, 512x512. This is the app
   icon; `scripts/gen-android-icons.py` builds the Android launcher and status icons from
   these two files.
 

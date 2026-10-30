@@ -329,18 +329,18 @@ internal fun ModelPickerSheet(
     val allInstanceIds = remember(config) {
         config.instances.filter { it.isEnabled }.map { it.id }.toSet()
     }
-    // wevvy: the Cloud provider opens expanded — for most people it is the only provider,
+    // ceis: the Cloud provider opens expanded — for most people it is the only provider,
     // and a collapsed card hid the fact that there is anything to switch to.
     val nmContext = LocalContext.current
-    val nmCloudId = remember(config) { io.github.wevvy.cloud.WevvyCloud.instance(nmContext)?.id }
+    val nmCloudId = remember(config) { io.github.ceis.cloud.CeisCloud.instance(nmContext)?.id }
     var collapsedInstanceIds by remember(allInstanceIds) {
         mutableStateOf(if (nmCloudId != null) allInstanceIds - nmCloudId else allInstanceIds)
     }
-    // wevvy: the relay's own models are never named in the UI; cloud entries read "wevvy Cloud".
+    // ceis: the relay's own models are never named in the UI; cloud entries read "ceis Cloud".
     fun isCloudEntry(entry: ModelEntry): Boolean =
         nmCloudId != null && entry.providerInstanceId == nmCloudId
     fun cloudTitleFor(entry: ModelEntry): String =
-        if (isCloudEntry(entry)) io.github.wevvy.cloud.WevvyCloud.LABEL else entry.model.displayName
+        if (isCloudEntry(entry)) io.github.ceis.cloud.CeisCloud.LABEL else entry.model.displayName
 
     /**
      * [T-android-model-picker-polish] Model whose Quick Test sheet is open.
@@ -375,13 +375,13 @@ internal fun ModelPickerSheet(
                 var entries = config.modelEntries.filter {
                     it.providerInstanceId == instance.id && !it.isHidden
                 }
-                // wevvy: the Cloud's menu first, in the menu's order; the catalog beyond
+                // ceis: the Cloud's menu first, in the menu's order; the catalog beyond
                 // it (models a member may name) after, so the recommended ones are on top.
                 if (instance.id == nmCloudId) {
-                    val menu = io.github.wevvy.cloud.WevvyCloud.menuModelIds(nmContext)
+                    val menu = io.github.ceis.cloud.CeisCloud.menuModelIds(nmContext)
                     val rank = menu.withIndex().associate { (i, id) -> id to i }
                     entries = entries.sortedWith(
-                        compareBy<ModelEntry> { if (io.github.wevvy.cloud.WevvyCloud.isCatalogModel(nmContext, it.model.id)) 1 else 0 }
+                        compareBy<ModelEntry> { if (io.github.ceis.cloud.CeisCloud.isCatalogModel(nmContext, it.model.id)) 1 else 0 }
                             .thenBy { rank[it.model.id] ?: Int.MAX_VALUE },
                     )
                 }
@@ -405,7 +405,7 @@ internal fun ModelPickerSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        // wevvy: the model picker floats like the other sheets (design.md).
+        // ceis: the model picker floats like the other sheets (design.md).
         containerColor = ChatColors.background.copy(alpha = 0.92f),
         // Match the slim drag handle used by StandardChatSheet (6dp top / 4dp
         // bottom) so the title sits flush with the indicator instead of the
@@ -637,7 +637,7 @@ internal fun ModelPickerSheet(
                                     Icon(
                                         if (isSelected) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                                         contentDescription = null,
-                                        tint = if (isSelected) io.github.wevvy.ui.theme.WevvyColors.success
+                                        tint = if (isSelected) io.github.ceis.ui.theme.CeisColors.success
                                         else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
                                         modifier = Modifier.size(22.dp),
                                     )
@@ -695,7 +695,7 @@ internal fun ModelPickerSheet(
                                         // iOS: "→ ModelName" resolved entry
                                         if (resolvedEntry != null) {
                                             Text(
-                                                // wevvy: cloud entries read "wevvy Cloud", never the model name.
+                                                // ceis: cloud entries read "ceis Cloud", never the model name.
                                                 "→ ${cloudTitleFor(resolvedEntry)}",
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
@@ -857,7 +857,7 @@ internal fun ModelPickerSheet(
                                                 )
                                                 Spacer(Modifier.width(8.dp))
                                                 Column(modifier = Modifier.weight(1f)) {
-                                                    // wevvy: cloud rows never name the model.
+                                                    // ceis: cloud rows never name the model.
                                                     Text(cloudTitleFor(entry), style = MaterialTheme.typography.bodyMedium)
                                                     Row {
                                                         if (instance != null) {
@@ -890,10 +890,10 @@ internal fun ModelPickerSheet(
                                                         fontSize = 9.sp,
                                                         lineHeight = 11.sp,
                                                         fontWeight = FontWeight.Medium,
-                                                        color = io.github.wevvy.ui.theme.WevvyColors.success,
+                                                        color = io.github.ceis.ui.theme.CeisColors.success,
                                                         modifier = Modifier
                                                             .background(
-                                                                io.github.wevvy.ui.theme.WevvyColors.success.copy(alpha = 0.1f),
+                                                                io.github.ceis.ui.theme.CeisColors.success.copy(alpha = 0.1f),
                                                                 RoundedCornerShape(50),
                                                             )
                                                             .padding(horizontal = 5.dp, vertical = 1.dp),
@@ -1056,7 +1056,7 @@ internal fun ModelPickerSheet(
                                                 itemVerticalAlignment = Alignment.CenterVertically,
                                             ) {
                                                 Text(
-                                                    // wevvy: cloud entries read "wevvy Cloud", never the model name.
+                                                    // ceis: cloud entries read "ceis Cloud", never the model name.
                                                     cloudTitleFor(displayEntry),
                                                     style = MaterialTheme.typography.bodyMedium,
                                                 )
@@ -1136,9 +1136,9 @@ internal fun ModelPickerSheet(
                                         }
                                     }
                                 } else {
-                                    // wevvy: where the Cloud's menu ends and its catalog begins
+                                    // ceis: where the Cloud's menu ends and its catalog begins
                                     val nmFirstCatalog = if (instance.id == nmCloudId) {
-                                        entries.indexOfFirst { io.github.wevvy.cloud.WevvyCloud.isCatalogModel(nmContext, it.model.id) }
+                                        entries.indexOfFirst { io.github.ceis.cloud.CeisCloud.isCatalogModel(nmContext, it.model.id) }
                                     } else {
                                         -1
                                     }
@@ -1200,7 +1200,7 @@ internal fun ModelPickerSheet(
                                             Spacer(Modifier.width(10.dp))
                                             Column(modifier = Modifier.weight(1f)) {
                                                 Text(
-                                                    // wevvy: cloud entries read "wevvy Cloud", never the model name.
+                                                    // ceis: cloud entries read "ceis Cloud", never the model name.
                                                     cloudTitleFor(entry),
                                                     style = MaterialTheme.typography.bodyMedium,
                                                 )
@@ -1231,10 +1231,10 @@ internal fun ModelPickerSheet(
                                                     fontSize = 9.sp,
                                                     lineHeight = 11.sp,
                                                     fontWeight = FontWeight.Medium,
-                                                    color = io.github.wevvy.ui.theme.WevvyColors.success,
+                                                    color = io.github.ceis.ui.theme.CeisColors.success,
                                                     modifier = Modifier
                                                         .background(
-                                                            io.github.wevvy.ui.theme.WevvyColors.success.copy(alpha = 0.1f),
+                                                            io.github.ceis.ui.theme.CeisColors.success.copy(alpha = 0.1f),
                                                             RoundedCornerShape(50),
                                                         )
                                                         .padding(horizontal = 5.dp, vertical = 1.dp),

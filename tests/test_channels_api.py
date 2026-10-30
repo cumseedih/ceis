@@ -8,11 +8,11 @@ from collections.abc import Iterator
 import pytest
 from fastapi.testclient import TestClient
 
-from wevvy.channels import feishu
-from wevvy.config import Settings
-from wevvy.llm import MockLLM
-from wevvy.server import create_app
-from wevvy.server.service import MuseService
+from ceis.channels import feishu
+from ceis.config import Settings
+from ceis.llm import MockLLM
+from ceis.server import create_app
+from ceis.server.service import MuseService
 
 
 @pytest.fixture()
@@ -46,7 +46,7 @@ def test_view_lists_the_four_channels_off(server):
     assert telegram["sdk_available"] is True and telegram["install"] == ""
     assert telegram["fields"][0]["key"] == "bot_token" and telegram["fields"][0]["required"]
     feishu_view = view["channels"][0]
-    assert feishu_view["install"] == "pip install 'wevvy[feishu]'"
+    assert feishu_view["install"] == "pip install 'ceis[feishu]'"
     assert [f["key"] for f in feishu_view["fields"]][:3] == ["app_id", "app_secret", "domain"]
 
 
@@ -133,4 +133,4 @@ def test_feishu_login_endpoints(server, monkeypatch: pytest.MonkeyPatch, setting
     # without the SDK the state says what to install; with it, the connection is attempted
     assert me["status"]["state"] in ("missing_sdk", "connecting", "error", "connected")
     if me["status"]["state"] == "missing_sdk":
-        assert me["status"]["detail"] == "pip install 'wevvy[feishu]'"
+        assert me["status"]["detail"] == "pip install 'ceis[feishu]'"

@@ -168,11 +168,11 @@ object BrowserExternalSchemeHandler {
         if (uri == null) return false
         val scheme = uri.scheme?.lowercase() ?: return false
         if (scheme in INTERNAL_SCHEMES) return false
-        // wevvy: a link of the app's own (`minis://`, `wevvy://`) the person tapped goes to MainActivity
+        // ceis: a link of the app's own (`minis://`, `ceis://`) the person tapped goes to MainActivity
         // by name, never out through the system, which could hand it to another app that registers the
         // scheme; a page the agent drives in the background stays blocked below, as before
-        if (origin == Origin.USER_INITIATED && io.github.wevvy.deeplink.OwnScheme.isOwn(scheme)) {
-            runCatching { context.startActivity(io.github.wevvy.deeplink.OwnScheme.intent(context, uri)) }
+        if (origin == Origin.USER_INITIATED && io.github.ceis.deeplink.OwnScheme.isOwn(scheme)) {
+            runCatching { context.startActivity(io.github.ceis.deeplink.OwnScheme.intent(context, uri)) }
             return true
         }
 

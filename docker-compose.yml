@@ -1,8 +1,8 @@
-# wevvy in a container. The agent sees two mounts: /data (memory, goals,
+# ceis in a container. The agent sees two mounts: /data (memory, goals,
 # vault, audit log, threads) and /workspace (its files). config/config.toml is
-# mounted read-only — run `wevvy config init` on the host first.
+# mounted read-only — run `ceis config init` on the host first.
 #
-#   cp .env.example .env && $EDITOR .env             # API key, WEVVY_SERVER_TOKEN
+#   cp .env.example .env && $EDITOR .env             # API key, CEIS_SERVER_TOKEN
 #   docker compose up -d app                         # phone app on http://<host>:8787/#token=...
 #   docker compose run --rm muse                     # terminal chat
 #   docker compose run --rm muse run "plan my week"  # one task
@@ -11,7 +11,7 @@
 services:
   muse:
     build: .
-    image: wevvy:latest
+    image: ceis:latest
     env_file:
       - path: .env
         required: false
@@ -22,7 +22,7 @@ services:
     healthcheck:
       disable: true
     volumes:
-      - wevvy-data:/data
+      - ceis-data:/data
       - ./workspace:/workspace
       - ./config/config.toml:/app/config/config.toml:ro
     # Uncomment to make the container filesystem immutable apart from the mounts.
@@ -52,4 +52,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  wevvy-data:
+  ceis-data:

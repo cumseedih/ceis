@@ -7,7 +7,7 @@
  * `?exp=<unix seconds>&sig=<HMAC-SHA256(token, "<exp>\n<path>")[:32]>`. A logged link opens
  * that one path until `exp`, nothing else, and the token cannot be read back from it. `exp`
  * is the second six-hour boundary ahead, so a link's text is stable for hours and the
- * browser's cache keeps working. The server side is `wevvy/server/tickets.py`.
+ * browser's cache keeps working. The server side is `ceis/server/tickets.py`.
  *
  * SHA-256 is spelled out here because the URL is needed synchronously at render time and
  * `crypto.subtle` is both async and absent on a plain-http LAN address.

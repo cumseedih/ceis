@@ -1,4 +1,4 @@
-"""The desktop app's operator as the runtime's hands (wevvy.computer.operator): the
+"""The desktop app's operator as the runtime's hands (ceis.computer.operator): the
 HTTP contract against a fake server, the backend choice, the link's screen → act → event
 chain with the picture mapped onto the operator's screen, and the same mapping for the
 Python fallback backends with fake sizes."""
@@ -15,12 +15,12 @@ import pytest
 
 from tests.test_computer import FakeHands
 from tests.test_phone import png
-from wevvy.computer import hands as hands_mod
-from wevvy.computer import operator as op
-from wevvy.computer.link import ComputerLink
-from wevvy.config import GUISettings, HandsSettings, Settings
-from wevvy.phone.link import DeviceError
-from wevvy.tools.computer import ComputerAct, ComputerScreen
+from ceis.computer import hands as hands_mod
+from ceis.computer import operator as op
+from ceis.computer.link import ComputerLink
+from ceis.config import GUISettings, HandsSettings, Settings
+from ceis.phone.link import DeviceError
+from ceis.tools.computer import ComputerAct, ComputerScreen
 
 TOKEN = "t0ken-for-tests"
 
@@ -76,7 +76,7 @@ class FakeOperator:
                     return
                 if self.path == "/windows":
                     if fake.helper is None:
-                        return self._send(503, {"error": "window mode needs wevvy Computer Use"})
+                        return self._send(503, {"error": "window mode needs ceis Computer Use"})
                     if fake.refuse_window is not None and fake.refuse_window[0] != 404:
                         code, why = fake.refuse_window  # a 404 is one window's, not the list's
                         return self._send(code, {"error": why})
@@ -186,7 +186,7 @@ def operator(monkeypatch: pytest.MonkeyPatch) -> Iterator[FakeOperator]:
     fake = FakeOperator()
     monkeypatch.setenv(op.URL_ENV, fake.url)
     monkeypatch.setenv(op.TOKEN_ENV, TOKEN)
-    monkeypatch.setattr("wevvy.computer.link.active_window", lambda: ("gedit", "Untitled"))
+    monkeypatch.setattr("ceis.computer.link.active_window", lambda: ("gedit", "Untitled"))
     yield fake
     fake.close()
 
@@ -217,7 +217,7 @@ def test_operator_hands_speak_the_contract(operator: FakeOperator) -> None:
         hands.key(["hyperspace"])
     # the window routes are the helper's: without it the operator says so, with the status
     assert hands.helper_present is False
-    with pytest.raises(op.OperatorError, match="window mode needs wevvy Computer Use") as exc:
+    with pytest.raises(op.OperatorError, match="window mode needs ceis Computer Use") as exc:
         hands.client.windows()
     assert exc.value.status == 503
     # the picture: the size the runtime asks for, the screen's size next to it
@@ -308,7 +308,7 @@ async def test_linux_wayland_says_the_hands_are_off(
 
     monkeypatch.setattr(hands_mod, "_import_pyautogui", never)
     monkeypatch.setattr(hands_mod, "XdotoolHands", never)
-    monkeypatch.setattr("wevvy.computer.link.capture", never)
+    monkeypatch.setattr("ceis.computer.link.capture", never)
     with pytest.raises(hands_mod.HandsUnavailable) as exc:
         hands_mod.pick_backend("auto")
     assert str(exc.value) == hands_mod.WAYLAND_TEXT
@@ -328,7 +328,7 @@ async def test_linux_wayland_says_the_hands_are_off(
 
 # ----------------------------------------------------------------------------- one path on a Mac
 MAC_SCREEN_TEXT = (
-    "macOS: switch on wevvy Desktop under System Settings → Privacy & Security → "
+    "macOS: switch on ceis Desktop under System Settings → Privacy & Security → "
     "Screen Recording, then quit and reopen the app."
 )
 
@@ -385,8 +385,8 @@ async def test_mac_screenshot_never_falls_back_to_python(
     settings: Settings, operator: FakeOperator, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(op, "_platform", lambda: "darwin")
-    monkeypatch.setattr("wevvy.computer.link.capture", _never_capture)
-    monkeypatch.setattr("wevvy.computer.link.screen_size", _never_capture)
+    monkeypatch.setattr("ceis.computer.link.capture", _never_capture)
+    monkeypatch.setattr("ceis.computer.link.screen_size", _never_capture)
     # 1. the operator refuses the picture (403, the permission text): the tool's error, in its words
     link = ComputerLink(HandsSettings(enabled=True, settle_s=0.0))
     assert (link.device.width, link.device.height) == (3840, 2160)
@@ -423,8 +423,8 @@ async def test_mac_screenshot_never_falls_back_to_python(
         "app": "gedit", "app_name": "gedit", "width": 1596, "height": 896,
         "screen_w": 3840, "screen_h": 2160, "keyboard": False, "screenshot": png(64, 40),
     }  # fmt: skip
-    monkeypatch.setattr("wevvy.computer.link.capture", lambda max_width=1600: dict(raw))
-    monkeypatch.setattr("wevvy.computer.link.screen_size", lambda: (3840, 2160))
+    monkeypatch.setattr("ceis.computer.link.capture", lambda max_width=1600: dict(raw))
+    monkeypatch.setattr("ceis.computer.link.screen_size", lambda: (3840, 2160))
     link4 = ComputerLink(HandsSettings(enabled=True, settle_s=0.0))
     screen = await link4.screen()
     assert (screen.width, screen.height) == (1596, 896)
@@ -521,9 +521,9 @@ async def test_fallback_backends_map_the_picture_onto_their_space(
         "app": "Safari", "app_name": "Safari", "width": 1596, "height": 996,
         "screen_w": 2880, "screen_h": 1800, "keyboard": False, "screenshot": png(64, 40),
     }  # fmt: skip
-    monkeypatch.setattr("wevvy.computer.link.capture", lambda max_width=1600: dict(raw))
-    monkeypatch.setattr("wevvy.computer.link.active_window", lambda: ("Safari", "Safari"))
-    monkeypatch.setattr("wevvy.computer.link.screen_size", lambda: (2880, 1800))
+    monkeypatch.setattr("ceis.computer.link.capture", lambda max_width=1600: dict(raw))
+    monkeypatch.setattr("ceis.computer.link.active_window", lambda: ("Safari", "Safari"))
+    monkeypatch.setattr("ceis.computer.link.screen_size", lambda: (2880, 1800))
     events: list[dict[str, Any]] = []
     hands = SizedHands(1440, 900)
     link = ComputerLink(

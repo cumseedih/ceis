@@ -8,11 +8,11 @@ from pathlib import Path
 import httpx
 import pytest
 
-from wevvy.schema import RiskLevel
-from wevvy.tools import Files, PythonExecute, Shell, Terminate
-from wevvy.tools.email_tool import scrub_email_secrets
-from wevvy.tools.shell import code_reach, scrubbed_env
-from wevvy.tools.web import fetch_public, host_of, html_to_markdown
+from ceis.schema import RiskLevel
+from ceis.tools import Files, PythonExecute, Shell, Terminate
+from ceis.tools.email_tool import scrub_email_secrets
+from ceis.tools.shell import code_reach, scrubbed_env
+from ceis.tools.web import fetch_public, host_of, html_to_markdown
 
 
 async def test_files_workspace_scoping(tmp_path: Path):
@@ -48,7 +48,7 @@ async def test_files_workspace_scoping(tmp_path: Path):
 
 
 async def test_files_read_truncates_without_loading_the_whole_file(tmp_path: Path):
-    from wevvy.tools import files as files_module
+    from ceis.tools import files as files_module
 
     big = tmp_path / "big.log"
     big.write_text("x" * (files_module.MAX_READ_CHARS + 5000))
@@ -98,13 +98,13 @@ async def test_shell_and_python(tmp_path: Path):
     py = PythonExecute(workspace=tmp_path)
     r = await py.execute(code="import sys; print(sys.version_info.major)")
     assert r.ok and r.output.startswith(str(sys.version_info.major))
-    assert not list(tmp_path.glob("wevvy_*.py"))  # temp script cleaned up
+    assert not list(tmp_path.glob("ceis_*.py"))  # temp script cleaned up
 
 
 async def test_shell_output_is_capped_in_memory(tmp_path: Path, monkeypatch):
     """A command that prints without end is not the runtime's memory: the first bytes are
     kept, the rest drained and counted, and the note says how much went."""
-    from wevvy.tools import shell as shell_mod
+    from ceis.tools import shell as shell_mod
 
     monkeypatch.setattr(shell_mod, "MAX_OUTPUT_BYTES", 4096)
     shell = Shell(workspace=tmp_path)
@@ -170,8 +170,8 @@ def test_subprocess_env_is_scrubbed_of_credentials():
             "OPENAI_API_KEY": "sk-1",
             "WQ_API_KEY": "x",
             "DEEPSEEK_API_KEY": "x",
-            "WEVVY_VAULT_KEY": "x",
-            "WEVVY_SERVER_TOKEN": "x",
+            "CEIS_VAULT_KEY": "x",
+            "CEIS_SERVER_TOKEN": "x",
             "GITHUB_TOKEN": "x",
             "AWS_SECRET_ACCESS_KEY": "x",
             "DB_PASSWORD": "x",
@@ -179,17 +179,17 @@ def test_subprocess_env_is_scrubbed_of_credentials():
             "HTTP_PROXY": "http://proxy:3128",
         }
     )
-    assert set(env) == {"PATH", "HOME", "LANG", "HTTP_PROXY", "WEVVY_SANDBOX"}
+    assert set(env) == {"PATH", "HOME", "LANG", "HTTP_PROXY", "CEIS_SANDBOX"}
 
 
 async def test_python_and_shell_children_cannot_read_secrets(tmp_path: Path, monkeypatch):
     monkeypatch.setenv("MY_SECRET_TOKEN", "hunter2")
-    monkeypatch.setenv("WEVVY_VAULT_KEY", "k")
+    monkeypatch.setenv("CEIS_VAULT_KEY", "k")
     monkeypatch.setenv("PLAIN_SETTING", "yes")
     py = PythonExecute(workspace=tmp_path)
     r = await py.execute(
         code="import os; print(os.environ.get('MY_SECRET_TOKEN'), "
-        "os.environ.get('WEVVY_VAULT_KEY'), os.environ.get('PLAIN_SETTING'))"
+        "os.environ.get('CEIS_VAULT_KEY'), os.environ.get('PLAIN_SETTING'))"
     )
     assert r.ok and r.output.startswith("None None yes")
     if sys.platform == "win32":
@@ -206,8 +206,8 @@ async def test_python_and_shell_children_cannot_read_secrets(tmp_path: Path, mon
 
 
 def test_python_reach_decides_the_risk(tmp_path: Path):
-    from wevvy.config import SandboxSettings
-    from wevvy.sandbox import Sandbox
+    from ceis.config import SandboxSettings
+    from ceis.sandbox import Sandbox
 
     # without a sandbox the static check is the only wall: every script is sensitive — the
     # level, said on the card, not a warning (auto mode and always_allow_tools may accept it)
@@ -311,7 +311,7 @@ def test_private_host_guard_refuses_every_non_global_address():
     address alone: every range that is not globally routable is refused, the carrier-grade
     NAT block (a Tailscale network) and IPv4-mapped IPv6 addresses among them; decimal and
     IPv6 spellings of loopback count as loopback."""
-    from wevvy.tools.web import _is_private_host
+    from ceis.tools.web import _is_private_host
 
     refused = [
         "127.0.0.1",
@@ -340,7 +340,7 @@ def test_private_host_guard_refuses_every_non_global_address():
 
 
 async def test_web_fetch_stops_reading_at_the_body_cap(monkeypatch: pytest.MonkeyPatch):
-    from wevvy.tools import web as web_mod
+    from ceis.tools import web as web_mod
 
     monkeypatch.setattr(web_mod, "MAX_BODY_BYTES", 1000)
     served = 0
@@ -388,7 +388,7 @@ def test_scrub_email_secrets():
 
 
 def test_imap_arguments_are_quoted_and_never_carry_a_second_command():
-    from wevvy.tools.email_tool import imap_quote, imap_search_args
+    from ceis.tools.email_tool import imap_quote, imap_search_args
 
     assert imap_quote("INBOX") == '"INBOX"'
     assert imap_quote('Sent "Items"\\x') == '"Sent \\"Items\\"\\\\x"'
@@ -406,7 +406,7 @@ def test_imap_arguments_are_quoted_and_never_carry_a_second_command():
 
 
 async def test_number_arguments_from_the_model_never_crash_a_tool():
-    from wevvy.tools.base import int_arg, number_arg
+    from ceis.tools.base import int_arg, number_arg
 
     assert int_arg("30", 10, 1, 60) == 30
     assert int_arg("ten", 10, 1, 60) == 10
@@ -421,8 +421,8 @@ async def test_number_arguments_from_the_model_never_crash_a_tool():
 async def test_safe_execute_tells_a_bad_argument_from_a_crash(tmp_path: Path):
     from typing import Any
 
-    from wevvy.schema import ToolResult
-    from wevvy.tools.base import BaseTool, safe_execute
+    from ceis.schema import ToolResult
+    from ceis.tools.base import BaseTool, safe_execute
 
     class Strict(BaseTool):
         name: str = "strict"
@@ -452,8 +452,8 @@ def test_host_and_markdown():
 def test_every_tool_takes_the_step_words_and_keeps_them_for_the_person(tmp_path: Path):
     """`step` is in every schema, comes off the arguments before the tool sees them, and is
     read back as the words for the status line — the same words the trace shows."""
-    from wevvy.schema import Function, ToolCall
-    from wevvy.tools.base import with_step
+    from ceis.schema import Function, ToolCall
+    from ceis.tools.base import with_step
 
     shell = Shell(workspace=tmp_path)
     schema = shell.to_param()["function"]["parameters"]
@@ -473,7 +473,7 @@ def test_every_tool_takes_the_step_words_and_keeps_them_for_the_person(tmp_path:
 
 
 async def test_cut_off_arguments_tell_the_model_what_happened(tmp_path: Path):
-    from wevvy.tools.base import safe_execute
+    from ceis.tools.base import safe_execute
 
     files = Files(workspace=tmp_path)
     short = await safe_execute(files, {"__raw__": '{"action": "wri'})

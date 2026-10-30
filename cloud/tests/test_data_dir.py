@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from wevvy_cloud.__main__ import check_data_dir
+from ceis_cloud.__main__ import check_data_dir
 
 
 def test_a_writable_directory_passes_and_is_created(tmp_path: Path):

@@ -9,10 +9,10 @@ from pathlib import Path
 
 import pytest
 
-from wevvy.config import SandboxSettings, Settings
-from wevvy.sandbox import Sandbox, interpreter_roots, needs_network
-from wevvy.schema import RiskLevel
-from wevvy.tools.shell import PythonExecute, Shell, programs_of
+from ceis.config import SandboxSettings, Settings
+from ceis.sandbox import Sandbox, interpreter_roots, needs_network
+from ceis.schema import RiskLevel
+from ceis.tools.shell import PythonExecute, Shell, programs_of
 
 
 def test_needs_network_by_program_or_url():
@@ -30,16 +30,16 @@ def test_off_and_missing_are_not_errors(tmp_path: Path, monkeypatch: pytest.Monk
     box = Sandbox(SandboxSettings(mode="off"), workspace=tmp_path)
     assert not box.active and box.reason == "sandbox.mode = off"
     assert "no sandbox" in box.describe()
-    monkeypatch.setattr("wevvy.sandbox.shutil.which", lambda _name: None)
-    monkeypatch.setattr("wevvy.sandbox.platform.system", lambda: "Linux")
+    monkeypatch.setattr("ceis.sandbox.shutil.which", lambda _name: None)
+    monkeypatch.setattr("ceis.sandbox.platform.system", lambda: "Linux")
     box = Sandbox(SandboxSettings(), workspace=tmp_path)
     assert not box.active and "not installed" in box.reason
     assert box.status.startswith("off: ")
-    monkeypatch.setenv("WEVVY_IN_CONTAINER", "1")
+    monkeypatch.setenv("CEIS_IN_CONTAINER", "1")
     box = Sandbox(SandboxSettings(), workspace=tmp_path)
     assert not box.active and box.reason == "in a container, which is the box"
-    monkeypatch.delenv("WEVVY_IN_CONTAINER")
-    monkeypatch.setattr("wevvy.sandbox.platform.system", lambda: "Darwin")
+    monkeypatch.delenv("CEIS_IN_CONTAINER")
+    monkeypatch.setattr("ceis.sandbox.platform.system", lambda: "Darwin")
     box = Sandbox(SandboxSettings(), workspace=tmp_path)
     assert not box.active and "Linux-only" in box.reason
     with pytest.raises(ValueError):
@@ -48,11 +48,11 @@ def test_off_and_missing_are_not_errors(tmp_path: Path, monkeypatch: pytest.Monk
 
 def test_wrap_builds_the_box(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """The argv, without running it: what is writable, what is hidden, what is masked."""
-    monkeypatch.setattr("wevvy.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
-    monkeypatch.setattr("wevvy.sandbox.platform.system", lambda: "Linux")
+    monkeypatch.setattr("ceis.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
+    monkeypatch.setattr("ceis.sandbox.platform.system", lambda: "Linux")
     ws = tmp_path / "ws"
     extra = tmp_path / "extra"
-    data = ws / ".wevvy"  # a data dir inside the workspace must be masked
+    data = ws / ".ceis"  # a data dir inside the workspace must be masked
     box = Sandbox(SandboxSettings(), workspace=ws, extra_roots=[extra], data_dir=data, probe=False)
     assert box.active
     argv = box.wrap(["/bin/sh", "-c", "echo hi"], network=False, cwd=ws)
@@ -63,7 +63,7 @@ def test_wrap_builds_the_box(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     assert f"--tmpfs {data}" in joined  # the vault and sessions are not readable from inside
     assert "--ro-bind-try /usr /usr" in joined and "--ro-bind-try /etc /etc" in joined
     assert "--tmpfs /tmp" in joined and "--setenv HOME /tmp/home" in joined
-    assert "--setenv WEVVY_SANDBOX bwrap" in joined and f"--chdir {ws}" in joined
+    assert "--setenv CEIS_SANDBOX bwrap" in joined and f"--chdir {ws}" in joined
     # the home directory is not bound (only interpreter directories may reach into it)
     home = str(Path.home())
     bound = [argv[i + 1] for i, a in enumerate(argv) if a in ("--bind-try", "--ro-bind-try")]
@@ -84,8 +84,8 @@ def test_wrap_builds_the_box(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 
 
 def test_data_dir_outside_the_roots_needs_no_mask(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setattr("wevvy.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
-    monkeypatch.setattr("wevvy.sandbox.platform.system", lambda: "Linux")
+    monkeypatch.setattr("ceis.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
+    monkeypatch.setattr("ceis.sandbox.platform.system", lambda: "Linux")
     box = Sandbox(
         SandboxSettings(), workspace=tmp_path / "ws", data_dir=tmp_path / "data", probe=False
     )
@@ -99,8 +99,8 @@ def test_settings_default_and_shell_assessment(tmp_path: Path, monkeypatch: pyte
     plain = Shell(workspace=tmp_path, sandbox=None)
     assert plain.assess({"command": "ls"}).egress
     # with one, only commands that say so
-    monkeypatch.setattr("wevvy.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
-    monkeypatch.setattr("wevvy.sandbox.platform.system", lambda: "Linux")
+    monkeypatch.setattr("ceis.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
+    monkeypatch.setattr("ceis.sandbox.platform.system", lambda: "Linux")
     box = Sandbox(SandboxSettings(), workspace=tmp_path, probe=False)
     shell = Shell(workspace=tmp_path, sandbox=box)
     assert not shell.assess({"command": "ls -la"}).egress
@@ -120,8 +120,8 @@ def test_a_box_that_cannot_take_the_network_away(tmp_path: Path, monkeypatch: py
     system; commands are judged as reaching the network, like without a box."""
     import subprocess
 
-    monkeypatch.setattr("wevvy.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
-    monkeypatch.setattr("wevvy.sandbox.platform.system", lambda: "Linux")
+    monkeypatch.setattr("ceis.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
+    monkeypatch.setattr("ceis.sandbox.platform.system", lambda: "Linux")
     calls: list[list[str]] = []
 
     def fake_run(argv, **_kw):
@@ -133,7 +133,7 @@ def test_a_box_that_cannot_take_the_network_away(tmp_path: Path, monkeypatch: py
             return subprocess.CompletedProcess(argv, 1, stdout="", stderr=err)
         return subprocess.CompletedProcess(argv, 0, stdout="", stderr="")
 
-    monkeypatch.setattr("wevvy.sandbox.subprocess.run", fake_run)
+    monkeypatch.setattr("ceis.sandbox.subprocess.run", fake_run)
     box = Sandbox(SandboxSettings(), workspace=tmp_path)
     assert box.active and not box.blocks_network and box.reason == ""
     assert len(calls) == 3  # version, with --unshare-net (refused), without (works)
@@ -153,11 +153,11 @@ def test_a_box_that_cannot_take_the_network_away(tmp_path: Path, monkeypatch: py
         err = "bwrap: setting up uid map: Permission denied\n"
         return subprocess.CompletedProcess(argv, 1, stdout="", stderr=err)
 
-    monkeypatch.setattr("wevvy.sandbox.subprocess.run", fake_run_fail)
-    monkeypatch.setattr("wevvy.sandbox.userns_restricted", lambda: False)
+    monkeypatch.setattr("ceis.sandbox.subprocess.run", fake_run_fail)
+    monkeypatch.setattr("ceis.sandbox.userns_restricted", lambda: False)
     box = Sandbox(SandboxSettings(), workspace=tmp_path)
     assert not box.active and box.reason.endswith("(bwrap: setting up uid map: Permission denied)")
-    monkeypatch.setattr("wevvy.sandbox.userns_restricted", lambda: True)
+    monkeypatch.setattr("ceis.sandbox.userns_restricted", lambda: True)
     box = Sandbox(SandboxSettings(), workspace=tmp_path)
     assert not box.active and "apparmor_restrict_unprivileged_userns=1" in box.reason
     assert box.reason.endswith("see docs/sentinel.md → The sandbox")
@@ -192,7 +192,7 @@ async def test_boxed_shell_sees_only_the_workspace(tmp_path: Path):
     r = await shell.execute(command=f"cat {tmp_path / 'secret.txt'}")
     assert not r.ok and "outside" not in r.output and "secret.txt" in r.output
     r = await shell.execute(
-        command="ls $HOME/.ssh 2>&1; echo HOME=$HOME; echo BOX=$WEVVY_SANDBOX"
+        command="ls $HOME/.ssh 2>&1; echo HOME=$HOME; echo BOX=$CEIS_SANDBOX"
     )
     assert r.ok and "HOME=/tmp/home" in r.output and "BOX=bwrap" in r.output
     # system paths are read-only
@@ -259,10 +259,10 @@ def test_shared_directories_are_bound_and_mirrored_under_the_box_home(
     """A CLI the user shares (read-only) and its login state (read-write) are bound where
     they are and, when under the home directory, at the same place under /tmp/home — a
     tool that asks $HOME finds them. The rest of home stays out."""
-    monkeypatch.setattr("wevvy.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
-    monkeypatch.setattr("wevvy.sandbox.platform.system", lambda: "Linux")
+    monkeypatch.setattr("ceis.sandbox.shutil.which", lambda _name: "/usr/bin/bwrap")
+    monkeypatch.setattr("ceis.sandbox.platform.system", lambda: "Linux")
     home = tmp_path / "home"
-    monkeypatch.setattr("wevvy.sandbox.Path.home", classmethod(lambda cls: home))
+    monkeypatch.setattr("ceis.sandbox.Path.home", classmethod(lambda cls: home))
     programs = home / ".nvm"
     state = home / ".lark-cli"
     elsewhere = tmp_path / "opt-tools"

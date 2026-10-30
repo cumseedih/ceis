@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
     private var navController: NavHostController? = null
 
     /**
-     * wevvy: App lock gate state. True while the lock overlay covers the app; armed from
+     * ceis: App lock gate state. True while the lock overlay covers the app; armed from
      * [onCreate] on cold start and from [onStart] on warm resumes past the grace period.
      */
     private val appLockedState = mutableStateOf(false)
@@ -270,7 +270,7 @@ class MainActivity : ComponentActivity() {
                 // onClosed immediately when pendingShareFiles is null, which
                 // is exactly the state after the user dismissed the dialog on
                 // the previous launch — the app would close the instant it was
-                // tapped, reading as "wevvy won't open at all". The process
+                // tapped, reading as "ceis won't open at all". The process
                 // still holds a permanently uninitialized Application, so the
                 // only real recovery is a fresh process: tell the user, then
                 // exit hard so the next tap gets a clean init.
@@ -515,9 +515,9 @@ class MainActivity : ComponentActivity() {
                 ?: DeepLinkAction.Unknown
         }
 
-        // wevvy: App lock — when armed, the whole app starts behind the phone's own
+        // ceis: App lock — when armed, the whole app starts behind the phone's own
         // screen lock until the gate is confirmed (see AppLockGate below).
-        appLockedState.value = io.github.wevvy.guard.AppLock.lockOnStart(this)
+        appLockedState.value = io.github.ceis.guard.AppLock.lockOnStart(this)
 
         setContent {
             val prefs = remember { getAppearancePrefs(this) }
@@ -616,12 +616,12 @@ class MainActivity : ComponentActivity() {
                 // root-level `.sheet(item: gate.pending)`.
                 com.openminis.app.ui.settings.ConfigConfirmDialogHost()
 
-                // wevvy: App lock gate. It sits above every screen and only the
+                // ceis: App lock gate. It sits above every screen and only the
                 // phone's own screen lock dismisses it; back leaves the app.
                 if (appLockedState.value) {
-                    io.github.wevvy.ui.guard.AppLockGate(
+                    io.github.ceis.ui.guard.AppLockGate(
                         onUnlocked = {
-                            io.github.wevvy.guard.AppLock.markUnlocked(this@MainActivity)
+                            io.github.ceis.guard.AppLock.markUnlocked(this@MainActivity)
                             appLockedState.value = false
                         },
                     )
@@ -663,10 +663,10 @@ class MainActivity : ComponentActivity() {
      */
     override fun onStart() {
         super.onStart()
-        // wevvy: App lock — relock on warm resumes past the grace period. The first
+        // ceis: App lock — relock on warm resumes past the grace period. The first
         // onStart is the cold start (armed in onCreate); the prefs default keeps a
         // fresh process from double-locking here.
-        if (io.github.wevvy.guard.AppLock.relockOnResume(this)) appLockedState.value = true
+        if (io.github.ceis.guard.AppLock.relockOnResume(this)) appLockedState.value = true
         if (!hasResumedFromBackground) {
             hasResumedFromBackground = true
             return
@@ -674,9 +674,9 @@ class MainActivity : ComponentActivity() {
         val mode = getAppearancePrefs(this).getInt(KEY_LAUNCH_SESSION, 0)
         if (mode != 2) return
         val nav = navController ?: return
-        // wevvy: the home shell opens on the main chat by itself and the cold-start resolver
+        // ceis: the home shell opens on the main chat by itself and the cold-start resolver
         // already steps aside for it; a warm return must not push the upstream chat on top.
-        if (io.github.wevvy.ui.home.HomeShell.active) return
+        if (io.github.ceis.ui.home.HomeShell.active) return
         val newRoute = Routes.chat("__new__${java.util.UUID.randomUUID()}")
         AppLogger.info("LaunchSession", "resume → mode=NewChat, navigating to $newRoute")
         nav.safeNavigate(newRoute) {
@@ -685,12 +685,12 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * wevvy: App lock — record when the app leaves the foreground so a warm resume
+     * ceis: App lock — record when the app leaves the foreground so a warm resume
      * after the grace period relocks. Quick onStop/onStart cycles (rotation) stay
      * inside the grace window and do not relock.
      */
     override fun onStop() {
-        io.github.wevvy.guard.AppLock.noteBackgrounded(this)
+        io.github.ceis.guard.AppLock.noteBackgrounded(this)
         super.onStop()
     }
 
@@ -756,9 +756,9 @@ class MainActivity : ComponentActivity() {
                 nav.navigate(Routes.terminal(action.initCommand))
             }
             is DeepLinkAction.OpenSession -> {
-                // wevvy: in compact windows the home shell shows the chat itself —
+                // ceis: in compact windows the home shell shows the chat itself —
                 // pushing chat/{sessionId} here put the OpenMinis chat screen on top of it.
-                if (io.github.wevvy.ui.home.HomeShell.openSession(nav, action.sessionId)) return
+                if (io.github.ceis.ui.home.HomeShell.openSession(nav, action.sessionId)) return
                 // T-double-chat-fix (secondary): mirror AppNavigation's
                 // OpenSession options so a runtime deep-link (notification /
                 // shortcut / onNewIntent) can't stack a duplicate chat on
@@ -783,9 +783,9 @@ class MainActivity : ComponentActivity() {
             is DeepLinkAction.OpenPermissionSettings -> {
                 nav.navigate(Routes.PERMISSIONS)
             }
-            // wevvy: a tab of the home shell (the Feed, from its notification)
+            // ceis: a tab of the home shell (the Feed, from its notification)
             is DeepLinkAction.OpenHomeTab -> {
-                io.github.wevvy.ui.home.HomeShell.openTab(nav, action.tab)
+                io.github.ceis.ui.home.HomeShell.openTab(nav, action.tab)
             }
             is DeepLinkAction.OpenHtmlPreview -> {
                 DeepLinkCoordinator.setPendingHtmlPreview(
@@ -810,9 +810,9 @@ class MainActivity : ComponentActivity() {
                     else -> {}
                 }
                 val newId = "__new__${java.util.UUID.randomUUID()}"
-                // wevvy: in compact windows the draft opens inside the home shell, whose
+                // ceis: in compact windows the draft opens inside the home shell, whose
                 // ChatScreen consumes the pending voice / camera action the same way.
-                if (io.github.wevvy.ui.home.HomeShell.openSession(nav, newId)) return
+                if (io.github.ceis.ui.home.HomeShell.openSession(nav, newId)) return
                 val newRoute = Routes.chat(newId)
                 nav.navigate(newRoute) {
                     popUpTo(Routes.SESSION_LIST) { inclusive = false }

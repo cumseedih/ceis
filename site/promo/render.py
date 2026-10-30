@@ -5,7 +5,7 @@ Every frame is a screenshot of storyboard.html at a fixed time, so the result is
 every machine, does not depend on the renderer keeping up, and can be re-cut by editing HTML.
 
     cd web && npm run site:mascot          # the mascot, icons and screenshots the page uses
-    python site/promo/render.py            # -> site/media/wevvy-promo.mp4 + poster
+    python site/promo/render.py            # -> site/media/ceis-promo.mp4 + poster
 
 Needs Playwright with Chromium (`pip install playwright && playwright install chromium`) and
 ffmpeg on the PATH. Options: --fps 30 --scale 1.5 (1280×720 × 1.5 = 1080p) --out DIR.
@@ -81,11 +81,11 @@ def main() -> int:
     args.out.mkdir(parents=True, exist_ok=True)
     httpd, port = serve(SITE)
     try:
-        with tempfile.TemporaryDirectory(prefix="wevvy-promo-") as tmp:
+        with tempfile.TemporaryDirectory(prefix="ceis-promo-") as tmp:
             frames = Path(tmp)
             print(f"rendering at {args.fps} fps, scale {args.scale} …")
             total, duration = asyncio.run(render_frames(port, frames, args.fps, args.scale))
-            mp4 = args.out / "wevvy-promo.mp4"
+            mp4 = args.out / "ceis-promo.mp4"
             subprocess.run(
                 [
                     "ffmpeg", "-y", "-loglevel", "error",
@@ -96,7 +96,7 @@ def main() -> int:
                 ],
                 check=True,
             )
-            poster = args.out / "wevvy-promo-poster.jpg"
+            poster = args.out / "ceis-promo-poster.jpg"
             subprocess.run(
                 ["ffmpeg", "-y", "-loglevel", "error", "-i", str(frames / "poster.png"), "-q:v", "3", str(poster)],
                 check=True,

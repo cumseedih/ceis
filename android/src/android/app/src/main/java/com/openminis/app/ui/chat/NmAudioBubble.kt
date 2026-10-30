@@ -34,9 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.wevvy.ui.chat.nmBubbleShape
-import io.github.wevvy.ui.home.MuseTones
-import io.github.wevvy.ui.theme.WevvyChat
+import io.github.ceis.ui.chat.nmBubbleShape
+import io.github.ceis.ui.home.MuseTones
+import io.github.ceis.ui.theme.CeisChat
 import kotlin.random.Random
 import kotlinx.coroutines.delay
 
@@ -125,13 +125,13 @@ internal fun NmAudioBubble(
     val bgModifier = if (sent) {
         Modifier.background(
             brush = Brush.verticalGradient(
-                listOf(WevvyChat.sentGradientTop, WevvyChat.sentGradientBottom),
+                listOf(CeisChat.sentGradientTop, CeisChat.sentGradientBottom),
             ),
             shape = shape,
         )
     } else {
         Modifier.background(
-            if (MuseTones.isDark) WevvyChat.receivedFillDark else WevvyChat.receivedFill,
+            if (MuseTones.isDark) CeisChat.receivedFillDark else CeisChat.receivedFill,
         )
     }
     val glyphColor = if (sent) Color.White else Color(0xFF0088FF)
@@ -152,7 +152,7 @@ internal fun NmAudioBubble(
         modifier = Modifier
             .then(bgModifier)
             .clip(shape)
-            .padding(bottom = if (showTail) WevvyChat.tailDrop else 0.dp),
+            .padding(bottom = if (showTail) CeisChat.tailDrop else 0.dp),
     ) {
         Row(
             modifier = Modifier

@@ -253,7 +253,7 @@ struct CeisStarAsk: Equatable, Identifiable {
 @MainActor
 final class CeisStar: ObservableObject {
     static let shared = CeisStar()
-    static let repoURL = URL(string: "https://github.com/nano-muse/ceis")!
+    static let repoURL = URL(string: "https://github.com/cumseedih/ceis")!
 
     private enum Keys {
         static let tasks = "nm.star.tasks"

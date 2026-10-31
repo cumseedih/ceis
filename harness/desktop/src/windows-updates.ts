@@ -36,9 +36,9 @@ interface Sources {
 
 const SOURCES: Sources = {
   mirrorCheck: "https://wevvy.in/dl/win/",
-  githubCheck: "https://github.com/nano-muse/ceis/releases/latest/download/",
+  githubCheck: "https://github.com/cumseedih/ceis/releases/latest/download/",
   mirrorVersion: (version) => `https://wevvy.in/dl/v${version}/`,
-  githubVersion: (version) => `https://github.com/nano-muse/ceis/releases/download/v${version}/`,
+  githubVersion: (version) => `https://github.com/cumseedih/ceis/releases/download/v${version}/`,
 };
 
 export interface WindowsUpdatesOptions {

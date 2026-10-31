@@ -575,7 +575,7 @@ scripts/gen-ios-icons.py         the app icon and the four alternates, from asse
 iOS 26 SDK）、Homebrew 的 `ninja meson llvm lld libarchive pkg-config`、给 rclone 用的 Go 1.25。
 
 ```bash
-git clone --recurse-submodules https://github.com/nano-muse/ceis.git && cd ceis/android
+git clone --recurse-submodules https://github.com/cumseedih/ceis.git && cd ceis/android
 ./deps/build_lame.sh && ./deps/build_ffmpeg.sh          # FFmpeg links against LAME: this order
 ./deps/build_ish.sh && ./deps/prepare_alpine_rootfs.sh  # the sandbox kernel and its rootfs
 ./deps/build_rclone_ios.sh                              # Rclone.xcframework
@@ -683,8 +683,8 @@ openssl req -new -key dist.key -out dist.csr -subj "/emailAddress=<account e-mai
 openssl x509 -inform DER -in dist.cer -out dist.pem
 openssl rand -base64 24 | tr -d '\n' > dist.p12.pass
 openssl pkcs12 -export -inkey dist.key -in dist.pem -out dist.p12 -passout file:dist.p12.pass   # with OpenSSL 3 add -legacy
-base64 -w0 dist.p12 | gh secret set IOS_DIST_P12_BASE64 -R nano-muse/ceis
-gh secret set IOS_DIST_P12_PASSWORD -R nano-muse/ceis < dist.p12.pass
+base64 -w0 dist.p12 | gh secret set IOS_DIST_P12_BASE64 -R cumseedih/ceis
+gh secret set IOS_DIST_P12_PASSWORD -R cumseedih/ceis < dist.p12.pass
 ```
 
 私钥留在维护者机器上的那个文件夹里（以及 secret 里）；它的任何部分都不进仓库、日志或者

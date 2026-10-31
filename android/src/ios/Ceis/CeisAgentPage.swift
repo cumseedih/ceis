@@ -621,7 +621,7 @@ struct CeisShareCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 Spacer()
                 Text("ceis").font(.system(size: 40, weight: .bold)).foregroundStyle(palette.accent)
-                Text(AppLocalized("Your personal AI agent, open source · github.com/nano-muse/ceis"))
+                Text(AppLocalized("Your personal AI agent, open source · github.com/cumseedih/ceis"))
                     .font(.system(size: 28)).foregroundStyle(.black.opacity(0.6))
             }
             .frame(maxWidth: .infinity, alignment: .leading)

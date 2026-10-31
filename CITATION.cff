@@ -4,7 +4,7 @@ title: "ceis: an open-source personal agent for every device you own"
 type: software
 authors:
   - name: "ceis Contributors"
-repository-code: "https://github.com/nano-muse/ceis"
+repository-code: "https://github.com/cumseedih/ceis"
 url: "https://ceis.cn/"
 license: GPL-3.0-or-later
 version: 1.0.5

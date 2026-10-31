@@ -18,8 +18,8 @@ final class CeisUpdateCheck: ObservableObject {
     static let shared = CeisUpdateCheck()
 
     nonisolated static let indexURL = "https://ceis.cn/dl/index.json"
-    nonisolated static let githubURL = "https://api.github.com/repos/nano-muse/ceis/releases/latest"
-    nonisolated static let fallbackReleasePage = "https://github.com/nano-muse/ceis/releases/latest"
+    nonisolated static let githubURL = "https://api.github.com/repos/cumseedih/ceis/releases/latest"
+    nonisolated static let fallbackReleasePage = "https://github.com/cumseedih/ceis/releases/latest"
     /// The download page on ceis.cn, where a release found through the index leads (Android's `DOWNLOAD_URL`).
     nonisolated static let downloadPage = "https://ceis.cn/dl/"
 

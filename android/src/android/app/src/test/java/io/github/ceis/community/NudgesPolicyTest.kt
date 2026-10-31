@@ -15,7 +15,7 @@ class NudgesPolicyTest {
           "version": 1,
           "star": {
             "enabled": true,
-            "url": "https://github.com/nano-muse/ceis",
+            "url": "https://github.com/cumseedih/ceis",
             "moments": {
               "signed_in": true,
               "tasks": [3, 10, 30],

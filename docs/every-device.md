@@ -361,7 +361,7 @@ Hands events shown while it works. None of it blocks the desktop work.
 phone in the browser (MobileGym, with the ceis app brought to the front:
 `demo/mobilegym/apps/ceis`) and, behind it, a private ceis of the
 visitor's own that the showcase gateway starts for the visit, the
-`ghcr.io/nano-muse/ceis` image on a network with no way out but the
+`ghcr.io/cumseedih/ceis` image on a network with no way out but the
 gateway, talking with the showcase's model, gone when the visit ends. A visitor
 signs in to ceis Cloud first (a code to a phone or an inbox, or the
 account's password; `demo/showcase/gateway/showcase_gateway/visitors.py`), so

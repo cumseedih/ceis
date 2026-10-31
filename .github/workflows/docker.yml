@@ -1,6 +1,6 @@
 name: Docker image
 
-# Publishes ghcr.io/nano-muse/ceis for linux/amd64 and linux/arm64:
+# Publishes ghcr.io/cumseedih/ceis for linux/amd64 and linux/arm64:
 #   main            -> :edge
 #   tag vX.Y.Z      -> :X.Y.Z, :X.Y, :latest
 #   tag vX.Y.Z-rc1  -> :X.Y.Z-rc1 only (a pre-release moves neither :X.Y nor :latest)
@@ -44,7 +44,7 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ghcr.io/${{ github.repository_owner }}/ceis
-          # lower-case is required by GHCR; the owner is nano-muse
+          # lower-case is required by GHCR; the owner is cumseedih
           flavor: latest=false
           tags: |
             type=edge,branch=main

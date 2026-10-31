@@ -78,9 +78,9 @@ ceis-open = "ceis.bridge.cli:open_main"
 [project.urls]
 Homepage = "https://wevvy.in"
 Documentation = "https://wevvy.in/docs/"
-Repository = "https://github.com/nano-muse/ceis"
-Issues = "https://github.com/nano-muse/ceis/issues"
-Changelog = "https://github.com/nano-muse/ceis/blob/main/CHANGELOG.md"
+Repository = "https://github.com/cumseedih/ceis"
+Issues = "https://github.com/cumseedih/ceis/issues"
+Changelog = "https://github.com/cumseedih/ceis/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["ceis"]

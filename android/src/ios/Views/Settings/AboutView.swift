@@ -64,7 +64,7 @@ struct AboutView: View {
 
             // MARK: - Links
             Section("Links") {
-                Link(destination: URL(string: "https://github.com/nano-muse/ceis")!) {
+                Link(destination: URL(string: "https://github.com/cumseedih/ceis")!) {
                     Label {
                         HStack {
                             Text("GitHub Repository")
@@ -78,7 +78,7 @@ struct AboutView: View {
                         Image(systemName: "link.circle.fill")
                     }
                 }
-                Link(destination: URL(string: "https://github.com/nano-muse/ceis/issues")!) {
+                Link(destination: URL(string: "https://github.com/cumseedih/ceis/issues")!) {
                     Label {
                         HStack {
                             Text("Report an Issue")

@@ -1,5 +1,5 @@
 ceis
-Copyright (C) 2026 nanoMuse contributors
+Copyright (C) 2026 ceis contributors
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
@@ -16,7 +16,7 @@ Public License in the file LICENSE for more details.
 The Android application in android/ is based on OpenMinis 1.13
 (https://github.com/OpenMinis/OpenMinis, tag 1.13, commit 4ef2900),
 Copyright (C) the OpenMinis authors, released under the GNU General
-Public License version 3. It has been modified by the nanoMuse
+Public License version 3. It has been modified by the ceis
 contributors since 2026-09-24. The imported tree is in this repository's
 history unchanged (commit "Import OpenMinis 1.13 as android/"); every
 change since is in `git log -- android/`, and edits inside upstream files
@@ -24,8 +24,8 @@ are marked with a `// ceis:` comment.
 
 OpenMinis is a trademark of its authors; ceis does not use the
 OpenMinis name or logo for its own application. The complete corresponding
-source of every nanoMuse release is the tagged commit on
-https://github.com/nano-muse/nanoMuse together with the submodule
+source of every ceis release is the tagged commit on
+https://github.com/cumseedih/ceis together with the submodule
 android/deps/proot (https://github.com/nano-muse/proot).
 
 Other components and their licences: THIRD_PARTY_NOTICES.md.

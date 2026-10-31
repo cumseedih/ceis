@@ -182,7 +182,7 @@ def test_api_nudges_serves_the_policy_and_the_sign_in_copy(server, monkeypatch):
 def test_release_check_asks_the_mirror_first_and_github_second(monkeypatch):
     asked: list[str] = []
     index = {
-        "repo": "nano-muse/ceis",
+        "repo": "cumseedih/ceis",
         "releases": [
             {"tag": "v0.1.40", "name": "0.1.40", "published_at": "2026-10-01", "assets": []},
             {"tag": "v0.1.39", "name": "0.1.39", "published_at": "2026-09-20", "assets": []},
@@ -210,7 +210,7 @@ def test_release_check_asks_the_mirror_first_and_github_second(monkeypatch):
                 200,
                 json={
                     "tag_name": "v0.1.41",
-                    "html_url": "https://github.com/nano-muse/ceis/releases/tag/v0.1.41",
+                    "html_url": "https://github.com/cumseedih/ceis/releases/tag/v0.1.41",
                 },
                 request=httpx.Request("GET", url),
             )

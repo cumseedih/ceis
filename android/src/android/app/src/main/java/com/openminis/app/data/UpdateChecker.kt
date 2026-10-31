@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit
 object UpdateChecker {
 
     private const val TAG = "UpdateChecker"
-    private const val OWNER = "nano-muse"
+    private const val OWNER = "cumseedih"
     // T133: the public repo is OpenMinis/OpenMinis (org + repo share a name).
     // Previously pointed at OpenMinis/MinisApp, which is the private dev
     // mirror — every API call 404'd, which we mistranslated as "no release
@@ -258,7 +258,7 @@ object UpdateChecker {
     }
 
     /** Public so UI can deep-link users to manual download when GitHub is blocked. */
-    const val RELEASES_URL: String = "https://github.com/nano-muse/ceis/releases"
+    const val RELEASES_URL: String = "https://github.com/cumseedih/ceis/releases"
 
     /** Returns (downloadUrl, sizeBytes) for the first .apk asset, or (null, 0). */
     private fun findApkAsset(assets: JSONArray?): Pair<String?, Long> {

@@ -675,14 +675,14 @@ final class CeisLogicTests: XCTestCase {
     func testUpdateIndexReadsTheReleasesList() {
         // The index as ceis.cn/dl/index.json is written: releases newest first, each with a tag.
         let index: [String: Any] = [
-            "repo": "nano-muse/ceis",
+            "repo": "cumseedih/ceis",
             "releases": [["tag": "v1.0.0", "name": "ceis 1.0.0", "assets": [String]()], ["tag": "v0.1.41"]],
         ]
         let found = CeisUpdateCheck.parseIndex(index)
         XCTAssertEqual(found?.version, "v1.0.0", "the newest release's tag, as Android reads it")
         XCTAssertEqual(found?.page, CeisUpdateCheck.downloadPage, "a tap leads to the download page")
         XCTAssertEqual(CeisUpdateCheck.parseIndex(["releases": [["tag": ""], ["tag": "v0.9.0"]]])?.version, "v0.9.0", "an empty tag is skipped")
-        XCTAssertNil(CeisUpdateCheck.parseIndex(["repo": "nano-muse/ceis"]), "no releases, no answer")
+        XCTAssertNil(CeisUpdateCheck.parseIndex(["repo": "cumseedih/ceis"]), "no releases, no answer")
         XCTAssertNil(CeisUpdateCheck.parseIndex(["releases": [[String: Any]]()]))
         // The older shapes still read.
         XCTAssertEqual(CeisUpdateCheck.parseIndex(["ios": ["version": "1.2.0", "page": "https://example.invalid/r"]]), CeisUpdateCheck.Found(version: "1.2.0", page: "https://example.invalid/r"))

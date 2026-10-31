@@ -23,7 +23,7 @@ The systemd timer runs it every fifteen minutes (four unauthenticated API calls 
 the sixty allowed); a run with nothing new makes one request and prints nothing. Idempotent.
 
     WWW_ROOT       where sites live (the showcase's www/ by default; /srv/www in the container)
-    MIRROR_RELEASES_REPO   owner/name to mirror (nano-muse/ceis)
+    MIRROR_RELEASES_REPO   owner/name to mirror (cumseedih/ceis)
     MIRROR_RELEASES_KEEP   how many releases to keep (2)
     GITHUB_TOKEN   optional; lifts the API limit, never needed at this cadence
 """
@@ -43,7 +43,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-REPO = os.environ.get("MIRROR_RELEASES_REPO", "nano-muse/ceis")
+REPO = os.environ.get("MIRROR_RELEASES_REPO", "cumseedih/ceis")
 KEEP = max(1, int(os.environ.get("MIRROR_RELEASES_KEEP", "2")))
 API = f"https://api.github.com/repos/{REPO}/releases?per_page=10"
 UA = "ceis-release-mirror (+https://ceis.cn)"

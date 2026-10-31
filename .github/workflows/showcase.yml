@@ -1,9 +1,9 @@
 name: Showcase images
 
 # Publishes the two images the hosted demo runs (demo/showcase/docker-compose.yml):
-#   ghcr.io/nano-muse/showcase-caddy     Caddy + Cloudflare modules + the built phone (MobileGym
+#   ghcr.io/cumseedih/showcase-caddy     Caddy + Cloudflare modules + the built phone (MobileGym
 #                                        with the ceis app)
-#   ghcr.io/nano-muse/showcase-gateway   the session gateway
+#   ghcr.io/cumseedih/showcase-gateway   the session gateway
 # main -> :latest and :sha-<short>. The server then does `docker compose pull && up -d`.
 # Pull requests that touch the showcase build both without pushing.
 

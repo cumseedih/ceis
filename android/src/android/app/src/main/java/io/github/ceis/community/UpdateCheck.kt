@@ -33,7 +33,7 @@ object UpdateCheck {
     /** Where "Update" goes on Android: the download page, with the APK and the store links. */
     const val DOWNLOAD_URL = "https://wevvy.in/dl/"
     const val INDEX_URL = "https://wevvy.in/dl/index.json"
-    const val GITHUB_LATEST_URL = "https://api.github.com/repos/nano-muse/ceis/releases/latest"
+    const val GITHUB_LATEST_URL = "https://api.github.com/repos/cumseedih/ceis/releases/latest"
 
     /** A check is repeated at most this often on its own. */
     const val FRESH_MS = 24L * 60 * 60 * 1000

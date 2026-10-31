@@ -55,7 +55,7 @@ PROVIDERS: dict[str, dict[str, Any]] = {
 }
 TIMEOUT = 20.0
 # On You.com requests only, at the vendor's request, so they can tell ceis's traffic apart.
-YOU_USER_AGENT = "youdotcom-integration/nano-muse-ceis"
+YOU_USER_AGENT = "youdotcom-integration/cumseedih-ceis"
 
 
 def _client() -> httpx.AsyncClient:

@@ -77,7 +77,7 @@ struct AIDataSharingConsentView: View {
                         }
                     }
 
-                    Link("Read our full Privacy Policy", destination: URL(string: "https://github.com/nano-muse/ceis/blob/main/docs/privacy.md")!)
+                    Link("Read our full Privacy Policy", destination: URL(string: "https://github.com/cumseedih/ceis/blob/main/docs/privacy.md")!)
                         .font(.footnote)
 
                     Spacer(minLength: 80)

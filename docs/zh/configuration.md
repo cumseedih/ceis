@@ -335,7 +335,7 @@ base_url = ""                    # searxng: your instance, e.g. "http://127.0.0.
 fallback = true                  # false：搜索失败就失败，不再转去 DuckDuckGo
 ```
 
-You.com 不带 key 时走 `api.you.com`，每个地址每天 100 次，不用注册；超出后搜索会说明原因，由 DuckDuckGo 补答一次。带 key 时走 `ydc-index.io`，也就是额度更高的付费 Search API；哨兵显示的是这次搜索真正去的主机。发往 You.com 的请求带 `youdotcom-integration/nano-muse-ceis` 这个 User-Agent，是应对方要求加的，方便他们认出来自 ceis 的流量；除此之外不多发任何东西，其他服务商也不会收到它。
+You.com 不带 key 时走 `api.you.com`，每个地址每天 100 次，不用注册；超出后搜索会说明原因，由 DuckDuckGo 补答一次。带 key 时走 `ydc-index.io`，也就是额度更高的付费 Search API；哨兵显示的是这次搜索真正去的主机。发往 You.com 的请求带 `youdotcom-integration/cumseedih-ceis` 这个 User-Agent，是应对方要求加的，方便他们认出来自 ceis 的流量；除此之外不多发任何东西，其他服务商也不会收到它。
 
 不管选的是谁，一次失败的搜索（key 过期、被限流、实例挂了）都改由 DuckDuckGo 回答，只补这一次，并在结果顶上加一条说明，任务就能继续（这时查询词除了到你选的服务商，也会到 DuckDuckGo 的主机；不希望这样，就在 `[connectors.search]` 下设 `fallback = false`）；`ceis doctor` 会报告缺了必要配置的服务商。工具的 `region` 参数（`cn-zh`、`us-en`）按每家服务商自己的写法传过去。服务商的主机是你选定的目的地，所以读过私密数据之后再搜索，不像去一个陌生主机那样需要审批（见[污点追踪](sentinel.md#taint-tracking)）；对搜索结果做 `web_fetch` 仍然需要。
 

@@ -40,7 +40,7 @@ struct CeisNudgePolicy: Equatable, Sendable {
     /// The built-in fallback — identical on Android, iOS, desktop and web.
     static let defaults = CeisNudgePolicy(
         enabled: true,
-        url: "https://github.com/nano-muse/ceis",
+        url: "https://github.com/cumseedih/ceis",
         signedIn: true,
         tasks: [3, 10, 30],
         newLook: true,

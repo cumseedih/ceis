@@ -44,8 +44,8 @@ const PROFILE = "ceis";
 // the agent's reminders — an optional bundle of the harness, on by default here), then ours.
 const BUNDLES = ["@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "@deepseek-ai/dsh-experimental-schedule-bundle", "dsh-ceis"];
 const BUNDLE = "dsh-ceis";
-const RELEASES_PAGE = "https://github.com/nano-muse/ceis/releases/latest";
-const ISSUES_PAGE = "https://github.com/nano-muse/ceis/issues";
+const RELEASES_PAGE = "https://github.com/cumseedih/ceis/releases/latest";
+const ISSUES_PAGE = "https://github.com/cumseedih/ceis/issues";
 const DOCS_PAGE = "https://wevvy.in/docs/desktop";
 const HARNESS_PAGE = "https://github.com/deepseek-ai/deepseek-harness";
 

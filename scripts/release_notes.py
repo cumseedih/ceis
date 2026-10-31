@@ -28,7 +28,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-REPO = "nano-muse/ceis"
+REPO = "cumseedih/ceis"
 MARKER = "<!-- pull requests -->"
 GOOD_FIRST = f"https://github.com/{REPO}/contribute"
 

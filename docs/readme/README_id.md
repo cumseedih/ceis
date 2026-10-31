@@ -11,14 +11,14 @@
   <a href="./README_vi.md">Tiếng Việt</a>
 </p>
 <p align="center">
-  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="nano-muse%2Fceis | Trendshift" width="250" height="55"/></a>
+  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="cumseedih%2Fceis | Trendshift" width="250" height="55"/></a>
 </p>
 <p align="center">
-  <a href="https://github.com/nano-muse/ceis/stargazers"><img src="https://img.shields.io/github/stars/nano-muse/ceis?style=flat&label=stars" alt="Bintang GitHub"></a>
-  <a href="https://github.com/nano-muse/ceis/releases"><img src="https://img.shields.io/github/downloads/nano-muse/ceis/total?label=downloads" alt="Unduhan"></a>
-  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
-  <a href="https://github.com/nano-muse/ceis/actions/workflows/ci.yml"><img src="https://github.com/nano-muse/ceis/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
-  <a href="https://github.com/nano-muse/ceis/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nano-muse/ceis?label=license" alt="GPL-3.0-or-later"></a>
+  <a href="https://github.com/cumseedih/ceis/stargazers"><img src="https://img.shields.io/github/stars/cumseedih/ceis?style=flat&label=stars" alt="Bintang GitHub"></a>
+  <a href="https://github.com/cumseedih/ceis/releases"><img src="https://img.shields.io/github/downloads/cumseedih/ceis/total?label=downloads" alt="Unduhan"></a>
+  <img src="https://hits.sh/github.com/cumseedih/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <a href="https://github.com/cumseedih/ceis/actions/workflows/ci.yml"><img src="https://github.com/cumseedih/ceis/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
+  <a href="https://github.com/cumseedih/ceis/blob/main/LICENSE"><img src="https://img.shields.io/github/license/cumseedih/ceis?label=license" alt="GPL-3.0-or-later"></a>
   <a href="https://arxiv.org/abs/2610.08699"><img src="https://img.shields.io/badge/arXiv-2610.08699-b31b1b" alt="Makalah di arXiv"></a>
   <br>
   <a href="https://wevvy.in/"><img src="https://img.shields.io/badge/Situs_web-wevvy.in-0a66e4" alt="Situs web"></a>
@@ -31,7 +31,7 @@
 > [!NOTE]
 > **ceis terus berkembang**
 >
-> Agen pribadi seharusnya tidak hanya hidup di cloud milik orang lain, maka ceis menjadi alternatif sumber terbuka yang murah: berjalan di perangkatmu sendiri, dengan model pilihanmu dan relay yang bisa kamu pasang sendiri. Kami ingin membangunnya bersama pengembang dan pengguna di seluruh dunia, supaya setiap orang benar-benar memiliki agen pribadinya sendiri. Buka sebuah [issue](https://github.com/nano-muse/ceis/issues/new/choose) atau kirim [pull request](../../CONTRIBUTING.md); keduanya membantu ceis menjadi lebih baik.
+> Agen pribadi seharusnya tidak hanya hidup di cloud milik orang lain, maka ceis menjadi alternatif sumber terbuka yang murah: berjalan di perangkatmu sendiri, dengan model pilihanmu dan relay yang bisa kamu pasang sendiri. Kami ingin membangunnya bersama pengembang dan pengguna di seluruh dunia, supaya setiap orang benar-benar memiliki agen pribadinya sendiri. Buka sebuah [issue](https://github.com/cumseedih/ceis/issues/new/choose) atau kirim [pull request](../../CONTRIBUTING.md); keduanya membantu ceis menjadi lebih baik.
 
 https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
@@ -40,25 +40,25 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 ## 🗞️ Kabar
 
 - `2026-10-13` ⭐ 1.000 bintang di GitHub, delapan belas hari setelah rilis pertama, dengan empat hari di daftar Swift GitHub Trending di sepanjang jalan ([Trendshift](https://trendshift.io/repositories/286894): ketujuh pada 7 Oktober, keempat pada 10 Oktober). Terima kasih untuk setiap percobaan, setiap laporan, dan setiap pull request. Kami terus berjalan: satu versi setiap beberapa hari, dan [peta jalan](../roadmap.md) menyebutkan apa yang berikutnya.
-- `2026-10-09` 🚀 Versi [1.0.0 Keel](https://github.com/nano-muse/ceis/releases/tag/v1.0.0) sudah tersedia, untuk ponsel, desktop, dan peramban; dipasang di atas versi sebelumnya dengan data tetap utuh, dan catatan rilisnya memuat setiap perubahan.
+- `2026-10-09` 🚀 Versi [1.0.0 Keel](https://github.com/cumseedih/ceis/releases/tag/v1.0.0) sudah tersedia, untuk ponsel, desktop, dan peramban; dipasang di atas versi sebelumnya dengan data tetap utuh, dan catatan rilisnya memuat setiap perubahan.
 - `2026-10-08` 🤗 Makalah kami masuk [Hugging Face Daily Papers](https://huggingface.co/papers/2610.08699), peringkat ketiga di daftar 8 Oktober; pertanyaan dan komentar silakan disampaikan di halaman makalah.
 - `2026-10-07` 📄 Makalah kami tersedia di [arXiv](https://arxiv.org/abs/2610.08699): *ceis: An Open-Source Personal Agent for Every Device You Own*, oleh Guangyi Liu, Yong Liu, dan Jiangning Zhang (Universitas Zhejiang); sitasinya ada di akhir halaman ini.
 - `2026-09-25` 🎉 ceis dirilis di GitHub di bawah GPL-3.0-or-later: aplikasi Android yang dibangun di atas OpenMinis 1.13; relay, aplikasi desktop, dan aplikasi iPhone menyusul dalam beberapa hari berikutnya.
 
-Semua versi: [releases](https://github.com/nano-muse/ceis/releases).
+Semua versi: [releases](https://github.com/cumseedih/ceis/releases).
 
 ## Pemasangan
 
 | | |
 |---|---|
-| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk): setiap versi ditandatangani dengan kunci yang sama dan dipasang menimpa versi sebelumnya |
+| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk): setiap versi ditandatangani dengan kunci yang sama dan dipasang menimpa versi sebelumnya |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc): versi beta yang sudah lolos tinjauan beta Apple; pasang dari tautan ini · [iOS](../ios.md) |
-| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). Belum dinotarisasi: klik kanan → *Open* saat pertama kali |
-| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe): klik *Run anyway* sekali |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12+ | [Apple Silicon](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). Belum dinotarisasi: klik kanan → *Open* saat pertama kali |
+| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe): klik *Run anyway* sekali |
+| **Linux** x64 | [AppImage](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local` untuk relay sendiri; `docker compose up -d app` untuk aplikasi web di servermu; lihat [self-hosting](../self-hosting.md) |
 
-Semua unduhan berasal dari [rilis terbaru](https://github.com/nano-muse/ceis/releases/latest); berkas yang sama ada di [wevvy.in/dl](https://wevvy.in/dl/) kalau GitHub lambat di tempatmu. Buka aplikasinya, masuk dengan e-mail atau nomor ponsel Tiongkok daratan, dan agen langsung punya model untuk berpikir. Ponsel, desktop, dan web memakai satu akun dan menampilkan percakapan yang sama.
+Semua unduhan berasal dari [rilis terbaru](https://github.com/cumseedih/ceis/releases/latest); berkas yang sama ada di [wevvy.in/dl](https://wevvy.in/dl/) kalau GitHub lambat di tempatmu. Buka aplikasinya, masuk dengan e-mail atau nomor ponsel Tiongkok daratan, dan agen langsung punya model untuk berpikir. Ponsel, desktop, dan web memakai satu akun dan menampilkan percakapan yang sama.
 
 ## Apa yang dilakukannya
 
@@ -86,7 +86,7 @@ Semua unduhan berasal dari [rilis terbaru](https://github.com/nano-muse/ceis/rel
 Setiap perangkat menjalankan agennya sendiri: ponsel di dalam APK (Alpine Linux di bawah proot, shell, browser, MCP), komputer di dalam ceis Desktop (DeepSeek Harness dengan runtime Python untuk tangannya). Setelah masuk, mereka bertemu di relay dan bisa saling meminta sesuatu; teks percakapan lewat relay, berkas dan tangkapan layar tetap di tempat dibuatnya.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nano-muse/ceis/main/assets/brand/devices-loop.png" alt="Android, desktop (Mac, Windows, Linux), iPhone dan iPad, serta aplikasi web di sekitar satu akun: relay memproses masuknya perangkat ke akun dan membawa percakapan di antaranya" width="92%">
+  <img src="https://raw.githubusercontent.com/cumseedih/ceis/main/assets/brand/devices-loop.png" alt="Android, desktop (Mac, Windows, Linux), iPhone dan iPad, serta aplikasi web di sekitar satu akun: relay memproses masuknya perangkat ke akun dan membawa percakapan di antaranya" width="92%">
 </p>
 
 [docs/every-device.md](../every-device.md) menjelaskan perangkat-perangkatnya, [docs/hub.md](../hub.md) frame-nya, [docs/cloud.md](../cloud.md) relay-nya, [docs/privacy.md](../privacy.md) apa yang disimpannya.
@@ -111,7 +111,7 @@ Satu VPS, satu jam: [docs/self-hosting.md](../self-hosting.md). Tiga jalan: tanp
 
 ## Berkontribusi
 
-Pakai untuk tugas nyata, laporkan apa yang rusak, lalu pilih sesuatu yang terfokus: [CONTRIBUTING.md](../../CONTRIBUTING.md) berisi penyiapan dan konvensinya, [AGENTS.md](../../AGENTS.md) aturan yang diikuti agen pemrograman di repositori ini, dan [peta jalan](../roadmap.md) menunjukkan dari mana memulai. [Issues](https://github.com/nano-muse/ceis/issues) · [Discussions](https://github.com/nano-muse/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X).
+Pakai untuk tugas nyata, laporkan apa yang rusak, lalu pilih sesuatu yang terfokus: [CONTRIBUTING.md](../../CONTRIBUTING.md) berisi penyiapan dan konvensinya, [AGENTS.md](../../AGENTS.md) aturan yang diikuti agen pemrograman di repositori ini, dan [peta jalan](../roadmap.md) menunjukkan dari mana memulai. [Issues](https://github.com/cumseedih/ceis/issues) · [Discussions](https://github.com/cumseedih/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X).
 
 ## Pemelihara
 
@@ -174,5 +174,5 @@ ceis adalah proyek komunitas independen, tidak berafiliasi dengan atau didukung 
 
 <p align="center">
   <em>Terima kasih sudah berkunjung ✨ ceis.</em><br><br>
-  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <img src="https://hits.sh/github.com/cumseedih/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
 </p>

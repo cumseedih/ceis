@@ -20,7 +20,7 @@
   // scrolls, so a wheel turned over the frame reaches the site by itself (the browser hands a
   // scroll on to the parent when the frame has nowhere to go).
   var embed = root.getAttribute("data-embed") === "1";
-  var EMBEDDERS = ["https://wevvy.in", "https://www.wevvy.in", "https://nano-muse.github.io"];
+  var EMBEDDERS = ["https://wevvy.in", "https://www.wevvy.in", "https://cumseedih.github.io"];
   // the page that holds the frame, when it is one of ours (a local preview of the site counts
   // while this page is served locally too)
   var embedder = (function () {

@@ -142001,61 +142001,61 @@
         }
       }
     },
-    "Your personal AI agent, open source · github.com/nano-muse/ceis" : {
+    "Your personal AI agent, open source · github.com/cumseedih/ceis" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein persönlicher KI-Agent, quelloffen · github.com/nano-muse/ceis"
+            "value" : "Dein persönlicher KI-Agent, quelloffen · github.com/cumseedih/ceis"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your personal AI agent, open source · github.com/nano-muse/ceis"
+            "value" : "Your personal AI agent, open source · github.com/cumseedih/ceis"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu agente de IA personal, de código abierto · github.com/nano-muse/ceis"
+            "value" : "Tu agente de IA personal, de código abierto · github.com/cumseedih/ceis"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre agent IA personnel, open source · github.com/nano-muse/ceis"
+            "value" : "Votre agent IA personnel, open source · github.com/cumseedih/ceis"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "あなたのパーソナル AI エージェント、オープンソース · github.com/nano-muse/ceis"
+            "value" : "あなたのパーソナル AI エージェント、オープンソース · github.com/cumseedih/ceis"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나만의 AI 에이전트, 오픈 소스 · github.com/nano-muse/ceis"
+            "value" : "나만의 AI 에이전트, 오픈 소스 · github.com/cumseedih/ceis"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш личный ИИ-агент с открытым кодом · github.com/nano-muse/ceis"
+            "value" : "Ваш личный ИИ-агент с открытым кодом · github.com/cumseedih/ceis"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的个人 AI 智能体，开源 · github.com/nano-muse/ceis"
+            "value" : "你的个人 AI 智能体，开源 · github.com/cumseedih/ceis"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的個人 AI 智能體，開源 · github.com/nano-muse/ceis"
+            "value" : "你的個人 AI 智能體，開源 · github.com/cumseedih/ceis"
           }
         }
       }

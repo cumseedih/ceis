@@ -11,14 +11,14 @@
   <a href="./README_vi.md">Tiếng Việt</a>
 </p>
 <p align="center">
-  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="nano-muse%2Fceis | Trendshift" width="250" height="55"/></a>
+  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="cumseedih%2Fceis | Trendshift" width="250" height="55"/></a>
 </p>
 <p align="center">
-  <a href="https://github.com/nano-muse/ceis/stargazers"><img src="https://img.shields.io/github/stars/nano-muse/ceis?style=flat&label=stars" alt="GitHub stars"></a>
-  <a href="https://github.com/nano-muse/ceis/releases"><img src="https://img.shields.io/github/downloads/nano-muse/ceis/total?label=downloads" alt="下載量"></a>
-  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
-  <a href="https://github.com/nano-muse/ceis/actions/workflows/ci.yml"><img src="https://github.com/nano-muse/ceis/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
-  <a href="https://github.com/nano-muse/ceis/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nano-muse/ceis?label=license" alt="GPL-3.0-or-later"></a>
+  <a href="https://github.com/cumseedih/ceis/stargazers"><img src="https://img.shields.io/github/stars/cumseedih/ceis?style=flat&label=stars" alt="GitHub stars"></a>
+  <a href="https://github.com/cumseedih/ceis/releases"><img src="https://img.shields.io/github/downloads/cumseedih/ceis/total?label=downloads" alt="下載量"></a>
+  <img src="https://hits.sh/github.com/cumseedih/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <a href="https://github.com/cumseedih/ceis/actions/workflows/ci.yml"><img src="https://github.com/cumseedih/ceis/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
+  <a href="https://github.com/cumseedih/ceis/blob/main/LICENSE"><img src="https://img.shields.io/github/license/cumseedih/ceis?label=license" alt="GPL-3.0-or-later"></a>
   <a href="https://arxiv.org/abs/2610.08699"><img src="https://img.shields.io/badge/arXiv-2610.08699-b31b1b" alt="arXiv 上的論文"></a>
   <br>
   <a href="https://wevvy.in/"><img src="https://img.shields.io/badge/%E5%AE%98%E7%B6%B2-wevvy.in-0a66e4" alt="官網"></a>
@@ -31,7 +31,7 @@
 > [!NOTE]
 > **ceis 在持續進化**
 >
-> 個人智慧體不該只長在別人的雲裡，ceis 想做一個開源、低成本的替代方案：裝在自己的裝置上，模型自己選，中繼也能自己架。我們希望和全球的開發者、使用者一起，讓每個人真正擁有自己的個人智慧體。開個 [issue](https://github.com/nano-muse/ceis/issues/new/choose) 或發個 [PR](../../CONTRIBUTING.md) 都是在幫 ceis 變得更好。
+> 個人智慧體不該只長在別人的雲裡，ceis 想做一個開源、低成本的替代方案：裝在自己的裝置上，模型自己選，中繼也能自己架。我們希望和全球的開發者、使用者一起，讓每個人真正擁有自己的個人智慧體。開個 [issue](https://github.com/cumseedih/ceis/issues/new/choose) 或發個 [PR](../../CONTRIBUTING.md) 都是在幫 ceis 變得更好。
 
 https://github.com/user-attachments/assets/bf0ec2ae-59aa-4358-9dd0-c9d045ee7bee
 
@@ -40,25 +40,25 @@ https://github.com/user-attachments/assets/bf0ec2ae-59aa-4358-9dd0-c9d045ee7bee
 ## 🗞️ 最新消息
 
 - `2026-10-13` ⭐ GitHub 上 1000 個 star，距首發十八天，期間連續四天進入 GitHub Trending 的 Swift 榜（[Trendshift](https://trendshift.io/repositories/286894) 的記錄：10 月 7 日第七，10 月 10 日第四）。謝謝每一次試用、每一個問題回報和每一個 pull request。我們會繼續做下去：每隔幾天一個版本，下一步做什麼寫在[路線圖](../roadmap.md)裡。
-- `2026-10-09` 🚀 版本 [1.0.0 Keel](https://github.com/nano-muse/ceis/releases/tag/v1.0.0) 發布，手機、電腦和瀏覽器都有；安裝在上一版之上，資料保留，每一處改動都寫在發布說明裡。
+- `2026-10-09` 🚀 版本 [1.0.0 Keel](https://github.com/cumseedih/ceis/releases/tag/v1.0.0) 發布，手機、電腦和瀏覽器都有；安裝在上一版之上，資料保留，每一處改動都寫在發布說明裡。
 - `2026-10-08` 🤗 我們的論文登上 [Hugging Face Daily Papers](https://huggingface.co/papers/2610.08699)，在 10 月 8 日的榜單上排第三；歡迎到論文頁提問和留言。
 - `2026-10-07` 📄 我們的論文已發布在 [arXiv](https://arxiv.org/abs/2610.08699)：《ceis: An Open-Source Personal Agent for Every Device You Own》，作者 Guangyi Liu、Yong Liu、Jiangning Zhang（浙江大學）；引用格式見本頁末尾。
 - `2026-09-25` 🎉 ceis 以 GPL-3.0-or-later 發布在 GitHub：一個基於 OpenMinis 1.13 的 Android 應用程式；中繼、電腦版和 iPhone 版在隨後幾天陸續到來。
 
-全部版本：[releases](https://github.com/nano-muse/ceis/releases)。
+全部版本：[releases](https://github.com/cumseedih/ceis/releases)。
 
 ## 安裝
 
 | | |
 |---|---|
-| **Android** 8.0 以上，arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk)：每個版本都用同一把金鑰簽署，直接覆蓋安裝即可升級 |
+| **Android** 8.0 以上，arm64 | [ceis-1.0.5-arm64.apk](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk)：每個版本都用同一把金鑰簽署，直接覆蓋安裝即可升級 |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc)：測試版，已通過 Apple 的 beta 審核；從這個連結安裝 · [iOS](../ios.md) |
-| **macOS** 12 以上 | [Apple 晶片](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg)。未經公證：第一次右鍵 → 打開 |
-| **Windows** 10 以上 | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe)：點一次「仍要執行」 |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12 以上 | [Apple 晶片](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg)。未經公證：第一次右鍵 → 打開 |
+| **Windows** 10 以上 | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe)：點一次「仍要執行」 |
+| **Linux** x64 | [AppImage](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local` 架自己的中繼；`docker compose up -d app` 在自己的伺服器上跑網頁版；見[自己部署](../self-hosting.md) |
 
-下載都來自 [GitHub 最新版本](https://github.com/nano-muse/ceis/releases/latest)；GitHub 下載不順時，同樣的檔案在 [wevvy.in/dl](https://wevvy.in/dl/)。打開 App，用電子郵件或中國大陸手機號登入，它就有模型可用。手機、桌面和網頁共用一個帳號，看到的是同樣的對話。
+下載都來自 [GitHub 最新版本](https://github.com/cumseedih/ceis/releases/latest)；GitHub 下載不順時，同樣的檔案在 [wevvy.in/dl](https://wevvy.in/dl/)。打開 App，用電子郵件或中國大陸手機號登入，它就有模型可用。手機、桌面和網頁共用一個帳號，看到的是同樣的對話。
 
 ## 能做什麼
 
@@ -86,7 +86,7 @@ https://github.com/user-attachments/assets/bf0ec2ae-59aa-4358-9dd0-c9d045ee7bee
 每台裝置上都跑著自己的智慧體：手機上在 APK 裡（proot 下的 Alpine Linux、shell、瀏覽器、MCP），電腦上在 ceis Desktop 裡（DeepSeek Harness 加上負責「手」的 Python 執行環境）。登入後它們在中繼上相遇，可以互相請對方做事；對話的文字經中繼傳遞，檔案和截圖留在產生它們的裝置上。
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nano-muse/ceis/main/assets/brand/devices-loop.png" alt="Android、桌面端（Mac、Windows、Linux）、iPhone 和 iPad、網頁版圍繞同一個帳號：中繼負責登入，並在裝置之間同步對話" width="92%">
+  <img src="https://raw.githubusercontent.com/cumseedih/ceis/main/assets/brand/devices-loop.png" alt="Android、桌面端（Mac、Windows、Linux）、iPhone 和 iPad、網頁版圍繞同一個帳號：中繼負責登入，並在裝置之間同步對話" width="92%">
 </p>
 
 [docs/every-device.md](../every-device.md) 講裝置之間怎麼配合，[docs/hub.md](../hub.md) 講訊框格式，[docs/cloud.md](../cloud.md) 講中繼，[docs/privacy.md](../privacy.md) 講它保存什麼。
@@ -111,7 +111,7 @@ https://github.com/user-attachments/assets/bf0ec2ae-59aa-4358-9dd0-c9d045ee7bee
 
 ## 參與
 
-拿它做一件真事，回報哪裡壞了，然後挑一件小而具體的事做：[CONTRIBUTING.md](../../CONTRIBUTING.md) 有環境和約定，[AGENTS.md](../../AGENTS.md) 是 AI 寫程式工具在這個程式碼庫裡要守的規矩，[路線圖](../roadmap.md)說從哪裡入手。[Issues](https://github.com/nano-muse/ceis/issues) · [Discussions](https://github.com/nano-muse/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X)。
+拿它做一件真事，回報哪裡壞了，然後挑一件小而具體的事做：[CONTRIBUTING.md](../../CONTRIBUTING.md) 有環境和約定，[AGENTS.md](../../AGENTS.md) 是 AI 寫程式工具在這個程式碼庫裡要守的規矩，[路線圖](../roadmap.md)說從哪裡入手。[Issues](https://github.com/cumseedih/ceis/issues) · [Discussions](https://github.com/cumseedih/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X)。
 
 ## 維護者
 
@@ -174,5 +174,5 @@ ceis 是獨立的社群專案，與 Meta Platforms, Inc. 無關，也未獲其�
 
 <p align="center">
   <em>感謝來訪 ✨ ceis。</em><br><br>
-  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <img src="https://hits.sh/github.com/cumseedih/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
 </p>

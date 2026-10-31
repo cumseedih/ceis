@@ -1,4 +1,4 @@
-/* The page around the phone. Same tokens as the project site (nano-muse.github.io/style.css).
+/* The page around the phone. Same tokens as the project site (cumseedih.github.io/style.css).
    MobileGym's own stylesheet (mobilegym.css, their styles.css as it is) is loaded before this one
    and owns the stage: .hero-demo, .demo-layout, .demo-phone-wrap, .phone-rig, #demo-frame, the
    Gesture Guide, the State Builder dock and drawer, Power off. This file adds the bezel around the

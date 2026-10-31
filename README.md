@@ -11,14 +11,14 @@
   <a href="./docs/readme/README_vi.md">Tiếng Việt</a>
 </p>
 <p align="center">
-  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="nano-muse%2Fceis | Trendshift" width="250" height="55"/></a>
+  <a href="https://trendshift.io/repositories/286894?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-286894" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/286894/daily?language=Swift" alt="cumseedih%2Fceis | Trendshift" width="250" height="55"/></a>
 </p>
 <p align="center">
-  <a href="https://github.com/nano-muse/ceis/stargazers"><img src="https://img.shields.io/github/stars/nano-muse/ceis?style=flat&label=stars" alt="GitHub stars"></a>
-  <a href="https://github.com/nano-muse/ceis/releases"><img src="https://img.shields.io/github/downloads/nano-muse/ceis/total?label=downloads" alt="Downloads"></a>
-  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
-  <a href="https://github.com/nano-muse/ceis/actions/workflows/ci.yml"><img src="https://github.com/nano-muse/ceis/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/github/license/nano-muse/ceis?label=license" alt="GPL-3.0-or-later"></a>
+  <a href="https://github.com/cumseedih/ceis/stargazers"><img src="https://img.shields.io/github/stars/cumseedih/ceis?style=flat&label=stars" alt="GitHub stars"></a>
+  <a href="https://github.com/cumseedih/ceis/releases"><img src="https://img.shields.io/github/downloads/cumseedih/ceis/total?label=downloads" alt="Downloads"></a>
+  <img src="https://hits.sh/github.com/cumseedih/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <a href="https://github.com/cumseedih/ceis/actions/workflows/ci.yml"><img src="https://github.com/cumseedih/ceis/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/cumseedih/ceis?label=license" alt="GPL-3.0-or-later"></a>
   <a href="https://arxiv.org/abs/2610.08699"><img src="https://img.shields.io/badge/arXiv-2610.08699-b31b1b" alt="Paper on arXiv"></a>
   <br>
   <a href="https://wevvy.in/"><img src="https://img.shields.io/badge/Website-wevvy.in-0a66e4" alt="Website"></a>
@@ -31,7 +31,7 @@
 > [!NOTE]
 > **ceis keeps evolving**
 >
-> A personal agent should not live only in someone else's cloud, so ceis is the open-source, low-cost alternative: on your own devices, with a model you choose and a relay you can host yourself. We want to build it with developers and users everywhere, so that each person truly owns a personal agent. Open an [issue](https://github.com/nano-muse/ceis/issues/new/choose) or send a [pull request](CONTRIBUTING.md); either one helps ceis get better.
+> A personal agent should not live only in someone else's cloud, so ceis is the open-source, low-cost alternative: on your own devices, with a model you choose and a relay you can host yourself. We want to build it with developers and users everywhere, so that each person truly owns a personal agent. Open an [issue](https://github.com/cumseedih/ceis/issues/new/choose) or send a [pull request](CONTRIBUTING.md); either one helps ceis get better.
 
 https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 
@@ -40,25 +40,25 @@ https://github.com/user-attachments/assets/c7694d5a-9450-4f99-9254-5d70560d7565
 ## 🗞️ News
 
 - `2026-10-13` ⭐ 1,000 stars on GitHub, eighteen days after the first release, with four days on GitHub Trending's Swift list on the way ([Trendshift](https://trendshift.io/repositories/286894): seventh on October 7, fourth on October 10). Thank you for every try, every report and every pull request. We keep going: a version every few days, and the [roadmap](docs/roadmap.md) says what comes next.
-- `2026-10-09` 🚀 Version [1.0.0 Keel](https://github.com/nano-muse/ceis/releases/tag/v1.0.0) is out, for the phone, the desktop and the browser; it installs over the version before and keeps your data, and its release notes list every change.
+- `2026-10-09` 🚀 Version [1.0.0 Keel](https://github.com/cumseedih/ceis/releases/tag/v1.0.0) is out, for the phone, the desktop and the browser; it installs over the version before and keeps your data, and its release notes list every change.
 - `2026-10-08` 🤗 Our paper is on [Hugging Face Daily Papers](https://huggingface.co/papers/2610.08699), ranked third on the list for October 8; questions and comments are welcome on the paper page.
 - `2026-10-07` 📄 Our paper is available on [arXiv](https://arxiv.org/abs/2610.08699): *ceis: An Open-Source Personal Agent for Every Device You Own*, by Guangyi Liu, Yong Liu and Jiangning Zhang (Zhejiang University); the citation is at the end of this page.
 - `2026-09-25` 🎉 ceis is released on GitHub under GPL-3.0-or-later: an Android app built on OpenMinis 1.13; the relay, the desktop app and the iPhone app came in the days after.
 
-Every version: [releases](https://github.com/nano-muse/ceis/releases).
+Every version: [releases](https://github.com/cumseedih/ceis/releases).
 
 ## Install
 
 | | |
 |---|---|
-| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk): every version is signed with the same key and installs over the last |
+| **Android** 8.0+, arm64 | [ceis-1.0.5-arm64.apk](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-1.0.5-arm64.apk): every version is signed with the same key and installs over the last |
 | **iPhone / iPad** | [TestFlight](https://testflight.apple.com/join/ZHexbDqc): a beta that passed Apple's beta review; the link installs it · [iOS](docs/ios.md) |
-| **macOS** 12+ | [Apple Silicon](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). Not notarised: right-click → *Open* the first time |
-| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe): click *Run anyway* once |
-| **Linux** x64 | [AppImage](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/nano-muse/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
+| **macOS** 12+ | [Apple Silicon](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-arm64.dmg) · [Intel](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-mac-x64.dmg). Not notarised: right-click → *Open* the first time |
+| **Windows** 10+ | [ceis-Desktop-1.0.5-win-x64.exe](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-win-x64.exe): click *Run anyway* once |
+| **Linux** x64 | [AppImage](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.AppImage) · [.deb](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.deb) · [tar.gz](https://github.com/cumseedih/ceis/releases/download/v1.0.5/ceis-Desktop-1.0.5-linux-x64.tar.gz) |
 | **Docker** | `bash scripts/self-host.sh --local` for your own relay; `docker compose up -d app` for the web app on a server of yours; see [self-hosting](docs/self-hosting.md) |
 
-All downloads come from the [latest release](https://github.com/nano-muse/ceis/releases/latest); the same files are on [wevvy.in/dl](https://wevvy.in/dl/) when GitHub is slow where you are. Open the app, sign in with an e-mail or a mainland-China phone number, and it has a model to think with. The phone, the desktop and the web share one account and show the same conversations.
+All downloads come from the [latest release](https://github.com/cumseedih/ceis/releases/latest); the same files are on [wevvy.in/dl](https://wevvy.in/dl/) when GitHub is slow where you are. Open the app, sign in with an e-mail or a mainland-China phone number, and it has a model to think with. The phone, the desktop and the web share one account and show the same conversations.
 
 ## What it does
 
@@ -86,7 +86,7 @@ All downloads come from the [latest release](https://github.com/nano-muse/ceis/r
 Each device runs its own agent: the phone inside the APK (Alpine Linux under proot, a shell, a browser, MCP), the computer inside ceis Desktop (DeepSeek Harness with the Python runtime for the hands). Signed in, they meet on the relay and can ask each other for things; the text of the conversations travels through it, files and screenshots stay where they were made.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nano-muse/ceis/main/assets/brand/devices-loop.png" alt="Android, the desktop (Mac, Windows, Linux), iPhone and iPad, and the web app around one account: the relay signs the devices in and carries the conversation between them" width="92%">
+  <img src="https://raw.githubusercontent.com/cumseedih/ceis/main/assets/brand/devices-loop.png" alt="Android, the desktop (Mac, Windows, Linux), iPhone and iPad, and the web app around one account: the relay signs the devices in and carries the conversation between them" width="92%">
 </p>
 
 [docs/every-device.md](docs/every-device.md) explains the devices, [docs/hub.md](docs/hub.md) the frames, [docs/cloud.md](docs/cloud.md) the relay, [docs/privacy.md](docs/privacy.md) what it keeps.
@@ -111,7 +111,7 @@ One VPS, one hour: [docs/self-hosting.md](docs/self-hosting.md). Three ways: no 
 
 ## Contribute
 
-Use it for a real task, report what broke, then pick something focused: [CONTRIBUTING.md](CONTRIBUTING.md) has the setup and the conventions, [AGENTS.md](AGENTS.md) the rules a coding agent follows in this tree, and the [roadmap](docs/roadmap.md) says where to start. [Issues](https://github.com/nano-muse/ceis/issues) · [Discussions](https://github.com/nano-muse/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X).
+Use it for a real task, report what broke, then pick something focused: [CONTRIBUTING.md](CONTRIBUTING.md) has the setup and the conventions, [AGENTS.md](AGENTS.md) the rules a coding agent follows in this tree, and the [roadmap](docs/roadmap.md) says where to start. [Issues](https://github.com/cumseedih/ceis/issues) · [Discussions](https://github.com/cumseedih/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X).
 
 ## Maintainers
 
@@ -174,5 +174,5 @@ ceis is an independent community project, not affiliated with or endorsed by Met
 
 <p align="center">
   <em>Thanks for visiting ✨ ceis.</em><br><br>
-  <img src="https://hits.sh/github.com/nano-muse/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
+  <img src="https://hits.sh/github.com/cumseedih/ceis.svg?label=visitors&color=0a66e4&extraCount=16719" alt="Visitors">
 </p>

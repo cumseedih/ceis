@@ -1,6 +1,6 @@
 # Mac 侧协作任务 — iOS：聊天输入框显示不出来（0.1.39 → 0.1.40）
 
-> **状态（2026-10-06 下午）**：Mac 坏了，这一轮由 L 在 Linux 上做完——[PR #102](https://github.com/nano-muse/ceis/pull/102)
+> **状态（2026-10-06 下午）**：Mac 坏了，这一轮由 L 在 Linux 上做完——[PR #102](https://github.com/cumseedih/ceis/pull/102)
 > 把输入栏改成消息列表下面的一行（不再是 overlay，也没有第二个宿主），并加了「设置 → 外观 → 输入框检查」，
 > 让设备自己给出第 4.2 节要的视图层级（红框 + 可复制的报告）。TestFlight build 11 从该分支构建，在
 > iPad 上验收。下面的内容留作 Mac 恢复后的参考；第 7.1 节（Mac dmg 的权限助手）仍只能在 Mac 上做。
@@ -71,7 +71,7 @@ iPadOS 26.7.1**，上面装着 TestFlight build 10。是否有 iPhone，问维�
 # 1) 找到或建立 clone（上一个会话大概率已经 clone 过；路径不详）
 mdfind "kMDItemFSName == 'ceis'" -onlyin ~ 2>/dev/null | head; ls -d ~/ceis ~/code/ceis ~/src/ceis 2>/dev/null
 # 有：cd <clone> && git fetch origin && git checkout main && git pull --ff-only && git submodule update --init
-# 没有：git clone --recurse-submodules https://github.com/nano-muse/ceis.git && cd ceis
+# 没有：git clone --recurse-submodules https://github.com/cumseedih/ceis.git && cd ceis
 git log --oneline -1          # 应是 9740986d 或更新
 
 # 2) 腾磁盘：原生依赖 + 一次 Debug 构建要十几 GB
@@ -231,13 +231,13 @@ cd android/src/ios
 xcodebuild build -project Minis.xcodeproj -scheme Minis -configuration Debug \
   -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO     # Ceis/ 下零 warning
 cd ../../.. && .venv/bin/python scripts/rebrand.py                  # 没有 .venv 就 uv venv && uv pip install -e ".[dev]"
-gh workflow run "iOS · build check" --repo nano-muse/ceis --ref mac/ios-composer-0140
+gh workflow run "iOS · build check" --repo cumseedih/ceis --ref mac/ios-composer-0140
 ```
 
 ## 7. 顺手的两项验收（证据收集完、等构建的时候做；只报告，发现问题另开 `mac/*` 分支）
 
 1. **Mac 桌面端 0.1.39 的权限助手**（#95 的真机验收，当时只在源码构建上验过）：下载
-   `https://github.com/nano-muse/ceis/releases/download/v0.1.39/ceis-Desktop-0.1.39-mac-arm64.dmg`，
+   `https://github.com/cumseedih/ceis/releases/download/v0.1.39/ceis-Desktop-0.1.39-mac-arm64.dmg`，
    拖进「应用程序」，先 `tccutil reset ScreenCapture io.github.ceis.desktop.computer-use` 和
    `tccutil reset Accessibility io.github.ceis.desktop.computer-use`，打开 app（Gatekeeper 说无法验证
    → 系统设置 → 隐私与安全性 → 仍要打开），Settings → Computer use 按它的指引走：两个面板里出现的是不是
@@ -272,5 +272,5 @@ L 这边同时在做：拿到你的 PR 后合并、发 0.1.40、TestFlight build
 | 调试服务（DEBUG） | `Debug/DebugServer.swift`，端口 8321，`iproxy 8321 8321` |
 | 上游改动标记 | `// ceis:`；品牌替换 `python scripts/rebrand.py`（必须输出 `clean`） |
 | Mac 桌面端 | `harness/desktop/mac/computer-use/`、`harness/desktop/src/{mac-helper,mac-permissions}.ts`；数据目录 `~/.ceis/desktop`（`desktop.log`） |
-| 已发布的安装包 | `https://github.com/nano-muse/ceis/releases/tag/v0.1.39`；TestFlight build 10 = 0.1.39 |
+| 已发布的安装包 | `https://github.com/cumseedih/ceis/releases/tag/v0.1.39`；TestFlight build 10 = 0.1.39 |
 | 上一轮的任务单（背景） | [mac-work-0.1.39.md](mac-work-0.1.39.md)、[mac-check-0.1.37.md](mac-check-0.1.37.md) |

@@ -7693,7 +7693,7 @@ private struct SettingsSheet: View {
                                 .background(.indigo, in: Circle())
                         }
                     }
-                    Link(destination: URL(string: "https://github.com/nano-muse/ceis/blob/main/docs/privacy.md")!) {
+                    Link(destination: URL(string: "https://github.com/cumseedih/ceis/blob/main/docs/privacy.md")!) {
                         Label {
                             Text("Privacy Policy")
                         } icon: {
@@ -7966,7 +7966,7 @@ private struct SettingsSheet: View {
 
         """
 
-        var components = URLComponents(string: "https://github.com/nano-muse/ceis/issues/new")
+        var components = URLComponents(string: "https://github.com/cumseedih/ceis/issues/new")
         components?.queryItems = [
             URLQueryItem(name: "template", value: "bug_report.md"),
             URLQueryItem(name: "title", value: "[Bug] "),

@@ -6,14 +6,14 @@
 //   npm run docs:build    # .vitepress/dist, also the dead-link check
 //   DOCS_BASE=/docs/ npm run docs:build   # for wevvy.in/docs/
 //
-// DOCS_BASE defaults to /ceis/docs/ — the project pages at nano-muse.github.io keep
+// DOCS_BASE defaults to /ceis/docs/ — the project pages at cumseedih.github.io keep
 // site/index.html (the redirect to wevvy.in) and site/legacy.html at the root, and the
 // docs sit beside them under /docs/.
 import { posix } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, type DefaultTheme } from 'vitepress'
 
-const REPO = 'https://github.com/nano-muse/ceis'
+const REPO = 'https://github.com/cumseedih/ceis'
 const base = process.env.DOCS_BASE ?? '/ceis/docs/'
 
 // Directories under docs/ that are not pages of the site: task briefs and traces are

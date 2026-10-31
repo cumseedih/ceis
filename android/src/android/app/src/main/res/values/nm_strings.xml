@@ -461,7 +461,7 @@
     <string name="nm_avatar_share_subtitle">Pick a card. It goes out through the system share sheet.</string>
     <string name="nm_avatar_share_system">Share</string>
     <string name="nm_avatar_share_bubble">Hi, I\'m %1$s, a personal AI agent. Meet ceis: open source, runs on your phone.</string>
-    <string name="nm_avatar_share_tagline">Your personal AI agent, open source · github.com/nano-muse/ceis</string>
+    <string name="nm_avatar_share_tagline">Your personal AI agent, open source · github.com/cumseedih/ceis</string>
     
     <string name="nm_media_title">Image &amp; video models</string>
     <string name="nm_media_intro">Three models, each chosen on its own: the chat model you talk to, an image model for the avatar and pictures, a video model that makes the avatar move. One Alibaba Cloud Model Studio key covers all three.</string>

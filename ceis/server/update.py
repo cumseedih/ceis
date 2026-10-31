@@ -28,9 +28,9 @@ from ceis.logger import logger
 
 INDEX_URL = "https://wevvy.in/dl/index.json"
 DOWNLOAD_PAGE = "https://wevvy.in/dl/"
-RELEASES_API = "https://api.github.com/repos/nano-muse/ceis/releases/latest"
-RELEASES_PAGE = "https://github.com/nano-muse/ceis/releases/latest"
-RELEASE_TAG_PAGE = "https://github.com/nano-muse/ceis/releases/tag/{tag}"
+RELEASES_API = "https://api.github.com/repos/cumseedih/ceis/releases/latest"
+RELEASES_PAGE = "https://github.com/cumseedih/ceis/releases/latest"
+RELEASE_TAG_PAGE = "https://github.com/cumseedih/ceis/releases/tag/{tag}"
 CACHE_S = 24 * 3600
 # a check that failed (the runtime came up before the network did) is tried again sooner
 RETRY_S = 3600

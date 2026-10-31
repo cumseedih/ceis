@@ -1,11 +1,11 @@
 name: Website
 
-# Publishes site/ to GitHub Pages: https://nano-muse.github.io/ceis/
-# Since 0.1.6 the homepage lives in nano-muse/nano-muse.github.io, served at wevvy.in; this
+# Publishes site/ to GitHub Pages: https://cumseedih.github.io/ceis/
+# Since 0.1.6 the homepage lives in cumseedih/cumseedih.github.io, served at wevvy.in; this
 # project page is a redirect to it, with the earlier page kept at legacy.html (its generated parts,
 # the dragon's five moods, icons, fonts, screenshots, are copied from web/ and docs/ below).
 # Since 0.1.38 the docs site (website/, VitePress over docs/) is built into site/docs/ and
-# published alongside: https://nano-muse.github.io/ceis/docs/. The same build with
+# published alongside: https://cumseedih.github.io/ceis/docs/. The same build with
 # DOCS_BASE=/docs/ is what wevvy.in/docs/ serves.
 
 on:

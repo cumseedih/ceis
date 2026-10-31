@@ -3,7 +3,7 @@
 # deployment steps.
 #
 #   cp .env.example .env && $EDITOR .env
-#   docker pull ghcr.io/nano-muse/ceis:latest        # what the visitors' sessions run
+#   docker pull ghcr.io/cumseedih/ceis:latest        # what the visitors' sessions run
 #   docker compose pull && docker compose up -d          # published images (see showcase.yml)
 #   docker compose up -d --build                         # or build both images here
 #
@@ -33,7 +33,7 @@ services:
         # the phone's media: /cdn here (./data/mobilegym-data), or https://cdn.mobilegym.dev without the dataset
         MOBILEGYM_CDN_BASE: ${MOBILEGYM_CDN_BASE:-/cdn}
         GOPROXY: ${GOPROXY:-https://proxy.golang.org,direct}
-    image: ghcr.io/nano-muse/showcase-caddy:${SHOWCASE_TAG:-latest}
+    image: ghcr.io/cumseedih/showcase-caddy:${SHOWCASE_TAG:-latest}
     restart: unless-stopped
     logging: *logging
     ports:
@@ -71,7 +71,7 @@ services:
 
   gateway:
     build: ./gateway
-    image: ghcr.io/nano-muse/showcase-gateway:${SHOWCASE_TAG:-latest}
+    image: ghcr.io/cumseedih/showcase-gateway:${SHOWCASE_TAG:-latest}
     restart: unless-stopped
     logging: *logging
     env_file: .env

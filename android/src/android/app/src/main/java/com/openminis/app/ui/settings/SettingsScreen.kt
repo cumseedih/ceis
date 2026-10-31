@@ -519,7 +519,7 @@ fun buildBugReportUrl(): String {
     // takes its fields as query parameters; `body` is ignored by forms.
     val version = java.net.URLEncoder.encode("$versionName ($versionCode)", "UTF-8")
     val device = java.net.URLEncoder.encode("Android $osVersion (API $sdkInt), $manufacturer $model", "UTF-8")
-    return "https://github.com/nano-muse/ceis/issues/new" +
+    return "https://github.com/cumseedih/ceis/issues/new" +
         "?template=app_bug_report.yml" +
         "&title=$title" +
         "&version=$version" +

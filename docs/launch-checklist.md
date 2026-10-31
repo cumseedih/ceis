@@ -215,7 +215,7 @@ flowchart LR
 
 - [ ] `rootfs.yml`; `android.yml` builds the local and connect APKs with a size gate
 - [ ] `release.yml`: two APKs, the rootfs, checksums, notes; rsync to `dl.ceis.dev` in the same run
-- [x] PyPI pending publisher verified (`nano-muse/ceis` + `release.yml` + environment Any, matching `environment: pypi` / `id-token: write`; the name `ceis` is free)
+- [x] PyPI pending publisher verified (`cumseedih/ceis` + `release.yml` + environment Any, matching `environment: pypi` / `id-token: write`; the name `ceis` is free)
 - [ ] First PyPI release: push a `v*` tag (must equal the `pyproject.toml` version); optionally tighten the environment to `pypi`
 - [ ] Decide whether to publish an `openmuse` 0.7.x transition release that only depends on `ceis`
 - [ ] Docker; review `showcase.yml`
@@ -243,7 +243,7 @@ flowchart LR
 ## 15. The site (P0)
 
 - [ ] **Apex online**: a `ceis.dev` vhost in the Caddyfile (static `/srv/www/site`), `www` 301, the `dl.` mirror; Cloudflare DNS A records (the token is on the server); fixes the current 500
-- [ ] `pages.yml` publishes twice: the Pages mirror (deploy key pushing to the root of `nano-muse.github.io`, with a canonical link) + rsync to the server; retire the `/ceis/` path; update the repository homepage field
+- [ ] `pages.yml` publishes twice: the Pages mirror (deploy key pushing to the root of `cumseedih.github.io`, with a canonical link) + rsync to the server; retire the `/ceis/` path; update the repository homepage field
 - [ ] **Eight sections**, copy written separately in Chinese and English, not translated: Hero (one line + one sentence + Download / GitHub + a quiet "try it in the browser" + a muted looping phone video) / Watch it work / Many hands (four tiles) / A Chinese day (seven case cards with trace links) / It asks first where it matters / Runs on your phone (the local build + what leaves the phone + a row of models) / Install (the three APK steps first, pip / Docker folded) / Footer
 - [ ] Copy rules: headlines ≤ 6 characters / 4 words; one idea per section; numbers over adjectives; banned: 赋能 / 一站式 / 极致 / 丝滑 / seamless / empower; no exclamation marks, no emoji headings; limits stated (Alpha, GUI needs Android 11+, Google login, no payments)
 - [ ] Real screenshots of real apps on one device frame and background; the red panda only in the hero and the ending
@@ -283,13 +283,13 @@ OAuth subscription login · Shizuku / wadb backend · several instances and mode
 
 **Now (needed during M0–M2)**
 
-- Four decisions (one reply, "as recommended", is enough): version 0.1.0; Muse's missing features / voice / starter quota all after the release; Node preinstalled in the rootfs; `ceis.dev` canonical with `nano-muse.github.io` as a mirror
+- Four decisions (one reply, "as recommended", is enough): version 0.1.0; Muse's missing features / voice / starter quota all after the release; Node preinstalled in the rootfs; `ceis.dev` canonical with `cumseedih.github.io` as a mirror
 - An Android 11+ phone with USB debugging, connected to this machine (`adb devices` sees it); ideally a 小米 or 华为 as a second device
 - A 高德 web-service key; one official DeepSeek key; the 腾讯会议 `tmeet` OAuth step clicked in a browser when we get there; a 飞书 "project group" that can be filmed and one or two accounts that can be @-mentioned
 - [x] The PyPI pending publisher (verified)
-- Confirm `ghcr.io/nano-muse/ceis` is public
+- Confirm `ghcr.io/cumseedih/ceis` is public
 - The four Android signing secrets (`ANDROID_KEYSTORE_B64` / `ANDROID_KEYSTORE_PASSWORD` / `ANDROID_KEY_ALIAS` / `ANDROID_KEY_PASSWORD`; the keystore lives in `~/.openmuse-release/`): added by the owner, or with explicit authorisation
-- Two deploy keys, pasted once generated: a deploy key for `nano-muse.github.io` and the server rsync user's private key, both as repository secrets
+- Two deploy keys, pasted once generated: a deploy key for `cumseedih.github.io` and the server rsync user's private key, both as repository secrets
 - A look at the Hong Kong server's traffic allowance (80 MB × downloads)
 - Whether to publish the `openmuse` 0.7.x transition release
 

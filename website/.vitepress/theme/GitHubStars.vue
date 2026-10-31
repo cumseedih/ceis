@@ -8,8 +8,8 @@
 import { onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
 
-const REPO = 'https://github.com/nano-muse/ceis'
-const API = 'https://api.github.com/repos/nano-muse/ceis'
+const REPO = 'https://github.com/cumseedih/ceis'
+const API = 'https://api.github.com/repos/cumseedih/ceis'
 const KEY = 'nm-stars'
 const TTL = 3600000
 

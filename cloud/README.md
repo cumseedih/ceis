@@ -175,7 +175,7 @@ for the full list. The ones that matter:
 | `SIGNUP_PER_DOMAIN_DAY` | 5 | new accounts one e-mail domain may open per rolling 24 hours when the domain is not a well-known mail provider (gmail.com, outlook.com, qq.com, 163.com and the like are never limited; phones never are); past it `POST /v1/auth/code` answers `429 domain_limited` and the timeline across accounts gets `signup.domain_limited` with the domain; 0 = off |
 | `SIGNUP_DOMAIN_ALLOW` | empty | comma-separated domains that join the built-in list of unlimited ones, your company's or school's for instance |
 | `SIGNUP_DOMAIN_BLOCK` | empty | comma-separated disposable mail domains blocked from opening new accounts in addition to the built-in blocklist (`DEFAULT_SIGNUP_DOMAIN_BLOCK`); `SIGNUP_DOMAIN_ALLOW` overrides an entry |
-| `REPO_URL` | `https://github.com/nano-muse/ceis` | the repository the apps ask people to star, in `/v1/config` |
+| `REPO_URL` | `https://github.com/cumseedih/ceis` | the repository the apps ask people to star, in `/v1/config` |
 | `IMPROVE_DEFAULT` | `0` | what *Help improve ceis's AI models* (Data controls) starts as for accounts created from now on: `1` = on until the person turns it off, `0` = off until they turn it on; existing accounts keep their setting. State it in your privacy policy |
 | `PRIVACY_URL` | `https://wevvy.in/privacy/` | the policy the apps link from Data controls and the sign-in pages — the one that says what this relay keeps and its default |
 | `INVITE_URL` | `https://wevvy.in/web/?invite=` | the link the apps offer to share; the code is appended |
@@ -211,7 +211,7 @@ for the full list. The ones that matter:
 | `HUB_ENABLED` | `true` | the devices hub at `/v1/hub` and the web console at `/app` ([docs/hub.md](../docs/hub.md)) |
 | `HUB_FRAME_LIMIT` | 16 MB | largest hub frame (files and screenshots travel inside frames); one socket may also send at most 60 frames and 8 MB a second sustained (twice that in a burst) — over it frames are dropped with one `rate_limited` error a second, and a socket that keeps flooding is closed with 4008 (0.13) |
 | `MAX_REQUEST_BYTES` | 16 MB (0.20; was 6) | largest REST request body — a chat request with a few screenshots, a sync push of 200 messages; over it the answer is 413 `too_large`, *Request body is N MB; this relay accepts up to M MB*. A declared `Content-Length` over the limit is refused before a byte is read, and a body that grows past it is refused as it arrives, so the relay never buffers more than the limit for one request. Both Caddy sites (`cloud/Caddyfile`, `deploy/ceis-hk/cloud.wevvy.in.caddy`) cap bodies at `request_body max_size 20MB`: just above 16 MiB plus multipart overhead for `/v1/images/edits`, so a legitimate payload always reaches the relay's own 413 message and nothing larger reaches the relay at all; raise both together if you raise this |
-| `GITHUB_REPO` | read off `REPO_URL` (`nano-muse/ceis`) | the repository whose stars, forks, watchers, open issues and release downloads the relay reads (0.22, *Site* on the operator's page) — `owner/name` |
+| `GITHUB_REPO` | read off `REPO_URL` (`cumseedih/ceis`) | the repository whose stars, forks, watchers, open issues and release downloads the relay reads (0.22, *Site* on the operator's page) — `owner/name` |
 | `GITHUB_TOKEN` | empty | optional; without one GitHub allows 60 requests an hour, the collector uses two every six hours. Set it only if the relay shares its address with something else that polls GitHub (a `403` from GitHub shows on the page and says so) |
 | `GITHUB_COLLECT` | `1` | `0` turns the collector off (a relay without a way out, tests) |
 | `GITHUB_API` | `https://api.github.com` | where the collector reads; a mirror for a relay that cannot reach GitHub |
@@ -356,7 +356,7 @@ a day, keeps the last good copy and falls back to the built-in defaults
 reached:
 
 ```json
-{"version": 1, "star": {"enabled": true, "url": "https://github.com/nano-muse/ceis",
+{"version": 1, "star": {"enabled": true, "url": "https://github.com/cumseedih/ceis",
  "moments": {"signed_in": true, "tasks": [3, 10, 30], "new_look": true, "exhausted": true,
              "days_used": [7, 30], "goal_done": true},
  "cooldown_days": 7, "max_asks": 4, "text": "", "text_zh": ""}}

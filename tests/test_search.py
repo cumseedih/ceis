@@ -21,7 +21,7 @@ from ceis.tools import WebSearch
 from ceis.vault import CredentialVault
 
 DDG_ROWS = [
-    {"title": "ceis", "href": "https://github.com/nano-muse/ceis", "body": "An agent."},
+    {"title": "ceis", "href": "https://github.com/cumseedih/ceis", "body": "An agent."},
     {"title": "Muse", "href": "https://example.com/muse", "body": "Something else."},
 ]
 
@@ -196,7 +196,7 @@ async def test_you_without_a_key(wire: Wire, ddg):
     assert req.method == "GET" and req.url.host == "api.you.com"
     assert req.url.path == "/v1/agents/search"
     assert "X-API-Key" not in req.headers
-    assert req.headers["User-Agent"] == "youdotcom-integration/nano-muse-ceis"
+    assert req.headers["User-Agent"] == "youdotcom-integration/cumseedih-ceis"
     assert req.url.params["query"] == "ceis" and req.url.params["count"] == "3"
     assert req.url.params["country"] == "CN"
     await p.search("x", 1, "")
@@ -231,7 +231,7 @@ async def test_you_with_a_key(wire: Wire, ddg):
         req.method == "GET" and req.url == "https://ydc-index.io/v1/search?query=ceis&count=2"
     )
     assert req.headers["X-API-Key"] == "ydc-key"
-    assert req.headers["User-Agent"] == "youdotcom-integration/nano-muse-ceis"
+    assert req.headers["User-Agent"] == "youdotcom-integration/cumseedih-ceis"
     # a refused key reads as one, not as the keyless limit
     wire.status = 401
     _, note = await p.search("ceis", 2, "")

@@ -1,10 +1,10 @@
 # The landing page (legacy)
 
-The ceis homepage now lives in [nano-muse/nano-muse.github.io](https://github.com/nano-muse/nano-muse.github.io)
-and is served at <https://wevvy.in/>, with a GitHub Pages copy at <https://nano-muse.github.io/>.
+The ceis homepage now lives in [cumseedih/cumseedih.github.io](https://github.com/cumseedih/cumseedih.github.io)
+and is served at <https://wevvy.in/>, with a GitHub Pages copy at <https://cumseedih.github.io/>.
 `site/index.html` here is a redirect to it;
 the page below — the Python line's site with the promo film — is kept as `legacy.html` and
-still published by `.github/workflows/pages.yml` under `https://nano-muse.github.io/ceis/legacy.html`.
+still published by `.github/workflows/pages.yml` under `https://cumseedih.github.io/ceis/legacy.html`.
 
 `legacy.html` is one static page, no framework, English and 中文 in the same file (the toggle
 in the top right, `?lang=zh` or `?lang=en` in the URL).
@@ -37,4 +37,4 @@ pictures where the drawn red panda used to be (the panda left the app in 0.1.23)
 
 `wevvy.in` is served by the showcase server, which pulls the homepage repository every minute
 (`demo/showcase/README.md`, "Other sites on the same Caddy"); GitHub Pages publishes the same
-repository at `nano-muse.github.io`. One push to that repository's `main` updates both.
+repository at `cumseedih.github.io`. One push to that repository's `main` updates both.

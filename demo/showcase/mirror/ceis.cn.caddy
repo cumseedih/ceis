@@ -1,4 +1,4 @@
-# ceis.cn — the project site, mirrored from github.com/nano-muse/nano-muse.github.io by
+# ceis.cn — the project site, mirrored from github.com/cumseedih/cumseedih.github.io by
 # sync.sh (every minute, from the systemd timer). Certificates come the ordinary way, HTTP-01:
 # both names point straight at this box, nothing in front. Installed into sites.d/ by install.sh.
 

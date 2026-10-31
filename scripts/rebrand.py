@@ -149,7 +149,7 @@ def soul_defaults() -> None:
         )
 
 
-UPSTREAM_REPO_URL = "https://github.com/nano-muse/ceis"
+UPSTREAM_REPO_URL = "https://github.com/cumseedih/ceis"
 
 
 def links() -> None:
@@ -159,7 +159,7 @@ def links() -> None:
     edit(
         JAVA / "data" / "UpdateChecker.kt",
         [
-            (r'private const val OWNER = "[^"]+"', 'private const val OWNER = "nano-muse"'),
+            (r'private const val OWNER = "[^"]+"', 'private const val OWNER = "cumseedih"'),
             (r'private const val REPO = "[^"]+"', 'private const val REPO = "ceis"'),
             (
                 r'const val RELEASES_URL: String = "[^"]+"',
@@ -171,7 +171,7 @@ def links() -> None:
         JAVA / "ui" / "settings" / "AboutScreen.kt",
         [
             (r'"https://github\.com/OpenMinis/OpenMinis"\)', f'"{UPSTREAM_REPO_URL}")'),
-            (r'"https://github\.com/nano-muse/ceis"', f'"{UPSTREAM_REPO_URL}"'),
+            (r'"https://github\.com/cumseedih/ceis"', f'"{UPSTREAM_REPO_URL}"'),
         ],
     )
     edit(
@@ -180,7 +180,7 @@ def links() -> None:
             (r'"https://openminis\.github\.io/privacy-policy\.html"', f'"{PRIVACY_URL}"'),
             (r'"https://github\.com/OpenMinis/OpenMinis/issues/new"', f'"{UPSTREAM_REPO_URL}/issues/new"'),
             (
-                r'"https://github\.com/nano-muse/ceis/issues/new"',
+                r'"https://github\.com/cumseedih/ceis/issues/new"',
                 f'"{UPSTREAM_REPO_URL}/issues/new"',
             ),
         ],
@@ -377,8 +377,8 @@ def check() -> int:
             # field are intentionally kept
             start = max(0, m.start() - 40)
             context = text[start:m.end()]
-            if ("github.com/nano-muse/" in context or "api.github.com/repos/nano-muse/" in context
-                    or '"repo":"nano-muse/' in context or "'repo':'nano-muse/" in context):
+            if ("github.com/cumseedih/" in context or "api.github.com/repos/cumseedih/" in context
+                    or '"repo":"cumseedih/' in context or "'repo':'cumseedih/" in context):
                 continue
             print(f"  ! old product name in {path.relative_to(ROOT)}: ...{m.group(0)}...")
             problems += 1

@@ -78,7 +78,7 @@ import kotlinx.coroutines.launch
 const val ROUTE_CLOUD_SIGN_IN = "ceis/cloud/sign-in"
 const val ROUTE_CLOUD_ACCOUNT = "ceis/cloud/account"
 
-private const val CLOUD_DOC_URL = "https://github.com/nano-muse/ceis/blob/main/docs/cloud.md"
+private const val CLOUD_DOC_URL = "https://github.com/cumseedih/ceis/blob/main/docs/cloud.md"
 
 // ceis: the door follows design.md and the owner's reference screens: circular
 // white icon buttons with the border token, the bare mark, headline-sm headings,

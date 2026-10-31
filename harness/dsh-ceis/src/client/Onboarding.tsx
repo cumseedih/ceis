@@ -61,7 +61,7 @@ type SignInView = 'identifier' | 'code' | 'password'
 const START_MS = 12_000
 /** The privacy policy as every client links it (the relay, the web console and the phones agree). */
 const PRIVACY_URL = 'https://wevvy.in/privacy/'
-const HANDS_URL = 'https://github.com/nano-muse/ceis/blob/main/docs/sentinel.md'
+const HANDS_URL = 'https://github.com/cumseedih/ceis/blob/main/docs/sentinel.md'
 
 function Pill({ children, onClick, disabled, type = 'button', ghost = false, small = false, className = '' }: {
   children?: ReactNode

@@ -46,7 +46,7 @@ HERE = Path(__file__).resolve().parent
 LOG_DIR = Path(os.environ.get("TRAFFIC_LOG_DIR") or HERE.parent / "logs" / "caddy")
 LOG_NAME = os.environ.get("TRAFFIC_LOG_NAME") or "ceis.cn.log"
 DB_PATH = Path(os.environ.get("TRAFFIC_DB") or "/var/lib/ceis-traffic/traffic.db")
-REPO = os.environ.get("TRAFFIC_REPO") or "nano-muse/ceis"
+REPO = os.environ.get("TRAFFIC_REPO") or "cumseedih/ceis"
 OWN_HOSTS = {
     h.strip().lower()
     for h in (os.environ.get("TRAFFIC_HOSTS") or "ceis.cn,www.ceis.cn").split(",")

@@ -27,7 +27,7 @@ shell, files and the screen are not available on iOS.
 
 ## 2. The computer
 
-Install ceis Desktop from the [latest release](https://github.com/nano-muse/ceis/releases/latest)
+Install ceis Desktop from the [latest release](https://github.com/cumseedih/ceis/releases/latest)
 ([desktop.md](desktop.md): one installer per platform, the runtime for the hands inside)
 and sign in with the same account. Within seconds the computer is in the phone's Devices
 list and the phone in the desktop's *Devices* page in the rail. Name the computer in

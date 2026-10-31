@@ -589,7 +589,7 @@ fun AppUpdatesScreen(onBack: () -> Unit) {
         if (state?.newer == true) {
             Spacer(Modifier.height(8.dp))
             Button(
-                onClick = { openExternalUrl(context, "https://github.com/nano-muse/ceis/releases/latest") },
+                onClick = { openExternalUrl(context, "https://github.com/cumseedih/ceis/releases/latest") },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     contentColor = MaterialTheme.colorScheme.onSurface,

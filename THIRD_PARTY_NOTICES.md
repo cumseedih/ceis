@@ -12,7 +12,7 @@ The app is a modified copy of [OpenMinis](https://github.com/OpenMinis/OpenMinis
 
 | Component | Source | License | Notes |
 |---|---|---|---|
-| [proot](https://github.com/nano-muse/proot) | git submodule `android/deps/proot`, our fork of [OpenMinis/proot](https://github.com/OpenMinis/proot), itself a fork of [termux/proot](https://github.com/termux/proot) | **GPL-2.0** | The Linux sandbox. Runs as a separate program (`assets/proot-aarch64`; also shipped as `lib/arm64-v8a/libproot.so` and the two loaders so the installer places them where Android lets them execute). Built by `android/deps/build_proot.sh`. |
+| proot | git submodule `android/deps/proot`, our fork of [OpenMinis/proot](https://github.com/OpenMinis/proot), itself a fork of [termux/proot](https://github.com/termux/proot) | **GPL-2.0** | The Linux sandbox. Runs as a separate program (`assets/proot-aarch64`; also shipped as `lib/arm64-v8a/libproot.so` and the two loaders so the installer places them where Android lets them execute). Built by `android/deps/build_proot.sh`. |
 | [talloc](https://talloc.samba.org) (Samba) | vendored at `android/deps/talloc` | **LGPL-3.0-or-later** | Memory allocator proot is statically linked against |
 | [cppjieba](https://github.com/yanyiwu/cppjieba) | vendored in `jieba_jni` | **MIT** | Chinese word segmentation (header-only + dictionaries) |
 | [rclone](https://github.com/rclone/rclone) | `android/deps/rclone-mobile`, built into `rclone.aar` by `android/deps/build_rclone_android.sh` with [gomobile](https://pkg.go.dev/golang.org/x/mobile) (BSD-3-Clause) | **MIT** | Remote destinations for backup (SMB / WebDAV / SFTP / S3 / FTP) |

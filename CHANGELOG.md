@@ -2020,7 +2020,7 @@ The first version of the Android line: [OpenMinis](https://github.com/OpenMinis/
 
 ### Changed
 
-- **The app is OpenMinis 1.13, imported with `git subtree` under `android/`** (unsquashed, 38 upstream commits in the history). The iOS half, the iSH submodule and iOS-only scripts are removed; `deps/proot` is a submodule pointing at our fork [nano-muse/proot](https://github.com/nano-muse/proot), whose `loader-info.awk` no longer needs gawk.
+- **The app is OpenMinis 1.13, imported with `git subtree` under `android/`** (unsquashed, 38 upstream commits in the history). The iOS half, the iSH submodule and iOS-only scripts are removed; `deps/proot` is a submodule pointing at our fork of proot, whose `loader-info.awk` no longer needs gawk.
 - **Identity**: application id `io.github.ceis.app` (the Kotlin package stays `com.openminis.app` for upstream merges), name ceis in all 17 locales and in every user-facing string, the agent's default name and 🐾 header, the one-stroke N as adaptive launcher icon (white tile, brand gradient; a dark skin; Android 13 themed-icon layer; a flat status-bar mark for notifications), the brand blue `#015CFB` / `#58A6FF` instead of iOS blue and the teal Material scheme, one accent hue in chat (links, thinking, inline code, blockquotes, the send button, the user bubble).
 - **Where things point**: update check on `cumseedih/ceis` releases; About shows the licence, "Based on OpenMinis 1.13" and the Meta trademark note; Feedback opens a pre-filled GitHub issue form; the privacy policy is [docs/privacy.md](docs/privacy.md). The Telegram group and the mailbox are gone.
 - **Licence**: the repository is GPL-3.0-or-later ([NOTICE](NOTICE), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)); contributions need a DCO sign-off.

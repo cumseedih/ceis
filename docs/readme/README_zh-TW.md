@@ -159,7 +159,7 @@ https://github.com/user-attachments/assets/bf0ec2ae-59aa-4358-9dd0-c9d045ee7bee
 
 ceis 站在別人的工作之上；條款見 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
 
-- [OpenMinis](https://github.com/OpenMinis/OpenMinis)：手機 App 所基於的裝置端智慧體，沙箱來自 [proot](https://github.com/nano-muse/proot) 和 [Alpine Linux](https://alpinelinux.org/)。
+- [OpenMinis](https://github.com/OpenMinis/OpenMinis)：手機 App 所基於的裝置端智慧體，沙箱來自 proot 和 [Alpine Linux](https://alpinelinux.org/)。
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)：桌面 App 作為外掛程式執行在它上面。
 - [UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop)（字節跳動）：桌面端「手」的操作器移植自它，舞台上的標記參考它的 ScreenMarker。
 - [MobileGym](https://github.com/Purewhiter/mobilegym)、[MemGUI-Bench](https://github.com/lgy0404/MemGUI-Bench)、[PhoneHarness](https://github.com/PhoneHarness/PhoneHarness)、[CopilotKit/OpenMuse](https://github.com/CopilotKit/OpenMuse)、[Open-AutoGLM](https://github.com/zai-org/Open-AutoGLM)、[ClawGUI](https://github.com/ZJU-REAL/ClawGUI)：手機操作器、軌跡和產品思路。

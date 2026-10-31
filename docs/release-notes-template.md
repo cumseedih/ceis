@@ -50,7 +50,7 @@ ceis is open source, free and non-profit. Sign in with a phone number or an e-ma
 
 A stable version is not the last word: ceis keeps evolving, and the [roadmap](https://github.com/cumseedih/ceis/blob/main/docs/roadmap.md) says what comes next. We use it every day and know where it is rough; tell us where it broke for you and what you want it to do. Thanks to everyone who tried a build and reported what broke. [Open an issue](https://github.com/cumseedih/ceis/issues/new/choose) · [send a pull request](https://github.com/cumseedih/ceis/blob/main/CONTRIBUTING.md) · [Discussions](https://github.com/cumseedih/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X) · [star the repo](https://github.com/cumseedih/ceis); if it is useful to you, a star helps others find it.
 
-Based on [OpenMinis](https://github.com/OpenMinis/OpenMinis) 1.13 (GPL-3.0), modified since 2026-09-24. The complete corresponding source of this build is tag `v<version>` plus the `android/deps/proot` submodule ([nano-muse/proot](https://github.com/nano-muse/proot)). The whole repository is GPL-3.0-or-later. ceis Desktop carries DeepSeek Harness unmodified, with its licence files inside; *harness* in the name is the word, not DeepSeek's. ceis is not affiliated with Meta; Muse is a trademark of Meta Platforms, Inc. The desktop follows what Muse's app looks like and does, written down from using it; none of Meta's assets, code or content is in it.
+Based on [OpenMinis](https://github.com/OpenMinis/OpenMinis) 1.13 (GPL-3.0), modified since 2026-09-24. The complete corresponding source of this build is tag `v<version>` plus the `android/deps/proot` submodule. The whole repository is GPL-3.0-or-later. ceis Desktop carries DeepSeek Harness unmodified, with its licence files inside; *harness* in the name is the word, not DeepSeek's. ceis is not affiliated with Meta; Muse is a trademark of Meta Platforms, Inc. The desktop follows what Muse's app looks like and does, written down from using it; none of Meta's assets, code or content is in it.
 
 <!-- pull requests -->
 
@@ -91,6 +91,6 @@ ceis 开源、免费、非营利。手机号或邮箱登录后有一份起始额
 
 稳定版也不是最后一句话：ceis 在持续进化，接下来做什么写在[路线图](https://github.com/cumseedih/ceis/blob/main/docs/zh/roadmap.md)里。我们自己每天在用，知道哪些地方还糙；哪里坏了、想要什么，直接提 issue。谢谢每一位装过、试过、报过问题的人。[提 issue](https://github.com/cumseedih/ceis/issues/new/choose) · [发 PR](https://github.com/cumseedih/ceis/blob/main/CONTRIBUTING.md) · [Discussions](https://github.com/cumseedih/ceis/discussions) · [Discord](https://discord.gg/bkTySmm28X) · [点个 Star](https://github.com/cumseedih/ceis)；觉得有用，点个 Star，让更多人看到。
 
-基于 [OpenMinis](https://github.com/OpenMinis/OpenMinis) 1.13（GPL-3.0），自 2026-09-24 起修改；本版本的完整对应源码是 tag `v<version>` 加子模块 `android/deps/proot`（[nano-muse/proot](https://github.com/nano-muse/proot)）。整个仓库以 GPL-3.0-or-later 发布。ceis 桌面版原样携带 DeepSeek Harness 及其许可证文件；名字里的 *harness* 是普通词，不是 DeepSeek 的名字。ceis 与 Meta 无关，Muse 是 Meta Platforms, Inc. 的商标。桌面端照着 Muse 应用用起来的样子做，是用过之后写下来的；里面没有 Meta 的任何素材、代码或内容。
+基于 [OpenMinis](https://github.com/OpenMinis/OpenMinis) 1.13（GPL-3.0），自 2026-09-24 起修改；本版本的完整对应源码是 tag `v<version>` 加子模块 `android/deps/proot`。整个仓库以 GPL-3.0-or-later 发布。ceis 桌面版原样携带 DeepSeek Harness 及其许可证文件；名字里的 *harness* 是普通词，不是 DeepSeek 的名字。ceis 与 Meta 无关，Muse 是 Meta Platforms, Inc. 的商标。桌面端照着 Muse 应用用起来的样子做，是用过之后写下来的；里面没有 Meta 的任何素材、代码或内容。
 
 </details>

@@ -159,7 +159,7 @@ Si ceis vous est utile, merci de citer l'article.
 
 ceis s'appuie sur le travail d'autres personnes ; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) en donne les termes.
 
-- [OpenMinis](https://github.com/OpenMinis/OpenMinis) : l'agent embarqué sur lequel est bâtie l'app du téléphone, avec [proot](https://github.com/nano-muse/proot) et [Alpine Linux](https://alpinelinux.org/) pour le bac à sable.
+- [OpenMinis](https://github.com/OpenMinis/OpenMinis) : l'agent embarqué sur lequel est bâtie l'app du téléphone, avec proot et [Alpine Linux](https://alpinelinux.org/) pour le bac à sable.
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) : le harnais d'agents dont l'app de bureau est un plugin.
 - [UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop) (ByteDance) : l'opérateur des mains du bureau est un portage du leur, et les marqueurs de la scène suivent leur ScreenMarker.
 - [MobileGym](https://github.com/Purewhiter/mobilegym), [MemGUI-Bench](https://github.com/lgy0404/MemGUI-Bench), [PhoneHarness](https://github.com/PhoneHarness/PhoneHarness), [CopilotKit/OpenMuse](https://github.com/CopilotKit/OpenMuse), [Open-AutoGLM](https://github.com/zai-org/Open-AutoGLM), [ClawGUI](https://github.com/ZJU-REAL/ClawGUI) : l'opérateur du téléphone, les traces et les idées de produit.

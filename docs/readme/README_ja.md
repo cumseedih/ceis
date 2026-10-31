@@ -159,7 +159,7 @@ ceis が役に立ったら、論文を引用してください。
 
 ceis は多くの人の成果の上に成り立っています。条件は [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) に。
 
-- [OpenMinis](https://github.com/OpenMinis/OpenMinis)：スマホアプリの土台となったオンデバイスのエージェント。サンドボックスは [proot](https://github.com/nano-muse/proot) と [Alpine Linux](https://alpinelinux.org/)。
+- [OpenMinis](https://github.com/OpenMinis/OpenMinis)：スマホアプリの土台となったオンデバイスのエージェント。サンドボックスは proot と [Alpine Linux](https://alpinelinux.org/)。
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)：デスクトップアプリがプラグインとして載っているエージェントハーネス。
 - [UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop)(ByteDance)：デスクトップの手のオペレーターはその移植で、ステージのマーカーは ScreenMarker に倣っています。
 - [MobileGym](https://github.com/Purewhiter/mobilegym)、[MemGUI-Bench](https://github.com/lgy0404/MemGUI-Bench)、[PhoneHarness](https://github.com/PhoneHarness/PhoneHarness)、[CopilotKit/OpenMuse](https://github.com/CopilotKit/OpenMuse)、[Open-AutoGLM](https://github.com/zai-org/Open-AutoGLM)、[ClawGUI](https://github.com/ZJU-REAL/ClawGUI)：スマホのオペレーター、トレース、製品の着想。

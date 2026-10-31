@@ -482,6 +482,7 @@ fun CeisHome(
                                     onNameClick = { navController.safeNavigate(io.github.ceis.ui.profile.ROUTE_AGENT_PROFILE) },
                                     onOpenDrawer = { openDrawer() },
                                     navController = navController,
+                                    hazeState = hazeState,
                                     mainSessionId = mainSessionId,
                                 )
                             }
@@ -565,6 +566,7 @@ private fun TabHeader(
     onNameClick: () -> Unit,
     onOpenDrawer: () -> Unit,
     navController: NavHostController,
+    hazeState: dev.chrisbanes.haze.HazeState? = null,
     mainSessionId: String?,
 ) {
     var menu by remember { mutableStateOf(false) }
@@ -574,6 +576,7 @@ private fun TabHeader(
         statusLine = statusLine,
         onAvatarClick = onAvatarClick,
         onNameClick = onNameClick,
+        hazeState = hazeState,
         leading = {
             MuseRoundButton(
                 icon = Icons.Filled.Menu,

@@ -38,6 +38,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import io.github.ceis.ui.glass.liquidGlass
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -183,6 +184,10 @@ fun InlineVoiceInputPanel(
     conversationContextProvider: () -> com.openminis.app.speech.correction.ConversationContext = {
         com.openminis.app.speech.correction.ConversationContext.EMPTY
     },
+    // ceis: the voice panel is Liquid Glass functional layer (design.md:
+    // "the voice panel"). Null keeps the pre-glass flat background for any
+    // caller that has not threaded a HazeState through yet.
+    hazeState: dev.chrisbanes.haze.HazeState? = null,
 ) {
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val sttState by SpeechRecognitionManager.state.collectAsState()
@@ -470,11 +475,22 @@ fun InlineVoiceInputPanel(
         return
     }
 
+    val panelShape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp)
+    val panelGlass = if (hazeState != null) {
+        Modifier.liquidGlass(
+            hazeState = hazeState,
+            shape = panelShape,
+            tint = MaterialTheme.colorScheme.surface,
+        )
+    } else {
+        Modifier
+    }
     Column(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = if (expanded) ExpandedBase else CompactHeight, max = maxPanel)
             .animateContentSize(animationSpec = tween(280))
+            .then(panelGlass)
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {

@@ -222,6 +222,43 @@ private fun DrawScope.drawGlassOutline(outline: Outline, brush: Brush, style: Dr
 }
 
 /**
+ * Liquid Glass for a surface that lives in its own Android window (a
+ * [androidx.compose.ui.window.Dialog] or Material3's bottom sheet, both of
+ * which render outside the host activity's Compose tree), so there is no
+ * in-tree content for [HazeState] to sample and no single modifier chain
+ * can see "behind" the surface.
+ *
+ * The real blur comes from the platform instead: callers set
+ * `window.setBackgroundBlurRadius` (API 31+) on the dialog's own
+ * [android.view.Window] before calling this, which blurs whatever is
+ * actually behind that window at the OS compositor level — a closer match
+ * to the material than Haze's content-resample approach, since a dialog
+ * window has no access to the pixels behind it to resample in the first
+ * place. This modifier supplies the rest of the material on top of that:
+ * the regular-variant tint (lighter than the old flat translucency, since
+ * the platform blur is doing the separation work now) and the specular
+ * edge. Below API 31, or when the caller cannot set window blur, pass
+ * [forceOpaque] to fall back to the same near-opaque tint [liquidGlass]
+ * uses, so the dialog stays legible without a blur behind it.
+ */
+fun Modifier.liquidGlassWindowBlur(
+    shape: Shape,
+    tint: Color,
+    forceOpaque: Boolean = false,
+    specularLift: Float = 0f,
+): Modifier {
+    val tintAlpha = if (forceOpaque) {
+        LiquidGlassDefaults.FallbackTintAlpha
+    } else {
+        LiquidGlassDefaults.RegularTintAlpha
+    }
+    return this
+        .clip(shape)
+        .background(tint.copy(alpha = tintAlpha), shape)
+        .specularEdge(shape, specularLift)
+}
+
+/**
  * A leaf surface carrying the Liquid Glass material, with [content] laid
  * out inside it. Children must use flat fills: never nest a second glass
  * surface inside this one.

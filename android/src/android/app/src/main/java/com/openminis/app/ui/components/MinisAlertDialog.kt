@@ -1,5 +1,6 @@
 package com.openminis.app.ui.components
 
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,12 +16,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import com.openminis.app.R
 import com.openminis.app.ui.components.MinisTextButton
+import io.github.ceis.ui.glass.liquidGlassWindowBlur
 
 /**
  * App-wide confirmation dialog. Tighter than the Material 3 default
@@ -54,13 +58,34 @@ fun MinisAlertDialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true),
     ) {
+        // ceis: dialogs are in the Liquid Glass functional layer (design.md).
+        // A Dialog renders in its own Android Window with no access to the
+        // host activity's pixels, so Haze (which resamples in-tree content)
+        // cannot blur behind it — instead the platform blurs the window
+        // itself (API 31+) and liquidGlassWindowBlur supplies the tint and
+        // specular edge on top of that real blur. Below API 31 there is no
+        // window-blur API, so the dialog falls back to the same near-opaque
+        // tint liquidGlass() uses elsewhere without a HazeState.
+        val view = LocalView.current
+        val canBlurWindow = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+        if (canBlurWindow) {
+            val dialogWindow = (view.parent as? DialogWindowProvider)?.window
+            dialogWindow?.setBackgroundBlurRadius(
+                with(androidx.compose.ui.platform.LocalDensity.current) {
+                    io.github.ceis.ui.glass.LiquidGlassDefaults.RegularBlurRadius.roundToPx()
+                },
+            )
+        }
+        val shape = RoundedCornerShape(16.dp)
         Surface(
-            shape = RoundedCornerShape(16.dp),
-            // ceis: floating dialogs take a whisper of translucency
-            // (design.md: dialogs are in the glass layer; a dialog window
-            // cannot blur the app behind it, so the tint carries it).
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
-            tonalElevation = 6.dp,
+            shape = shape,
+            color = androidx.compose.ui.graphics.Color.Transparent,
+            modifier = Modifier.liquidGlassWindowBlur(
+                shape = shape,
+                tint = MaterialTheme.colorScheme.surface,
+                forceOpaque = !canBlurWindow,
+            ),
+            tonalElevation = 0.dp,
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(

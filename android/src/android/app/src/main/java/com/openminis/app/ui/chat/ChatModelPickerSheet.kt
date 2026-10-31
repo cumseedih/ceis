@@ -1,5 +1,7 @@
 package com.openminis.app.ui.chat
 
+import io.github.ceis.ui.glass.liquidGlassWindowBlur
+
 // [T-android-split-chat] ModelPickerSheet (+ its private helpers fuzzyMatch /
 // providerDotColor) extracted verbatim from ChatScreen.kt. Full import block
 // copied from ChatScreen.kt (unused imports are warnings, not errors);
@@ -402,11 +404,18 @@ internal fun ModelPickerSheet(
         result
     }
 
+    val sheetShape = androidx.compose.material3.BottomSheetDefaults.ExpandedShape
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        // ceis: the model picker floats like the other sheets (design.md).
-        containerColor = ChatColors.background.copy(alpha = 0.92f),
+        // ceis: the model picker is Liquid Glass (design.md: "the model
+        // picker"). containerColor is transparent because the real material
+        // is drawn by liquidGlassWindowBlur below on the content Column —
+        // same reasoning as MinisAlertDialog: M3's bottom sheet renders in
+        // its own window, so the platform blurs that window (set from
+        // inside the content, below) while this supplies the tint and
+        // specular edge on top of it.
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
         // Match the slim drag handle used by StandardChatSheet (6dp top / 4dp
         // bottom) so the title sits flush with the indicator instead of the
         // Material default's ~44dp whitespace gap above it.
@@ -429,10 +438,24 @@ internal fun ModelPickerSheet(
             }
         },
     ) {
+        val sheetView = androidx.compose.ui.platform.LocalView.current
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            val sheetWindow = (sheetView.parent as? androidx.compose.ui.window.DialogWindowProvider)?.window
+            sheetWindow?.setBackgroundBlurRadius(
+                with(androidx.compose.ui.platform.LocalDensity.current) {
+                    io.github.ceis.ui.glass.LiquidGlassDefaults.RegularBlurRadius.roundToPx()
+                },
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f)
+                .liquidGlassWindowBlur(
+                    shape = sheetShape,
+                    tint = ChatColors.background,
+                    forceOpaque = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S,
+                )
                 // [T-android-model-picker-polish] navigationBarsPadding ALONE.
                 //
                 // This also carried a fixed `padding(bottom = 32.dp)`, so the

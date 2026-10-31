@@ -4,6 +4,14 @@ All notable changes to ceis. The format follows [Keep a Changelog](https://keepa
 
 ## [Unreleased]
 
+### Liquid Glass: extend the material to the dialog, model picker, voice panel and persona chip
+
+- **The app-wide confirmation dialog (`MinisAlertDialog`) now carries real Liquid Glass.** It previously had a comment claiming design.md compliance but was in fact a flat, slightly translucent surface with no blur or specular edge. It now uses a new `liquidGlassWindowBlur` modifier: on Android 12+ the dialog's own window is blurred by the platform (`Window.setBackgroundBlurRadius`, since a `Dialog` renders outside the host activity's Compose tree and Haze has nothing in-tree to sample), with the material's tint and specular rim drawn on top; below Android 12 it falls back to the same near-opaque tint used elsewhere without a `HazeState`.
+- **Both model picker sheets (`ChatModelPickerSheet`, `UnifiedModelPickerSheet`) get the same treatment**, replacing a flat translucent `containerColor` (or no glass at all, in the voice variant) with the window-blur approach.
+- **The persona chip (`MuseNamePill`, in `MuseHeader`) is now Liquid Glass** when a `HazeState` is threaded through (wired from the home shell's existing haze source), replacing its flat background and drop shadow. Falls back to the previous flat pill when no `HazeState` is supplied.
+- **The inline voice input panel now has a glass background** (previously none at all), using the same Haze-based material as the composer and tab bar.
+- All four were explicitly named in design.md's Liquid Glass "where it applies" list already; the code is now consistent with that spec. Composer capsule, sent-bubble gradient, and content-layer elements (message bubbles, settings rows, lists) are unchanged, per the spec's own exceptions.
+
 ### Connectors: Attio's real brand mark
 
 - **Attio now shows its own mark in Settings → Connectors**, instead of the generic lettered tile. Sourced from Attio's own brand page (`attio.com/brand`), hand-added since Attio isn't in the Simple Icons set this app otherwise draws connector marks from; `scripts/brand-marks.mjs` now also reads `scripts/custom-marks.json` for brands sourced this way, so regenerating the mark bundle won't drop it. See `docs/connectors-logos.md` for the full list of brands checked and why the other 27 still without a mark were skipped (most require explicit permission that wasn't sought, have no accessible official file, or — Apify — can't be represented by this app's single-colour mark format without recoloring their mark).

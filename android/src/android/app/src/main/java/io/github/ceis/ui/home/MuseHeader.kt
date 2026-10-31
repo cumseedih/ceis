@@ -39,9 +39,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openminis.app.R
 import com.openminis.app.ui.theme.ChatColors
+import dev.chrisbanes.haze.HazeState
 import io.github.ceis.ui.avatar.AgentAvatarDisc
 import io.github.ceis.ui.avatar.AgentMood
 import io.github.ceis.ui.avatar.rememberAvatarSize
+import io.github.ceis.ui.glass.liquidGlass
 
 /** The soft disc the face sits on — Muse draws its character on a pale circle. */
 @Composable
@@ -63,6 +65,10 @@ fun MuseHeader(
     onNameClick: (() -> Unit)? = null,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
+    // ceis: the persona chip (MuseNamePill) is header-control glass per
+    // design.md; null keeps the pre-glass flat look for any caller that has
+    // not threaded a HazeState through yet.
+    hazeState: HazeState? = null,
     modifier: Modifier = Modifier,
 ) {
     val size by rememberAvatarSize()
@@ -98,6 +104,7 @@ fun MuseHeader(
                     statusLine = statusLine,
                     statusColor = statusColor,
                     onClick = onNameClick ?: onAvatarClick,
+                    hazeState = hazeState,
                 )
             }
         }
@@ -127,13 +134,23 @@ fun MuseNamePill(
     statusLine: String? = null,
     statusColor: Color = ChatColors.secondaryText,
     onClick: (() -> Unit)? = null,
+    hazeState: HazeState? = null,
     modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(14.dp)
-    val base = modifier
-        .shadow(2.dp, shape, clip = false, ambientColor = Color.Black.copy(alpha = 0.16f), spotColor = Color.Black.copy(alpha = 0.16f))
-        .clip(shape)
-        .background(MuseTones.surface)
+    // ceis: the persona chip is Liquid Glass (design.md: "header controls
+    // and the persona chip"). With a HazeState threaded in, it gets the real
+    // material; otherwise it keeps the previous flat pill so callers that
+    // have not wired glass through yet still render correctly.
+    val base = if (hazeState != null) {
+        modifier
+            .liquidGlass(hazeState = hazeState, shape = shape, tint = MuseTones.surface)
+    } else {
+        modifier
+            .shadow(2.dp, shape, clip = false, ambientColor = Color.Black.copy(alpha = 0.16f), spotColor = Color.Black.copy(alpha = 0.16f))
+            .clip(shape)
+            .background(MuseTones.surface)
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = (if (onClick != null) base.clickable(onClick = onClick) else base)

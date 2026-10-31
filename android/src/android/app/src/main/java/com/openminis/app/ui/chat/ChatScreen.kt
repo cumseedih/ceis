@@ -5641,6 +5641,7 @@ fun ChatScreen(
                                 com.openminis.app.speech.correction.VoiceCorrection
                                     .buildConversationContext(context, viewModel.messages.value)
                             },
+                            hazeState = nmHazeState, // ceis: voice panel is glass (design.md)
                         )
                     } else if (recIsRecording) {
                         val levels by com.openminis.app.speech.SpeechRecognitionManager

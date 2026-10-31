@@ -1,5 +1,7 @@
 package com.openminis.app.ui.components
 
+import io.github.ceis.ui.glass.liquidGlassWindowBlur
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -152,10 +154,15 @@ fun UnifiedModelPickerSheet(
 
     val cardColor = MaterialTheme.colorScheme.surfaceContainerHigh
     val cardShape = RoundedCornerShape(14.dp)
+    val sheetShape = androidx.compose.material3.BottomSheetDefaults.ExpandedShape
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        // ceis: Liquid Glass, same reasoning as ChatModelPickerSheet — the
+        // real material is drawn by liquidGlassWindowBlur on the content
+        // Column below, over a platform window blur set from inside it.
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
         // Slim drag handle, same as the main picker / StandardChatSheet — the
         // Material default puts ~44dp of whitespace above the title.
         dragHandle = {
@@ -177,6 +184,15 @@ fun UnifiedModelPickerSheet(
             }
         },
     ) {
+        val sheetView = androidx.compose.ui.platform.LocalView.current
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            val sheetWindow = (sheetView.parent as? androidx.compose.ui.window.DialogWindowProvider)?.window
+            sheetWindow?.setBackgroundBlurRadius(
+                with(androidx.compose.ui.platform.LocalDensity.current) {
+                    io.github.ceis.ui.glass.LiquidGlassDefaults.RegularBlurRadius.roundToPx()
+                },
+            )
+        }
         // 0.9f fixed height + nav-bar inset, exactly like the main picker —
         // a content-wrapping column here let the voice pickers (whose provider
         // sections seed expanded) grow to cover the full screen.
@@ -184,6 +200,11 @@ fun UnifiedModelPickerSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f)
+                .liquidGlassWindowBlur(
+                    shape = sheetShape,
+                    tint = MaterialTheme.colorScheme.surface,
+                    forceOpaque = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S,
+                )
                 .navigationBarsPadding(),
         ) {
             // Title bar — CENTERED title + trailing Done, byte-for-byte the

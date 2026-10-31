@@ -15,7 +15,7 @@ theme; the artwork is drawn unmodified at its brand colour. Services the
 set has no mark for keep the letter tile in the catalogue's brand colour,
 exactly as the desktop does.
 
-## Marks bundled (43)
+## Marks bundled (44)
 
 | Slug | Brand | Source |
 |---|---|---|
@@ -23,6 +23,7 @@ exactly as the desktop does.
 | algolia | Algolia | https://www.algolia.com/press/ |
 | asana | Asana | https://asana.com |
 | atlassian | Atlassian | https://www.atlassian.com/company/news/press |
+| attio | Attio | https://attio.com/brand (hand-sourced, not in Simple Icons; see below) |
 | bitrise | Bitrise | https://www.bitrise.io/press |
 | box | Box | https://www.box.com/en-gb/about-us/press |
 | buildkite | Buildkite | https://buildkite.com/brand-assets |
@@ -66,13 +67,56 @@ exactly as the desktop does.
 The `source` column is the brand's own page as recorded by Simple Icons 16.33.0
 (`data/simple-icons.json`); the full per-mark provenance lives in that file.
 
-## Services without a mark in the set (28, letter tile kept)
+## Hand-sourced marks (not in Simple Icons)
 
-These brands have no entry in Simple Icons 16.33.0 (several were removed
-from the set at their owners' request, so older copies were not reused):
-monday.com, Attio, Close, Fireflies.ai, Slack, Heroku, Semgrep, Jam,
-Stytch, Honeycomb, Microsoft Learn, DeepWiki, Context7, Octagon,
-Audioscrape, Canva, YNAB, Exa, Tavily, Firecrawl, Apify, Simplescraper,
-Globalping, 高德地图 Amap, 智谱 Web Search, Telnyx, Oura, Mercado Libre.
-They keep the catalogue's coloured letter tile until a licensed mark is
-available.
+One brand below has no Simple Icons entry but does publish its mark on its
+own site for this kind of use, so it was added by hand in
+`scripts/custom-marks.json` instead (the generator merges it into
+`brand-marks.ts`; see the comment in `scripts/brand-marks.mjs`):
+
+- **Attio**: `attio-logomark.svg` from https://attio.com/brand (fetched
+  2026-10-31). The page's only restriction is "keep clear space around it,
+  and do not warp, stretch, recolor, or redraw" — the mark here is rescaled
+  from its native 37×30 viewBox to 24×24 preserving aspect ratio (uniform
+  scale plus centering, not a stretch) and otherwise unmodified.
+
+## Services checked and skipped (research done, no mark added)
+
+Checked on 2026-10-31 while filling this list; none of these were added,
+each for a documented reason, not an oversight:
+
+- **Explicit permission required**: Heroku (`devcenter.heroku.com/articles/heroku-brand-guidelines`
+  asks to contact brand@heroku.com before product/website use), Tavily
+  (`tavily.com/brand` says to seek permission before use), Exa (`exa.ai/brand`
+  frames third-party use as co-branding, which "requires approval from both
+  parties").
+- **Mark exists but terms are unclear for app/integration use**: Slack (the
+  official media kit covers general brand use but says nothing about
+  third-party app integration badges; Slack is also one of the brands Simple
+  Icons dropped at the owner's request, which argues for extra caution, not
+  less).
+- **Official page found, no accessible unrestricted file**: Firecrawl, YNAB,
+  Telnyx (assets are behind a Brandfolder/Dropbox collection or a zip without
+  stated third-party terms).
+- **No official brand/press page found**: Canva, Stytch, Honeycomb, Semgrep,
+  monday.com (whose logo a third party explicitly describes as needing
+  monday's written permission for commercial use), Oura.
+- **Inherently multi-colour, can't be represented**: Apify. Its official
+  symbol (`apify.com/resources/brand`) is three colours (blue, green,
+  orange); this app's mark system (`MARKS: Record<string, { d; hex }>`) is
+  single-path, single-colour by design, matching every other entry here.
+  Recoloring Apify's mark to fit would itself break their "don't modify"
+  terms. Adding multi-path, multi-colour support to the renderer (desktop
+  and Android both) is a larger change than a logo fill and wasn't done here.
+- **Not checked individually**: Close, Fireflies.ai, Jam, Microsoft Learn,
+  DeepWiki, Context7, Octagon, Audioscrape, Simplescraper, Globalping,
+  高德地图 Amap, 智谱 Web Search, Mercado Libre — smaller or narrower products
+  unlikely to publish a formal brand kit; not exhaustively searched.
+
+## Services without a mark in the set (27, letter tile kept)
+
+monday.com, Close, Fireflies.ai, Slack, Heroku, Semgrep, Jam, Stytch,
+Honeycomb, Microsoft Learn, DeepWiki, Context7, Octagon, Audioscrape, Canva,
+YNAB, Exa, Tavily, Firecrawl, Apify, Simplescraper, Globalping, 高德地图 Amap,
+智谱 Web Search, Telnyx, Oura, Mercado Libre. They keep the catalogue's
+coloured letter tile until a licensed mark is available.

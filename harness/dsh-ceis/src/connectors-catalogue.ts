@@ -61,7 +61,7 @@ export const CATALOGUE: CatalogueEntry[] = [
     about: { en: 'Bases, tables and records.', zh: '数据库、表格与记录。' } },
   { id: 'hubspot', name: 'HubSpot', category: 'work', url: 'https://mcp.hubspot.com/', auth: { kind: 'oauth', clientIdRequired: true, developer: 'https://developers.hubspot.com/' }, docs: 'https://developers.hubspot.com/mcp', icon: 'hubspot', color: '#FF7A59',
     about: { en: 'Contacts, companies, deals and tickets in your CRM.', zh: 'CRM 里的联系人、公司、交易与工单。' } },
-  { id: 'attio', name: 'Attio', category: 'work', url: 'https://mcp.attio.com/mcp', auth: { kind: 'oauth' }, docs: 'https://docs.attio.com/', color: '#1C1C1C',
+  { id: 'attio', name: 'Attio', category: 'work', url: 'https://mcp.attio.com/mcp', auth: { kind: 'oauth' }, docs: 'https://docs.attio.com/', icon: 'attio', color: '#1C1C1C',
     about: { en: 'People, companies, deals and notes in your Attio CRM.', zh: 'Attio CRM 里的人、公司、交易与笔记。' } },
   { id: 'close', name: 'Close', category: 'work', url: 'https://mcp.close.com/mcp', auth: { kind: 'oauth' }, docs: 'https://developer.close.com/mcp/', color: '#1463FF',
     about: { en: 'Leads, opportunities and activities in Close CRM.', zh: 'Close CRM 里的线索、商机与活动。' } },

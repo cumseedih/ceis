@@ -4,6 +4,10 @@ All notable changes to ceis. The format follows [Keep a Changelog](https://keepa
 
 ## [Unreleased]
 
+### Connectors: Attio's real brand mark
+
+- **Attio now shows its own mark in Settings → Connectors**, instead of the generic lettered tile. Sourced from Attio's own brand page (`attio.com/brand`), hand-added since Attio isn't in the Simple Icons set this app otherwise draws connector marks from; `scripts/brand-marks.mjs` now also reads `scripts/custom-marks.json` for brands sourced this way, so regenerating the mark bundle won't drop it. See `docs/connectors-logos.md` for the full list of brands checked and why the other 27 still without a mark were skipped (most require explicit permission that wasn't sought, have no accessible official file, or — Apify — can't be represented by this app's single-colour mark format without recoloring their mark).
+
 ### Rebrand: finish the name cleanup, relabel the project's own copyright
 
 - **The repository-wide sweep now covers CI configs, the docs site, and all historical release notes.** The prior two passes missed `.github/workflows/*.yml` (GHCR image paths, the Pages workflow), `website/.vitepress/*`, every `docs/releases/v*.md` file, all `docs/readme/README_*.md` translations, `docs/zh/*.md`, and assorted source files across `android/`, `cloud/`, `harness/dsh-ceis/`, `web/`, and `scripts/`. These are now consistent with the rest of the codebase.

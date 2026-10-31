@@ -165,6 +165,7 @@
         "kind": "oauth"
       },
       "docs": "https://docs.attio.com/",
+      "icon": "attio",
       "color": "#1C1C1C",
       "about": {
         "en": "People, companies, deals and notes in your Attio CRM.",

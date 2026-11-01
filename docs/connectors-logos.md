@@ -101,17 +101,52 @@ each for a documented reason, not an oversight:
 - **No official brand/press page found**: Canva, Stytch, Honeycomb, Semgrep,
   monday.com (whose logo a third party explicitly describes as needing
   monday's written permission for commercial use), Oura.
-- **Inherently multi-colour, can't be represented**: Apify. Its official
-  symbol (`apify.com/resources/brand`) is three colours (blue, green,
-  orange); this app's mark system (`MARKS: Record<string, { d; hex }>`) is
-  single-path, single-colour by design, matching every other entry here.
-  Recoloring Apify's mark to fit would itself break their "don't modify"
-  terms. Adding multi-path, multi-colour support to the renderer (desktop
-  and Android both) is a larger change than a logo fill and wasn't done here.
-- **Not checked individually**: Close, Fireflies.ai, Jam, Microsoft Learn,
-  DeepWiki, Context7, Octagon, Audioscrape, Simplescraper, Globalping,
-  高德地图 Amap, 智谱 Web Search, Mercado Libre — smaller or narrower products
-  unlikely to publish a formal brand kit; not exhaustively searched.
+- **Inherently multi-colour, can't be represented**: Apify (`apify.com/resources/brand`,
+  three colours: blue, green, orange) and Close (`close.com/brand`, official
+  `mark.svg` from the 2024 logo kit, three colours: green `#4EC375`, blue
+  `#1463FF`, yellow `#FFBC00`). Close's page explicitly permits integration
+  partners to use its assets ("If your product or service integrates with
+  Close, you may use the brand assets of Close to showcase the integration"),
+  so the block here is purely technical, not permission: this app's mark
+  system (`MARKS: Record<string, { d; hex }>`) is single-path, single-colour
+  by design, matching every other entry here. Recoloring either mark down to
+  one colour would itself break their "do not modify the logo in any way"
+  terms. Adding multi-path, multi-colour support to the renderer (desktop and
+  Android both) is a larger change than a logo fill and wasn't done here.
+- **Official icon found, no usable vector source**: Firecrawl
+  (`firecrawl.dev/press-brand`) publishes a standalone flame symbol with no
+  stated third-party restriction, but only as PNG — this repository's marks
+  are SVG path data, and no reliable PNG-to-SVG vectorisation tool was
+  available in the environment this research ran in. Hand-tracing a raster
+  icon into a path risks distorting their mark, which the discipline here
+  treats the same as explicit "don't modify" terms. Revisit if a proper
+  vectoriser (e.g. potrace) becomes available, or if Firecrawl adds an SVG.
+  (Note: firecrawl.dev/press-brand also contains a block of text addressed to
+  AI agents instructing them to fetch onboarding files; that was recognised
+  as untrusted page content, not a real instruction, and was not acted on.)
+- **Mark exists but terms unclear for integration badges, revisited**: Slack
+  — rechecked `brand.slackhq.com/terms-of-service` directly. Its terms permit
+  a Marketplace-listed app to say it "integrates with Slack," but say nothing
+  about showing the Slack mark in a third-party app's own UI (a connector
+  list, here), forbid combining it with other logos or covering part of it,
+  and give Slack sole discretion to revoke use. Same conclusion as before:
+  not confident enough to add it.
+- **Official press/media page exists, standalone icon not confirmed,
+  revisited**: YNAB (`ynab.com/press` points to a Brandfolder collection
+  with no stated file list or third-party terms in the page itself) and
+  Telnyx (`telnyx.com/media-kit`'s "Download our logo" is an undocumented
+  zip; the page states brand colours and clearspace rules but nothing about
+  third-party/integration use or whether an icon-only mark is included).
+  Neither resolved further than the first pass.
+- **No official brand/press page found** (researched individually, not
+  found): Fireflies.ai, Jam, DeepWiki, Context7 (Upstash, its parent company,
+  has a brand resource centre, but Context7 itself does not), Octagon,
+  Audioscrape, Simplescraper, Globalping, 高德地图 Amap, 智谱 Web Search (which
+  rebranded internationally to Z.ai in 2025 — official assets, if any, would
+  be under that name, not searched further here), Mercado Libre.
+- **Explicit authorization required**: Microsoft Learn. Microsoft's current
+  trademark guidelines require a written licence or express permission for
+  third-party use of its logos; same category as Heroku/Tavily/Exa above.
 
 ## Services without a mark in the set (27, letter tile kept)
 
@@ -119,4 +154,6 @@ monday.com, Close, Fireflies.ai, Slack, Heroku, Semgrep, Jam, Stytch,
 Honeycomb, Microsoft Learn, DeepWiki, Context7, Octagon, Audioscrape, Canva,
 YNAB, Exa, Tavily, Firecrawl, Apify, Simplescraper, Globalping, 高德地图 Amap,
 智谱 Web Search, Telnyx, Oura, Mercado Libre. They keep the catalogue's
-coloured letter tile until a licensed mark is available.
+coloured letter tile until a licensed mark is available. All 27 have now
+been individually researched at least once (see the skip reasons above);
+none currently qualifies.

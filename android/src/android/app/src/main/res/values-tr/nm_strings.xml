@@ -1244,4 +1244,25 @@
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>
+    <!-- ceis: agent reply, tool rows, running tasks sheet (design.md, Agent reply) -->
+    <string name="nm_tool_row_open">Ayrıntıları göster</string>
+    <string name="nm_reply_copy">Yanıtı kopyala</string>
+    <string name="nm_reply_copied">Kopyalandı</string>
+    <string name="nm_reply_read_aloud">Sesli oku</string>
+    <string name="nm_scroll_to_bottom">En alta kaydır</string>
+    <string name="nm_header_working">Çalışıyor</string>
+    <string name="nm_tasks_running_link">Çalışan görevler: %1$d</string>
+    <string name="nm_tasks_title">Arka plan görevleri</string>
+    <string name="nm_tasks_close">Kapat</string>
+    <string name="nm_tasks_section_running">Çalışıyor</string>
+    <string name="nm_tasks_section_finished">Tamamlananlar</string>
+    <string name="nm_task_untitled">Başlıksız sohbet</string>
+    <string name="nm_task_kind_chat">Sohbet</string>
+    <string name="nm_task_kind_scheduled">Zamanlanmış</string>
+    <string name="nm_task_state_running">Çalışıyor</string>
+    <string name="nm_task_state_done">Bitti</string>
+    <string name="nm_task_state_failed">Başarısız</string>
+    <string name="nm_task_open_chat">Sohbeti aç</string>
+    <string name="nm_tasks_load_more">Daha fazla yükle</string>
+    <string name="nm_tasks_none">Burada henüz bir şey yok</string>
 </resources>

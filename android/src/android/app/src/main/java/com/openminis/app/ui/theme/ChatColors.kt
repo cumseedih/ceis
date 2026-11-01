@@ -145,7 +145,7 @@ val DarkChatPalette = ChatPalette(
     // toolBg (#3A3A3F), clearly above codeBlockBg (#262626) so small inline
     // chips read against both the wash and fenced blocks.
     inlineCodeBg = Color(0xFF34343A),
-    inlineCodeText = Color(0xFF0064D4),
+    inlineCodeText = Color(0xFF6CB6FF), // ceis: was #0064D4, 2.2:1 on the chip; 5.8:1 now (replica/design/tokens.dark.json)
     link = Color(0xFF0064D4),
     blockquoteBar = Color(0x800064D4),
     thinking = Color(0xFF0064D4),

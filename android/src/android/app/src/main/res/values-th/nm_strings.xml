@@ -1240,4 +1240,25 @@
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>
+    <!-- ceis: agent reply, tool rows, running tasks sheet (design.md, Agent reply) -->
+    <string name="nm_tool_row_open">แสดงรายละเอียด</string>
+    <string name="nm_reply_copy">คัดลอกคำตอบ</string>
+    <string name="nm_reply_copied">คัดลอกแล้ว</string>
+    <string name="nm_reply_read_aloud">อ่านออกเสียง</string>
+    <string name="nm_scroll_to_bottom">เลื่อนไปล่างสุด</string>
+    <string name="nm_header_working">กำลังทำงาน</string>
+    <string name="nm_tasks_running_link">งานที่กำลังทำงาน: %1$d</string>
+    <string name="nm_tasks_title">งานเบื้องหลัง</string>
+    <string name="nm_tasks_close">ปิด</string>
+    <string name="nm_tasks_section_running">กำลังทำงาน</string>
+    <string name="nm_tasks_section_finished">เสร็จแล้ว</string>
+    <string name="nm_task_untitled">แชทไม่มีชื่อ</string>
+    <string name="nm_task_kind_chat">แชท</string>
+    <string name="nm_task_kind_scheduled">ตามกำหนดเวลา</string>
+    <string name="nm_task_state_running">กำลังทำงาน</string>
+    <string name="nm_task_state_done">เสร็จสิ้น</string>
+    <string name="nm_task_state_failed">ไม่สำเร็จ</string>
+    <string name="nm_task_open_chat">เปิดแชท</string>
+    <string name="nm_tasks_load_more">โหลดเพิ่ม</string>
+    <string name="nm_tasks_none">ยังไม่มีอะไรที่นี่</string>
 </resources>

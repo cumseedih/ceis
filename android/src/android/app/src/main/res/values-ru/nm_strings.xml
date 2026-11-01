@@ -1252,4 +1252,25 @@
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>
+    <!-- ceis: agent reply, tool rows, running tasks sheet (design.md, Agent reply) -->
+    <string name="nm_tool_row_open">Показать подробности</string>
+    <string name="nm_reply_copy">Копировать ответ</string>
+    <string name="nm_reply_copied">Скопировано</string>
+    <string name="nm_reply_read_aloud">Прочитать вслух</string>
+    <string name="nm_scroll_to_bottom">Прокрутить вниз</string>
+    <string name="nm_header_working">Работает</string>
+    <string name="nm_tasks_running_link">Выполняемые задачи: %1$d</string>
+    <string name="nm_tasks_title">Фоновые задачи</string>
+    <string name="nm_tasks_close">Закрыть</string>
+    <string name="nm_tasks_section_running">Выполняется</string>
+    <string name="nm_tasks_section_finished">Завершённые</string>
+    <string name="nm_task_untitled">Чат без названия</string>
+    <string name="nm_task_kind_chat">Чат</string>
+    <string name="nm_task_kind_scheduled">По расписанию</string>
+    <string name="nm_task_state_running">Выполняется</string>
+    <string name="nm_task_state_done">Готово</string>
+    <string name="nm_task_state_failed">Не удалось</string>
+    <string name="nm_task_open_chat">Открыть чат</string>
+    <string name="nm_tasks_load_more">Показать ещё</string>
+    <string name="nm_tasks_none">Пока ничего нет</string>
 </resources>

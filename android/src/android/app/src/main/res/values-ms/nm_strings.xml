@@ -1240,4 +1240,25 @@
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>
+    <!-- ceis: agent reply, tool rows, running tasks sheet (design.md, Agent reply) -->
+    <string name="nm_tool_row_open">Tunjukkan butiran</string>
+    <string name="nm_reply_copy">Salin balasan</string>
+    <string name="nm_reply_copied">Disalin</string>
+    <string name="nm_reply_read_aloud">Baca dengan kuat</string>
+    <string name="nm_scroll_to_bottom">Tatal ke bawah</string>
+    <string name="nm_header_working">Sedang bekerja</string>
+    <string name="nm_tasks_running_link">Tugas sedang berjalan: %1$d</string>
+    <string name="nm_tasks_title">Tugas latar belakang</string>
+    <string name="nm_tasks_close">Tutup</string>
+    <string name="nm_tasks_section_running">Sedang berjalan</string>
+    <string name="nm_tasks_section_finished">Selesai</string>
+    <string name="nm_task_untitled">Sembang tanpa tajuk</string>
+    <string name="nm_task_kind_chat">Sembang</string>
+    <string name="nm_task_kind_scheduled">Berjadual</string>
+    <string name="nm_task_state_running">Sedang berjalan</string>
+    <string name="nm_task_state_done">Selesai</string>
+    <string name="nm_task_state_failed">Gagal</string>
+    <string name="nm_task_open_chat">Buka sembang</string>
+    <string name="nm_tasks_load_more">Muat lagi</string>
+    <string name="nm_tasks_none">Belum ada apa-apa</string>
 </resources>

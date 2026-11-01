@@ -227,3 +227,50 @@ fun CeisCircleIconButton(
         }
     }
 }
+
+/**
+ * Colours of the agent's turn (design.md, Agent reply). The hex values are the
+ * ones in replica/design/tokens.json (light) and tokens.dark.json (dark), where
+ * every pair is checked against WCAG AA. Change them there first.
+ */
+data class CeisReplyPalette(
+    /** ToolRow title and chevron at rest. */
+    val toolText: Color,
+    /** The brightest point of the running shimmer. */
+    val toolTextPeak: Color,
+    val diffAdd: Color,
+    val diffRemove: Color,
+    /** "N running tasks", "Open chat". */
+    val link: Color,
+    /** Scroll pill fill. */
+    val pillFill: Color,
+    /** Flat task rows inside the sheet. */
+    val rowFill: Color,
+    /** Outlined button border and the header ring. */
+    val outline: Color,
+) {
+    companion object {
+        val Light = CeisReplyPalette(
+            toolText = Color(0xFF6E6E73),
+            toolTextPeak = Color(0xFF1D1D1F),
+            diffAdd = Color(0xFF1B7A3E),
+            diffRemove = Color(0xFFCC2A1D),
+            link = Color(0xFF0066CC),
+            pillFill = Color(0xFFFFFFFF),
+            rowFill = Color(0xFFF5F5F7),
+            outline = Color(0xFF6E6E73),
+        )
+        val Dark = CeisReplyPalette(
+            toolText = Color(0xFFA1A1A6),
+            toolTextPeak = Color(0xFFFFFFFF),
+            diffAdd = Color(0xFF46C46F),
+            diffRemove = Color(0xFFFF6B63),
+            link = Color(0xFF4DA3FF),
+            pillFill = Color(0xFF2C2C30),
+            rowFill = Color(0xFF2C2C30),
+            outline = Color(0xFFA1A1A6),
+        )
+
+        fun of(dark: Boolean): CeisReplyPalette = if (dark) Dark else Light
+    }
+}

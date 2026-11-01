@@ -2,12 +2,9 @@ package io.github.ceis.ui.chat
 
 import android.content.SharedPreferences
 import android.text.format.DateFormat
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +12,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
@@ -94,12 +90,10 @@ fun rememberShowSteps(): State<Boolean> {
 }
 
 /**
- * The received bubble around one assistant text block, in the iMessage
- * template's language (design.md, Chat): left aligned, light grey, at most
- * about 70 percent of the row, with the small tail on the last block of a
- * message. Headings, lists, code blocks, and tables render inside this
- * single bubble; only standalone `ceis-*` protocol fences carry their own
- * card frame and are left bare.
+ * One assistant text block, drawn flat (design.md, Agent reply): full row width,
+ * no bubble, no tail. Headings, lists, code blocks, and tables render as plain
+ * content; standalone `ceis-*` protocol fences carry their own card frame and
+ * are left bare.
  */
 @Composable
 fun NmAssistantBubble(
@@ -113,27 +107,12 @@ fun NmAssistantBubble(
         content()
         return
     }
-    // ceis: 2dp top + 2dp bottom in the iMessage dress, so message rows
-    // sit exactly 4dp apart (template transcript gap); the list itself
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp), contentAlignment = Alignment.TopStart) {
-        Box(
-            modifier = Modifier
-                // The template's cap: about 70 percent of the row, and
-                // never wider than 600dp on a wide screen.
-                .widthIn(max = minOf(maxWidth * CeisChat.maxBubbleFraction, 600.dp))
-                // The tail extends below the body (template: 6pt drop), so
-                // the drop padding sits inside the shape: the background is
-                // drawn WITH the bubble shape (a plain background followed
-                // by clip draws an unclipped square — the flat-rectangle bug).
-                .background(
-                    if (MuseTones.isDark) CeisChat.receivedFillDark else CeisChat.receivedFill,
-                    nmBubbleShape(sent = false, tail = showTail),
-                )
-                .padding(bottom = if (showTail) CeisChat.tailDrop else 0.dp)
-                .padding(horizontal = 12.dp, vertical = 9.dp),
-        ) {
-            content()
-        }
+    // ceis: the agent's turn is flat text on the full row (design.md, Agent
+    // reply): no fill, no tail, no width cap. 2dp above and below keeps the
+    // rows of a turn 4dp apart. `showTail` stays so the call sites do not
+    // change; it no longer draws anything (sent bubbles still use the tail).
+    Box(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+        content()
     }
 }
 

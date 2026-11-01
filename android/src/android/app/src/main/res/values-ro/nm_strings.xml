@@ -1248,4 +1248,25 @@
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>
+    <!-- ceis: agent reply, tool rows, running tasks sheet (design.md, Agent reply) -->
+    <string name="nm_tool_row_open">Arată detaliile</string>
+    <string name="nm_reply_copy">Copiază răspunsul</string>
+    <string name="nm_reply_copied">Copiat</string>
+    <string name="nm_reply_read_aloud">Citește cu voce tare</string>
+    <string name="nm_scroll_to_bottom">Derulează în jos</string>
+    <string name="nm_header_working">Lucrează</string>
+    <string name="nm_tasks_running_link">Sarcini în desfășurare: %1$d</string>
+    <string name="nm_tasks_title">Sarcini în fundal</string>
+    <string name="nm_tasks_close">Închide</string>
+    <string name="nm_tasks_section_running">În desfășurare</string>
+    <string name="nm_tasks_section_finished">Finalizate</string>
+    <string name="nm_task_untitled">Conversație fără titlu</string>
+    <string name="nm_task_kind_chat">Conversație</string>
+    <string name="nm_task_kind_scheduled">Programată</string>
+    <string name="nm_task_state_running">În desfășurare</string>
+    <string name="nm_task_state_done">Finalizată</string>
+    <string name="nm_task_state_failed">Eșuată</string>
+    <string name="nm_task_open_chat">Deschide conversația</string>
+    <string name="nm_tasks_load_more">Încarcă mai multe</string>
+    <string name="nm_tasks_none">Încă nu este nimic aici</string>
 </resources>

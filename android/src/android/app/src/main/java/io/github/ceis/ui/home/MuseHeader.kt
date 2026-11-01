@@ -112,7 +112,14 @@ fun MuseHeader(
             Box(Modifier.align(Alignment.TopStart).padding(start = 16.dp, top = 6.dp)) { leading() }
         }
         if (trailing != null) {
-            Box(Modifier.align(Alignment.TopEnd).padding(end = 16.dp, top = 6.dp)) { trailing() }
+            // ceis: the activity ring sits beside the trailing button while an agent run is active
+            Row(
+                modifier = Modifier.align(Alignment.TopEnd).padding(end = 16.dp, top = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                io.github.ceis.ui.chat.HeaderActivityRing()
+                trailing()
+            }
         }
     }
 }

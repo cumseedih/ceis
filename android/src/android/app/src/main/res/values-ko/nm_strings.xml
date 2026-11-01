@@ -1240,4 +1240,25 @@
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>
+    <!-- ceis: agent reply, tool rows, running tasks sheet (design.md, Agent reply) -->
+    <string name="nm_tool_row_open">세부 정보 보기</string>
+    <string name="nm_reply_copy">답변 복사</string>
+    <string name="nm_reply_copied">복사됨</string>
+    <string name="nm_reply_read_aloud">소리 내어 읽기</string>
+    <string name="nm_scroll_to_bottom">맨 아래로 스크롤</string>
+    <string name="nm_header_working">작업 중</string>
+    <string name="nm_tasks_running_link">실행 중인 작업: %1$d</string>
+    <string name="nm_tasks_title">백그라운드 작업</string>
+    <string name="nm_tasks_close">닫기</string>
+    <string name="nm_tasks_section_running">실행 중</string>
+    <string name="nm_tasks_section_finished">완료됨</string>
+    <string name="nm_task_untitled">제목 없는 채팅</string>
+    <string name="nm_task_kind_chat">채팅</string>
+    <string name="nm_task_kind_scheduled">예약됨</string>
+    <string name="nm_task_state_running">실행 중</string>
+    <string name="nm_task_state_done">완료</string>
+    <string name="nm_task_state_failed">실패</string>
+    <string name="nm_task_open_chat">채팅 열기</string>
+    <string name="nm_tasks_load_more">더 보기</string>
+    <string name="nm_tasks_none">아직 아무것도 없습니다</string>
 </resources>

@@ -1244,4 +1244,25 @@
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>
+    <!-- ceis: agent reply, tool rows, running tasks sheet (design.md, Agent reply) -->
+    <string name="nm_tool_row_open">Ipakita ang mga detalye</string>
+    <string name="nm_reply_copy">Kopyahin ang sagot</string>
+    <string name="nm_reply_copied">Nakopya</string>
+    <string name="nm_reply_read_aloud">Basahin nang malakas</string>
+    <string name="nm_scroll_to_bottom">Mag-scroll sa ibaba</string>
+    <string name="nm_header_working">Nagtatrabaho</string>
+    <string name="nm_tasks_running_link">Mga tumatakbong gawain: %1$d</string>
+    <string name="nm_tasks_title">Mga gawain sa background</string>
+    <string name="nm_tasks_close">Isara</string>
+    <string name="nm_tasks_section_running">Tumatakbo</string>
+    <string name="nm_tasks_section_finished">Tapos na</string>
+    <string name="nm_task_untitled">Chat na walang pamagat</string>
+    <string name="nm_task_kind_chat">Chat</string>
+    <string name="nm_task_kind_scheduled">Naka-iskedyul</string>
+    <string name="nm_task_state_running">Tumatakbo</string>
+    <string name="nm_task_state_done">Tapos</string>
+    <string name="nm_task_state_failed">Nabigo</string>
+    <string name="nm_task_open_chat">Buksan ang chat</string>
+    <string name="nm_tasks_load_more">Magpakita pa</string>
+    <string name="nm_tasks_none">Wala pa rito</string>
 </resources>

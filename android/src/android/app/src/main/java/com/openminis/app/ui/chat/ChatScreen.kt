@@ -3654,6 +3654,7 @@ fun ChatScreen(
                                 slotKey = "mdblock:${item.parentBlockId}:${item.blockIndex}",
                                 markdown = item.messageMarkdown,
                             ) { io.github.ceis.ui.chat.NmAssistantBubble(enabled = true, rawText = item.rawText, showTail = !nmGroupContinues(item.messageId)) { // ceis: group tail
+                                androidx.compose.foundation.layout.Column { // ceis: the reply and its actions
                                 LargeContentGuard(
                                     content = item.rawText,
                                     isStreaming = item.isStreaming,
@@ -3671,6 +3672,22 @@ fun ChatScreen(
                                         ),
                                     )
                                 }
+                                // ceis: copy and read aloud, once the whole message has settled
+                                if (item.isLastBlockOfMessage && !item.messageIsStreaming && !io.github.ceis.ui.chat.isBareBlock(item.rawText)) {
+                                    io.github.ceis.ui.chat.ReplyActions(
+                                        onCopy = {
+                                            val cb = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                            cb.setPrimaryClip(android.content.ClipData.newPlainText("reply", item.messageMarkdown))
+                                            android.widget.Toast.makeText(
+                                                context,
+                                                context.getString(R.string.nm_reply_copied),
+                                                android.widget.Toast.LENGTH_SHORT,
+                                            ).show()
+                                        },
+                                        onReadAloud = { selectionReader.speak(io.github.ceis.ui.chat.ReplyText.forSpeech(item.messageMarkdown)) },
+                                    )
+                                }
+                                } // ceis: close the reply Column
                             } } // ceis: bubble
                             is FlatChatItem.AssistantThinking -> {
                                 // T300: hide Deep Thinking block when the user
@@ -4159,10 +4176,17 @@ fun ChatScreen(
                     }
                 }
 
-                if (userScrolledAway && contentOverflows.value && messages.isNotEmpty()) {
+                // ceis: the scroll-to-bottom pill (design.md, Agent reply, ScrollPill). Same
+                // gating as before, decided by ScrollPillPolicy; a neutral disc that fades.
+                run {
                     // ceis: clear every visible part of the measured footer.
                     val fabBottomPadding = bottomChromeHeight + 8.dp
-                    androidx.compose.material3.FilledIconButton(
+                    io.github.ceis.ui.chat.ScrollPill(
+                        visible = io.github.ceis.ui.chat.ScrollPillPolicy.visible(
+                            userScrolledAway = userScrolledAway,
+                            contentOverflows = contentOverflows.value,
+                            hasMessages = messages.isNotEmpty(),
+                        ),
                         onClick = {
                             // [T-android-scroll-fab-down-stuck] Clear the
                             // scrolled-away intent SYNCHRONOUSLY on tap — that
@@ -4190,25 +4214,10 @@ fun ChatScreen(
                                 tracedScrollToItem("FAB-DOWN/settle", 0, 0)
                             }
                         },
-                        // ceis: scroll-to-latest, centered under the conversation:
-                        // a disc in the send button's colour with an arrow in the
-                        // canvas colour (white on black in dark, inverted in light).
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(bottom = fabBottomPadding)
-                            .shadow(6.dp, CircleShape)
-                            .size(40.dp),
-                        colors = androidx.compose.material3.IconButtonDefaults.filledIconButtonColors(
-                            containerColor = ChatColors.sendButton,
-                            contentColor = ChatColors.background,
-                        ),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Scroll to bottom",
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
+                            .padding(bottom = fabBottomPadding),
+                    )
                 }
 
                 // T51 / T185: the "Move to…" capsule was previously rendered
@@ -4259,6 +4268,13 @@ fun ChatScreen(
             io.github.ceis.ui.chat.ContinueAskHost(viewModel, hazeState = nmHazeState)
             // ceis: the browser handed to the person (a login, a code) — "Your turn", Open, Done.
             io.github.ceis.ui.chat.BrowserHandOverHost(viewModel, hazeState = nmHazeState)
+            // ceis: other chats whose agent is running now, and the sheet that lists them
+            // (design.md, Agent reply). The link is hidden while nothing else runs.
+            io.github.ceis.ui.chat.BackgroundTasksHost(
+                chatRepository = chatRepository,
+                currentSessionId = viewModel.activeSessionId,
+                onOpenSession = { onMoveToSession(it) },
+            )
 
             // T-chat-title-pill-edit: reuse SessionEditSheet from the session
             // list (same composable, exposed `internal`) so title + category

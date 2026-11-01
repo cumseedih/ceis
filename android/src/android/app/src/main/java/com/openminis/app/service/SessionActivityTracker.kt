@@ -213,6 +213,14 @@ object SessionActivityTracker {
      */
     private val streamCancellers = mutableMapOf<String, () -> Unit>()
 
+    // ceis: when each active session's current run began (epoch ms), for the
+    // running-tasks sheet. Written before the active set changes, cleared in
+    // setInactive.
+    private val sessionStartedAt = java.util.concurrent.ConcurrentHashMap<String, Long>()
+
+    /** ceis: when [sessionId]'s current run began, or null when it is not running. */
+    fun startedAtMillis(sessionId: String): Long? = sessionStartedAt[sessionId]
+
     /**
      * T180-bg-notif: per-session "task is finishing — was it cancelled?"
      * flag, set by [setInactive]'s callers via [setInactiveError] when
@@ -301,6 +309,7 @@ object SessionActivityTracker {
         // "begins" only on the empty → non-empty edge. A second concurrent
         // session joining an in-flight run must not restart the clock.
         val wasRunIdle = _activeSessions.value.isEmpty()
+        sessionStartedAt.putIfAbsent(sessionId, System.currentTimeMillis()) // ceis: before the set changes
         _activeSessions.value = _activeSessions.value + sessionId
         if (onStop != null) {
             synchronized(streamCancellers) { streamCancellers[sessionId] = onStop }
@@ -339,6 +348,7 @@ object SessionActivityTracker {
     fun setInactive(sessionId: String) {
         val wasActive = sessionId in _activeSessions.value
         _activeSessions.value = _activeSessions.value - sessionId
+        sessionStartedAt.remove(sessionId) // ceis
         synchronized(streamCancellers) { streamCancellers.remove(sessionId) }
         val wasError = synchronized(pendingErrorFlag) { pendingErrorFlag.remove(sessionId) }
         Log.d(TAG, "Session deactivated: $sessionId (total: ${_activeSessions.value.size})")

@@ -141,6 +141,8 @@ fun NmTemplateChatHeader(
                 }
             }
             Spacer(Modifier.weight(1f))
+            // ceis: the activity ring, drawn only while an agent run is active
+            HeaderActivityRing()
             // ceis: video pill 44x44. Visual-only: the app has no video calling.
             Box(
                 modifier = Modifier

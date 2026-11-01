@@ -95,6 +95,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
@@ -645,9 +646,13 @@ internal fun ToolCallPill(
     val toolIcon = toolIconFor(block.toolName)
 
     // Icon color: tool color when running/done, error/cancel colors on failure
+    // ceis: the flat row in the agent's turn keeps one muted tone (design.md,
+    // Agent reply, ToolRow); a failed or cancelled call still takes its colour.
+    val replyPalette = io.github.ceis.ui.chat.ceisReplyPalette()
     val iconTint = when {
         isFailed -> ToolErrorColor
         isCancelled -> ToolCancelColor
+        nmCompact -> replyPalette.toolText // ceis
         isDone -> ToolCheckColor
         else -> toolAccent
     }
@@ -669,7 +674,7 @@ internal fun ToolCallPill(
     // next to the iOS counterpart. The bottom FloatingToolStatusBar
     // still shows a CircularProgressIndicator (that is the running-tool
     // status surface, where a spinner reads correctly).
-    val shimmerTranslate = if (isRunning) {
+    val shimmerTranslate = if (isRunning && !nmCompact) { // ceis: a compact row shimmers its title instead
         val transition = rememberInfiniteTransition(label = "toolPillShimmer")
         transition.animateFloat(
             initialValue = -1f,
@@ -693,12 +698,17 @@ internal fun ToolCallPill(
       Box(modifier = Modifier.weight(1f, fill = false)) {
         Row(
             modifier = Modifier
-                .background(
-                    ChatColors.toolCapsuleBg,
-                    CircleShape,
+                // ceis: the agent's turn shows a flat muted row, no capsule.
+                .then(
+                    if (nmCompact) {
+                        Modifier.clip(RoundedCornerShape(8.dp))
+                    } else {
+                        Modifier
+                            .background(ChatColors.toolCapsuleBg, CircleShape)
+                            .border(0.5.dp, ChatColors.toolBorder, CircleShape)
+                            .clip(CircleShape)
+                    },
                 )
-                .border(0.5.dp, ChatColors.toolBorder, CircleShape)
-                .clip(CircleShape)
                 .then(
                     if (shimmerTranslate != null) {
                         Modifier.drawWithContent {
@@ -721,13 +731,15 @@ internal fun ToolCallPill(
                     } else Modifier,
                 )
                 .combinedClickable(
+                    onClickLabel = stringResource(R.string.nm_tool_row_open), // ceis
+                    role = androidx.compose.ui.semantics.Role.Button, // ceis
                     onClick = { onOpenDetail(block.id) },
                     onLongClick = if (onRerunFromHere != null || onCopyDetails != null) {
                         { showToolMenu = true }
                     } else null,
                 )
-                .padding(horizontal = if (nmCompact) 10.dp else 12.dp) // ceis: compact chip
-                .height(if (nmCompact) 30.dp else 36.dp), // ceis: compact chip
+                .padding(horizontal = if (nmCompact) 0.dp else 12.dp) // ceis: flat row
+                .height(if (nmCompact) 40.dp else 36.dp), // ceis: flat row
             verticalAlignment = Alignment.CenterVertically,
         ) {
             // Status icon — always the typed tool icon. Color shifts to
@@ -756,18 +768,27 @@ internal fun ToolCallPill(
                 modifier = Modifier.weight(1f, fill = false),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = block.toolTitle.ifEmpty { block.toolName },
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false),
-                )
-                if (isRunning) {
-                    // iOS streaming: "..." bouncing dots after title text
-                    StreamingDotsText()
+                if (nmCompact) {
+                    // ceis: a muted title; a light band sweeps it while the call runs.
+                    io.github.ceis.ui.chat.ToolRowTitle(
+                        text = block.toolTitle.ifEmpty { block.toolName },
+                        running = isRunning,
+                        modifier = Modifier.weight(1f, fill = false),
+                    )
+                } else {
+                    Text(
+                        text = block.toolTitle.ifEmpty { block.toolName },
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false),
+                    )
+                    if (isRunning) {
+                        // iOS streaming: "..." bouncing dots after title text
+                        StreamingDotsText()
+                    }
                 }
             }
 
@@ -781,9 +802,25 @@ internal fun ToolCallPill(
                     text = durationText,
                     fontSize = 11.sp,
                     fontFamily = FontFamily.Monospace,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    color = if (nmCompact) replyPalette.toolText else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), // ceis: AA
                     softWrap = false,
                     maxLines = 1,
+                )
+            }
+            // ceis: ToolRow trailer (design.md): the diff badge of a finished file
+            // edit, then the chevron that says the row opens the detail sheet.
+            if (nmCompact) {
+                val diffStat = if (isDone) remember(block.toolArgs) { io.github.ceis.ui.chat.fileEditDiffStat(block) } else null
+                if (diffStat != null) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    io.github.ceis.ui.chat.DiffBadge(diffStat)
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = replyPalette.toolText,
+                    modifier = Modifier.size(16.dp),
                 )
             }
             // T168: restore per-tool stop button (reverts T117). Renders only

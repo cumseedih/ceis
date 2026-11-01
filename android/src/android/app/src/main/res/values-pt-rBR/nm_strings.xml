@@ -1245,4 +1245,25 @@
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>
+    <!-- ceis: agent reply, tool rows, running tasks sheet (design.md, Agent reply) -->
+    <string name="nm_tool_row_open">Mostrar detalhes</string>
+    <string name="nm_reply_copy">Copiar resposta</string>
+    <string name="nm_reply_copied">Copiado</string>
+    <string name="nm_reply_read_aloud">Ler em voz alta</string>
+    <string name="nm_scroll_to_bottom">Rolar até o fim</string>
+    <string name="nm_header_working">Trabalhando</string>
+    <string name="nm_tasks_running_link">Tarefas em andamento: %1$d</string>
+    <string name="nm_tasks_title">Tarefas em segundo plano</string>
+    <string name="nm_tasks_close">Fechar</string>
+    <string name="nm_tasks_section_running">Em andamento</string>
+    <string name="nm_tasks_section_finished">Concluídas</string>
+    <string name="nm_task_untitled">Conversa sem título</string>
+    <string name="nm_task_kind_chat">Conversa</string>
+    <string name="nm_task_kind_scheduled">Agendada</string>
+    <string name="nm_task_state_running">Em andamento</string>
+    <string name="nm_task_state_done">Concluída</string>
+    <string name="nm_task_state_failed">Falhou</string>
+    <string name="nm_task_open_chat">Abrir conversa</string>
+    <string name="nm_tasks_load_more">Carregar mais</string>
+    <string name="nm_tasks_none">Nada por aqui ainda</string>
 </resources>

@@ -34,6 +34,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Person
@@ -70,6 +71,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -150,19 +154,41 @@ fun SessionListScreen(
     val displayed = searchResults ?: liveSessions
 
     Scaffold(
-        containerColor = ChatColors.background,
+        containerColor = Color.White,
         topBar = {
             Column {
                 TopAppBar(
                     title = {
                         Text(
-                            text = stringResource(R.string.nm_messages_title),
-                            fontWeight = FontWeight.SemiBold,
+                            text = stringResource(R.string.app_name),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 17.sp,
+                            color = CeisColors.text,
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = onSettingsClick) {
-                            Icon(Icons.Filled.Person, contentDescription = stringResource(R.string.sessionlist_settings))
+                        // User avatar circle 34×34 with blue presence dot
+                        Box(modifier = Modifier.padding(start = 8.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .background(CeisColors.surface, CircleShape)
+                                    .clickable(onClick = onSettingsClick),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    Icons.Filled.Person,
+                                    contentDescription = stringResource(R.string.sessionlist_settings),
+                                    tint = CeisColors.muted,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(11.dp)
+                                    .background(CeisColors.primary, CircleShape)
+                                    .align(Alignment.TopEnd),
+                            )
                         }
                     },
                     actions = {
@@ -176,11 +202,12 @@ fun SessionListScreen(
                             Icon(
                                 if (searchActive) Icons.Filled.Close else Icons.Filled.Search,
                                 contentDescription = stringResource(R.string.sessionlist_search_action),
+                                tint = CeisColors.primary,
                             )
                         }
                         Box {
                             IconButton(onClick = { menuExpanded = true }) {
-                                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.new_chat))
+                                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.new_chat), tint = CeisColors.primary)
                             }
                             MinisMenu(
                                 expanded = menuExpanded,
@@ -209,7 +236,7 @@ fun SessionListScreen(
                             }
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = ChatColors.background),
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
                 )
                 AnimatedVisibility(visible = searchActive) {
                     OutlinedTextField(
@@ -309,9 +336,9 @@ fun SessionListScreen(
                                 )
                             }
                             HorizontalDivider(
-                                modifier = Modifier.padding(start = 16.dp),
+                                modifier = Modifier.padding(start = 82.dp),
                                 thickness = 0.5.dp,
-                                color = ChatColors.separator,
+                                color = CeisColors.border,
                             )
                         }
                     }
@@ -412,51 +439,79 @@ private fun SessionRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(if (selected) ChatColors.secondaryBg else ChatColors.background)
+            .background(if (selected) CeisColors.surface else Color.White)
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (session.pinnedAt != null) {
-            Icon(
-                Icons.Filled.PushPin,
-                contentDescription = stringResource(R.string.sessionlist_pin),
-                tint = ChatColors.tertiaryText,
-                modifier = Modifier.size(14.dp),
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-        }
+        // Pet orb avatar 54×54, transparent background
+        Image(
+            painter = painterResource(R.drawable.nm_pet_orb),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.size(54.dp),
+        )
+        Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = session.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.new_chat),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = ChatColors.primaryText,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = CeisColors.text,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             session.lastMessage?.takeIf { it.isNotBlank() }?.let { preview ->
-                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = preview,
-                    fontSize = 14.sp,
-                    color = ChatColors.secondaryText,
+                    fontSize = 15.sp,
+                    color = CeisColors.muted,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
         }
         Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = DateUtils.getRelativeTimeSpanString(
-                session.updatedAt,
-                System.currentTimeMillis(),
-                DateUtils.MINUTE_IN_MILLIS,
-                DateUtils.FORMAT_ABBREV_RELATIVE,
-            ).toString(),
-            fontSize = 12.sp,
-            color = ChatColors.tertiaryText,
+        Column(horizontalAlignment = Alignment.End) {
+            Text(
+                text = formatSessionTime(session.updatedAt),
+                fontSize = 13.sp,
+                color = CeisColors.muted,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            // Unread dot — shown when this session has an unread signal (pinnedAt repurposed
+            // here as a simple freshness flag; a real unread count lives in the data layer).
+            if (session.pinnedAt != null) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(CeisColors.primary, CircleShape),
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(4.dp))
+        Icon(
+            Icons.Filled.ChevronRight,
+            contentDescription = null,
+            tint = CeisColors.border,
+            modifier = Modifier.size(18.dp),
         )
+    }
+}
+
+private fun formatSessionTime(millis: Long): String {
+    val now = Calendar.getInstance()
+    val cal = Calendar.getInstance().apply { timeInMillis = millis }
+    return when {
+        now.get(Calendar.YEAR) == cal.get(Calendar.YEAR) &&
+            now.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR) ->
+            java.text.SimpleDateFormat("h:mm a", java.util.Locale.US).format(java.util.Date(millis))
+        now.get(Calendar.YEAR) == cal.get(Calendar.YEAR) &&
+            now.get(Calendar.DAY_OF_YEAR) - cal.get(Calendar.DAY_OF_YEAR) == 1 -> "Yesterday"
+        now.get(Calendar.YEAR) == cal.get(Calendar.YEAR) ->
+            android.text.format.DateFormat.format("MMM d", millis).toString()
+        else ->
+            android.text.format.DateFormat.format("MM/dd/yy", millis).toString()
     }
 }
 

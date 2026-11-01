@@ -1,0 +1,39 @@
+{
+  "_about": "Dark-theme tokens for the same components. Sheet rows sit flat on the sheet, never glass on glass.",
+  "color": {
+    "bg": "#000000",
+    "sheet": "#1C1C1E",
+    "surface": "#2C2C30",
+    "chip-bg": "#34343A",
+    "text": "#FFFFFF",
+    "text-muted": "#A1A1A6",
+    "tool-text": "#A1A1A6",
+    "tool-text-peak": "#FFFFFF",
+    "chevron": "#A1A1A6",
+    "diff-add": "#46C46F",
+    "diff-remove": "#FF6B63",
+    "link": "#4DA3FF",
+    "code-text": "#6CB6FF",
+    "pill-icon": "#FFFFFF",
+    "outline-border": "#A1A1A6"
+  },
+  "pairs": [
+    ["tool-text", "bg"],
+    ["tool-text-peak", "bg"],
+    ["chevron", "bg", "ui"],
+    ["diff-add", "bg"],
+    ["diff-remove", "bg"],
+    ["link", "bg"],
+    ["code-text", "chip-bg"],
+    ["pill-icon", "surface", "ui"],
+    ["outline-border", "sheet", "ui"],
+    ["text", "surface"],
+    ["text-muted", "surface"],
+    ["link", "surface"],
+    ["diff-add", "surface"],
+    ["diff-remove", "surface"],
+    ["text", "sheet"],
+    ["text-muted", "sheet"],
+    ["link", "sheet"]
+  ]
+}

@@ -1,0 +1,20 @@
+feature,area,priority,original,clone,notes
+Agent reply drawn flat and full width with no bubble,chat transcript,must,yes,no,overrides the received-bubble rule in design.md for the agent
+Inline code chip inside replies,chat transcript,must,yes,no,monospace tinted pill
+Tool-call rows collapsed to one muted line with a chevron,chat transcript,must,yes,no,tap expands detail
+Running shimmer on the active tool row label,motion,must,yes,no,about 1.3 s linear sweep
+Header activity spinner while the agent works,header,must,yes,no,about 1 s per turn
+Follow the stream while pinned to the end,scroll,must,yes,no,stop following when the person scrolls up
+Scroll-to-bottom pill when not at the end,scroll,must,yes,no,fades out at the end
+Copy and speak actions under a settled reply,chat transcript,should,yes,no,hidden while streaming
+Diff badge (+n -n) on a tool row that edited files,chat transcript,should,yes,no,
+Running-tasks link under the last reply,tasks,should,yes,no,hidden when nothing runs
+Running-tasks bottom sheet with peek and full heights,tasks,should,yes,no,scrim about 35 to 40 percent
+Finished section with Load more and an in-place spinner,tasks,should,yes,no,
+Centred time divider between message groups,chat transcript,could,yes,no,already partly in design.md
+Question card showing the chosen answer,chat transcript,could,yes,no,
+Suggestion ghost text with a chip in the composer,composer,could,yes,no,
+Source app icons wordmark and brand colour,brand,could,yes,skip,not ours; Ceis tokens and an open icon set instead
+Source app copy and model names,copy,could,yes,skip,every string written fresh in every locale
+Token counts and plan limits,tasks,could,yes,skip,belongs to the source app's plans
+Source app transcripts and account features,backend,could,yes,skip,Ceis uses its own relay and runtime

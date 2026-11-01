@@ -2,10 +2,13 @@ package io.github.ceis.ui.chat
 
 import android.content.SharedPreferences
 import android.text.format.DateFormat
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -90,10 +93,9 @@ fun rememberShowSteps(): State<Boolean> {
 }
 
 /**
- * One assistant text block, drawn flat (design.md, Agent reply): full row width,
- * no bubble, no tail. Headings, lists, code blocks, and tables render as plain
- * content; standalone `ceis-*` protocol fences carry their own card frame and
- * are left bare.
+ * One assistant text block drawn as an iMessage received bubble (design.md,
+ * Chat): grey fill, left-aligned, max 75% width, 20dp radius, optional tail.
+ * Bare protocol blocks bypass the bubble and render directly.
  */
 @Composable
 fun NmAssistantBubble(
@@ -107,12 +109,16 @@ fun NmAssistantBubble(
         content()
         return
     }
-    // ceis: the agent's turn is flat text on the full row (design.md, Agent
-    // reply): no fill, no tail, no width cap. 2dp above and below keeps the
-    // rows of a turn 4dp apart. `showTail` stays so the call sites do not
-    // change; it no longer draws anything (sent bubbles still use the tail).
-    Box(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
-        content()
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+        Box(
+            modifier = Modifier
+                .widthIn(max = androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp.dp * 0.75f)
+                .clip(nmBubbleShape(sent = false, tail = showTail))
+                .background(io.github.ceis.ui.theme.CeisChat.receivedFill)
+                .padding(horizontal = 12.dp, vertical = 9.dp)
+        ) {
+            content()
+        }
     }
 }
 

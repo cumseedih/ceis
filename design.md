@@ -239,13 +239,12 @@ match the template's visible standard values and are to be rechecked against
 the file when access allows.
 
 - Transcript rows sit 16dp from the screen edges (template, 402pt frame).
-  Sent bubbles take at most about 70 percent of the row width. The agent's
-  turn is not a bubble: it is flat text on the full row (see Agent reply).
+  Sent bubbles take at most about 70 percent of the row width. Agent bubbles
+  take at most about 75 percent of the row width.
 - Sent bubbles are right aligned with white text on the iMessage blue
   gradient, #4EBAFF at the top to #0088FF at the bottom (template). The
-  template's received bubble (left aligned, ink on light grey, #E9E9EB family)
-  no longer applies to the agent, by the owner's decision of 2026-11-01; Ceis
-  has no other received sender.
+  agent's received bubble is left aligned, ink (#1D1D1F) on light grey
+  (#787880 at 16% opacity, #E9E9EB family), matching the iMessage template.
 - Sent bubble corners are one large uniform radius, 20dp (template). The
   last sent bubble of a group carries the small tail at its bottom outer
   corner, extending about 6dp below the bubble body (template). Text sits 9dp
@@ -262,9 +261,7 @@ the file when access allows.
   field is a glass capsule; the microphone sits at the field's right; send
   is a blue disc with an up arrow when there is text.
 
-Two deliberate exceptions to the rules above, both required by the template
-(the agent's flat reply is a third, chosen by the owner and specified in the
-next section):
+Two deliberate exceptions to the rules above, both required by the template:
 
 - The sent bubble's blue gradient overrides the "no decorative gradients"
   rule in Do's and Don'ts. It is the template's own treatment, not a
@@ -273,51 +270,33 @@ next section):
   `rounded.sm`). The composer keeps its capsule form and height, as it did
   under the previous design system.
 
-## Agent reply (owner's decision, 2026-11-01)
+## Agent reply components and animation
 
-The agent's turn is flat text on the page: full width inside the 16dp
-transcript inset, no bubble, no tail, no fill. It replaces the template's
-received bubble for the agent. The sent bubble, its gradient and the composer
-capsule are unchanged. The pattern was studied from a screen recording the
-owner supplied; only behaviour, spacing and timing were taken (notes in
-`replica/recon.md`). None of that app's artwork, colour or wording is used.
-
-- Text: ink, at the markdown renderer's body size (16sp by default, and the
-  size the person sets in settings). Bold lead-ins, numbered lists, code
-  blocks and paragraph spacing keep the renderer's styles.
-- Inline code: monospace 13sp, radius 4dp, 4dp of side padding. Light
-  #005ABF on #F2F2F7, dark #6CB6FF on #34343A.
-- The parts of one turn (text, tool rows) sit 4dp apart; a new turn starts
-  16dp below the one before.
-
-Components of the agent's turn. All colour pairs are checked with
-`replica/design/tokens.json` (light) and `tokens.dark.json`; every pair passes
-WCAG AA (4.5:1 for text, 3:1 for icons and borders).
+The agent's bubble follows the iMessage received-bubble spec (grey fill,
+left aligned, 20dp radius, tail on the last bubble of a group). Inside and
+beside the bubble, additional components convey agent state.
 
 - **ToolRow.** One muted line per tool call: a small typed icon, the title,
-  and a 16dp chevron at the end. No capsule, no border, 13sp, text-muted ink
-  (light #6E6E73, dark #A1A1A6), 40dp tall, the whole row is the tap target. States:
-  running (a light band sweeps the title, see Motion; the stop button stays at
-  the end), done, failed (the icon takes the error colour), cancelled. Tap
-  opens the tool detail sheet. A file edit adds a diff badge after the title,
-  12sp monospace, "+12" in diff-add and "-3" in diff-remove. The sign is
-  always printed, so colour is never the only cue. diff-add is #1B7A3E (dark
-  #46C46F), not the success green, because the success green fails as text on
-  white. diff-remove is #CC2A1D (dark #FF6B63).
+  and a 16dp chevron at the end. No capsule, no border, 13sp, text-muted
+  ink (#6E6E73), 40dp tall, the whole row is the tap target. States:
+  running (a light band sweeps the title, see Motion), done, failed (the icon
+  takes the error colour), cancelled. Tap opens the tool detail sheet. A file
+  edit adds a diff badge after the title, 12sp monospace, "+12" in
+  diff-add (#1B7A3E) and "-3" in diff-remove (#CC2A1D). The sign is always
+  printed, so colour is never the only cue.
 - **ReplyActions.** Copy and read aloud: 18dp icons in 44dp targets, muted
-  ink, left aligned, 8dp under the last line of the turn. Shown only once the
-  message has stopped streaming.
-- **ScrollPill.** A 40dp circle, neutral fill (light white, dark #2C2C30),
-  hairline border, 20dp ink arrow, centred, 8dp above the composer. Shown
-  while the person has scrolled away from the end and the list overflows. It
-  fades out when the end is reached or when it is tapped.
+  ink, left aligned, 8dp under the last bubble of the turn. Shown only once
+  the message has stopped streaming.
+- **ScrollPill.** A 40dp circle, white fill, hairline border, 20dp ink arrow,
+  centred, 8dp above the composer. Shown while the person has scrolled away
+  from the end and the list overflows. It fades out when the end is reached
+  or when it is tapped.
 - **HeaderActivity.** A ring, 20dp, 2dp stroke, an arc of about 270 degrees in
   text-muted, beside the header's trailing button while any agent run is
   active. It is still when the system animation scale is zero.
-- **Tasks link.** "Running tasks: N" in the link colour (light #0066CC, dark
-  #4DA3FF), 13sp, 48dp tall, above the composer. It counts the other chats
-  whose agent is running now, not the chat on screen, and is hidden when the
-  count is zero.
+- **Tasks link.** "Running tasks: N" in the link colour (#0066CC), 13sp, 48dp
+  tall, above the composer. It counts the other chats whose agent is running
+  now, not the chat on screen, and is hidden when the count is zero.
 - **TaskSheet.** A bottom sheet in the window-blur Liquid Glass material (the
   model picker's pattern), top radius 24dp, a 32 by 4dp handle, scrim 38
   percent black. It opens at about half the height (the platform's partial
@@ -353,12 +332,6 @@ When the system animation scale is zero, the shimmer and the ring hold still
 and the sheet appears without motion. When the system asks for reduced
 transparency, the sheet falls back to its opaque surface, as for every glass
 surface above.
-
-Two existing tokens failed AA in dark mode and were changed here: the inline
-code text (#0064D4 on #34343A, 2.2:1, now #6CB6FF) and new surfaces take
-#4DA3FF for links instead of #0064D4 (3.8:1 on black). The previous muted
-chat ink, about #8A8A8E on white, is 3.4:1, so ToolRow uses text-muted from
-this file instead.
 
 ## Brand mark
 

@@ -67,7 +67,7 @@ import io.github.ceis.ui.theme.CeisReplyPalette
 /** The pieces of the agent's turn that are not text (design.md, Agent reply). */
 
 @Composable
-internal fun ceisReplyPalette(): CeisReplyPalette = CeisReplyPalette.of(ChatColors.isDark)
+internal fun ceisReplyPalette(): CeisReplyPalette = CeisReplyPalette.Default
 
 /** False when the system animation scale is zero ("remove animations"). Read once per composition. */
 @Composable

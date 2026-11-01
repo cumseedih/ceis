@@ -53,7 +53,7 @@ class CeisReplyPaletteContrastTest {
     }
 
     @Test
-    fun lightPaletteMeetsAA() = check(CeisReplyPalette.Light, Color.White, "light")
+    fun lightPaletteMeetsAA() = check(CeisReplyPalette.Default, Color.White, "light")
 
     @Test
     fun darkPaletteMeetsAA() = check(CeisReplyPalette.Dark, Color.Black, "dark")

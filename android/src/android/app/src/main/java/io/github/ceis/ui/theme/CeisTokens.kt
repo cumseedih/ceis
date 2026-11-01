@@ -229,9 +229,8 @@ fun CeisCircleIconButton(
 }
 
 /**
- * Colours of the agent's turn (design.md, Agent reply). The hex values are the
- * ones in replica/design/tokens.json (light) and tokens.dark.json (dark), where
- * every pair is checked against WCAG AA. Change them there first.
+ * Colours of the agent's turn components (ToolRow, ReplyActions, ScrollPill, etc.).
+ * The app is light-only; these are the single palette used everywhere.
  */
 data class CeisReplyPalette(
     /** ToolRow title and chevron at rest. */
@@ -250,7 +249,7 @@ data class CeisReplyPalette(
     val outline: Color,
 ) {
     companion object {
-        val Light = CeisReplyPalette(
+        val Default = CeisReplyPalette(
             toolText = Color(0xFF6E6E73),
             toolTextPeak = Color(0xFF1D1D1F),
             diffAdd = Color(0xFF1B7A3E),
@@ -260,17 +259,5 @@ data class CeisReplyPalette(
             rowFill = Color(0xFFF5F5F7),
             outline = Color(0xFF6E6E73),
         )
-        val Dark = CeisReplyPalette(
-            toolText = Color(0xFFA1A1A6),
-            toolTextPeak = Color(0xFFFFFFFF),
-            diffAdd = Color(0xFF46C46F),
-            diffRemove = Color(0xFFFF6B63),
-            link = Color(0xFF4DA3FF),
-            pillFill = Color(0xFF2C2C30),
-            rowFill = Color(0xFF2C2C30),
-            outline = Color(0xFFA1A1A6),
-        )
-
-        fun of(dark: Boolean): CeisReplyPalette = if (dark) Dark else Light
     }
 }

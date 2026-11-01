@@ -557,8 +557,8 @@ function chipKind(name: string): "data" | "other" {
 const ACCEPT = "image/*,.pdf,.txt,.md,.csv,.tsv,.json,.log,.html,.xml,.yaml,.yml,.toml,.ics,.vcf,.xlsx,.xls,.docx";
 
 /**
- * Agent reply: flat, full-width, no bubble fill, no width cap (design.md explicit exception for
- * agent replies; the sent bubble and composer capsule rules are unchanged).
+ * Agent reply drawn as an iMessage received bubble (design.md, Chat):
+ * grey fill, left-aligned, max 70% width, 20dp radius, optional tail.
  */
 function AssistantBubble({
   text,
@@ -568,6 +568,7 @@ function AssistantBubble({
   onOpenFile,
   spoken,
   modelUsed,
+  showTail,
 }: {
   text: string;
   reasoning?: string;
@@ -575,7 +576,6 @@ function AssistantBubble({
   files?: readonly string[];
   spoken?: boolean;
   modelUsed?: string;
-  /** kept for API compat; ignored — flat reply has no tail */
   showTail?: boolean;
   onOpenFile?: (path: string) => void;
 }) {
@@ -584,37 +584,37 @@ function AssistantBubble({
   const blocks = useMemo(() => splitBlocks(stripNamingFence(text, !!streaming)), [text, streaming]);
   if (blocks.length === 0 && !streaming && !reasoning) return null;
   return (
-    <div className="rise">
+    <div className="rise flex flex-col items-start pr-12">
       {reasoning && (
-        <button type="button" className="mb-1 px-4 text-[12px] text-muted" onClick={() => setShowReasoning((s) => !s)}>
+        <button type="button" className="mb-1 px-1 text-[12px] text-muted" onClick={() => setShowReasoning((s) => !s)}>
           {showReasoning ? t("Hide thinking") : t("Show thinking")}
         </button>
       )}
       {reasoning && showReasoning && (
-        <div className="mb-1.5 mx-4 rounded-2xl bg-surface-2/70 px-3 py-2 text-[13px] text-muted whitespace-pre-wrap break-words">
+        <div className="mb-1.5 max-w-[70%] rounded-2xl bg-surface-2/70 px-3 py-2 text-[13px] text-muted whitespace-pre-wrap break-words">
           {reasoning}
         </div>
       )}
       {spoken && (
-        <div className="mb-0.5 flex items-center gap-1 px-4 text-[11px] font-medium text-accent/80">
+        <div className="mb-0.5 flex items-center gap-1 text-[11px] font-medium text-accent/80">
           <Phone size={10} /> {t("said on a call")}
         </div>
       )}
-      {/* flat, full-width blocks — no bubble background, no rounded card */}
-      {blocks.map((b, i) => (
-        <div key={i} className="my-0.5 px-4">
-          <Markdown text={b.text} files={files} onOpenFile={onOpenFile} />
-          {streaming && i === blocks.length - 1 && (
-            <span className="inline-block w-1.5 h-4 ml-0.5 align-middle bg-accent/70 animate-pulse rounded-sm" />
-          )}
-        </div>
-      ))}
-      {blocks.length === 0 && streaming && (
-        <div className="px-4">
+      <div className={`bubble-received relative max-w-[70%] rounded-[20px] px-3 py-[9px]${showTail ? " has-tail" : ""}`}>
+        {showTail && <BubbleTail sent={false} />}
+        {blocks.map((b, i) => (
+          <div key={i} className={i > 0 ? "mt-1" : ""}>
+            <Markdown text={b.text} files={files} onOpenFile={onOpenFile} />
+            {streaming && i === blocks.length - 1 && (
+              <span className="inline-block w-1.5 h-4 ml-0.5 align-middle bg-accent/70 animate-pulse rounded-sm" />
+            )}
+          </div>
+        ))}
+        {blocks.length === 0 && streaming && (
           <span className="inline-block w-1.5 h-4 align-middle bg-accent/70 animate-pulse rounded-sm" />
-        </div>
-      )}
-      {modelUsed && !streaming && <div className="px-4 text-[11px] text-muted">{t("Answered by ceis Cloud this time")}</div>}
+        )}
+        {modelUsed && !streaming && <div className="mt-1 text-[11px] text-muted">{t("Answered by ceis Cloud this time")}</div>}
+      </div>
       {!streaming && blocks.length > 0 && <ReplyActions text={text} />}
     </div>
   );

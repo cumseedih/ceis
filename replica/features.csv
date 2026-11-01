@@ -1,16 +1,16 @@
 feature,area,priority,original,clone,notes
-Agent reply drawn flat and full width with no bubble,chat transcript,must,yes,yes,"Android: NmAssistantBubble draws no fill, tail or width cap. Web: AssistantBubble no longer uses bubble-received; full-width px-4 inset. iOS not done"
+Agent reply drawn flat and full width with no bubble,chat transcript,must,yes,yes,"Android: NmAssistantBubble. Web: AssistantBubble full-width. iOS: CeisAssistantBubble now always returns view directly (no background, no padding, no width cap)"
 Inline code chip inside replies,chat transcript,must,yes,partial,the renderer's existing chip is kept; dark text colour fixed to pass AA; size and radius not changed
 Tool-call rows collapsed to one muted line with a chevron,chat transcript,must,yes,partial,"one muted line per call with a chevron; Android and web done. Several calls are NOT merged into one summary line (needs a new list item type)"
-Running shimmer on the active tool row label,motion,must,yes,yes,"Android and web: animated gradient sweep on the label, 1.3 s; still when animations are off (prefers-reduced-motion). iOS not done"
-Header activity spinner while the agent works,header,must,yes,yes,"Android: both headers, driven by SessionActivityTracker.activeSessions. Web: border-t-accent spin ring beside the overflow button. iOS not done"
-Follow the stream while pinned to the end,scroll,must,yes,yes,"Android: existing tuned pin logic kept. Web: existing stickToBottom logic kept. iOS not done"
-Scroll-to-bottom pill when not at the end,scroll,must,yes,yes,"Android: ScrollPillPolicy, neutral disc. Web: neutral 36 px disc with border, no text. iOS not done"
-Copy and speak actions under a settled reply,chat transcript,should,yes,yes,"Android: copy markdown + LazyReadAloudPlayer. Web: navigator.clipboard + speechSynthesis; speak button hidden if API not available. iOS not done"
-Diff badge (+n -n) on a tool row that edited files,chat transcript,should,yes,yes,"Android and web: file_edit only; line counts of old_string and new_string. iOS not done"
-Running-tasks link under the last reply,tasks,should,yes,partial,"Android and web: shown above the composer (not under the last reply), counts other chats whose agent is running, hidden at zero. iOS not done"
-Running-tasks bottom sheet with peek and full heights,tasks,should,yes,partial,"Android: glass sheet, half height and full. Web: uses existing Sheet component; running + finished sections; no per-row stop, token or tool counts. iOS not done"
-Finished section with Load more and an in-place spinner,tasks,should,yes,partial,"Android: scheduled-task run history ten at a time. Web: shows up to 10 finished threads in the sheet; no Load more pagination (follow-up). iOS not done"
+Running shimmer on the active tool row label,motion,must,yes,yes,"Android and web: animated gradient sweep on the label, 1.3 s. iOS: ShimmerOverlay already present on ToolCapsuleView"
+Header activity spinner while the agent works,header,must,yes,yes,"Android: both headers, driven by SessionActivityTracker.activeSessions. Web: spin ring. iOS: CeisHeaderActivityRing in CeisLiveHeader trailing when vm.isProcessing"
+Follow the stream while pinned to the end,scroll,must,yes,yes,"Android: existing tuned pin logic kept. Web: existing stickToBottom logic kept. iOS: existing scroll-follow behaviour unchanged"
+Scroll-to-bottom pill when not at the end,scroll,must,yes,yes,"Android: ScrollPillPolicy. Web: 36 px disc. iOS: existing down-chevron pill at line 2714 in AIChatView.swift"
+Copy and speak actions under a settled reply,chat transcript,should,yes,yes,"Android: copy markdown + LazyReadAloudPlayer. Web: clipboard + speechSynthesis. iOS: copy+speak icon row after ForEach in assistantRow; gated by !isActiveMessage"
+Diff badge (+n -n) on a tool row that edited files,chat transcript,should,yes,yes,"Android and web: file_edit only; line counts of old_string and new_string. iOS: fileEditDiffStat computed property in ToolCapsuleView; green +n / red -n badge"
+Running-tasks link under the last reply,tasks,should,yes,partial,"Android and web: shown above the composer (not under the last reply), counts other chats, hidden at zero. iOS: CeisRunningTasksLink in nmComposerColumn above inputBar"
+Running-tasks bottom sheet with peek and full heights,tasks,should,yes,partial,"Android: glass sheet. Web: Sheet component. iOS: CeisRunningTasksSheet with .medium/.large presentationDetents; running section; no finished section (follow-up)"
+Finished section with Load more and an in-place spinner,tasks,should,yes,partial,"Android: scheduled-task run history ten at a time. Web: 10 finished threads. iOS: not built; follow-up once finished-task history is in SessionActivityTracker"
 Centred time divider between message groups,chat transcript,could,yes,yes,already present before this build on Android and web
 Question card showing the chosen answer,chat transcript,could,yes,no,not built here
 Suggestion ghost text with a chip in the composer,composer,could,yes,no,not built here

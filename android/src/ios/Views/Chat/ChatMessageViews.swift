@@ -539,6 +539,36 @@ struct ChatMessageRow: View {
                 )
             }
 
+            // ceis: copy + speak actions under a settled reply (recon: ReplyActions, visible only when settled)
+            if !isActiveMessage && !message.blocks.isEmpty {
+                HStack(spacing: 12) {
+                    Button {
+                        UIPasteboard.general.string = fullReplyText
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                            .font(.system(size: 16))
+                            .foregroundStyle(ChatColors.tertiaryText)
+                            .accessibilityLabel(Text(AppLocalized("Copy")))
+                    }
+                    .buttonStyle(.plain)
+
+                    if let onReadAloud {
+                        Button {
+                            onReadAloud()
+                        } label: {
+                            Image(systemName: "speaker.wave.2")
+                                .font(.system(size: 16))
+                                .foregroundStyle(ChatColors.tertiaryText)
+                                .accessibilityLabel(Text(AppLocalized("Read Aloud")))
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    Spacer(minLength: 0)
+                }
+                .padding(.top, 4)
+            }
+
             CeisFromDeviceCaption(message.nmFromDevice) // ceis: C8 — "From Pixel 8" under a synced reply
 
             // Typing indicator — "request out, nothing back yet", evaluated per

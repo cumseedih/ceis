@@ -3531,6 +3531,9 @@ struct AIChatView: View {
                 .frame(maxWidth: maxContentWidth)
             floatingToolPreview
                 .shadow(color: Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(white: 0, alpha: 0.25) : UIColor(white: 0, alpha: 0) }), radius: 6, x: 0, y: 4)
+            // ceis: running-tasks link above the composer — counts other chats' active sessions (recon: tasks area)
+            CeisRunningTasksLink(currentSessionId: vm.sessionId)
+                .frame(maxWidth: maxContentWidth, alignment: .leading)
             #if DEBUG
             if isReadOnly {
                 forkBanner

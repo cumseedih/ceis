@@ -178,6 +178,24 @@ struct CeisNamePill: View {
 /// How far the name pill rides up over the chin of the face.
 private let nmPillOverlap: CGFloat = 10
 
+// ceis: header activity ring — partial arc that rotates while the agent works (recon: HeaderActivity, ~270° arc, ~1 s/turn)
+struct CeisHeaderActivityRing: View {
+    @State private var rotation: Double = 0
+
+    var body: some View {
+        Circle()
+            .trim(from: 0.0, to: 0.75)
+            .stroke(CeisTones.action, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+            .frame(width: 18, height: 18)
+            .rotationEffect(.degrees(rotation))
+            .onAppear {
+                withAnimation(.linear(duration: 1.0).repeatForever(autoreverses: false)) {
+                    rotation = 360
+                }
+            }
+    }
+}
+
 /// The header's sizes under Dynamic Type: the pill's text and the height reserved for it grow
 /// with the person's setting up to `scaleCap` times their base, so the largest accessibility
 /// sizes make the lines readable without pushing the face off its disc.
@@ -298,6 +316,7 @@ struct CeisLiveHeader<Leading: View, Trailing: View>: View {
 
     var body: some View {
         let status = statusLine
+        let processing = vm.isProcessing
         CeisMuseHeader(
             mood: mood,
             name: name,
@@ -306,7 +325,15 @@ struct CeisLiveHeader<Leading: View, Trailing: View>: View {
             onFace: onFace,
             onName: onName,
             leading: leading,
-            trailing: trailing
+            trailing: {
+                // ceis: activity ring beside the overflow menu while the agent works (recon: HeaderActivity)
+                HStack(spacing: 6) {
+                    if processing {
+                        CeisHeaderActivityRing()
+                    }
+                    trailing()
+                }
+            }
         )
         .nmOnChange(of: vm.isProcessing) { processing in
             guard !processing else { return }

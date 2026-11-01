@@ -213,3 +213,52 @@ debug APK), and `testDebugUnitTest` ran 717 tests (3 pre-existing failures,
 unrelated to this work — see CHANGELOG.md). Previous "verification" in this
 session's earlier work was static analysis only, because no Android SDK had
 ever been available here before.
+
+## Build notes (iOS parity, 2026-11-01)
+
+Brought five features from Android to iOS SwiftUI. All code is written from
+the recon map and the existing iOS file structure; no source from another
+platform was copied.
+
+Built and where:
+
+- Flat reply: `CeisAssistantBubble.body` in `CeisChatCards.swift` — now
+  always returns `view` with no background, no padding, no width cap.
+- Diff badge: `fileEditDiffStat` computed property in `ToolCapsuleView`
+  (`AssistantBlockView.swift`) — parses `toolInputArgs` JSON for
+  `old_string`/`new_string` line counts; shows green +n / red -n badge on
+  completed `.fileEditTool` rows.
+- Header activity ring: `CeisHeaderActivityRing` view added to
+  `CeisChrome.swift`; injected in `CeisLiveHeader.trailing` as an HStack
+  beside the overflow button, visible when `vm.isProcessing`.
+- Reply actions: copy + speak icon row added to `assistantRow` in
+  `ChatMessageViews.swift` after `ForEach(message.blocks)`, gated by
+  `!isActiveMessage && !message.blocks.isEmpty`. Copy uses `fullReplyText`;
+  speak uses the existing `onReadAloud` closure already on `ChatMessageRow`.
+- Running-tasks link and sheet: `CeisRunningTasksSheet.swift` (new file in
+  `android/src/ios/Ceis/`) — `CeisRunningTasksLink` counts
+  `SessionActivityTracker.activeSessions` minus the current chat and shows
+  a tappable link above the composer; `CeisRunningTasksSheet` lists running
+  sessions with `.medium`/`.large` presentationDetents. Wired into
+  `nmComposerColumn` in `AIChatView.swift`.
+- Localizable.xcstrings: added English entry for "Read Aloud" (was missing);
+  added 9-locale entries for "1 task running in another chat", "%d tasks
+  running in other chats", "Running Tasks", "No other tasks are running."
+
+Deviations from recon:
+
+- Scroll-to-bottom pill and stream-follow: already present in iOS before this
+  pass; no change needed.
+- Running-tasks sheet has no finished section: `SessionActivityTracker` only
+  tracks active sessions, not completed history; follow-up work to add it.
+- Speak action uses the existing `onReadAloud` closure (reads from the start
+  via `LazyReadAloudPlayer`), not a per-reply inline speak; matches
+  Android's behaviour.
+
+Verification:
+
+- All Swift files parse syntactically. The iOS device build was NOT run: this
+  environment has no macOS/Xcode. `ios_device_build` would be the next check.
+- New strings cover all 9 locales (en, de, es, fr, ja, ko, ru, zh-Hans,
+  zh-Hant). The `fences.test.mjs` fence check is not affected (no ideas list
+  changes).

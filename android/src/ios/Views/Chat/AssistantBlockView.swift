@@ -393,6 +393,17 @@ struct ToolCapsuleView: View {
                         .foregroundStyle(ChatColors.tertiaryText)
                 }
 
+                // ceis: diff badge for file_edit — +n / -n line counts (recon: ToolRow diffAdded/diffRemoved)
+                if let diff = fileEditDiffStat {
+                    HStack(spacing: 3) {
+                        Text("+\(diff.added)")
+                            .foregroundStyle(Color(red: 0.13, green: 0.65, blue: 0.30))
+                        Text("-\(diff.removed)")
+                            .foregroundStyle(Color(red: 0.85, green: 0.20, blue: 0.20))
+                    }
+                    .font(.system(size: 11, weight: .medium, design: .monospaced))
+                }
+
                 // Stop button for running commands
                 if case .running = block.toolStatus {
                     Button {
@@ -592,6 +603,21 @@ struct ToolCapsuleView: View {
         let mins = Int(dur) / 60
         let secs = Int(dur) % 60
         return "\(mins)m \(secs)s"
+    }
+
+    // ceis: diff badge — line counts from old_string / new_string in a completed file_edit call
+    private var fileEditDiffStat: (added: Int, removed: Int)? {
+        guard case .fileEditTool = block.kind,
+              case .success = block.toolStatus,
+              let raw = block.toolInputArgs,
+              !raw.isEmpty,
+              let data = raw.data(using: .utf8),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else { return nil }
+        let oldLines = (obj["old_string"] as? String)?.components(separatedBy: "\n").count ?? 0
+        let newLines = (obj["new_string"] as? String)?.components(separatedBy: "\n").count ?? 0
+        guard oldLines > 0 || newLines > 0 else { return nil }
+        return (added: newLines, removed: oldLines)
     }
 
 }

@@ -1241,6 +1241,7 @@
     <string name="nm_chat_timestamp_today">Heute %1$s</string>
     <string name="nm_chat_timestamp_yesterday">Gestern %1$s</string>
     <string name="nm_messages_title">Messages</string>
+    <string name="nm_messages_search">Suchen</string>
     <string name="nm_messages_empty_title">No Messages</string>
     <string name="nm_messages_empty_body">New conversations will appear here.</string>
     <string name="nm_messages_no_results">No Results</string>

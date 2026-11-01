@@ -158,3 +158,58 @@ Verification:
 - The pure logic (`ScrollPillPolicy`, `BackgroundTasks`, `DiffStat`, `ReplyText`) was compiled with Kotlin 2.0.20 and its 12 JUnit tests passed (run directly, outside Gradle).
 - Every changed Kotlin file parses with no syntax errors. The Compose and Android code was NOT compiled: this environment has no Android SDK (Gradle stops at "SDK location not found"). `CeisReplyPaletteContrastTest` was written but not run.
 - All new colour pairs pass WCAG AA in light and dark (`contrast.py`, 14 and 17 pairs). Text that sits directly on the glass sheet depends on the backdrop and was not measured.
+
+## Build notes (2026-11-01): the missing session-list screen
+
+A full Android SDK was installed in this environment for the first time (NDK
+27.2.12479018, CMake 3.22.1, platform 36) to actually verify the build above,
+rather than report on unrun code. `compileDebugKotlin` immediately found 9
+real errors, all tracing to one cause: `SessionListScreen.kt` and
+`SessionEditSheet.kt` (package `com.openminis.app.ui.sessions`) did not exist
+anywhere in this repository's git history, back to the original import
+commit, though `AppNavigation.kt`, `ChatSplitScaffold.kt` and `ChatScreen.kt`
+always called them. This predates every piece of work in this session (the
+rebrand, Liquid Glass, the agent-reply build) — it was simply never caught,
+because this was the first time the app had ever actually compiled here.
+
+Evidence used to reconstruct the screen, rather than guess it:
+
+- The three real call sites gave the exact parameter contract:
+  `chatRepository`, `providerRepository`, `onSessionClick`, `onNewChat`,
+  `onSettingsClick`, `onAddProviderClick`, `onSelectModelsClick`,
+  `onTerminalClick`, `onRootfsClick`, `onScheduledTasksClick`, plus
+  `selectedSessionId`/`draftPlaceholderId` for the two-pane variant, and
+  `SessionEditSheet(session, onDismiss, onSave)`.
+- `ChatRepository` already had a complete, working data layer for sessions
+  (`observeSessions`, `searchSessions`, `createSession`, `deleteSession`,
+  `updateSessionTitleAndCategory`, `pinnedAt`/`category`/`folderId` on
+  `ChatSessionEntity`) — the screen that displayed it was missing, not the
+  data.
+- A family of orphaned, still-fully-translated (all 15 locales)
+  `sessionlist_*` strings in `strings.xml` made the intended design legible:
+  date-grouped sections (Pinned/Today/Yesterday/This Week/This
+  Month/Earlier), pin/unpin, a delete confirmation dialog, and — most
+  usefully — a three-step first-run welcome checklist ("Add a Provider" →
+  "Select Models" → "Start a Conversation") that maps exactly onto
+  `onAddProviderClick`/`onSelectModelsClick`/`onNewChat`.
+- `ProviderRepository.lastUsedVisibleEntry()` /
+  `.newestProviderNewestTextEntry()` is the app's own existing new-chat
+  default-model fallback chain (already documented, tagged
+  `T-newchat-default-model-fallback-android`); reused rather than guessed.
+
+Built: `SessionListScreen.kt`, `SessionEditSheet.kt`
+(`android/src/android/app/src/main/java/com/openminis/app/ui/sessions/`).
+One real gap in the data layer was found and filled the same way, not
+stubbed: no DAO/repository method persisted a session's pin state, so
+`ChatDao.setSessionPinned` and `ChatRepository.updateSessionPinnedAt` were
+added, mirroring the existing `setFolderPinned`/`toggleFolderPin` pattern
+exactly. Not built (no evidence pressed for it, flagged rather than
+invented): multi-select, export, duplicate, regenerate-title — orphaned
+strings exist for these too, but wiring them up is follow-up work.
+
+Verified for real, in this environment, for the first time:
+`compileDebugKotlin` succeeds, `assembleDebug` succeeds (a genuine signed
+debug APK), and `testDebugUnitTest` ran 717 tests (3 pre-existing failures,
+unrelated to this work — see CHANGELOG.md). Previous "verification" in this
+session's earlier work was static analysis only, because no Android SDK had
+ever been available here before.

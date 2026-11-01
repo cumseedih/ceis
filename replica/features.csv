@@ -18,3 +18,9 @@ Source app icons wordmark and brand colour,brand,could,yes,skip,not ours; Ceis t
 Source app copy and model names,copy,could,yes,skip,every string written fresh in every locale
 Token counts and plan limits,tasks,could,yes,skip,belongs to the source app's plans
 Source app transcripts and account features,backend,could,yes,skip,Ceis uses its own relay and runtime
+Session list home screen (was missing from the whole repo history),home,must,n/a,yes,"SessionListScreen.kt + SessionEditSheet.kt rebuilt from the real call-site contracts, ChatRepository, and orphaned sessionlist_* strings. compileDebugKotlin and assembleDebug both succeed for the first time in this repo's history"
+Session list: pin / unpin a conversation,home,should,n/a,yes,"added ChatDao.setSessionPinned + ChatRepository.updateSessionPinnedAt (did not exist before); swipe action"
+Session list: date-grouped sections (Pinned/Today/Yesterday/This Week/This Month/Earlier),home,should,n/a,yes,real sessionlist_section_* strings
+Session list: first-run welcome checklist (provider / models / first chat),home,must,n/a,yes,"steps 2 and 3 lock until the step before is actually done, read from real ProviderRepository state"
+Session list: search,home,should,n/a,yes,debounced ChatRepository.searchSessions
+"Session list: multi-select, export, duplicate, regenerate title",home,could,n/a,no,"orphaned strings exist (sessionlist_select_*, sessionlist_export_*, sessionlist_duplicate, sessionlist_regenerate_title) but not built; follow-up"

@@ -487,6 +487,7 @@
     <string name="export_progress_done">Export abgeschlossen</string>
     <string name="export_progress_failed">Export fehlgeschlagen</string>
     <string name="sessionlist_edit_title_category">Titel und Kategorie bearbeiten</string>
+    <string name="sessionlist_category_label">Kategorie</string>
     <string name="sessionlist_regenerate_title">Titel neu erzeugen</string>
     <string name="sessionlist_regenerating_title">Titel wird neu erzeugt…</string>
     <string name="sessionlist_duplicate">Duplizieren</string>

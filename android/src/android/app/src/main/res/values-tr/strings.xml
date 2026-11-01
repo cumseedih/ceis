@@ -487,6 +487,7 @@
     <string name="export_progress_done">Dışa aktarma tamamlandı</string>
     <string name="export_progress_failed">Dışa aktarma başarısız</string>
     <string name="sessionlist_edit_title_category">Başlığı ve Kategoriyi Düzenle</string>
+    <string name="sessionlist_category_label">Kategori</string>
     <string name="sessionlist_regenerate_title">Başlığı Yeniden Oluştur</string>
     <string name="sessionlist_regenerating_title">Başlık yeniden oluşturuluyor…</string>
     <string name="sessionlist_duplicate">Çoğalt</string>

@@ -16,7 +16,14 @@ workspace/
 *.enc
 *.key
 audit.jsonl
-sessions/
+# ceis: anchored to the repo root — a bare "sessions/" matches at every
+# directory depth and was silently excluding the Android app's real
+# android/.../ui/sessions/ source from every commit, forever, with no
+# warning (found 2026-11-01 rebuilding SessionListScreen.kt, which this
+# had made impossible to ever commit). The runtime's own session data
+# lives outside the repo by default (~/.ceis), so this only still guards
+# the case where someone points data_dir at the repo root for local testing.
+/sessions/
 logs/
 
 # python

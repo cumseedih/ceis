@@ -488,6 +488,7 @@
     <string name="export_progress_done">Export finalizat</string>
     <string name="export_progress_failed">Exportul a eșuat</string>
     <string name="sessionlist_edit_title_category">Editează titlul și categoria</string>
+    <string name="sessionlist_category_label">Categorie</string>
     <string name="sessionlist_regenerate_title">Generează titlul din nou</string>
     <string name="sessionlist_regenerating_title">Se generează titlul…</string>
     <string name="sessionlist_duplicate">Duplică</string>

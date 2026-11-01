@@ -489,6 +489,7 @@
     <string name="export_progress_done">Экспорт завершён</string>
     <string name="export_progress_failed">Ошибка экспорта</string>
     <string name="sessionlist_edit_title_category">Изменить название и категорию</string>
+    <string name="sessionlist_category_label">Категория</string>
     <string name="sessionlist_regenerate_title">Создать название заново</string>
     <string name="sessionlist_regenerating_title">Создание названия…</string>
     <string name="sessionlist_duplicate">Дублировать</string>

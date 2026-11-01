@@ -106,6 +106,15 @@ class ChatRepository(internal val dao: ChatDao) {
         io.github.ceis.sync.ConversationSync.changed() // ceis
     }
 
+    // ceis: SessionListScreen's swipe-to-pin action. Deliberately does not
+    // touch updated_at — pinning a session changes nothing about when it was
+    // last active, the same rule ChatSessionEntity already documents for
+    // folder_id changes.
+    suspend fun updateSessionPinnedAt(id: String, pinnedAt: Long?) {
+        dao.setSessionPinned(id, pinnedAt)
+        io.github.ceis.sync.ConversationSync.changed() // ceis
+    }
+
     suspend fun updateSessionModel(sessionId: String, modelId: String) {
         dao.updateSessionModel(sessionId, modelId)
     }

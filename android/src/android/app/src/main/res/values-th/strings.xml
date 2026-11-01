@@ -487,6 +487,7 @@
     <string name="export_progress_done">ส่งออกเสร็จสิ้น</string>
     <string name="export_progress_failed">ส่งออกไม่สำเร็จ</string>
     <string name="sessionlist_edit_title_category">แก้ไขชื่อและหมวดหมู่</string>
+    <string name="sessionlist_category_label">หมวดหมู่</string>
     <string name="sessionlist_regenerate_title">สร้างชื่อใหม่</string>
     <string name="sessionlist_regenerating_title">กำลังสร้างชื่อใหม่…</string>
     <string name="sessionlist_duplicate">ทำสำเนา</string>

@@ -548,6 +548,7 @@
     <string name="export_progress_done">Export complete</string>
     <string name="export_progress_failed">Export failed</string>
     <string name="sessionlist_edit_title_category">Edit Title &amp; Category</string>
+    <string name="sessionlist_category_label">Category</string>
     <string name="sessionlist_regenerate_title">Regenerate Title</string>
     <string name="sessionlist_regenerating_title">Regenerating title…</string>
     <string name="sessionlist_duplicate">Duplicate</string>

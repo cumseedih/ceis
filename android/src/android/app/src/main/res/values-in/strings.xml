@@ -492,6 +492,7 @@
     <string name="export_progress_done">Ekspor selesai</string>
     <string name="export_progress_failed">Ekspor gagal</string>
     <string name="sessionlist_edit_title_category">Edit Judul &amp; Kategori</string>
+    <string name="sessionlist_category_label">Kategori</string>
     <string name="sessionlist_regenerate_title">Buat Ulang Judul</string>
     <string name="sessionlist_regenerating_title">Membuat ulang judul…</string>
     <string name="sessionlist_duplicate">Duplikat</string>

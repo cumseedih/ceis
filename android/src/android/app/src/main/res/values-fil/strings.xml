@@ -487,6 +487,7 @@
     <string name="export_progress_done">Tapos ang pag-export</string>
     <string name="export_progress_failed">Nabigo ang pag-export</string>
     <string name="sessionlist_edit_title_category">I-edit ang Pamagat at Kategorya</string>
+    <string name="sessionlist_category_label">Kategorya</string>
     <string name="sessionlist_regenerate_title">Gumawa Muli ng Pamagat</string>
     <string name="sessionlist_regenerating_title">Gumagawa muli ng pamagat…</string>
     <string name="sessionlist_duplicate">I-duplicate</string>

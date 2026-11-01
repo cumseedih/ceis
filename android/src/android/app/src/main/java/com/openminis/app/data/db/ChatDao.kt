@@ -74,6 +74,12 @@ interface ChatDao {
     @Query("UPDATE sessions SET title = :title, category = COALESCE(:category, category), updated_at = :updatedAt WHERE id = :id")
     suspend fun updateSessionTitleAndCategory(id: String, title: String, category: String?, updatedAt: Long)
 
+    // ceis: mirrors setFolderPinned below, for an individual session rather
+    // than a folder — SessionListScreen's swipe-to-pin action needed this
+    // and no session-level pin write existed yet.
+    @Query("UPDATE sessions SET pinned_at = :pinnedAt WHERE id = :id")
+    suspend fun setSessionPinned(id: String, pinnedAt: Long?)
+
     @Query("UPDATE sessions SET updated_at = :updatedAt WHERE id = :id")
     suspend fun touchSession(id: String, updatedAt: Long)
 

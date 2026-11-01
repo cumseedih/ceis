@@ -81,16 +81,8 @@ struct CeisAssistantBubble: ViewModifier {
 
     @ViewBuilder
     func body(content view: Content) -> some View {
-        if CeisShellPrefs.shell && !Self.isBare(content) {
-            view
-                .padding(.horizontal, 12)
-                .padding(.vertical, 9)
-                .background(CeisTones.agentPill, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .frame(maxWidth: CeisColumn.agentPillWidth(for: sizeClass), alignment: .leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        } else {
-            view
-        }
+        // ceis: flat full-width agent reply — no bubble, no width cap (recon: AgentReply, flat)
+        view
     }
 }
 

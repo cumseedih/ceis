@@ -1,4 +1,4 @@
-import { ArrowUp, ChevronDown, FileText, Loader2, Menu, MessageSquarePlus, Monitor, MonitorSmartphone, Moon, Phone, Plus, Smartphone, Table2, Trash2, Wand2, X } from "lucide-react";
+import { ArrowUp, Check, ChevronDown, Copy, FileText, Loader2, Menu, MessageSquarePlus, Monitor, MonitorSmartphone, Moon, Phone, Plus, Smartphone, Table2, Trash2, Volume2, Wand2, X } from "lucide-react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { api, fileUrl } from "../api";
 import { AllowanceHeadsUp } from "../components/AllowanceWays";
@@ -21,6 +21,7 @@ import { useStore, type Stream } from "../store";
 import type { AttachmentInfo, HubDevice, SkillInfo, ThreadMeta, TimelineEvent, UserEvent, WorkingPresence } from "../types";
 import { cx, timeDivider, timeShort } from "../util";
 import { MuseSheet } from "./MuseSheet";
+import { Sheet } from "../components/Sheet";
 import { countDay, countTask, StarNudgeOnce } from "../components/StarNudge";
 import { useShowSteps } from "../steps";
 
@@ -35,6 +36,7 @@ export function ChatScreen() {
   const stream = state.streams[activeThread];
   const thread = threads.find((t) => t.id === activeThread);
   const [activityOpen, setActivityOpen] = useState(false);
+  const [tasksOpen, setTasksOpen] = useState(false);
   // the browser card being watched (or driven) full-screen
   const [browserView, setBrowserView] = useState<string | null>(null);
   const name = profile?.name ?? "ceis";
@@ -251,7 +253,12 @@ export function ChatScreen() {
                 </span>
               )}
             </button>
-            <MoreMenu actions={[{ label: t("Coding agents"), onClick: () => setTab("coding") }]} />
+            <div className="flex items-center gap-1">
+              {((status.state === "working" && status.thread === activeThread) || !!thread?.busy) && (
+                <span aria-hidden className="h-5 w-5 rounded-full border-2 border-transparent border-t-accent animate-spin" />
+              )}
+              <MoreMenu actions={[{ label: t("Coding agents"), onClick: () => setTab("coding") }]} />
+            </div>
           </div>
           {thread && thread.id !== "main" && (
             <div className="mt-1 flex justify-center">
@@ -343,15 +350,16 @@ export function ChatScreen() {
           <button
             type="button"
             onClick={jumpToBottom}
-            className="sticky bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-ink text-ink-fg shadow px-3 py-1.5 text-[12.5px] font-medium flex items-center gap-1"
+            aria-label={pendingApprovals ? t("{n} approvals", { n: pendingApprovals }) : t("Scroll to bottom")}
+            className="sticky bottom-2 left-1/2 -translate-x-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-bg shadow-sm transition-opacity"
           >
-            <ChevronDown size={14} /> {t("Latest")}
-            {pendingApprovals ? ` · ${pendingApprovals > 1 ? t("{n} approvals", { n: pendingApprovals }) : t("1 approval")}` : ""}
+            <ChevronDown size={16} className="text-fg/70" />
           </button>
         )}
       </div>
 
       <AllowanceHeadsUp />
+      <RunningTasksLink threads={threads} activeThread={activeThread} onOpen={() => setTasksOpen(true)} />
       <Composer
         name={name}
         busy={!!thread?.busy && pendingApprovals === 0}
@@ -365,6 +373,7 @@ export function ChatScreen() {
       />
 
       <MuseSheet open={activityOpen} onClose={() => setActivityOpen(false)} />
+      <RunningTasksSheet open={tasksOpen} onClose={() => setTasksOpen(false)} threads={threads} activeThread={activeThread} />
       {browserView && <BrowserViewer thread={activeThread} eventId={browserView} onClose={() => setBrowserView(null)} />}
     </div>
   );
@@ -547,6 +556,10 @@ function chipKind(name: string): "data" | "other" {
 
 const ACCEPT = "image/*,.pdf,.txt,.md,.csv,.tsv,.json,.log,.html,.xml,.yaml,.yml,.toml,.ics,.vcf,.xlsx,.xls,.docx";
 
+/**
+ * Agent reply: flat, full-width, no bubble fill, no width cap (design.md explicit exception for
+ * agent replies; the sent bubble and composer capsule rules are unchanged).
+ */
 function AssistantBubble({
   text,
   reasoning,
@@ -555,70 +568,54 @@ function AssistantBubble({
   onOpenFile,
   spoken,
   modelUsed,
-  showTail = false,
 }: {
   text: string;
   reasoning?: string;
   streaming?: boolean;
   files?: readonly string[];
-  /** said aloud on a call rather than written */
   spoken?: boolean;
-  /** *Use ceis Cloud this time*: the account's model this reply came from */
   modelUsed?: string;
-  /** the last bubble of the group carries the Messages tail */
+  /** kept for API compat; ignored — flat reply has no tail */
   showTail?: boolean;
   onOpenFile?: (path: string) => void;
 }) {
   const [showReasoning, setShowReasoning] = useState(false);
   const t = useT();
-  // the model's block for the app (the first conversation's names) is never shown — not even
-  // the half of it a stream has delivered so far
   const blocks = useMemo(() => splitBlocks(stripNamingFence(text, !!streaming)), [text, streaming]);
   if (blocks.length === 0 && !streaming && !reasoning) return null;
-  const lastBubble = blocks.reduce((last, b, i) => (b.bare ? last : i), -1);
   return (
-    <div className={cx("rise flex items-start gap-2 pr-12", showTail && "pb-1.5")}>
-      <div className="min-w-0 max-w-[70%] wide:max-w-[600px]">
-        {reasoning && (
-          <button type="button" className="mb-1 ml-1 text-[12px] text-muted" onClick={() => setShowReasoning((s) => !s)}>
-            {showReasoning ? t("Hide thinking") : t("Show thinking")}
-          </button>
-        )}
-        {reasoning && showReasoning && (
-          <div className="mb-1.5 rounded-2xl bg-surface-2/70 px-3 py-2 text-[13px] text-muted whitespace-pre-wrap break-words">
-            {reasoning}
-          </div>
-        )}
-        {/* the agent's bubbles, a step off the canvas: one per block of the reply; code and tables carry their own frame */}
-        {blocks.map((b, i) =>
-          b.bare ? (
-            <div key={i} className="my-0.5 max-w-full">
-              <Markdown text={b.text} files={files} onOpenFile={onOpenFile} />
-            </div>
-          ) : (
-            <div
-              key={i}
-              className={cx("bubble-received relative my-0.5 max-w-full rounded-[20px] px-3 py-[9px]", spoken && "border border-accent/15")}
-            >
-              {spoken && i === 0 && (
-                <div className="mb-0.5 flex items-center gap-1 text-[11px] font-medium text-accent/80">
-                  <Phone size={10} /> {t("said on a call")}
-                </div>
-              )}
-              <Markdown text={b.text} files={files} onOpenFile={onOpenFile} />
-              {streaming && i === blocks.length - 1 && <span className="inline-block w-1.5 h-4 ml-0.5 align-middle bg-accent/70 animate-pulse rounded-sm" />}
-              {showTail && i === lastBubble && <BubbleTail sent={false} />}
-            </div>
-          ),
-        )}
-        {blocks.length === 0 && streaming && (
-          <div className="bubble-received relative my-0.5 rounded-[20px] px-3 py-[9px]">
-            <span className="inline-block w-1.5 h-4 align-middle bg-accent/70 animate-pulse rounded-sm" />
-            {showTail && <BubbleTail sent={false} />}
-          </div>
-        )}
-        {modelUsed && !streaming && <div className="ml-1 text-[11px] text-muted">{t("Answered by ceis Cloud this time")}</div>}
-      </div>
+    <div className="rise">
+      {reasoning && (
+        <button type="button" className="mb-1 px-4 text-[12px] text-muted" onClick={() => setShowReasoning((s) => !s)}>
+          {showReasoning ? t("Hide thinking") : t("Show thinking")}
+        </button>
+      )}
+      {reasoning && showReasoning && (
+        <div className="mb-1.5 mx-4 rounded-2xl bg-surface-2/70 px-3 py-2 text-[13px] text-muted whitespace-pre-wrap break-words">
+          {reasoning}
+        </div>
+      )}
+      {spoken && (
+        <div className="mb-0.5 flex items-center gap-1 px-4 text-[11px] font-medium text-accent/80">
+          <Phone size={10} /> {t("said on a call")}
+        </div>
+      )}
+      {/* flat, full-width blocks — no bubble background, no rounded card */}
+      {blocks.map((b, i) => (
+        <div key={i} className="my-0.5 px-4">
+          <Markdown text={b.text} files={files} onOpenFile={onOpenFile} />
+          {streaming && i === blocks.length - 1 && (
+            <span className="inline-block w-1.5 h-4 ml-0.5 align-middle bg-accent/70 animate-pulse rounded-sm" />
+          )}
+        </div>
+      ))}
+      {blocks.length === 0 && streaming && (
+        <div className="px-4">
+          <span className="inline-block w-1.5 h-4 align-middle bg-accent/70 animate-pulse rounded-sm" />
+        </div>
+      )}
+      {modelUsed && !streaming && <div className="px-4 text-[11px] text-muted">{t("Answered by ceis Cloud this time")}</div>}
+      {!streaming && blocks.length > 0 && <ReplyActions text={text} />}
     </div>
   );
 }
@@ -717,6 +714,123 @@ function WorkingLine({ who }: { who: WorkingPresence }) {
       <Loader2 size={12} className="animate-spin" />
       <span>{t("{device} is working…", { device: who.device_name || who.device })}</span>
     </div>
+  );
+}
+
+/** Copy and speak actions shown 8px below a settled agent reply. */
+function ReplyActions({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const t = useT();
+  const copy = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    }).catch(() => undefined);
+  };
+  const speak = () => {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+  };
+  return (
+    <div className="flex items-center gap-3 px-4 pt-1 pb-0.5">
+      <button
+        type="button"
+        onClick={copy}
+        aria-label={t("Copy reply")}
+        className="text-muted transition hover:text-fg active:scale-95"
+      >
+        {copied ? <Check size={15} /> : <Copy size={15} />}
+      </button>
+      {"speechSynthesis" in window && (
+        <button
+          type="button"
+          onClick={speak}
+          aria-label={t("Read aloud")}
+          className="text-muted transition hover:text-fg active:scale-95"
+        >
+          <Volume2 size={15} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** Small accent text link shown above the composer when other chats are running. */
+function RunningTasksLink({
+  threads,
+  activeThread,
+  onOpen,
+}: {
+  threads: import("../types").ThreadMeta[];
+  activeThread: string;
+  onOpen: () => void;
+}) {
+  const t = useT();
+  const count = threads.filter((th) => th.busy && th.id !== activeThread).length;
+  if (count === 0) return null;
+  return (
+    <div className="px-4 pb-0.5">
+      <button type="button" onClick={onOpen} className="text-[12px] text-accent hover:underline">
+        {count === 1 ? t("1 running task") : t("{n} running tasks", { n: count })}
+      </button>
+    </div>
+  );
+}
+
+/** Bottom sheet listing other chats that have the agent running. */
+function RunningTasksSheet({
+  open,
+  onClose,
+  threads,
+  activeThread,
+}: {
+  open: boolean;
+  onClose: () => void;
+  threads: import("../types").ThreadMeta[];
+  activeThread: string;
+}) {
+  const t = useT();
+  const running = threads.filter((th) => th.busy && th.id !== activeThread);
+  const done = threads.filter((th) => !th.busy && th.id !== activeThread);
+  return (
+    <Sheet open={open} onClose={onClose} title={t("Tasks")}>
+      {running.length > 0 && (
+        <div className="mb-4">
+          <div className="mb-2 text-[11.5px] font-semibold uppercase tracking-wide text-muted">
+            {t("Running")} · {running.length}
+          </div>
+          <ul className="space-y-2">
+            {running.map((th) => (
+              <li key={th.id} className="flex items-center gap-3 rounded-2xl bg-surface-2 px-3 py-2.5 text-[13.5px]">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400 animate-pulse" />
+                <span className="min-w-0 flex-1 truncate font-medium">{th.title}</span>
+                <span className="shrink-0 text-[12px] text-muted">{t("Agent")}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {done.length > 0 && (
+        <div>
+          <div className="mb-2 text-[11.5px] font-semibold uppercase tracking-wide text-muted">
+            {t("Finished")} · {done.length}
+          </div>
+          <ul className="space-y-2">
+            {done.slice(0, 10).map((th) => (
+              <li key={th.id} className="flex items-center gap-3 rounded-2xl bg-surface-2 px-3 py-2.5 text-[13.5px]">
+                <Check size={13} className="shrink-0 text-emerald-500" />
+                <span className="min-w-0 flex-1 truncate font-medium">{th.title}</span>
+                <span className="shrink-0 text-[12px] text-muted">{t("Agent")}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {running.length === 0 && done.length === 0 && (
+        <p className="py-4 text-center text-[14px] text-muted">{t("No tasks running.")}</p>
+      )}
+    </Sheet>
   );
 }
 

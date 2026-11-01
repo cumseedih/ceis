@@ -1,6 +1,5 @@
 import {
   AlertTriangle,
-  Ban,
   Bell,
   Bot,
   Brain,
@@ -144,45 +143,60 @@ function ArgsList({ args }: { args: Record<string, unknown> }) {
   );
 }
 
-// ------------------------------------------------------------------ tool activity chip
+// ------------------------------------------------------------------ tool row (flat, one muted line + optional diff badge)
+
+/** Line counts for a finished file_edit tool call — added lines, removed lines. */
+function fileEditDiffStat(args: Record<string, unknown>): { added: number; removed: number } | null {
+  if (typeof args.old_string !== "string" || typeof args.new_string !== "string") return null;
+  const removed = args.old_string.split("\n").length;
+  const added = args.new_string.split("\n").length;
+  return { added, removed };
+}
+
 export function ToolChip({ event }: { event: ToolEvent }) {
   const [open, setOpen] = useState(false);
-  const icon =
-    event.status === "running" ? (
-      <Loader2 size={14} className="animate-spin text-accent" />
-    ) : event.status === "ok" ? (
-      <Check size={14} className="text-emerald-500" />
-    ) : event.status === "blocked" ? (
-      <Ban size={14} className="text-rose-500" />
-    ) : (
-      <X size={14} className="text-rose-500" />
-    );
+  const running = event.status === "running";
+  const label = event.title || event.summary || event.tool;
+  const diff = event.tool === "file_edit" && event.status === "ok" ? fileEditDiffStat(event.args) : null;
+  const hasDetail = !!(event.output || Object.values(event.args ?? {}).some((v) => v !== undefined && v !== null && v !== ""));
   return (
-    <div className="rise flex justify-start pr-8">
+    <div className="rise pl-1 pr-8">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={event.output ? open : undefined}
-        className="max-w-full text-left rounded-2xl bg-surface-2/80 border border-border/60 px-3 py-1.5 text-[13px] text-muted hover:text-fg transition"
+        onClick={hasDetail ? () => setOpen((o) => !o) : undefined}
+        aria-expanded={hasDetail ? open : undefined}
+        className="flex w-full items-center gap-2 py-0.5 text-left text-[13px] text-muted transition hover:text-fg/80"
       >
-        <span className="flex items-center gap-2">
-          <span className="text-muted">{toolIcon(event.tool)}</span>
-          <span className="truncate flex-1">{event.title || event.summary || event.tool}</span>
-          {event.device && <DevicePill device={event.device} />}
-          {icon}
-          {event.output ? open ? <ChevronDown size={13} /> : <ChevronRight size={13} /> : null}
+        <span className="shrink-0 text-muted/70">{toolIcon(event.tool)}</span>
+        {/* label with shimmer overlay when running */}
+        <span className="relative flex-1 overflow-hidden truncate">
+          {label}
+          {running && (
+            <span
+              aria-hidden
+              className="tool-shimmer pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-fg/10 to-transparent"
+            />
+          )}
         </span>
-        {open && (
-          <div className="mt-2 text-fg">
-            <ArgsList args={event.args} />
-            {event.output && (
-              <pre className="mt-2 max-h-52 overflow-auto whitespace-pre-wrap break-words rounded-xl bg-bg p-2 text-[12px] leading-snug">
-                {event.output}
-              </pre>
-            )}
-          </div>
+        {event.device && <DevicePill device={event.device} />}
+        {diff && (
+          <span className="flex items-center gap-1 text-[11.5px] font-medium">
+            <span className="text-emerald-600 dark:text-emerald-400">+{diff.added}</span>
+            <span className="text-rose-600 dark:text-rose-400">-{diff.removed}</span>
+          </span>
         )}
+        {hasDetail && (open ? <ChevronDown size={13} className="shrink-0" /> : <ChevronRight size={13} className="shrink-0" />)}
       </button>
+      {open && (
+        <div className="mb-1 ml-5 rounded-xl bg-surface-2 p-2 text-[12.5px] text-fg">
+          <ArgsList args={event.args} />
+          {event.output && (
+            <pre className="mt-1 max-h-52 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-bg p-2 text-[12px] leading-snug">
+              {event.output}
+            </pre>
+          )}
+        </div>
+      )}
     </div>
   );
 }

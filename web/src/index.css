@@ -599,12 +599,26 @@ html[data-theme="dark"] .glass {
 .drawer-in {
   animation: om-drawer-in 0.2s ease-out;
 }
+/* shimmer that sweeps left-to-right across a running tool row's label (1.3 s, linear) */
+@keyframes om-shimmer {
+  from {
+    transform: translateX(-150%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+.tool-shimmer {
+  animation: om-shimmer 1.3s linear infinite;
+}
+
 /* with reduced motion asked for, sheets, drawers and toasts appear in place and the typing dots hold still */
 @media (prefers-reduced-motion: reduce) {
   .rise,
   .sheet-in,
   .drawer-in,
-  .typing-dot {
+  .typing-dot,
+  .tool-shimmer {
     animation: none;
   }
 }

@@ -1,26 +1,26 @@
 feature,area,priority,original,clone,notes
-Agent reply drawn flat and full width with no bubble,chat transcript,must,yes,yes,"Android: NmAssistantBubble draws no fill, tail or width cap. iOS and web not done"
+Agent reply drawn flat and full width with no bubble,chat transcript,must,yes,yes,"Android: NmAssistantBubble draws no fill, tail or width cap. Web: AssistantBubble no longer uses bubble-received; full-width px-4 inset. iOS not done"
 Inline code chip inside replies,chat transcript,must,yes,partial,the renderer's existing chip is kept; dark text colour fixed to pass AA; size and radius not changed
-Tool-call rows collapsed to one muted line with a chevron,chat transcript,must,yes,partial,one muted line per call with a chevron; several calls are NOT merged into one summary line (needs a new list item type)
-Running shimmer on the active tool row label,motion,must,yes,yes,"one animated brush on the title, 1.3 s; still when animations are off"
-Header activity spinner while the agent works,header,must,yes,yes,both headers; driven by SessionActivityTracker.activeSessions
-Follow the stream while pinned to the end,scroll,must,yes,yes,"the existing, already tuned pin logic is kept as is; not rewritten"
-Scroll-to-bottom pill when not at the end,scroll,must,yes,yes,same gating as before via ScrollPillPolicy; neutral disc; 150 ms fade
-Copy and speak actions under a settled reply,chat transcript,should,yes,yes,copy the message markdown; read aloud through the existing LazyReadAloudPlayer
-Diff badge (+n -n) on a tool row that edited files,chat transcript,should,yes,yes,"file_edit only; line counts of the new and old text, not a line diff"
-Running-tasks link under the last reply,tasks,should,yes,partial,"shown above the composer, not under the reply; counts other chats whose agent is running; hidden at zero"
-Running-tasks bottom sheet with peek and full heights,tasks,should,yes,partial,"glass sheet at the platform's half height and full; no per-row stop and no token or tool counts, because the app does not record them"
-Finished section with Load more and an in-place spinner,tasks,should,yes,partial,"scheduled-task run history, ten at a time; no spinner because the history is local"
-Centred time divider between message groups,chat transcript,could,yes,yes,already present before this build
+Tool-call rows collapsed to one muted line with a chevron,chat transcript,must,yes,partial,"one muted line per call with a chevron; Android and web done. Several calls are NOT merged into one summary line (needs a new list item type)"
+Running shimmer on the active tool row label,motion,must,yes,yes,"Android and web: animated gradient sweep on the label, 1.3 s; still when animations are off (prefers-reduced-motion). iOS not done"
+Header activity spinner while the agent works,header,must,yes,yes,"Android: both headers, driven by SessionActivityTracker.activeSessions. Web: border-t-accent spin ring beside the overflow button. iOS not done"
+Follow the stream while pinned to the end,scroll,must,yes,yes,"Android: existing tuned pin logic kept. Web: existing stickToBottom logic kept. iOS not done"
+Scroll-to-bottom pill when not at the end,scroll,must,yes,yes,"Android: ScrollPillPolicy, neutral disc. Web: neutral 36 px disc with border, no text. iOS not done"
+Copy and speak actions under a settled reply,chat transcript,should,yes,yes,"Android: copy markdown + LazyReadAloudPlayer. Web: navigator.clipboard + speechSynthesis; speak button hidden if API not available. iOS not done"
+Diff badge (+n -n) on a tool row that edited files,chat transcript,should,yes,yes,"Android and web: file_edit only; line counts of old_string and new_string. iOS not done"
+Running-tasks link under the last reply,tasks,should,yes,partial,"Android and web: shown above the composer (not under the last reply), counts other chats whose agent is running, hidden at zero. iOS not done"
+Running-tasks bottom sheet with peek and full heights,tasks,should,yes,partial,"Android: glass sheet, half height and full. Web: uses existing Sheet component; running + finished sections; no per-row stop, token or tool counts. iOS not done"
+Finished section with Load more and an in-place spinner,tasks,should,yes,partial,"Android: scheduled-task run history ten at a time. Web: shows up to 10 finished threads in the sheet; no Load more pagination (follow-up). iOS not done"
+Centred time divider between message groups,chat transcript,could,yes,yes,already present before this build on Android and web
 Question card showing the chosen answer,chat transcript,could,yes,no,not built here
 Suggestion ghost text with a chip in the composer,composer,could,yes,no,not built here
 Source app icons wordmark and brand colour,brand,could,yes,skip,not ours; Ceis tokens and an open icon set instead
 Source app copy and model names,copy,could,yes,skip,every string written fresh in every locale
 Token counts and plan limits,tasks,could,yes,skip,belongs to the source app's plans
 Source app transcripts and account features,backend,could,yes,skip,Ceis uses its own relay and runtime
-Session list home screen (was missing from the whole repo history),home,must,n/a,yes,"SessionListScreen.kt + SessionEditSheet.kt rebuilt from the real call-site contracts, ChatRepository, and orphaned sessionlist_* strings. compileDebugKotlin and assembleDebug both succeed for the first time in this repo's history"
-Session list: pin / unpin a conversation,home,should,n/a,yes,"added ChatDao.setSessionPinned + ChatRepository.updateSessionPinnedAt (did not exist before); swipe action"
-Session list: date-grouped sections (Pinned/Today/Yesterday/This Week/This Month/Earlier),home,should,n/a,yes,real sessionlist_section_* strings
-Session list: first-run welcome checklist (provider / models / first chat),home,must,n/a,yes,"steps 2 and 3 lock until the step before is actually done, read from real ProviderRepository state"
-Session list: search,home,should,n/a,yes,debounced ChatRepository.searchSessions
+Session list home screen (was missing from the whole repo history),home,must,n/a,yes,"Android: SessionListScreen.kt + SessionEditSheet.kt rebuilt. Web: ThreadList + ChatsDrawer already present and functional; no separate work needed"
+Session list: pin / unpin a conversation,home,should,n/a,yes,"Android: added ChatDao.setSessionPinned + ChatRepository.updateSessionPinnedAt; swipe action. Web: clear button already on each thread row"
+Session list: date-grouped sections (Pinned/Today/Yesterday/This Week/This Month/Earlier),home,should,n/a,partial,"Android: real sessionlist_section_* strings. Web: no date grouping yet (list is flat, sorted by updated_at)"
+Session list: first-run welcome checklist (provider / models / first chat),home,must,n/a,yes,"Android: 3-step checklist in SessionListScreen. Web: FirstSignInSteps already present and wired"
+Session list: search,home,should,n/a,partial,"Android: debounced ChatRepository.searchSessions. Web: no search box yet (follow-up)"
 "Session list: multi-select, export, duplicate, regenerate title",home,could,n/a,no,"orphaned strings exist (sessionlist_select_*, sessionlist_export_*, sessionlist_duplicate, sessionlist_regenerate_title) but not built; follow-up"

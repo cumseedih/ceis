@@ -119,3 +119,42 @@ See `features.csv`. Must: 7, should: 5, could: 3, skip: 4.
 ## Size
 
 Screens 5, flows 3, entities 2. Hard parts: pinned-scroll logic with a pill that does not fight the user's finger, a cheap shimmer in Compose that holds frame rate beside the live Liquid Glass layers, a partially expanded sheet that coexists with the glass composer, and feeding the task list from the real agent runtime instead of mock data. Size: M for Android; iOS and web follow the parity rule afterwards.
+
+## Build notes (Android, 2026-11-01)
+
+Built through `replica-architect` (`architecture.md`), `replica-design` (design.md first, then `design/tokens*.json`), `replica-build`. Android only; iOS and web still draw the old bubble.
+
+Built and where:
+
+- Tokens: `CeisMotion.kt`, `CeisReplyPalette` in `CeisTokens.kt`. One dark colour fixed in `ChatColors.kt` (inline code text, 2.2:1 to 5.8:1).
+- Flat reply: `NmAssistantBubble` in `NmHomeChrome.kt`.
+- ToolRow, shimmer, diff badge, chevron: `ToolCallPill` (the `nmCompact` branch) in `ChatAssistantMessageUI.kt`, with `ToolRowTitle`, `DiffBadge`, `fileEditDiffStat` in `AgentReplyParts.kt`.
+- ReplyActions: `AgentReplyParts.kt`, drawn by the last markdown item in `ChatScreen.kt`.
+- ScrollPill: `ScrollPillPolicy.kt`, `AgentReplyParts.kt`; replaces the down button in `ChatScreen.kt`.
+- HeaderActivity: `HeaderActivityRing` in `AgentReplyParts.kt`; placed in `MuseHeader.kt` and `NmTemplateChatHeader.kt`.
+- Running tasks: `BackgroundTasks.kt` (pure model), `BackgroundTasksSheet.kt` (link, sheet, rows); `SessionActivityTracker.kt` now records when each run started.
+- 20 new `nm_` strings in the base file and the 14 locale files that exist (de, es, fil, fr, in, ja, ko, ms, pl, pt-rBR, ro, ru, th, tr). Android has no Chinese resource folder, so none was added; `docs/zh/android.md` carries the Chinese description.
+
+Data-backed:
+
+- Running rows: `SessionActivityTracker.activeSessions` minus the chat on screen, with the recorded start time. Titles from the chat repository.
+- Finished rows: `ScheduledTask.runHistory` (goal checks are scheduled tasks too).
+- Diff badge: the `old_string` and `new_string` of a finished `file_edit` call.
+- Header ring: `activeSessions` not empty.
+
+Not data-backed, so not shown: token counts, tool counts, per-run elapsed time for finished runs, a stop button per run (the app only stops every run at once), sub-agent runs (none exist on Android).
+
+Deviations from this recon, and why:
+
+- Several tool calls are not merged into one summary line. That needs a new list item type and edits to six exhaustive `when` sites in `ChatScreen.kt`, which could not be compiled here.
+- The running-tasks link sits above the composer, not under the last reply, to leave the transcript list alone. It counts other chats, not the one on screen, so it is hidden most of the time.
+- Tap on a tool row opens the existing detail sheet; it does not expand in place, because the lazy list has a long history of scroll drift bugs.
+- Body text keeps the renderer's size (16sp, user adjustable), not the 15sp measured in the reference.
+- The follow-while-pinned logic in `ChatScreen.kt` was kept as is. Only the pill's visibility rule is a pure, tested class.
+- The sheet opens at the platform's half height, not 60 percent. There is no loading spinner on Load more, because the history is read from the device.
+
+Verification:
+
+- The pure logic (`ScrollPillPolicy`, `BackgroundTasks`, `DiffStat`, `ReplyText`) was compiled with Kotlin 2.0.20 and its 12 JUnit tests passed (run directly, outside Gradle).
+- Every changed Kotlin file parses with no syntax errors. The Compose and Android code was NOT compiled: this environment has no Android SDK (Gradle stops at "SDK location not found"). `CeisReplyPaletteContrastTest` was written but not run.
+- All new colour pairs pass WCAG AA in light and dark (`contrast.py`, 14 and 17 pairs). Text that sits directly on the glass sheet depends on the backdrop and was not measured.

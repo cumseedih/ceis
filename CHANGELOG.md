@@ -4,6 +4,10 @@ All notable changes to ceis. The format follows [Keep a Changelog](https://keepa
 
 ## [Unreleased]
 
+### Chat: the agent's reply is flat text, with quiet tool rows and a running-tasks sheet
+
+- **The agent's replies are now plain text across the full width of the chat instead of a grey bubble, each tool call is one muted line that sweeps with light while it runs (a finished file edit shows its +lines and -lines), copy and read-aloud buttons sit under a finished reply, a small ring in the header turns while an agent is working, the scroll-to-bottom button fades in and out, and a *Running tasks: N* link above the composer opens a sheet of the other chats whose agent is running now and the scheduled runs that finished before.** Your own messages keep the blue bubble. The dark inline-code colour was raised to pass AA contrast. Android only for now; the iPhone app, the web console and the desktop app still draw the old bubble. Specified in `design.md` (Agent reply).
+
 ### Liquid Glass: extend the material to the dialog, model picker, voice panel and persona chip
 
 - **The app-wide confirmation dialog (`MinisAlertDialog`) now carries real Liquid Glass.** It previously had a comment claiming design.md compliance but was in fact a flat, slightly translucent surface with no blur or specular edge. It now uses a new `liquidGlassWindowBlur` modifier: on Android 12+ the dialog's own window is blurred by the platform (`Window.setBackgroundBlurRadius`, since a `Dialog` renders outside the host activity's Compose tree and Haze has nothing in-tree to sample), with the material's tint and specular rim drawn on top; below Android 12 it falls back to the same near-opaque tint used elsewhere without a `HazeState`.

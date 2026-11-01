@@ -282,8 +282,9 @@ capsule are unchanged. The pattern was studied from a screen recording the
 owner supplied; only behaviour, spacing and timing were taken (notes in
 `replica/recon.md`). None of that app's artwork, colour or wording is used.
 
-- Text: 15sp on a 20dp line, ink. Paragraphs sit 10dp apart. Bold lead-ins,
-  numbered lists and code blocks keep the markdown renderer's styles.
+- Text: ink, at the markdown renderer's body size (16sp by default, and the
+  size the person sets in settings). Bold lead-ins, numbered lists, code
+  blocks and paragraph spacing keep the renderer's styles.
 - Inline code: monospace 13sp, radius 4dp, 4dp of side padding. Light
   #005ABF on #F2F2F7, dark #6CB6FF on #34343A.
 - The parts of one turn (text, tool rows) sit 4dp apart; a new turn starts
@@ -295,7 +296,7 @@ WCAG AA (4.5:1 for text, 3:1 for icons and borders).
 
 - **ToolRow.** One muted line per tool call: a small typed icon, the title,
   and a 16dp chevron at the end. No capsule, no border, 13sp, text-muted ink
-  (light #6E6E73, dark #A1A1A6), 32dp tall with a 48dp touch target. States:
+  (light #6E6E73, dark #A1A1A6), 40dp tall, the whole row is the tap target. States:
   running (a light band sweeps the title, see Motion; the stop button stays at
   the end), done, failed (the icon takes the error colour), cancelled. Tap
   opens the tool detail sheet. A file edit adds a diff badge after the title,
@@ -313,23 +314,27 @@ WCAG AA (4.5:1 for text, 3:1 for icons and borders).
 - **HeaderActivity.** A ring, 20dp, 2dp stroke, an arc of about 270 degrees in
   text-muted, beside the header's trailing button while any agent run is
   active. It is still when the system animation scale is zero.
-- **Tasks link.** "N running tasks" in the link colour (light #0066CC, dark
-  #4DA3FF), 13sp, 48dp tall, above the composer. Hidden when the count is
-  zero.
+- **Tasks link.** "Running tasks: N" in the link colour (light #0066CC, dark
+  #4DA3FF), 13sp, 48dp tall, above the composer. It counts the other chats
+  whose agent is running now, not the chat on screen, and is hidden when the
+  count is zero.
 - **TaskSheet.** A bottom sheet in the window-blur Liquid Glass material (the
   model picker's pattern), top radius 24dp, a 32 by 4dp handle, scrim 38
-  percent black. It opens at about 60 percent of the height and drags to full.
+  percent black. It opens at about half the height (the platform's partial
+  state) and drags to full.
   A centred title, a close button at the left, and two collapsible sections,
   Running and Finished, each with a count. Rows inside are flat, never glass:
   surface fill, radius 12dp, 8dp apart, 12dp of padding.
 - **TaskRow.** A title (ink, 14sp medium) over one muted 12sp line that says
-  the kind, the state and the time. A running row shows its elapsed time and
-  a stop control at the end. A finished row that has a chat shows "Open chat"
-  in the link colour. Only what the app actually knows is shown: there are no
-  token counts or tool counts.
-- **LoadMoreButton.** Full width, 44dp, outlined pill, ink label. While
-  loading, a 20dp spinner replaces the label in place and the width does not
-  change. Shown only while more finished rows exist; each press adds 10.
+  the kind, the state and the time. A running row shows its elapsed time; a
+  finished row shows when it ran. A row that has a chat shows "Open chat" in
+  the link colour. Only what the app actually knows is shown: there are no
+  token counts or tool counts, and no per-row stop control, because the app
+  can only stop every run at once (that stop stays in the tool bar and the
+  notification).
+- **LoadMoreButton.** Full width, 44dp, outlined pill, ink label. Shown only
+  while more finished rows exist; each press adds 10. The history is read
+  from the device, so there is no loading state.
 
 Motion. Every duration below lives in one Kotlin object, `CeisMotion`
 (`io/github/ceis/ui/theme/CeisMotion.kt`); this table and that object are

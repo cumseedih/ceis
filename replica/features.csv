@@ -1,19 +1,19 @@
 feature,area,priority,original,clone,notes
-Agent reply drawn flat and full width with no bubble,chat transcript,must,yes,no,overrides the received-bubble rule in design.md for the agent
-Inline code chip inside replies,chat transcript,must,yes,no,monospace tinted pill
-Tool-call rows collapsed to one muted line with a chevron,chat transcript,must,yes,no,tap expands detail
-Running shimmer on the active tool row label,motion,must,yes,no,about 1.3 s linear sweep
-Header activity spinner while the agent works,header,must,yes,no,about 1 s per turn
-Follow the stream while pinned to the end,scroll,must,yes,no,stop following when the person scrolls up
-Scroll-to-bottom pill when not at the end,scroll,must,yes,no,fades out at the end
-Copy and speak actions under a settled reply,chat transcript,should,yes,no,hidden while streaming
-Diff badge (+n -n) on a tool row that edited files,chat transcript,should,yes,no,
-Running-tasks link under the last reply,tasks,should,yes,no,hidden when nothing runs
-Running-tasks bottom sheet with peek and full heights,tasks,should,yes,no,scrim about 35 to 40 percent
-Finished section with Load more and an in-place spinner,tasks,should,yes,no,
-Centred time divider between message groups,chat transcript,could,yes,no,already partly in design.md
-Question card showing the chosen answer,chat transcript,could,yes,no,
-Suggestion ghost text with a chip in the composer,composer,could,yes,no,
+Agent reply drawn flat and full width with no bubble,chat transcript,must,yes,yes,"Android: NmAssistantBubble draws no fill, tail or width cap. iOS and web not done"
+Inline code chip inside replies,chat transcript,must,yes,partial,the renderer's existing chip is kept; dark text colour fixed to pass AA; size and radius not changed
+Tool-call rows collapsed to one muted line with a chevron,chat transcript,must,yes,partial,one muted line per call with a chevron; several calls are NOT merged into one summary line (needs a new list item type)
+Running shimmer on the active tool row label,motion,must,yes,yes,"one animated brush on the title, 1.3 s; still when animations are off"
+Header activity spinner while the agent works,header,must,yes,yes,both headers; driven by SessionActivityTracker.activeSessions
+Follow the stream while pinned to the end,scroll,must,yes,yes,"the existing, already tuned pin logic is kept as is; not rewritten"
+Scroll-to-bottom pill when not at the end,scroll,must,yes,yes,same gating as before via ScrollPillPolicy; neutral disc; 150 ms fade
+Copy and speak actions under a settled reply,chat transcript,should,yes,yes,copy the message markdown; read aloud through the existing LazyReadAloudPlayer
+Diff badge (+n -n) on a tool row that edited files,chat transcript,should,yes,yes,"file_edit only; line counts of the new and old text, not a line diff"
+Running-tasks link under the last reply,tasks,should,yes,partial,"shown above the composer, not under the reply; counts other chats whose agent is running; hidden at zero"
+Running-tasks bottom sheet with peek and full heights,tasks,should,yes,partial,"glass sheet at the platform's half height and full; no per-row stop and no token or tool counts, because the app does not record them"
+Finished section with Load more and an in-place spinner,tasks,should,yes,partial,"scheduled-task run history, ten at a time; no spinner because the history is local"
+Centred time divider between message groups,chat transcript,could,yes,yes,already present before this build
+Question card showing the chosen answer,chat transcript,could,yes,no,not built here
+Suggestion ghost text with a chip in the composer,composer,could,yes,no,not built here
 Source app icons wordmark and brand colour,brand,could,yes,skip,not ours; Ceis tokens and an open icon set instead
 Source app copy and model names,copy,could,yes,skip,every string written fresh in every locale
 Token counts and plan limits,tasks,could,yes,skip,belongs to the source app's plans

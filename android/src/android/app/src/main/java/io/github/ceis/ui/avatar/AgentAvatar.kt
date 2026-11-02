@@ -240,22 +240,13 @@ fun AgentAvatar(
                     modifier = Modifier.size(size),
                 )
             } else {
+                // ceis: use pet orb as the default avatar instead of the built-in dragon
                 Image(
-                    painter = painterResource(current.drawable),
+                    painter = painterResource(R.drawable.nm_pet_orb),
                     contentDescription = contentDescription,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier.size(size),
                 )
-                // The built-in character ships with its clips, so it moves without a video model.
-                val res = if (own == null && moodOwn == null) current.motion else null
-                if (res != null) {
-                    val context = androidx.compose.ui.platform.LocalContext.current
-                    androidx.compose.runtime.key(res) {
-                        LoopingClip(key = "raw:$res", modifier = Modifier.size(size)) { player ->
-                            context.resources.openRawResourceFd(res).use { fd -> player.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length) }
-                        }
-                    }
-                }
             }
             if (moodOwn != null) {
                 androidx.compose.runtime.key(moodOwn.key) {

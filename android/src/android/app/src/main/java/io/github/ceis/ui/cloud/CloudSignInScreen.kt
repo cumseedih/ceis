@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -234,18 +235,20 @@ fun CloudSignInScreen(
             Spacer(Modifier.height(24.dp))
             // the bare mark at the size the reference draws it
             Image(
-                painter = painterResource(R.drawable.nm_w_logo),
-                contentDescription = stringResource(R.string.nm_cloud_welcome_title),
-                modifier = Modifier.size(width = 44.dp, height = 28.75.dp),
+                painter = painterResource(R.drawable.nm_pet_orb),
+                contentDescription = "Ceis",
+                modifier = Modifier.size(80.dp),
+                contentScale = ContentScale.Fit,
             )
             Spacer(Modifier.height(24.dp))
 
             if (passwordMode) {
                 Text(
                     text = stringResource(R.string.nm_cloud_password_title),
-                    fontSize = 25.sp,
-                    lineHeight = 30.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontSize = 26.sp,
+                    lineHeight = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = (-0.5).sp,
                     color = CeisColors.text,
                     textAlign = TextAlign.Center,
                 )
@@ -283,9 +286,10 @@ fun CloudSignInScreen(
             } else if (!codeSent) {
                 Text(
                     text = stringResource(R.string.nm_cloud_welcome_title),
-                    fontSize = 25.sp,
-                    lineHeight = 30.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontSize = 26.sp,
+                    lineHeight = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = (-0.5).sp,
                     color = CeisColors.text,
                     textAlign = TextAlign.Center,
                 )
@@ -340,9 +344,10 @@ fun CloudSignInScreen(
             } else {
                 Text(
                     text = stringResource(R.string.nm_cloud_code_title),
-                    fontSize = 25.sp,
-                    lineHeight = 30.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontSize = 26.sp,
+                    lineHeight = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = (-0.5).sp,
                     color = CeisColors.text,
                     textAlign = TextAlign.Center,
                 )

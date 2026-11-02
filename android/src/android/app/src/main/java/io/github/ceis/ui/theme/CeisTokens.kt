@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -147,7 +148,7 @@ fun CeisButton(
             disabledContentColor = Color.White.copy(alpha = 0.8f),
         ),
         contentPadding = PaddingValues(horizontal = 21.dp, vertical = 0.dp),
-        modifier = modifier.height(44.dp),
+        modifier = modifier.height(50.dp),
     ) {
         if (busy) {
             CircularProgressIndicator(
@@ -204,6 +205,50 @@ object CeisChat {
 
     /** Received bubble fill on dark backgrounds (the same family, dark). */
     val receivedFillDark: Color = Color(0xFF26262A)
+}
+
+/**
+ * Apple App Store typography scale — applied globally per the owner's 2026-11-02
+ * instruction. Existing CeisType steps are kept for call-site compatibility; new
+ * screens should use these names.
+ */
+object CeisAppType {
+    // Display sizes
+    val displayLarge  = TextStyle(fontSize = 34.sp, fontWeight = FontWeight.Bold,     lineHeight = 40.sp)
+    val displayMedium = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold,     lineHeight = 32.sp, letterSpacing = (-0.5).sp)
+    // Heading
+    val headingLarge  = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold,     lineHeight = 22.sp)
+    // Body
+    val bodyLarge     = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp)
+    val bodyMedium    = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Normal,   lineHeight = 22.sp)
+    val bodySmall     = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Normal,   lineHeight = 24.sp)
+    // Captions
+    val captionMedium = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Normal,   lineHeight = 15.sp)
+    val captionSmall  = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Normal,   lineHeight = 11.sp)
+}
+
+/**
+ * App Store border radius scale. r17 is the card radius; r6 is for buttons and
+ * tags. Existing CeisRadii steps are kept.
+ */
+object CeisAppRadii {
+    val none: Shape = RoundedCornerShape(0.dp)
+    val xs:   Shape = RoundedCornerShape(4.dp)
+    val sm:   Shape = RoundedCornerShape(6.dp)
+    val md:   Shape = RoundedCornerShape(17.dp)  // cards
+    val full: Shape = CircleShape
+}
+
+/** App Store spacing scale (8dp base). Extends CeisSpacing with finer steps. */
+object CeisAppSpacing {
+    val xxs: Dp = 4.dp
+    val xs:  Dp = 8.dp
+    val sm:  Dp = 12.dp
+    val md:  Dp = 16.dp
+    val lg:  Dp = 20.dp
+    val xl:  Dp = 24.dp
+    val xxl: Dp = 32.dp
+    val xxxl: Dp = 40.dp
 }
 
 /** A circular outline icon button, as on the sign-in screen's top row: 44dp,

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.openminis.app.ui.theme.ChatColors
 import dev.chrisbanes.haze.HazeState
 import io.github.ceis.ui.avatar.AgentAvatar
+import io.github.ceis.ui.glass.liquidGlass
 import io.github.ceis.ui.avatar.AgentMood
 
 // ceis: template chat header, Figma Top Toolbar - Chat, same to same:
@@ -63,7 +64,12 @@ fun NmTemplateChatHeader(
         modifier = Modifier
             .fillMaxWidth()
             .height(96.dp)
-            .background(ChatColors.background),
+            .then(
+                if (hazeState != null)
+                    Modifier.liquidGlass(hazeState, RoundedCornerShape(0.dp), ChatColors.background)
+                else
+                    Modifier.background(ChatColors.background)
+            ),
     ) {
         // ceis: pill row at the top: back left, video right.
         Row(
@@ -85,8 +91,7 @@ fun NmTemplateChatHeader(
                             ambientColor = Color.Black.copy(alpha = 0.06f),
                             spotColor = Color.Black.copy(alpha = 0.12f),
                         )
-                        .clip(pillShape)
-                        .background(pillTint, pillShape)
+                        .liquidGlass(hazeState, pillShape, pillTint)
                         .clickable(onClick = onBackClick)
                         .padding(horizontal = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -127,8 +132,7 @@ fun NmTemplateChatHeader(
                             ambientColor = Color.Black.copy(alpha = 0.06f),
                             spotColor = Color.Black.copy(alpha = 0.12f),
                         )
-                        .clip(CircleShape)
-                        .background(pillTint, CircleShape)
+                        .liquidGlass(hazeState, CircleShape, pillTint)
                         .clickable(onClick = onToggleSidebar),
                     contentAlignment = Alignment.Center,
                 ) {
@@ -154,8 +158,7 @@ fun NmTemplateChatHeader(
                         ambientColor = Color.Black.copy(alpha = 0.06f),
                         spotColor = Color.Black.copy(alpha = 0.12f),
                     )
-                    .clip(CircleShape)
-                    .background(pillTint, CircleShape)
+                    .liquidGlass(hazeState, CircleShape, pillTint)
                     .clickable(onClick = onVideoClick),
                 contentAlignment = Alignment.Center,
             ) {

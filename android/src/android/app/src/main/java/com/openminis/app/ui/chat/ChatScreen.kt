@@ -2621,7 +2621,7 @@ fun ChatScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(ChatColors.background)
+                    .then(if (nmHazeState == null) Modifier.background(ChatColors.background) else Modifier)
                     .statusBarsPadding(),
             ) {
             // ceis: template header (Figma Top Toolbar - Chat): back pill +
@@ -6381,20 +6381,11 @@ fun ChatScreen(
                                         ambientColor = Color.Black.copy(alpha = 0.06f),
                                         spotColor = Color.Black.copy(alpha = 0.12f),
                                     )
-                                    .clip(nmComposerShape)
-                                    // ceis: template composer is a solid white
-                                    // pill with a glow — faint glass over white
-                                    // rendered nearly invisible on a real phone.
-                                    .background(
-                                        if (io.github.ceis.ui.home.MuseTones.isDark) Color(0xFF2C2C2E) else Color.White,
-                                        nmComposerShape,
-                                    )
-                                    // ceis: visible hairline so the white pill reads
-                                    // against the white transcript on a real phone.
-                                    .border(
-                                        1.dp,
-                                        if (io.github.ceis.ui.home.MuseTones.isDark) Color.White.copy(alpha = 0.15f) else Color(0xFFE5E5EA),
-                                        nmComposerShape,
+                                    // ceis: Liquid Glass capsule — real backdrop blur on API 31+.
+                                    .liquidGlass(
+                                        hazeState = nmHazeState,
+                                        shape = nmComposerShape,
+                                        tint = if (io.github.ceis.ui.home.MuseTones.isDark) Color(0xFF2C2C2E) else Color.White,
                                     ),
                             ) {
                                 Row(

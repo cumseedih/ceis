@@ -235,7 +235,7 @@ fun CloudSignInScreen(
             Spacer(Modifier.height(24.dp))
             // the bare mark at the size the reference draws it
             Image(
-                painter = painterResource(R.drawable.nm_pet_orb),
+                painter = painterResource(R.drawable.nm_w_logo),
                 contentDescription = "Ceis",
                 modifier = Modifier.size(80.dp),
                 contentScale = ContentScale.Fit,

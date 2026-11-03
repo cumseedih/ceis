@@ -274,6 +274,9 @@ class MinisApp : Application(), ImageLoaderFactory {
         // Activity context.
         com.openminis.app.data.AutoCompactPrefs.prime(this)
 
+        // ceis: warm the environment store so environment/session screens have data on first frame
+        io.github.ceis.ui.newsession.EnvironmentStore.init(this)
+
         // T283: install NDK signal handler for native crashes (SIGSEGV/
         // SIGABRT/SIGBUS/SIGFPE/SIGILL/SIGSYS). Writes a one-shot text
         // report to filesDir/logs/native-crash-<stamp>.log before re-raising

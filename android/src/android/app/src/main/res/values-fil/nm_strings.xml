@@ -1224,7 +1224,7 @@
     <string name="nm_cloud_identifier_pill">Mobile number o email</string>
     <string name="nm_cloud_sms_note">Sa paggamit ng iyong mobile number, maaari kang makatanggap ng mga SMS notification mula sa amin.</string>
     <string name="nm_cloud_use_password">Gamitin ang iyong password sa halip</string>
-    <string name="nm_cloud_welcome_title">Maligayang pagdating sa Ceis</string>
+    <string name="nm_cloud_welcome_title">Maligayang pagdating sa CEIS</string>
     <string name="nm_connectors_search">Maghanap ng mga connector</string>
     <string name="nm_connectors_tab_available">Magagamit</string>
     <string name="nm_connectors_tab_connected">Nakakonekta</string>

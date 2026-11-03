@@ -655,7 +655,7 @@
     <string name="nm_cloud_resend_in">Send again in %1$ds</string>
     <string name="nm_cloud_verify">Sign in</string>
     
-    <string name="nm_cloud_welcome_title">Welcome to Ceis</string>
+    <string name="nm_cloud_welcome_title">Welcome to CEIS</string>
     <string name="nm_cloud_code_title">Enter your code to log in</string>
     <string name="nm_cloud_code_sent">We sent a code to %1$s. It can take a minute to arrive; if it is not in your inbox, check your spam or social folder.</string>
     <string name="nm_cloud_identifier_pill">Mobile number or email</string>

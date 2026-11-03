@@ -195,6 +195,9 @@ object Routes {
     // [T-android-scheduled-tasks-run-records] per-task execution log.
     const val SCHEDULED_TASK_RUNS = "scheduled_tasks/runs/{taskId}"
     fun scheduledTaskRuns(taskId: String): String = "scheduled_tasks/runs/$taskId"
+    // ceis: new session screen (environment + repo context before first message)
+    const val NEW_SESSION = io.github.ceis.ui.newsession.ROUTE_NEW_SESSION
+    const val CREATE_ENVIRONMENT = io.github.ceis.ui.newsession.ROUTE_CREATE_ENVIRONMENT
 
     fun logDetail(fileName: String) = "log_detail/$fileName"
     fun sessionStorageDetail(sessionId: String) = "session_storage/$sessionId"
@@ -1763,6 +1766,32 @@ fun AppNavigation(
                 onOpenSession = { sessionId ->
                     navController.safeNavigate(Routes.chat(sessionId))
                 },
+            )
+        }
+
+        // ceis: New Session screen — configure environment and repo before first message.
+        composable(Routes.NEW_SESSION) {
+            io.github.ceis.ui.newsession.NewSessionScreen(
+                onBack = { navController.safePopBackStack() },
+                onSend = { msg ->
+                    val sessionId = "__new__${java.util.UUID.randomUUID()}"
+                    io.github.ceis.ui.home.HomeBus.prefillComposer(msg)
+                    io.github.ceis.ui.home.HomeBus.showSession(sessionId)
+                    navController.safePopBackStack()
+                },
+                onEnvironmentClick = {
+                    navController.safeNavigate(Routes.CREATE_ENVIRONMENT)
+                },
+                onRepoClick = { /* repo picker — future */ },
+                onAttachClick = { /* attach — future */ },
+            )
+        }
+
+        // ceis: Create environment screen — name, network access, env vars.
+        composable(Routes.CREATE_ENVIRONMENT) {
+            io.github.ceis.ui.newsession.CreateEnvironmentScreen(
+                onBack = { navController.safePopBackStack() },
+                onCreated = { navController.safePopBackStack() },
             )
         }
     }

@@ -1225,7 +1225,7 @@
     <string name="nm_cloud_identifier_pill">Numéro de mobile ou e-mail</string>
     <string name="nm_cloud_sms_note">En utilisant votre numéro de mobile, vous pourriez recevoir des notifications SMS de notre part.</string>
     <string name="nm_cloud_use_password">Utiliser votre mot de passe à la place</string>
-    <string name="nm_cloud_welcome_title">Bienvenue sur Ceis</string>
+    <string name="nm_cloud_welcome_title">Bienvenue sur CEIS</string>
     <string name="nm_connectors_search">Rechercher des connecteurs</string>
     <string name="nm_connectors_tab_available">Disponibles</string>
     <string name="nm_connectors_tab_connected">Connectés</string>

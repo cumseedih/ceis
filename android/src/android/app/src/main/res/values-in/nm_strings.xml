@@ -1220,7 +1220,7 @@
     <string name="nm_cloud_identifier_pill">Nomor ponsel atau email</string>
     <string name="nm_cloud_sms_note">Dengan menggunakan nomor ponsel Anda, Anda mungkin menerima notifikasi SMS dari kami.</string>
     <string name="nm_cloud_use_password">Gunakan kata sandi Anda sebagai gantinya</string>
-    <string name="nm_cloud_welcome_title">Selamat datang di Ceis</string>
+    <string name="nm_cloud_welcome_title">Selamat datang di CEIS</string>
     <string name="nm_connectors_search">Cari konektor</string>
     <string name="nm_connectors_tab_available">Tersedia</string>
     <string name="nm_connectors_tab_connected">Terhubung</string>

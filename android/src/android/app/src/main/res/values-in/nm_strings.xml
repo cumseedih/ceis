@@ -371,7 +371,7 @@
     <string name="nm_a11y_own_clip_preview">Pratinjau klip Anda</string>
 
     <!-- First run (Muse-style welcome; the steps are OpenMinis' provider and model screens) -->
-    <string name="nm_setup_title">Selamat datang di ceis</string>
+    <string name="nm_setup_title">Selamat datang di CEIS</string>
     <string name="nm_setup_step_models">Pilih model</string>
     <string name="nm_setup_step_models_sub">Model yang disediakan penyediamu ditampilkan untukmu; pilih paling banyak tiga</string>
     <string name="nm_setup_step_start">Berkenalan dengan %1$s</string>

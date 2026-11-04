@@ -366,7 +366,7 @@
     <string name="nm_a11y_own_clip_preview">Preview of your clip</string>
 
     
-    <string name="nm_setup_title">Welcome to ceis</string>
+    <string name="nm_setup_title">Welcome to CEIS</string>
     <string name="nm_setup_step_models">Choose models</string>
     <string name="nm_setup_step_models_sub">The models your provider serves are listed for you; pick up to three</string>
     <string name="nm_setup_step_start">Meet %1$s</string>

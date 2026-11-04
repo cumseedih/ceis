@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import io.github.ceis.ui.muse.NmBrandMark
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -318,7 +319,7 @@ private fun WelcomePage(onSignIn: () -> Unit, onOwnKey: () -> Unit) {
 @Composable
 private fun SourcePage(onCloud: () -> Unit, onOwnKey: () -> Unit) {
     Page(
-        hero = { HeroGlyph(Icons.Outlined.CloudQueue) },
+        hero = { NmBrandMark(size = 80.dp) },
         title = stringResource(R.string.nm_setup_source_title),
         subtitle = stringResource(R.string.nm_setup_source_sub),
         primaryLabel = stringResource(R.string.nm_setup_source_cloud),

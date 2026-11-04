@@ -374,7 +374,7 @@
     <string name="nm_a11y_own_clip_preview">Vorschau deines Clips</string>
 
     <!-- First run (Muse-style welcome; the steps are OpenMinis' provider and model screens) -->
-    <string name="nm_setup_title">Willkommen bei ceis</string>
+    <string name="nm_setup_title">Willkommen bei CEIS</string>
     <string name="nm_setup_step_models">Modelle wählen</string>
     <string name="nm_setup_step_models_sub">Die Modelle deines Anbieters werden für dich aufgelistet; wähle bis zu drei</string>
     <string name="nm_setup_step_start">Lerne %1$s kennen</string>
